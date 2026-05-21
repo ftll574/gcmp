@@ -1,0 +1,164 @@
+{
+  "brand": {
+    "name": "gcmp",
+    "tagline": "マイル計算機"
+  },
+  "lang": {
+    "english": "English",
+    "zhTW": "繁體中文",
+    "zhCN": "简体中文",
+    "ja": "日本語",
+    "label": "言語"
+  },
+  "header": {
+    "save": "保存",
+    "shareUrl": "共有 URL",
+    "copied": "コピー済み ✓",
+    "modeBeginner": "初心者",
+    "modePro": "上級者",
+    "modeHint": "初心者モードでは解説が表示されます。いつでも切替可能。"
+  },
+  "loading": "空港データ + マイルルールを読み込み中…",
+  "errors": {
+    "loadFailed": "データ読み込み失敗：{message}",
+    "loadFailedHelp": "ページを再読み込みしてください。問題が続く場合は GitHub に Issue を立ててください。"
+  },
+  "input": {
+    "addAirportPlaceholder": "空港を追加 — IATA コード（SFO）、都市名（東京）、または都市コード（NYC, TYO, LON）",
+    "addAirportPlaceholderPro": "空港を追加（IATA コード、例：SFO）",
+    "noResults": "「{query}」に該当する空港が見つかりません。都市名で検索してください。",
+    "ambiguousHint": "{count} 件の候補 — 一つ選択してください",
+    "cityCodeHint": "{code} は都市コードです — 空港を選んでください",
+    "exampleButton": "例を試す",
+    "exampleHint": "サンプル経路をクリックして使い方を確認",
+    "clearAll": "クリア"
+  },
+  "samples": {
+    "sfoNrtBkk": {
+      "title": "サンフランシスコ → 東京 → バンコク",
+      "subtitle": "AA ビジネスクラス 太平洋横断"
+    },
+    "jfkLhrCdg": {
+      "title": "ニューヨーク → ロンドン → パリ",
+      "subtitle": "BA ビジネスクラス 大西洋横断"
+    },
+    "laxNrtKix": {
+      "title": "ロサンゼルス → 東京 → 大阪",
+      "subtitle": "JAL 日本航空 太平洋横断"
+    },
+    "tpeBkkHkg": {
+      "title": "台北 → バンコク → 香港",
+      "subtitle": "キャセイ CX アジア周遊"
+    },
+    "compareAaAs": {
+      "title": "二つの経路を比較",
+      "subtitle": "SFO → 香港 直行 vs 東京経由"
+    }
+  },
+  "groups": {
+    "label": "経路",
+    "addGroup": "+ 経路を追加",
+    "removeGroup": "経路 {n} を削除",
+    "groupN": "経路 {n}",
+    "grandTotal": "全経路合計",
+    "compareHint": "複数の経路を同じ地図上で比較。下の PQM は全経路の合計です。"
+  },
+  "cabin": {
+    "label": "クラス",
+    "economy": "エコノミー",
+    "economyShort": "Y",
+    "premiumEconomy": "プレミアム",
+    "premiumEconomyShort": "W",
+    "business": "ビジネス",
+    "businessShort": "J",
+    "first": "ファースト",
+    "firstShort": "F"
+  },
+  "leg": {
+    "remove": "{iata} を削除",
+    "carrierLabel": "第 {n} 区間の運航キャリア",
+    "ariaLabel": "第 {n} / {total} 区間：{from} から {to}"
+  },
+  "panel": {
+    "emptyHint": "2 つ以上の空港を追加すると、獲得マイルが表示されます。",
+    "emptyHintBeginner": "ここに獲得マイルが表示されます。下のサンプルをクリックするか、空港コード（SFO、東京、バンコクなど）を入力してください。",
+    "totalDistance": "合計距離",
+    "milesUnit": "海里",
+    "perLegToggle": "区間別詳細",
+    "perLegHidden": "▸ {label}",
+    "perLegShown": "▾ {label}",
+    "warningsLabel": "注意",
+    "pqmShort": "PQM",
+    "rdmShort": "RDM",
+    "pqmLong": "ステータスマイル",
+    "rdmLong": "特典マイル",
+    "summaryBeginner": "{carrier} の {cabin} で獲得：",
+    "comparisonBeginner": "プログラム比較 — 同じチケットでも、どのプログラムに付与するかでマイル数が変わります。",
+    "confidenceChart": "公式表",
+    "confidenceCorrected": "修正済み",
+    "confidenceMixed": "混合",
+    "confidenceChartTip": "航空会社公式のパートナー獲得表に準拠。実際の付与マイルとは差異が生じる場合があります。",
+    "confidenceCorrectedTip": "実際の付与記録に基づいて修正されたルール。",
+    "confidenceMixedTip": "「公式表」と「修正済み」のルールが混在しています。"
+  },
+  "table": {
+    "leg": "区間",
+    "distance": "距離",
+    "missing": "—",
+    "missingTip": "このプログラムには該当キャリアのルールがありません。PR で追加してください。"
+  },
+  "warnings": {
+    "polar": "経路が極地を通過 — 距離は正確ですが、メルカトル地図では弧が歪んで表示されます。",
+    "unknownAirport": "区間の空港が見つかりません {from}→{to}",
+    "carrierNotInRules": "{program} に {carrier} のルールがありません。PR で追加してください。"
+  },
+  "save": {
+    "promptName": "経路の名前",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "quotaExceeded": "保存容量が満杯です。古い経路を削除してください。",
+    "writeFailed": "保存できません。ブラウザの localStorage が無効化されている可能性があります。"
+  },
+  "saved": {
+    "title": "保存済み",
+    "delete": "{name} を削除"
+  },
+  "footer": {
+    "openSource": "gcmp v0 — オープンソース on GitHub",
+    "disclaimer": "マイル数は公式パートナー表に基づく計算です。実際の付与マイルをご確認ください。"
+  },
+  "map": {
+    "fallbackHeading": "地図の描画に失敗しました。",
+    "fallbackHint": "マイル計算は引き続き機能します。下のボタンで地図の再描画を試してください。",
+    "retry": "再試行",
+    "ariaLabelEmpty": "世界地図",
+    "ariaLabel": "経路を表示：{chain}"
+  },
+  "mobile": {
+    "banner": "PC での閲覧を推奨します。スマホでは閲覧のみ可能、編集機能は v1.2 で対応予定。"
+  },
+  "gcmapImport": {
+    "open": "gcmap からインポート",
+    "label": "gcmap.com の URL または経路文字列を貼り付け",
+    "import": "インポート",
+    "invalid": "解析できません。gcmap.com URL または SFO-NRT,JFK-LHR のような経路文字列を予想しています。",
+    "hint": "例：SFO-NRT-BKK · SFO-NRT,LAX-HKG · http://www.gcmap.com/mapui?P=SFO-NRT-BKK"
+  },
+  "download": {
+    "png": "PNG をダウンロード",
+    "filename": "gcmp-経路"
+  },
+  "bearings": {
+    "show": "方位角を表示"
+  },
+  "glossary": {
+    "pqm": "ステータスマイル（Premier Qualifying Miles）— ゴールド、プラチナなどの上級会員資格を獲得するためのマイル。特典マイルとは別物。",
+    "rdm": "特典マイル（Redeemable Miles）— 特典航空券に交換できるポイント。",
+    "cabin": "クラス：エコノミー（Y）、プレミアムエコノミー（W）、ビジネス（J）、ファースト（F）。",
+    "fareClass": "予約クラスコード（J、C、D、Y、B、K… の 1 文字）。同じクラスでも複数の予約クラスがあり、獲得マイルが異なります。",
+    "operatingCarrier": "実際に運航する航空会社。コードシェア便でもマイルは運航会社に従って計算されます。",
+    "alliance": "スターアライアンス、ワンワールド、スカイチーム — 航空会社が相互にマイルを認める同盟。",
+    "credit": "獲得マイルをどのプログラムに付与するかの選択。同じチケットでも、プログラムによって獲得マイル数が変わります。",
+    "mileageRunner": "目的地より距離やマイル獲得を優先して飛行機に乗る旅行者。"
+  }
+}

@@ -137,6 +137,20 @@
   "mobile": {
     "banner": "Best viewed on desktop. Routing is read-only on phone — drag + edit comes in v1.2."
   },
+  "gcmapImport": {
+    "open": "Import from gcmap",
+    "label": "Paste a gcmap.com URL or routing string",
+    "import": "Import",
+    "invalid": "Could not parse. Expected gcmap.com URL or routing like SFO-NRT,JFK-LHR.",
+    "hint": "Examples: SFO-NRT-BKK · SFO-NRT,LAX-HKG · http://www.gcmap.com/mapui?P=SFO-NRT-BKK"
+  },
+  "download": {
+    "png": "Download PNG",
+    "filename": "gcmp-routing"
+  },
+  "bearings": {
+    "show": "Show bearings"
+  },
   "glossary": {
     "pqm": "Premier Qualifying Miles — counts toward elite status (Gold, Platinum, etc.). Not the same as redeemable miles.",
     "rdm": "Redeemable Miles — what you spend to book award flights.",

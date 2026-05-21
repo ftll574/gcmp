@@ -16,11 +16,15 @@
 
 import en from './locales/en.json';
 import zhTW from './locales/zh-TW.json';
+import zhCN from './locales/zh-CN.json';
+import ja from './locales/ja.json';
 import { LOCALES, type Locale, type LocaleMessages } from './types.ts';
 
 const MESSAGES: Record<Locale, LocaleMessages> = {
   en,
   'zh-TW': zhTW,
+  'zh-CN': zhCN,
+  ja,
 };
 
 const STORAGE_KEY = 'gcmp.locale';
@@ -53,9 +57,12 @@ function detectLocale(): Locale {
   if (typeof navigator !== 'undefined' && navigator.language) {
     const lang = navigator.language;
     if (isLocale(lang)) return lang;
-    // Match prefix: "zh-Hant" or "zh" → zh-TW; "en-US" → en
+    // Match prefix.
+    if (lang.startsWith('zh-Hans') || lang.startsWith('zh-CN') || lang === 'zh-Hans') return 'zh-CN';
+    if (lang.startsWith('zh-Hant') || lang.startsWith('zh-TW') || lang.startsWith('zh-HK')) return 'zh-TW';
     const prefix = lang.split('-')[0];
-    if (prefix === 'zh') return 'zh-TW';
+    if (prefix === 'zh') return 'zh-TW'; // default Chinese to Traditional (user's locale)
+    if (prefix === 'ja') return 'ja';
     if (prefix === 'en') return 'en';
   }
 

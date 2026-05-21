@@ -137,6 +137,20 @@
   "mobile": {
     "banner": "建議在桌面瀏覽。手機目前只能讀取，編輯功能 v1.2 推出。"
   },
+  "gcmapImport": {
+    "open": "從 gcmap 匯入",
+    "label": "貼上 gcmap.com 連結或航線字串",
+    "import": "匯入",
+    "invalid": "無法解析，預期是 gcmap.com 連結或像 SFO-NRT,JFK-LHR 的航線字串",
+    "hint": "範例：SFO-NRT-BKK · SFO-NRT,LAX-HKG · http://www.gcmap.com/mapui?P=SFO-NRT-BKK"
+  },
+  "download": {
+    "png": "下載 PNG",
+    "filename": "gcmp-航線"
+  },
+  "bearings": {
+    "show": "顯示方位角"
+  },
   "glossary": {
     "pqm": "升等哩程（Premier Qualifying Miles）— 累積到一定數量可升上金卡、白金卡等會員等級。跟兌換哩程不同。",
     "rdm": "兌換哩程（Redeemable Miles）— 可以拿來換獎勵機票的點數。",

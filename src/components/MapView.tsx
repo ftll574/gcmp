@@ -9,9 +9,10 @@
  *   - Airport dots + IATA labels for every airport in any group's chain
  */
 
-import { useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { geoGraticule, geoPath, type GeoPath, type GeoProjection } from 'd3-geo';
 import { groupColor } from '../lib/group-colors.ts';
+import { bearingDeg } from '../lib/calc/haversine.ts';
 import { greatCircleSvgPathProjected } from '../lib/calc/svg-arc.ts';
 import { buildProjection, type ProjectionId } from '../lib/calc/projections.ts';
 import type { Airport, RoutingGroup } from '../lib/types.ts';
@@ -27,6 +28,10 @@ interface Props {
   width: number;
   height: number;
   projection: ProjectionId;
+  /** When true, render per-leg bearing labels at the midpoint of each arc. */
+  showBearings?: boolean;
+  /** Receives the live SVG element so the parent can capture it (PNG export). */
+  onSvgReady?: (svg: SVGSVGElement | null) => void;
 }
 
 interface PanZoomState {
@@ -44,12 +49,22 @@ export function MapView({
   width,
   height,
   projection,
+  showBearings = false,
+  onSvgReady,
 }: Props): React.ReactElement {
   const { features, error: worldError } = useWorldMap();
   const [pz, setPz] = useState<PanZoomState>(IDENTITY);
   const [dragging, setDragging] = useState(false);
   const dragRef = useRef<{ startX: number; startY: number; origin: PanZoomState } | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
+
+  const svgRefCallback = useCallback(
+    (el: SVGSVGElement | null) => {
+      svgRef.current = el;
+      onSvgReady?.(el);
+    },
+    [onSvgReady],
+  );
 
   // Auto-center azimuthal + orthographic on the first airport of the active group.
   const center = useMemo<{ lat: number; lon: number }>(() => {
@@ -91,7 +106,21 @@ export function MapView({
         const to = airportLookup.get(leg.to);
         if (!from || !to) return null;
         const d = greatCircleSvgPathProjected(from, to, proj);
-        return { d, key: `${gi}-${leg.from}-${leg.to}-${i}`, color: groupColor(gi), groupIndex: gi };
+        // Midpoint for bearing label.
+        const midLat = (from.lat + to.lat) / 2;
+        const midLon = (from.lon + to.lon) / 2;
+        const midProj = proj([midLon, midLat]);
+        const bearing = Math.round(bearingDeg(from, to));
+        return {
+          d,
+          key: `${gi}-${leg.from}-${leg.to}-${i}`,
+          color: groupColor(gi),
+          groupIndex: gi,
+          mid: midProj && Number.isFinite(midProj[0]) && Number.isFinite(midProj[1])
+            ? { x: midProj[0], y: midProj[1] }
+            : null,
+          bearing,
+        };
       });
     });
   }, [groups, airportLookup, proj]);
@@ -166,7 +195,7 @@ export function MapView({
 
   return (
     <svg
-      ref={svgRef}
+      ref={svgRefCallback}
       className="map-view"
       viewBox={`0 0 ${width} ${height}`}
       width={width}
@@ -211,6 +240,25 @@ export function MapView({
                 ),
             ),
           )}
+          {showBearings &&
+            arcsByGroup.map((arcs) =>
+              arcs.map((arc) =>
+                arc && arc.mid ? (
+                  <text
+                    key={`bearing-${arc.key}`}
+                    x={arc.mid.x}
+                    y={arc.mid.y}
+                    className="map-bearing-label"
+                    style={{
+                      fontSize: `${10 / Math.max(pz.scale, 1)}px`,
+                      fill: arc.color,
+                    }}
+                  >
+                    {arc.bearing}°
+                  </text>
+                ) : null,
+              ),
+            )}
           {projectedAirports.map(({ airport, x, y }) => {
             if (x === null || y === null) return null;
             return (
