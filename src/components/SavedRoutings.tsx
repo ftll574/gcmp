@@ -1,12 +1,9 @@
-/**
- * Saved routings sidebar. Reads from localStorage. Loading a saved
- * routing fills the URL state.
- */
+import { useLocale } from '../i18n/use-locale.ts';
 
 interface SavedRouting {
   name: string;
   url: string;
-  savedAt: string; // ISO date
+  savedAt: string;
 }
 
 interface Props {
@@ -16,10 +13,11 @@ interface Props {
 }
 
 export function SavedRoutings({ saved, onLoad, onDelete }: Props): React.ReactElement | null {
+  const { t } = useLocale();
   if (saved.length === 0) return null;
   return (
-    <aside className="saved-routings" aria-label="Saved routings">
-      <h4 className="saved-routings-title">Saved</h4>
+    <aside className="saved-routings" aria-label={t('saved.title')}>
+      <h4 className="saved-routings-title">{t('saved.title')}</h4>
       <ul className="saved-routings-list">
         {saved.map((s) => (
           <li key={s.name} className="saved-routings-item">
@@ -34,7 +32,7 @@ export function SavedRoutings({ saved, onLoad, onDelete }: Props): React.ReactEl
             <button
               type="button"
               className="saved-routings-delete"
-              aria-label={`Delete ${s.name}`}
+              aria-label={t('saved.delete', { name: s.name })}
               onClick={() => onDelete(s.name)}
             >
               ×

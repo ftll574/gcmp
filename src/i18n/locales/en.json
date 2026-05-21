@@ -1,0 +1,138 @@
+{
+  "brand": {
+    "name": "gcmp",
+    "tagline": "routing calculator"
+  },
+  "lang": {
+    "english": "English",
+    "zhTW": "繁體中文",
+    "zhCN": "简体中文",
+    "ja": "日本語",
+    "label": "Language"
+  },
+  "header": {
+    "save": "Save",
+    "shareUrl": "Share URL",
+    "copied": "Copied ✓",
+    "modeBeginner": "Beginner",
+    "modePro": "Pro",
+    "modeHint": "Beginner mode adds explanations. Switch any time."
+  },
+  "loading": "Loading airports + earning rules…",
+  "errors": {
+    "loadFailed": "Failed to load data: {message}",
+    "loadFailedHelp": "Refresh the page. If the problem persists, file an issue."
+  },
+  "input": {
+    "addAirportPlaceholder": "Add airport — type IATA code (SFO), city (Tokyo) or city code (NYC, TYO, LON)",
+    "addAirportPlaceholderPro": "Add airport (IATA code, e.g. SFO)",
+    "noResults": "No airport found for \"{query}\". Try the city name.",
+    "ambiguousHint": "{count} matches — select one",
+    "cityCodeHint": "{code} is a city — pick the airport you want",
+    "exampleButton": "Try an example",
+    "exampleHint": "Click a sample routing to see how it works",
+    "clearAll": "Clear"
+  },
+  "samples": {
+    "sfoNrtBkk": {
+      "title": "Trans-Pacific to Bangkok",
+      "subtitle": "SFO → NRT → BKK on AA"
+    },
+    "jfkLhrCdg": {
+      "title": "New York to Paris",
+      "subtitle": "JFK → LHR → CDG on BA"
+    },
+    "laxNrtKix": {
+      "title": "Western US to Japan",
+      "subtitle": "LAX → NRT → KIX on JL"
+    },
+    "tpeBkkHkg": {
+      "title": "Asia loop",
+      "subtitle": "TPE → BKK → HKG on CX"
+    }
+  },
+  "cabin": {
+    "label": "Cabin",
+    "economy": "Economy",
+    "economyShort": "Y",
+    "premiumEconomy": "Premium",
+    "premiumEconomyShort": "W",
+    "business": "Business",
+    "businessShort": "J",
+    "first": "First",
+    "firstShort": "F"
+  },
+  "leg": {
+    "remove": "Remove {iata}",
+    "carrierLabel": "Operating carrier for leg {n}",
+    "ariaLabel": "Leg {n} of {total}: {from} to {to}"
+  },
+  "panel": {
+    "emptyHint": "Add 2+ airports to see how much you earn.",
+    "emptyHintBeginner": "This panel shows how many miles you earn for the routing you build. Try clicking an example below, or type airport codes above (like SFO, NRT, BKK).",
+    "totalDistance": "Total distance",
+    "milesUnit": "nm",
+    "perLegToggle": "Per-leg breakdown",
+    "perLegHidden": "▸ {label}",
+    "perLegShown": "▾ {label}",
+    "warningsLabel": "Warnings",
+    "pqmShort": "PQM",
+    "rdmShort": "RDM",
+    "pqmLong": "Status Miles",
+    "rdmLong": "Award Miles",
+    "summaryBeginner": "On {carrier} in {cabin}, this routing earns:",
+    "comparisonBeginner": "Compare programs side-by-side — credit the same ticket to whichever program gives you more.",
+    "confidenceChart": "chart",
+    "confidenceCorrected": "corrected",
+    "confidenceMixed": "mixed",
+    "confidenceChartTip": "Verified against the airline's published partner chart. Actual posted miles may differ.",
+    "confidenceCorrectedTip": "Earning rule corrected against actual statement postings.",
+    "confidenceMixedTip": "Mix of chart-verified and community-corrected rules across legs."
+  },
+  "table": {
+    "leg": "Leg",
+    "distance": "Distance",
+    "missing": "—",
+    "missingTip": "No earning rule for this carrier in this program. PR a rules JSON file to add it."
+  },
+  "warnings": {
+    "polar": "Route crosses polar region — distance accurate, but Mercator map will distort the arc.",
+    "unknownAirport": "Unknown airport in leg {from}→{to}",
+    "carrierNotInRules": "{program} has no earning rules for carrier {carrier}. PR a rule file to add."
+  },
+  "save": {
+    "promptName": "Routing name",
+    "save": "Save",
+    "cancel": "Cancel",
+    "quotaExceeded": "Saved-routings storage is full. Delete some saved routings to free space.",
+    "writeFailed": "Could not save routing. Your browser may have storage disabled."
+  },
+  "saved": {
+    "title": "Saved",
+    "delete": "Delete {name}"
+  },
+  "footer": {
+    "openSource": "gcmp v0 — open source on GitHub",
+    "disclaimer": "Earning numbers are chart-verified against published partner charts. Verify against your statement."
+  },
+  "map": {
+    "fallbackHeading": "Map failed to render.",
+    "fallbackHint": "The earning calculations still work. Retry the map render below.",
+    "retry": "Retry",
+    "ariaLabelEmpty": "World map",
+    "ariaLabel": "Map showing route via {chain}"
+  },
+  "mobile": {
+    "banner": "Best viewed on desktop. Routing is read-only on phone — drag + edit comes in v1.2."
+  },
+  "glossary": {
+    "pqm": "Premier Qualifying Miles — counts toward elite status (Gold, Platinum, etc.). Not the same as redeemable miles.",
+    "rdm": "Redeemable Miles — what you spend to book award flights.",
+    "cabin": "Class of service: Economy (Y), Premium Economy (W), Business (J), or First (F).",
+    "fareClass": "Single-letter booking code (J, C, D, Y, B, K...). Each cabin has multiple letters that earn at different rates.",
+    "operatingCarrier": "The airline that actually flies the plane. Earning usually follows the operating carrier, even for codeshare flights.",
+    "alliance": "Star Alliance, Oneworld, or SkyTeam — groups of airlines that earn on each other's flights.",
+    "credit": "Choosing which loyalty program your flight earns into. Same ticket can earn different miles depending on your choice.",
+    "mileageRunner": "A traveler who optimizes flights for distance + earning rather than the destination."
+  }
+}

@@ -1,31 +1,27 @@
 /**
  * gcmp — Mileage Runner Routing Calculator
  *
- *   ┌─────────────────────────────────────────────────────────────────┐
- *   │ brand     [autocomplete + leg chain + cabin]      Save / Share  │
- *   ├──────────────────────────────────────────┬──────────────────────┤
- *   │                                          │ AA AAdvantage        │
- *   │                                          │   14,200 PQM         │
- *   │             MAP (SVG arcs)               │   14,200 RDM         │
- *   │                                          ├──────────────────────┤
- *   │                                          │ Alaska Mileage Plan  │
- *   │                                          │   11,400 EQM         │
- *   │                                          ├──────────────────────┤
- *   │                                          │ Total: 13,847 nm     │
- *   │                                          │ ▸ Per-leg            │
- *   └──────────────────────────────────────────┴──────────────────────┘
+ * Top bar: brand + language picker + mode toggle + Save / Share
+ * Input row: autocomplete + leg chain + cabin + program toggles
+ * Body: map (left) + earning panel (right)
+ * Empty-state in Beginner mode: sample-routings carousel
  */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { ActionRow } from './components/ActionRow.tsx';
 import { AirportAutocomplete } from './components/AirportAutocomplete.tsx';
 import { CabinSelector } from './components/CabinSelector.tsx';
 import { EarningPanel } from './components/EarningPanel.tsx';
-import { ActionRow } from './components/ActionRow.tsx';
+import { Glossary } from './components/Glossary.tsx';
+import { LanguagePicker } from './components/LanguagePicker.tsx';
 import { LegChain } from './components/LegChain.tsx';
 import { MapErrorBoundary } from './components/MapErrorBoundary.tsx';
 import { MapView } from './components/MapView.tsx';
 import { MobileBanner } from './components/MobileBanner.tsx';
+import { ModeToggle } from './components/ModeToggle.tsx';
+import { SampleRoutings } from './components/SampleRoutings.tsx';
 import { SavedRoutings } from './components/SavedRoutings.tsx';
+import { useLocale } from './i18n/use-locale.ts';
 import { buildAirportIndex } from './lib/airport-index.ts';
 import { computeRouting } from './lib/calc/index.ts';
 import { parseShareUrl } from './lib/url-schema.ts';
@@ -41,6 +37,7 @@ import {
 } from './lib/types.ts';
 import type { LoadedData } from './state/use-loaded-data.ts';
 import { useLoadedData } from './state/use-loaded-data.ts';
+import { useAppMode } from './state/use-mode.ts';
 import { useRoutingState } from './state/use-routing-state.ts';
 import { useSavedRoutings } from './state/use-saved-routings.ts';
 import { useViewportWidth } from './state/use-viewport.ts';
@@ -49,9 +46,11 @@ import './App.css';
 const MOBILE_BREAKPOINT = 768;
 
 export function App(): React.ReactElement {
+  const { t } = useLocale();
   const load = useLoadedData();
   const { state: routing, setRouting, shareUrl } = useRoutingState();
   const { saved, save, remove, lastError: saveError } = useSavedRoutings();
+  const { mode, setMode } = useAppMode();
   const viewportW = useViewportWidth();
   const mapRef = useRef<HTMLDivElement>(null);
   const [mapSize, setMapSize] = useState({ width: 1024, height: 600 });
@@ -71,7 +70,7 @@ export function App(): React.ReactElement {
   if (load.status === 'loading') {
     return (
       <div className="app-loading" role="status">
-        <p>Loading airports + earning rules…</p>
+        <p>{t('loading')}</p>
       </div>
     );
   }
@@ -80,11 +79,8 @@ export function App(): React.ReactElement {
     return (
       <div className="app-error" role="alert">
         <h1>gcmp</h1>
-        <p>Failed to load data: {load.error}</p>
-        <p>
-          Refresh the page. If the problem persists, the data files may not have shipped — file an issue at{' '}
-          <a href="https://github.com/ftll574/gcmp">github.com/ftll574/gcmp</a>.
-        </p>
+        <p>{t('errors.loadFailed', { message: load.error })}</p>
+        <p>{t('errors.loadFailedHelp')}</p>
       </div>
     );
   }
@@ -99,6 +95,8 @@ export function App(): React.ReactElement {
       save={save}
       remove={remove}
       saveError={saveError}
+      mode={mode}
+      setMode={setMode}
       isMobile={viewportW < MOBILE_BREAKPOINT}
       mapRef={mapRef}
       mapSize={mapSize}
@@ -116,6 +114,8 @@ interface ReadyProps {
   save: (name: string, url: string) => void;
   remove: (name: string) => void;
   saveError: string | null;
+  mode: ReturnType<typeof useAppMode>['mode'];
+  setMode: ReturnType<typeof useAppMode>['setMode'];
   isMobile: boolean;
   mapRef: React.RefObject<HTMLDivElement | null>;
   mapSize: { width: number; height: number };
@@ -131,14 +131,16 @@ function Ready({
   save,
   remove,
   saveError,
+  mode,
+  setMode,
   isMobile,
   mapRef,
   mapSize,
   shareUrl,
 }: ReadyProps): React.ReactElement {
+  const { t } = useLocale();
   const airportIndex = useMemo(() => buildAirportIndex(data.airports), [data.airports]);
 
-  // Chain airport objects (in order).
   const chainAirports = useMemo<Airport[]>(() => {
     if (routing.legs.length === 0) return [];
     const first = routing.legs[0]?.from;
@@ -210,21 +212,31 @@ function Ready({
     }
   }
 
+  function clearAll(): void {
+    setRouting({ ...routing, legs: [] });
+  }
+
+  const showSamples = mode === 'beginner' && routing.legs.length === 0;
+
   return (
-    <div className={`app${isMobile ? ' mobile' : ''}`}>
+    <div className={`app${isMobile ? ' mobile' : ''} mode-${mode}`}>
       <MobileBanner visible={isMobile} />
       <header className="app-header">
         <div className="app-brand">
           <span className="app-brand-name">gcmp</span>
-          <span className="app-brand-tagline">routing calculator</span>
+          <span className="app-brand-tagline">{t('brand.tagline')}</span>
         </div>
-        <ActionRow
-          shareUrl={shareUrl}
-          canSave={routing.legs.length > 0}
-          onSave={(name) => {
-            if (shareUrl) save(name, shareUrl);
-          }}
-        />
+        <div className="app-header-controls">
+          <ModeToggle mode={mode} onChange={setMode} />
+          <LanguagePicker />
+          <ActionRow
+            shareUrl={shareUrl}
+            canSave={routing.legs.length > 0}
+            onSave={(name) => {
+              if (shareUrl) save(name, shareUrl);
+            }}
+          />
+        </div>
       </header>
       {routingError && (
         <div className="app-banner app-banner-warn" role="alert">
@@ -238,7 +250,7 @@ function Ready({
       )}
       <section className="app-input" aria-label="Routing input">
         {!isMobile && (
-          <AirportAutocomplete index={airportIndex} onCommit={addAirport} />
+          <AirportAutocomplete index={airportIndex} onCommit={addAirport} mode={mode} />
         )}
         <LegChain
           airports={chainAirports}
@@ -248,14 +260,33 @@ function Ready({
           onRemove={removeAirport}
           onCarrierChange={changeCarrier}
         />
-        <div className="app-controls">
-          <CabinSelector value={routing.cabin} onChange={changeCabin} />
-          <ProgramToggle
-            programs={['aa-aadvantage', 'as-mileage-plan']}
-            active={routing.programs}
-            onToggle={toggleProgram}
-          />
-        </div>
+        {routing.legs.length > 0 && (
+          <div className="app-controls">
+            <div className="app-controls-group">
+              <span className="app-controls-label">
+                <Glossary term="cabin" mode={mode}>
+                  {t('cabin.label')}
+                </Glossary>
+              </span>
+              <CabinSelector value={routing.cabin} onChange={changeCabin} mode={mode} />
+            </div>
+            <div className="app-controls-group">
+              <span className="app-controls-label">
+                <Glossary term="credit" mode={mode}>
+                  {t('panel.pqmLong')} / {t('panel.rdmLong')}
+                </Glossary>
+              </span>
+              <ProgramToggle
+                programs={['aa-aadvantage', 'as-mileage-plan']}
+                active={routing.programs}
+                onToggle={toggleProgram}
+              />
+            </div>
+            <button type="button" className="app-clear" onClick={clearAll}>
+              {t('input.clearAll')}
+            </button>
+          </div>
+        )}
       </section>
       <main className="app-body">
         <div ref={mapRef} className="app-map-wrap">
@@ -269,20 +300,19 @@ function Ready({
           </MapErrorBoundary>
         </div>
         <aside className="app-panel" aria-label="Earning panel">
-          <EarningPanel result={result} programOrder={routing.programs} />
+          {showSamples && <SampleRoutings onSelect={setRouting} />}
+          <EarningPanel
+            result={result}
+            programOrder={routing.programs}
+            mode={mode}
+            cabin={routing.cabin}
+          />
           <SavedRoutings saved={saved} onLoad={loadSaved} onDelete={remove} />
         </aside>
       </main>
       <footer className="app-footer">
-        <span>
-          gcmp v0 — open source on{' '}
-          <a href="https://github.com/ftll574/gcmp" target="_blank" rel="noopener noreferrer">
-            GitHub
-          </a>
-        </span>
-        <span className="app-footer-note">
-          Earning numbers are chart-verified against published partner charts. Verify against your statement.
-        </span>
+        <span>{t('footer.openSource')}</span>
+        <span className="app-footer-note">{t('footer.disclaimer')}</span>
       </footer>
     </div>
   );
@@ -319,7 +349,6 @@ function defaultCarrier(legs: ReadonlyArray<Leg>): AirlineIata {
   return legs[0]?.operatingCarrier ?? 'AA';
 }
 
-/** Build legs from a sequence of airport codes, preserving existing operating carriers when possible. */
 function buildLegs(
   codes: ReadonlyArray<Iata>,
   existing: ReadonlyArray<Leg>,

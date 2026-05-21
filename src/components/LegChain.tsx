@@ -11,6 +11,7 @@
  */
 
 import { useState } from 'react';
+import { useLocale } from '../i18n/use-locale.ts';
 import type { Airline, AirlineIata, Airport, Iata } from '../lib/types.ts';
 
 interface Props {
@@ -33,6 +34,7 @@ export function LegChain({
   onRemove,
   onCarrierChange,
 }: Props): React.ReactElement {
+  const { t } = useLocale();
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [overIndex, setOverIndex] = useState<number | null>(null);
 
@@ -84,7 +86,12 @@ export function LegChain({
             onDragOver={(e) => handleDragOver(i, e)}
             onDrop={(e) => handleDrop(i, e)}
             onDragEnd={handleDragEnd}
-            aria-label={`Leg ${i + 1}: ${airport.iata} ${airport.city}`}
+            aria-label={t('leg.ariaLabel', {
+              n: i + 1,
+              total: airports.length,
+              from: airport.iata,
+              to: airport.city,
+            })}
           >
             <span className="leg-chip-handle" aria-hidden="true">⋮⋮</span>
             <span className="leg-chip-iata">{airport.iata}</span>
@@ -92,19 +99,19 @@ export function LegChain({
             <button
               type="button"
               className="leg-chip-remove"
-              aria-label={`Remove ${airport.iata}`}
+              aria-label={t('leg.remove', { iata: airport.iata })}
               onClick={() => onRemove(airport.iata, i)}
             >
               ×
             </button>
             {!isLast && carrier !== undefined && (
-              <span className="leg-chip-carrier-wrap" aria-label={`Operating carrier ${carrier}`}>
+              <span className="leg-chip-carrier-wrap">
                 <span className="leg-chip-arrow" aria-hidden="true">→</span>
                 <select
                   className="leg-chip-carrier"
                   value={carrier}
                   onChange={(e) => onCarrierChange(legIndex, e.target.value.toUpperCase())}
-                  aria-label={`Operating carrier for leg ${legIndex + 1}`}
+                  aria-label={t('leg.carrierLabel', { n: legIndex + 1 })}
                 >
                   {airlines.map((al) => (
                     <option key={al.iata} value={al.iata}>

@@ -1,0 +1,138 @@
+{
+  "brand": {
+    "name": "gcmp",
+    "tagline": "查票計算機"
+  },
+  "lang": {
+    "english": "English",
+    "zhTW": "繁體中文",
+    "zhCN": "简体中文",
+    "ja": "日本語",
+    "label": "語言"
+  },
+  "header": {
+    "save": "儲存",
+    "shareUrl": "分享連結",
+    "copied": "已複製 ✓",
+    "modeBeginner": "新手",
+    "modePro": "老手",
+    "modeHint": "新手模式會附上解釋。隨時可切換。"
+  },
+  "loading": "載入機場資料 + 哩程規則中…",
+  "errors": {
+    "loadFailed": "資料載入失敗：{message}",
+    "loadFailedHelp": "請重新整理。若持續失敗，請至 GitHub 開 issue。"
+  },
+  "input": {
+    "addAirportPlaceholder": "新增機場 — 輸入 IATA 碼（SFO）、城市（東京）或城市碼（NYC、TYO、LON）",
+    "addAirportPlaceholderPro": "新增機場（IATA 碼，例如 SFO）",
+    "noResults": "找不到「{query}」對應的機場，試試輸入城市名。",
+    "ambiguousHint": "有 {count} 個結果 — 選一個",
+    "cityCodeHint": "{code} 是城市碼 — 請選擇你要的機場",
+    "exampleButton": "試試範例",
+    "exampleHint": "點下面的範例航線看看怎麼用",
+    "clearAll": "清除"
+  },
+  "samples": {
+    "sfoNrtBkk": {
+      "title": "舊金山 → 東京 → 曼谷",
+      "subtitle": "AA 商務艙跨太平洋"
+    },
+    "jfkLhrCdg": {
+      "title": "紐約 → 倫敦 → 巴黎",
+      "subtitle": "BA 商務艙跨大西洋"
+    },
+    "laxNrtKix": {
+      "title": "洛杉磯 → 東京 → 大阪",
+      "subtitle": "JL 日本航空跨太平洋"
+    },
+    "tpeBkkHkg": {
+      "title": "台北 → 曼谷 → 香港",
+      "subtitle": "國泰 CX 亞洲環飛"
+    }
+  },
+  "cabin": {
+    "label": "艙等",
+    "economy": "經濟艙",
+    "economyShort": "Y",
+    "premiumEconomy": "豪華經濟",
+    "premiumEconomyShort": "W",
+    "business": "商務艙",
+    "businessShort": "J",
+    "first": "頭等艙",
+    "firstShort": "F"
+  },
+  "leg": {
+    "remove": "移除 {iata}",
+    "carrierLabel": "第 {n} 段航司",
+    "ariaLabel": "第 {n} / {total} 段：{from} 到 {to}"
+  },
+  "panel": {
+    "emptyHint": "加入 2 個以上機場，看你能拿多少哩程。",
+    "emptyHintBeginner": "這裡會顯示你的航線能賺多少哩程。點下面的範例試試，或直接輸入機場代碼（例如 SFO、東京、曼谷）。",
+    "totalDistance": "總距離",
+    "milesUnit": "海浬",
+    "perLegToggle": "每段詳細",
+    "perLegHidden": "▸ {label}",
+    "perLegShown": "▾ {label}",
+    "warningsLabel": "提醒",
+    "pqmShort": "PQM",
+    "rdmShort": "RDM",
+    "pqmLong": "升等哩程",
+    "rdmLong": "兌換哩程",
+    "summaryBeginner": "在 {carrier} 飛 {cabin}，你能賺：",
+    "comparisonBeginner": "並列比較 — 同一張票，掛到不同航空的常客計畫拿到的哩程不一樣。",
+    "confidenceChart": "官方表",
+    "confidenceCorrected": "已修正",
+    "confidenceMixed": "混合",
+    "confidenceChartTip": "依照航空公司公布的合作夥伴里程表，實際入帳可能略有出入。",
+    "confidenceCorrectedTip": "已根據實際入帳記錄修正過的規則。",
+    "confidenceMixedTip": "此航線的各段混合了「官方表」與「已修正」的規則。"
+  },
+  "table": {
+    "leg": "航段",
+    "distance": "距離",
+    "missing": "—",
+    "missingTip": "此計畫沒有這家航空的規則。歡迎 PR 補一份 JSON。"
+  },
+  "warnings": {
+    "polar": "航線穿越極區 — 距離正確，但麥卡托地圖會把弧線畫歪。",
+    "unknownAirport": "找不到航段機場 {from}→{to}",
+    "carrierNotInRules": "{program} 沒有 {carrier} 的規則，歡迎 PR 補一份。"
+  },
+  "save": {
+    "promptName": "幫這個航線取名字",
+    "save": "儲存",
+    "cancel": "取消",
+    "quotaExceeded": "儲存空間滿了，刪掉一些舊的航線再存。",
+    "writeFailed": "無法儲存，瀏覽器可能停用了 localStorage。"
+  },
+  "saved": {
+    "title": "已儲存",
+    "delete": "刪除 {name}"
+  },
+  "footer": {
+    "openSource": "gcmp v0 — 開源於 GitHub",
+    "disclaimer": "哩程數依照官方公布的合作夥伴表計算，請以實際入帳為準。"
+  },
+  "map": {
+    "fallbackHeading": "地圖渲染失敗。",
+    "fallbackHint": "哩程計算仍然有效。下面可重試渲染地圖。",
+    "retry": "重試",
+    "ariaLabelEmpty": "世界地圖",
+    "ariaLabel": "地圖顯示航線：{chain}"
+  },
+  "mobile": {
+    "banner": "建議在桌面瀏覽。手機目前只能讀取，編輯功能 v1.2 推出。"
+  },
+  "glossary": {
+    "pqm": "升等哩程（Premier Qualifying Miles）— 累積到一定數量可升上金卡、白金卡等會員等級。跟兌換哩程不同。",
+    "rdm": "兌換哩程（Redeemable Miles）— 可以拿來換獎勵機票的點數。",
+    "cabin": "艙等：經濟艙（Y）、豪華經濟（W）、商務艙（J）、頭等艙（F）。",
+    "fareClass": "票價代碼（單字母如 J、C、D、Y、B、K…），同一艙等有多個票價，賺的哩程也不同。",
+    "operatingCarrier": "實際飛這段航線的航空公司。哩程通常算這家，即使是聯名航班（codeshare）。",
+    "alliance": "星空聯盟、寰宇一家、天合聯盟 — 航空公司互相承認哩程的群體。",
+    "credit": "選哪家常客計畫累積你的哩程。同一張票，掛到不同的常客計畫可能拿到不一樣的哩程。",
+    "mileageRunner": "為了拿哩程而搭飛機（而不是為了去某地）的旅客。"
+  }
+}
