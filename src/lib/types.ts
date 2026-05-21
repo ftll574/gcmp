@@ -46,12 +46,16 @@ export interface Leg {
   readonly operatingCarrier: AirlineIata;
 }
 
+export type ProjectionShortCode = 'm' | 'e' | 'a' | 'o';
+
 export interface RoutingRequest {
   readonly legs: ReadonlyArray<Leg>;
   readonly cabin: CabinId;
   readonly programs: ReadonlyArray<ProgramId>;
   /** Rules version. Undefined means "use the current rules version". */
   readonly rulesVersion?: string;
+  /** Map projection preference. Undefined → default (mercator). */
+  readonly projection?: import('./calc/projections.ts').ProjectionId;
 }
 
 export interface LegDistance {

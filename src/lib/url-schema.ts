@@ -28,6 +28,21 @@ import {
   type UrlParseError,
   type UrlParseResult,
 } from './types.ts';
+import type { ProjectionId } from './calc/projections.ts';
+
+const PROJECTION_BY_SHORT: Record<string, ProjectionId> = {
+  m: 'mercator',
+  e: 'equirectangular',
+  a: 'azimuthal-equidistant',
+  o: 'orthographic',
+};
+
+const PROJECTION_SHORT: Record<ProjectionId, string> = {
+  mercator: 'm',
+  equirectangular: 'e',
+  'azimuthal-equidistant': 'a',
+  orthographic: 'o',
+};
 
 const SCHEMA_VERSION = 'v1';
 
@@ -168,6 +183,16 @@ export function parseShareUrl(input: string): UrlParseResult {
     rulesVersion = rvRaw;
   }
 
+  const projRaw = params.get('proj');
+  let projection: ProjectionId | undefined;
+  if (projRaw) {
+    const resolved = PROJECTION_BY_SHORT[projRaw.toLowerCase()];
+    if (!resolved) {
+      return err('malformed-path', `Invalid projection "${projRaw}". Expected m / e / a / o.`);
+    }
+    projection = resolved;
+  }
+
   // Build legs.
   const legs: Leg[] = [];
   for (let i = 0; i < iataCodes.length - 1; i++) {
@@ -180,9 +205,13 @@ export function parseShareUrl(input: string): UrlParseResult {
     legs.push({ from, to, operatingCarrier });
   }
 
-  const request: RoutingRequest = rulesVersion !== undefined
-    ? { legs, cabin, programs, rulesVersion }
-    : { legs, cabin, programs };
+  const request: RoutingRequest = {
+    legs,
+    cabin,
+    programs,
+    ...(rulesVersion !== undefined ? { rulesVersion } : {}),
+    ...(projection !== undefined ? { projection } : {}),
+  };
 
   return { ok: true, request };
 }
@@ -216,6 +245,10 @@ export function encodeShareUrl(req: RoutingRequest): string {
   params.set('c', c);
   if (req.rulesVersion !== undefined) {
     params.set('rv', req.rulesVersion);
+  }
+  if (req.projection !== undefined && req.projection !== 'mercator') {
+    // Mercator is default; only encode when non-default.
+    params.set('proj', PROJECTION_SHORT[req.projection]);
   }
   return `/r/${SCHEMA_VERSION}/${iataChain}?${params.toString()}`;
 }
