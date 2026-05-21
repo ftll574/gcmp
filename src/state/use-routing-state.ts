@@ -23,7 +23,7 @@ export interface RoutingState {
 }
 
 const DEFAULT_REQUEST: RoutingRequest = {
-  legs: [],
+  groups: [{ legs: [] }],
   cabin: 'business',
   programs: ['aa-aadvantage', 'as-mileage-plan'],
 };
@@ -66,7 +66,8 @@ export function useRoutingState(): {
 
   const setRouting = useCallback((next: RoutingRequest) => {
     setState({ request: next, error: null });
-    if (next.legs.length === 0) {
+    const hasAnyLeg = next.groups.some((g) => g.legs.length > 0);
+    if (!hasAnyLeg) {
       if (window.location.hash !== '') {
         ignoreNextHashChange.current = true;
         // Use replaceState so the empty-state doesn't push a new history entry on every keystroke.
@@ -82,7 +83,7 @@ export function useRoutingState(): {
     }
   }, []);
 
-  const shareUrl = state.request.legs.length > 0
+  const shareUrl = state.request.groups.some((g) => g.legs.length > 0)
     ? '#' + encodeShareUrl(state.request)
     : null;
 

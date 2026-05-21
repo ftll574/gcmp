@@ -1,10 +1,9 @@
 /**
  * gcmp — Mileage Runner Routing Calculator
  *
- * Top bar: brand + language picker + mode toggle + Save / Share
- * Input row: autocomplete + leg chain + cabin + program toggles
- * Body: map (left) + earning panel (right)
- * Empty-state in Beginner mode: sample-routings carousel
+ * v0.4: multi-group routings. Each group has its own legs[]; cabin + programs
+ * + projection are global. The map renders all groups color-coded; the leg
+ * chain edits the currently-active group.
  */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -13,6 +12,7 @@ import { AirportAutocomplete } from './components/AirportAutocomplete.tsx';
 import { CabinSelector } from './components/CabinSelector.tsx';
 import { EarningPanel } from './components/EarningPanel.tsx';
 import { Glossary } from './components/Glossary.tsx';
+import { GroupTabs } from './components/GroupTabs.tsx';
 import { LanguagePicker } from './components/LanguagePicker.tsx';
 import { LegChain } from './components/LegChain.tsx';
 import { MapErrorBoundary } from './components/MapErrorBoundary.tsx';
@@ -35,6 +35,7 @@ import {
   type Iata,
   type Leg,
   type ProgramId,
+  type RoutingGroup,
   type RoutingRequest,
 } from './lib/types.ts';
 import type { LoadedData } from './state/use-loaded-data.ts';
@@ -141,58 +142,75 @@ function Ready({
   shareUrl,
 }: ReadyProps): React.ReactElement {
   const { t } = useLocale();
+  const [activeGroupIndex, setActiveGroupIndex] = useState(0);
+
   const airportIndex = useMemo(() => buildAirportIndex(data.airports), [data.airports]);
 
-  const chainAirports = useMemo<Airport[]>(() => {
-    if (routing.legs.length === 0) return [];
-    const first = routing.legs[0]?.from;
+  // Clamp active group when groups change.
+  const safeActiveIndex = Math.min(activeGroupIndex, Math.max(0, routing.groups.length - 1));
+
+  const activeGroup = useMemo<RoutingGroup>(
+    () => routing.groups[safeActiveIndex] ?? { legs: [] },
+    [routing.groups, safeActiveIndex],
+  );
+
+  // Active group's airport chain (resolved).
+  const activeChainAirports = useMemo<Airport[]>(() => {
+    if (activeGroup.legs.length === 0) return [];
+    const first = activeGroup.legs[0]?.from;
     if (!first) return [];
-    const codes: Iata[] = [first, ...routing.legs.map((leg) => leg.to)];
+    const codes: Iata[] = [first, ...activeGroup.legs.map((leg) => leg.to)];
     return codes
       .map((code) => airportIndex.lookup(code))
       .filter((a): a is Airport => a !== undefined);
-  }, [airportIndex, routing.legs]);
+  }, [activeGroup, airportIndex]);
 
   const result = useMemo(() => {
-    if (routing.legs.length === 0) return null;
+    if (routing.groups.every((g) => g.legs.length === 0)) return null;
     return computeRouting(routing, {
       airports: airportIndex.byIata,
       programs: data.programs,
     });
   }, [routing, airportIndex, data.programs]);
 
+  // ── Mutators ──
+
+  function updateActiveGroup(updater: (g: RoutingGroup) => RoutingGroup): void {
+    const nextGroups = routing.groups.map((g, i) => (i === safeActiveIndex ? updater(g) : g));
+    setRouting({ ...routing, groups: nextGroups });
+  }
+
   function addAirport(a: Airport): void {
-    const codes = chainAirports.map((x) => x.iata);
-    const nextCodes = [...codes, a.iata];
-    const nextLegs = buildLegs(nextCodes, routing.legs, defaultCarrier(routing.legs));
-    setRouting({ ...routing, legs: nextLegs });
+    updateActiveGroup((group) => {
+      const codes = activeChainAirports.map((x) => x.iata);
+      const nextCodes = [...codes, a.iata];
+      const nextLegs = buildLegs(nextCodes, group.legs, defaultCarrier(group.legs));
+      return { legs: nextLegs };
+    });
   }
 
   function removeAirport(_iata: Iata, index: number): void {
-    const codes = chainAirports.map((x) => x.iata);
-    const nextCodes = codes.filter((_, i) => i !== index);
-    if (nextCodes.length < 2) {
-      setRouting({ ...routing, legs: [] });
-      return;
-    }
-    const nextLegs = buildLegs(nextCodes, routing.legs, defaultCarrier(routing.legs));
-    setRouting({ ...routing, legs: nextLegs });
+    updateActiveGroup((group) => {
+      const codes = activeChainAirports.map((x) => x.iata);
+      const nextCodes = codes.filter((_, i) => i !== index);
+      if (nextCodes.length < 2) return { legs: [] };
+      const nextLegs = buildLegs(nextCodes, group.legs, defaultCarrier(group.legs));
+      return { legs: nextLegs };
+    });
   }
 
   function reorder(nextCodes: ReadonlyArray<Iata>): void {
-    if (nextCodes.length < 2) {
-      setRouting({ ...routing, legs: [] });
-      return;
-    }
-    const nextLegs = buildLegs(nextCodes, routing.legs, defaultCarrier(routing.legs));
-    setRouting({ ...routing, legs: nextLegs });
+    updateActiveGroup((group) => {
+      if (nextCodes.length < 2) return { legs: [] };
+      const nextLegs = buildLegs(nextCodes, group.legs, defaultCarrier(group.legs));
+      return { legs: nextLegs };
+    });
   }
 
   function changeCarrier(legIndex: number, carrier: AirlineIata): void {
-    const nextLegs = routing.legs.map((leg, i) =>
-      i === legIndex ? { ...leg, operatingCarrier: carrier } : leg,
-    );
-    setRouting({ ...routing, legs: nextLegs });
+    updateActiveGroup((group) => ({
+      legs: group.legs.map((leg, i) => (i === legIndex ? { ...leg, operatingCarrier: carrier } : leg)),
+    }));
   }
 
   function changeCabin(cabin: CabinId): void {
@@ -215,14 +233,30 @@ function Ready({
     const parsed = parseShareUrl(url);
     if (parsed.ok) {
       setRouting(parsed.request);
+      setActiveGroupIndex(0);
     }
   }
 
   function clearAll(): void {
-    setRouting({ ...routing, legs: [] });
+    setRouting({ ...routing, groups: [{ legs: [] }] });
+    setActiveGroupIndex(0);
   }
 
-  const showSamples = mode === 'beginner' && routing.legs.length === 0;
+  function addGroup(): void {
+    const nextGroups = [...routing.groups, { legs: [] }];
+    setRouting({ ...routing, groups: nextGroups });
+    setActiveGroupIndex(nextGroups.length - 1);
+  }
+
+  function removeGroup(index: number): void {
+    if (routing.groups.length <= 1) return;
+    const nextGroups = routing.groups.filter((_, i) => i !== index);
+    setRouting({ ...routing, groups: nextGroups });
+    setActiveGroupIndex(Math.min(safeActiveIndex, nextGroups.length - 1));
+  }
+
+  const hasAnyLegs = routing.groups.some((g) => g.legs.length > 0);
+  const showSamples = mode === 'beginner' && !hasAnyLegs;
 
   return (
     <div className={`app${isMobile ? ' mobile' : ''} mode-${mode}`}>
@@ -237,7 +271,7 @@ function Ready({
           <LanguagePicker />
           <ActionRow
             shareUrl={shareUrl}
-            canSave={routing.legs.length > 0}
+            canSave={hasAnyLegs}
             onSave={(name) => {
               if (shareUrl) save(name, shareUrl);
             }}
@@ -258,15 +292,22 @@ function Ready({
         {!isMobile && (
           <AirportAutocomplete index={airportIndex} onCommit={addAirport} mode={mode} />
         )}
+        <GroupTabs
+          groups={routing.groups}
+          activeIndex={safeActiveIndex}
+          onActivate={setActiveGroupIndex}
+          onAdd={addGroup}
+          onRemove={removeGroup}
+        />
         <LegChain
-          airports={chainAirports}
-          operatingCarriers={routing.legs.map((leg) => leg.operatingCarrier)}
+          airports={activeChainAirports}
+          operatingCarriers={activeGroup.legs.map((leg) => leg.operatingCarrier)}
           airlines={data.airlines}
           onReorder={reorder}
           onRemove={removeAirport}
           onCarrierChange={changeCarrier}
         />
-        {routing.legs.length > 0 && (
+        {hasAnyLegs && (
           <div className="app-controls">
             <div className="app-controls-group">
               <span className="app-controls-label">
@@ -302,11 +343,12 @@ function Ready({
               onChange={changeProjection}
             />
           </div>
-          <MapErrorBoundary airports={chainAirports} legs={routing.legs}>
+          <MapErrorBoundary groups={routing.groups}>
             <MapView
               key={routing.projection ?? DEFAULT_PROJECTION}
-              airports={chainAirports}
-              legs={routing.legs}
+              airportLookup={airportIndex.byIata}
+              groups={routing.groups}
+              activeIndex={safeActiveIndex}
               width={mapSize.width}
               height={mapSize.height}
               projection={routing.projection ?? DEFAULT_PROJECTION}
@@ -314,7 +356,7 @@ function Ready({
           </MapErrorBoundary>
         </div>
         <aside className="app-panel" aria-label="Earning panel">
-          {showSamples && <SampleRoutings onSelect={setRouting} />}
+          {showSamples && <SampleRoutings onSelect={(r) => { setRouting(r); setActiveGroupIndex(0); }} />}
           <EarningPanel
             result={result}
             programOrder={routing.programs}

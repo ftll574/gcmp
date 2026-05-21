@@ -49,7 +49,19 @@
     "tpeBkkHkg": {
       "title": "Asia loop",
       "subtitle": "TPE → BKK → HKG on CX"
+    },
+    "compareAaAs": {
+      "title": "Compare 2 routings",
+      "subtitle": "SFO → HKG direct vs via NRT"
     }
+  },
+  "groups": {
+    "label": "Routing",
+    "addGroup": "+ Add routing",
+    "removeGroup": "Remove routing {n}",
+    "groupN": "Routing {n}",
+    "grandTotal": "Across all routings",
+    "compareHint": "Compare multiple routings on one map. The PQM totals below sum across all routings."
   },
   "cabin": {
     "label": "Cabin",

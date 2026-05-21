@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow `MAJOR.MINOR.PATCH.MICRO`.
 
+## [0.4.0.0] - 2026-05-22
+
+### Added — multi-group routings (the gcmap signature feature)
+
+- **`RoutingGroup`** type — a routing is now an array of groups, each with its own `legs[]`. gcmap users can compare multiple routings on one map.
+- **URL schema extended** for multi-group:
+  - Path: `/r/v1/SFO-NRT,JFK-LHR` (groups separated by `,`)
+  - `op` query: `op=AA,JL;BA,BA` (groups by `;`, legs by `,`)
+  - Single-group URLs from v0.1–v0.3 still parse identically (1-element groups array)
+- **`GroupTabs` component** — tab strip showing all routings; click to edit, × to remove, "+ Add routing" to append
+- **Color-coded arcs on the map** — each group gets a different color from the rotation (teal, amber, moss, plum, bronze, steel blue); the active group is rendered at full opacity, others at 70%
+- **Per-group breakdown in earning panel** when 2+ groups:
+  - Grand totals (sum across groups) shown as the primary number
+  - Small "per-routing" table below shows each group's PQM/RDM contribution
+  - Per-leg breakdown is now per-group (each group has its own table)
+- **New sample routing:** "Compare 2 routings" — `SFO → HKG` direct vs `SFO → NRT → HKG` via Tokyo
+- **i18n strings for groups** — "Routing 1", "Add routing", "Across all routings", "Compare hint"
+
+### Changed
+
+- `RoutingRequest.legs` → `RoutingRequest.groups[].legs` (breaking shape change; backwards-compatible URL parsing)
+- `RoutingResult.byLeg` → `RoutingResult.groups[].byLeg` with `grandTotals` rollup
+- Engine refactored to compute per-group, then sum
+- `MapErrorBoundary` takes `groups` instead of `airports + legs`
+- `MapView` takes `airportLookup + groups + activeIndex` instead of single chain
+- `EarningPanel` shows grand totals first, per-group table when multi-group
+
+### Tests
+
+- 4 new multi-group tests (URL round-trip, 3-group parse, mismatched group count, projection in multi-group)
+- 3 new computeRouting multi-group tests (grand totals sum, direct vs connection comparison, per-group warning scoping)
+- 51 → 56 tests passing
+
+### Notes
+
+- Bundle: 106.93 → 108.54 KB gzipped (multi-group adds ~1.6KB; under 350 budget)
+- Hash-based URLs preserved — every v0.3 URL works in v0.4 unchanged
+- New `src/lib/group-colors.ts` module breaks circular Fast-Refresh issue (was inside `GroupTabs.tsx`)
+
 ## [0.3.0.0] - 2026-05-22
 
 ### Added — interactive map + projections + continent outlines

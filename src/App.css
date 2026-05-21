@@ -501,6 +501,113 @@
   font-size: var(--type-detail);
 }
 
+/* ── Group tabs ── */
+.group-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+}
+.group-tab {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--rule);
+  border-radius: var(--border-radius-chip);
+  overflow: hidden;
+  background: var(--bg-page);
+}
+.group-tab.active {
+  border-color: var(--accent);
+  background: var(--bg-map-land);
+}
+.group-tab-main {
+  background: transparent;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--type-chip);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.group-tab-color {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.group-tab-label {
+  font-weight: 500;
+  white-space: nowrap;
+}
+.group-tab-summary {
+  font-family: var(--font-mono);
+  font-size: var(--type-detail);
+  color: var(--text-secondary);
+}
+.group-tab-remove {
+  background: transparent;
+  border: none;
+  border-left: 1px solid var(--rule);
+  color: var(--text-secondary);
+  padding: 0 var(--space-2);
+  cursor: pointer;
+  font-size: 14px;
+}
+.group-tab-remove:hover {
+  background: var(--rule);
+  color: var(--text-primary);
+}
+.group-tab-add {
+  background: transparent;
+  border: 1px dashed var(--rule);
+  border-radius: var(--border-radius-chip);
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--type-detail);
+  color: var(--accent);
+  cursor: pointer;
+}
+.group-tab-add:hover {
+  border-color: var(--accent);
+  background: var(--bg-map-land);
+}
+
+/* ── Group breakdown table in earning panel ── */
+.earning-group-breakdown {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--type-detail);
+}
+.earning-group-breakdown th,
+.earning-group-breakdown td {
+  padding: 2px var(--space-1);
+  text-align: right;
+  border-bottom: 1px solid var(--rule);
+}
+.earning-group-breakdown th:first-child,
+.earning-group-breakdown td:first-child {
+  text-align: left;
+  font-family: var(--font-sans);
+  color: var(--text-secondary);
+}
+
+.per-leg-table-wrap {
+  margin-bottom: var(--space-3);
+}
+.per-leg-group-heading {
+  margin: var(--space-2) 0 var(--space-1);
+  font-size: var(--type-detail);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 /* ── Leg chain ── */
 .leg-chain {
   list-style: none;

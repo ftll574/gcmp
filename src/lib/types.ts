@@ -48,8 +48,21 @@ export interface Leg {
 
 export type ProjectionShortCode = 'm' | 'e' | 'a' | 'o';
 
-export interface RoutingRequest {
+/**
+ * A single contiguous routing within a multi-group request. gcmap renders
+ * each group as a separate color on one map (e.g. "compare SFO-NRT vs SFO-HKG").
+ */
+export interface RoutingGroup {
   readonly legs: ReadonlyArray<Leg>;
+}
+
+export interface RoutingRequest {
+  /**
+   * Groups of legs. v1 had a single `legs[]` at the top — v0.4 promoted this
+   * to `groups[]` to support gcmap-style multi-routing comparisons. Single-
+   * group URLs from v0.1–v0.3 still parse (1-element groups array).
+   */
+  readonly groups: ReadonlyArray<RoutingGroup>;
   readonly cabin: CabinId;
   readonly programs: ReadonlyArray<ProgramId>;
   /** Rules version. Undefined means "use the current rules version". */
@@ -83,12 +96,21 @@ export interface ProgramEarning {
   readonly notes: ReadonlyArray<string>;
 }
 
-export interface RoutingResult {
+/** Per-group computed result. */
+export interface GroupResult {
   readonly totalDistanceNm: number;
   readonly byLeg: ReadonlyArray<LegDistance>;
   readonly programs: Record<ProgramId, ProgramEarning>;
-  /** Warning notes that apply globally (e.g. polar route distortion). */
   readonly warnings: ReadonlyArray<string>;
+}
+
+export interface RoutingResult {
+  /** Per-group breakdown. Length matches RoutingRequest.groups. */
+  readonly groups: ReadonlyArray<GroupResult>;
+  /** Sum of all groups' totalDistanceNm. */
+  readonly grandTotalDistanceNm: number;
+  /** Sum of per-program totals across all groups. */
+  readonly grandTotals: Record<ProgramId, { pqm: number; rdm: number }>;
   /** Rules version actually used (current, or the historic snapshot). */
   readonly rulesVersionUsed: string;
 }
