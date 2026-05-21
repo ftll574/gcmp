@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel in-progress runs on the same ref (e.g. when a PR gets new commits).
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: Lint + typecheck + test + build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test -- --reporter=default
+
+      - name: Build
+        run: npm run build
+
+      - name: Validate program JSON schemas
+        run: |
+          for f in $(find public/data/programs -name '*.json'); do
+            npx tsx -e "
+              import { ProgramSchema } from './src/lib/schemas/program.ts';
+              import { readFileSync } from 'fs';
+              ProgramSchema.parse(JSON.parse(readFileSync('$f', 'utf8')));
+              console.log('✓ $f');
+            "
+          done
+
+      - name: Calibration test (if active)
+        run: |
+          if ls tests/calibration/*.test.ts >/dev/null 2>&1; then
+            echo "Calibration tests found — running"
+            npx vitest run tests/calibration
+          else
+            echo "Calibration tests are scaffold-only (.template) — skipping. See tests/calibration/flyertalk-routings.test.ts.template"
+          fi

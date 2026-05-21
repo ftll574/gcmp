@@ -1,0 +1,240 @@
+{
+  "program": "as-mileage-plan",
+  "label": "Alaska Mileage Plan",
+  "version": "2026.4",
+  "sourceUrl": "https://www.alaskaair.com/content/mileage-plan/airline-partners",
+  "lastVerified": "2026-05-21",
+  "carriers": {
+    "AS": {
+      "label": "Alaska Airlines (own metal)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "F": { "cabin": "first", "pqm": 2.0, "rdm": 2.0, "minPerSegment": 0 },
+        "P": { "cabin": "first", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "A": { "cabin": "first", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "J": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "C": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "B": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "H": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "M": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "L": { "cabin": "economy", "pqm": 0.5, "rdm": 0.5, "minPerSegment": 0 },
+        "V": { "cabin": "economy", "pqm": 0.25, "rdm": 0.25, "minPerSegment": 0 },
+        "G": { "cabin": "economy", "pqm": 0.0, "rdm": 0.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": {
+        "first": "F",
+        "business": "J",
+        "economy": "Y"
+      },
+      "notes": ["Saver fares (X/G) earn nothing. Saver fares (G) explicitly excluded."]
+    },
+    "AA": {
+      "label": "American Airlines (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "F": { "cabin": "first", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "A": { "cabin": "first", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "J": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "C": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "D": { "cabin": "business", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "I": { "cabin": "business", "pqm": 0.75, "rdm": 0.75, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "B": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "H": { "cabin": "economy", "pqm": 0.5, "rdm": 0.5, "minPerSegment": 0 },
+        "K": { "cabin": "economy", "pqm": 0.5, "rdm": 0.5, "minPerSegment": 0 },
+        "M": { "cabin": "economy", "pqm": 0.5, "rdm": 0.5, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": {
+        "first": "F",
+        "business": "J",
+        "economy": "Y"
+      }
+    },
+    "BA": {
+      "label": "British Airways (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "F": { "cabin": "first", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "J": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "C": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "D": { "cabin": "business", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "W": { "cabin": "premium-economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "B": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "H": { "cabin": "economy", "pqm": 0.5, "rdm": 0.5, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": {
+        "first": "F",
+        "business": "J",
+        "premium-economy": "W",
+        "economy": "Y"
+      }
+    },
+    "CX": {
+      "label": "Cathay Pacific (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "F": { "cabin": "first", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "A": { "cabin": "first", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "J": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "C": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "D": { "cabin": "business", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "W": { "cabin": "premium-economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "B": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": {
+        "first": "F",
+        "business": "J",
+        "premium-economy": "W",
+        "economy": "Y"
+      }
+    },
+    "EK": {
+      "label": "Emirates (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "F": { "cabin": "first", "pqm": 1.75, "rdm": 1.75, "minPerSegment": 0 },
+        "A": { "cabin": "first", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "J": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "C": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "I": { "cabin": "business", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "B": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "H": { "cabin": "economy", "pqm": 0.5, "rdm": 0.5, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": {
+        "first": "F",
+        "business": "J",
+        "economy": "Y"
+      }
+    },
+    "JL": {
+      "label": "Japan Airlines (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "F": { "cabin": "first", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "J": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "C": { "cabin": "business", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "W": { "cabin": "premium-economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "B": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "H": { "cabin": "economy", "pqm": 0.5, "rdm": 0.5, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": {
+        "first": "F",
+        "business": "J",
+        "premium-economy": "W",
+        "economy": "Y"
+      }
+    },
+    "KE": {
+      "label": "Korean Air (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "F": { "cabin": "first", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "J": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "C": { "cabin": "business", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "B": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": {
+        "first": "F",
+        "business": "J",
+        "economy": "Y"
+      }
+    },
+    "QR": {
+      "label": "Qatar Airways (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "F": { "cabin": "first", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "J": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "C": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "D": { "cabin": "business", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "B": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": {
+        "first": "F",
+        "business": "J",
+        "economy": "Y"
+      }
+    },
+    "AY": {
+      "label": "Finnair (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "C": { "cabin": "business", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "B": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": {
+        "business": "J",
+        "economy": "Y"
+      }
+    },
+    "AF": {
+      "label": "Air France (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "C": { "cabin": "business", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "W": { "cabin": "premium-economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": {
+        "business": "J",
+        "premium-economy": "W",
+        "economy": "Y"
+      }
+    },
+    "KL": {
+      "label": "KLM (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "C": { "cabin": "business", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": {
+        "business": "J",
+        "economy": "Y"
+      }
+    },
+    "LH": {
+      "label": "Lufthansa (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "F": { "cabin": "first", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "J": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "C": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "B": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": {
+        "first": "F",
+        "business": "J",
+        "economy": "Y"
+      }
+    }
+  },
+  "globalNotes": [
+    "Alaska Mileage Plan has no alliance affiliation but maintains a strong partner network across all three alliances. Highly favored by mileage runners for distance-based earning on long-haul partners.",
+    "v1 entries are chart-verified against Alaska's published partner table; verify each fare class against your actual statement."
+  ]
+}

@@ -1,0 +1,86 @@
+/**
+ * IRON RULE — calibration test from real FlyerTalk routing-discussion threads.
+ *
+ * /plan-eng-review enshrined this as a ship-blocker: v1 cannot ship unless
+ * all 5 tests below pass against real routing answers transcribed from
+ * FlyerTalk. This operationalizes Success Criterion #2 from the design doc:
+ * "v1 answers at least 4/5 of your FlyerTalk calibration set correctly."
+ *
+ * To activate this file:
+ *   1. Open FlyerTalk. Find 5 recent routing-discussion threads in the AA
+ *      and Alaska forums. Pick threads where the OP asks "how much does
+ *      X-Y-Z earn on carrier+cabin+fare?" and the community converged on
+ *      a specific answer (PQM number, RDM number).
+ *   2. Replace the 5 PLACEHOLDER tests below with the actual routings +
+ *      expected numbers.
+ *   3. Rename this file from `.test.ts.template` to `.test.ts`. The
+ *      `tests/calibration/**` glob is excluded from the default vitest run
+ *      until then.
+ *   4. Run: `npm run test -- tests/calibration`. ALL 5 MUST PASS.
+ *
+ * If even one fails, the engine is wrong OR the earning rules JSON is
+ * wrong. Either fix the engine or update the JSON (with confidence:
+ * "community-corrected" for the carrier entry).
+ *
+ * Once active, CI runs this against every PR and blocks merge on any
+ * failure.
+ */
+
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { describe, expect, test } from 'vitest';
+import { computeRouting } from '../../src/lib/calc/index.ts';
+import { ProgramSchema, type Program } from '../../src/lib/schemas/program.ts';
+import type { Airport, ProgramId, RoutingRequest } from '../../src/lib/types.ts';
+
+function loadProgram(file: string): Program {
+  return ProgramSchema.parse(JSON.parse(readFileSync(resolve(file), 'utf8')));
+}
+
+const aa = loadProgram('public/data/programs/aa/v2026.4.json');
+const as = loadProgram('public/data/programs/as/v2026.4.json');
+
+const AIRPORTS_RAW = JSON.parse(
+  readFileSync(resolve('public/data/airports.json'), 'utf8'),
+) as Airport[];
+
+const airportMap = new Map(AIRPORTS_RAW.map((a) => [a.iata, a]));
+const programMap = new Map<ProgramId, Program>([
+  ['aa-aadvantage', aa],
+  ['as-mileage-plan', as],
+]);
+
+function calc(req: RoutingRequest) {
+  return computeRouting(req, { airports: airportMap, programs: programMap });
+}
+
+describe('FlyerTalk calibration set — Iron Rule', () => {
+  // Replace these placeholders with real FlyerTalk-transcribed routings.
+
+  test('TODO: Routing #1 — <from FlyerTalk thread>', () => {
+    // Example shape:
+    // const r = calc({
+    //   legs: [{ from: 'SFO', to: 'NRT', operatingCarrier: 'AA' }],
+    //   cabin: 'business',
+    //   programs: ['aa-aadvantage'],
+    // });
+    // expect(r.programs['aa-aadvantage']?.pqm).toBe(<exact FlyerTalk answer>);
+    expect.fail('Replace this test with a real FlyerTalk calibration case.');
+  });
+
+  test('TODO: Routing #2 — <from FlyerTalk thread>', () => {
+    expect.fail('Replace this test with a real FlyerTalk calibration case.');
+  });
+
+  test('TODO: Routing #3 — <from FlyerTalk thread>', () => {
+    expect.fail('Replace this test with a real FlyerTalk calibration case.');
+  });
+
+  test('TODO: Routing #4 — <from FlyerTalk thread>', () => {
+    expect.fail('Replace this test with a real FlyerTalk calibration case.');
+  });
+
+  test('TODO: Routing #5 — <from FlyerTalk thread>', () => {
+    expect.fail('Replace this test with a real FlyerTalk calibration case.');
+  });
+});
