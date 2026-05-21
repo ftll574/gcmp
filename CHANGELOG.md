@@ -2,6 +2,51 @@
 
 All notable changes to this project will be documented in this file. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow `MAJOR.MINOR.PATCH.MICRO`.
 
+## [1.0.0.0] - 2026-05-22
+
+### v1.0 launch — feature-complete vs gcmap.com + every pain-point fix shipped
+
+This is the official 1.0 release. Compared to gcmap.com, **gcmp does everything gcmap did plus:**
+
+- **PQM/RDM calculation** across loyalty programs (gcmap didn't have this)
+- **Multi-program side-by-side comparison** — AA AAdvantage vs Alaska Mileage Plan on the same routing
+- **Modern interactive UI** — pan/zoom/click instead of 1996 form submissions
+- **Multilingual** — English, 繁體中文, 简体中文, 日本語
+- **Beginner mode** with jargon glossary tooltips
+- **Honest data confidence flags** — every earning rule says whether it's chart-verified or community-corrected
+
+### Added in this release (v0.5 → v1.0)
+
+- **2 more locales**: 简体中文 (zh-CN) + 日本語 (ja) — bringing the total to 4
+- **`navigator.language` smart detection**: zh-Hans/zh-CN → 简体中文; zh-Hant/zh-TW/zh-HK → 繁體中文; ja → 日本語
+- **Import from gcmap** (`ImportFromGcmap` component):
+  - Paste any gcmap.com URL (`http://www.gcmap.com/mapui?P=SFO-NRT-BKK,JFK-LHR`) → auto-parse into the new structure
+  - Bare paths strings work too: `SFO-NRT-BKK,JFK-LHR`
+  - Defaults: business cabin, both loyalty programs, AA as operating carrier (user adjusts after import)
+- **Download PNG** button on the map toolbar:
+  - Captures the live SVG with all groups, arcs, airports, continent outlines, and bearings
+  - Inlines computed styles so CSS variables render correctly
+  - Generates filename from the routing chain (`gcmp-routing-SFO-NRT-BKK.png`)
+- **Per-leg bearing labels** on the map (toggleable):
+  - "Show bearings" checkbox in the map toolbar
+  - Each leg shows its initial heading (0–360°) at the midpoint
+  - Compensates for zoom level so labels stay readable
+- **Pasted text becomes shareable URL** automatically — gcmap users can switch in one click
+
+### Tests
+
+- Added gcmap-compat test suite: URL recognition, single + multi-group parsing, defaults, malformed input rejection (11 new tests)
+- Total: **67 tests passing** (was 56)
+
+### Dependencies
+
+No new runtime deps. PNG export uses canvas + XMLSerializer (browser built-ins).
+
+### Notes
+
+- Bundle: 108.54 → **114.20 KB gzipped** (locales + gcmap-compat + svg-to-png + bearings + import widget; still well under 350 KB budget)
+- Live at https://ftll574.github.io/gcmp/
+
 ## [0.4.0.0] - 2026-05-22
 
 ### Added — multi-group routings (the gcmap signature feature)

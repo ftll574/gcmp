@@ -1,0 +1,164 @@
+{
+  "brand": {
+    "name": "gcmp",
+    "tagline": "查票计算器"
+  },
+  "lang": {
+    "english": "English",
+    "zhTW": "繁體中文",
+    "zhCN": "简体中文",
+    "ja": "日本語",
+    "label": "语言"
+  },
+  "header": {
+    "save": "保存",
+    "shareUrl": "分享链接",
+    "copied": "已复制 ✓",
+    "modeBeginner": "新手",
+    "modePro": "老手",
+    "modeHint": "新手模式会附上解释。随时可切换。"
+  },
+  "loading": "加载机场数据 + 里程规则中…",
+  "errors": {
+    "loadFailed": "数据加载失败：{message}",
+    "loadFailedHelp": "请刷新页面。若持续失败，请到 GitHub 提 issue。"
+  },
+  "input": {
+    "addAirportPlaceholder": "添加机场 — 输入 IATA 代码（SFO）、城市（东京）或城市代码（NYC、TYO、LON）",
+    "addAirportPlaceholderPro": "添加机场（IATA 代码，例如 SFO）",
+    "noResults": "找不到「{query}」对应的机场，试试输入城市名。",
+    "ambiguousHint": "有 {count} 个结果 — 选一个",
+    "cityCodeHint": "{code} 是城市代码 — 请选择你要的机场",
+    "exampleButton": "试试范例",
+    "exampleHint": "点下面的范例航线看看怎么用",
+    "clearAll": "清除"
+  },
+  "samples": {
+    "sfoNrtBkk": {
+      "title": "旧金山 → 东京 → 曼谷",
+      "subtitle": "AA 商务舱跨太平洋"
+    },
+    "jfkLhrCdg": {
+      "title": "纽约 → 伦敦 → 巴黎",
+      "subtitle": "BA 商务舱跨大西洋"
+    },
+    "laxNrtKix": {
+      "title": "洛杉矶 → 东京 → 大阪",
+      "subtitle": "JL 日本航空跨太平洋"
+    },
+    "tpeBkkHkg": {
+      "title": "台北 → 曼谷 → 香港",
+      "subtitle": "国泰 CX 亚洲环飞"
+    },
+    "compareAaAs": {
+      "title": "比较两种飞法",
+      "subtitle": "SFO → 香港 直飞 vs 经东京"
+    }
+  },
+  "groups": {
+    "label": "航线",
+    "addGroup": "+ 加一条航线",
+    "removeGroup": "移除航线 {n}",
+    "groupN": "航线 {n}",
+    "grandTotal": "全部航线合计",
+    "compareHint": "在同一张地图上比较多条航线。下面的 PQM 数字是全部航线加总。"
+  },
+  "cabin": {
+    "label": "舱位",
+    "economy": "经济舱",
+    "economyShort": "Y",
+    "premiumEconomy": "豪华经济",
+    "premiumEconomyShort": "W",
+    "business": "商务舱",
+    "businessShort": "J",
+    "first": "头等舱",
+    "firstShort": "F"
+  },
+  "leg": {
+    "remove": "移除 {iata}",
+    "carrierLabel": "第 {n} 段航司",
+    "ariaLabel": "第 {n} / {total} 段：{from} 到 {to}"
+  },
+  "panel": {
+    "emptyHint": "添加 2 个以上机场，看你能拿多少里程。",
+    "emptyHintBeginner": "这里会显示你的航线能赚多少里程。点下面的范例试试，或直接输入机场代码（例如 SFO、东京、曼谷）。",
+    "totalDistance": "总距离",
+    "milesUnit": "海里",
+    "perLegToggle": "每段详情",
+    "perLegHidden": "▸ {label}",
+    "perLegShown": "▾ {label}",
+    "warningsLabel": "提醒",
+    "pqmShort": "PQM",
+    "rdmShort": "RDM",
+    "pqmLong": "升级里程",
+    "rdmLong": "兑换里程",
+    "summaryBeginner": "在 {carrier} 飞 {cabin}，你能赚：",
+    "comparisonBeginner": "并列比较 — 同一张票，挂到不同航空的常旅客计划拿到的里程不一样。",
+    "confidenceChart": "官方表",
+    "confidenceCorrected": "已修正",
+    "confidenceMixed": "混合",
+    "confidenceChartTip": "依照航空公司公布的合作伙伴里程表，实际入账可能略有出入。",
+    "confidenceCorrectedTip": "已根据实际入账记录修正过的规则。",
+    "confidenceMixedTip": "此航线的各段混合了「官方表」与「已修正」的规则。"
+  },
+  "table": {
+    "leg": "航段",
+    "distance": "距离",
+    "missing": "—",
+    "missingTip": "此计划没有这家航空的规则。欢迎提 PR 补一份 JSON。"
+  },
+  "warnings": {
+    "polar": "航线穿越极区 — 距离正确，但麦卡托地图会把弧线画歪。",
+    "unknownAirport": "找不到航段机场 {from}→{to}",
+    "carrierNotInRules": "{program} 没有 {carrier} 的规则，欢迎提 PR 补一份。"
+  },
+  "save": {
+    "promptName": "给这条航线取名字",
+    "save": "保存",
+    "cancel": "取消",
+    "quotaExceeded": "保存空间满了，删掉一些旧的航线再存。",
+    "writeFailed": "无法保存，浏览器可能停用了 localStorage。"
+  },
+  "saved": {
+    "title": "已保存",
+    "delete": "删除 {name}"
+  },
+  "footer": {
+    "openSource": "gcmp v0 — 开源于 GitHub",
+    "disclaimer": "里程数依照官方公布的合作伙伴表计算，请以实际入账为准。"
+  },
+  "map": {
+    "fallbackHeading": "地图渲染失败。",
+    "fallbackHint": "里程计算仍然有效。下面可重试渲染地图。",
+    "retry": "重试",
+    "ariaLabelEmpty": "世界地图",
+    "ariaLabel": "地图显示航线：{chain}"
+  },
+  "mobile": {
+    "banner": "建议在桌面浏览。手机目前只能读取，编辑功能 v1.2 推出。"
+  },
+  "gcmapImport": {
+    "open": "从 gcmap 导入",
+    "label": "粘贴 gcmap.com 链接或航线字符串",
+    "import": "导入",
+    "invalid": "无法解析，预期是 gcmap.com 链接或类似 SFO-NRT,JFK-LHR 的字符串",
+    "hint": "示例：SFO-NRT-BKK · SFO-NRT,LAX-HKG · http://www.gcmap.com/mapui?P=SFO-NRT-BKK"
+  },
+  "download": {
+    "png": "下载 PNG",
+    "filename": "gcmp-航线"
+  },
+  "bearings": {
+    "show": "显示方位角"
+  },
+  "glossary": {
+    "pqm": "升级里程（Premier Qualifying Miles）— 累积到一定数量可升上金卡、白金卡等会员等级。跟兑换里程不同。",
+    "rdm": "兑换里程（Redeemable Miles）— 可以拿来换奖励机票的点数。",
+    "cabin": "舱位：经济舱（Y）、豪华经济（W）、商务舱（J）、头等舱（F）。",
+    "fareClass": "票价代码（单字母如 J、C、D、Y、B、K…），同一舱位有多个票价，赚的里程也不同。",
+    "operatingCarrier": "实际飞这段航线的航空公司。里程通常算这家，即使是联程航班（codeshare）。",
+    "alliance": "星空联盟、寰宇一家、天合联盟 — 航空公司互相承认里程的群体。",
+    "credit": "选哪家常旅客计划累积你的里程。同一张票，挂到不同的常旅客计划可能拿到不一样的里程。",
+    "mileageRunner": "为了拿里程而搭飞机（而不是为了去某地）的旅客。"
+  }
+}

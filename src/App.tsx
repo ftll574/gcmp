@@ -16,6 +16,7 @@ import { GroupTabs } from './components/GroupTabs.tsx';
 import { LanguagePicker } from './components/LanguagePicker.tsx';
 import { LegChain } from './components/LegChain.tsx';
 import { MapErrorBoundary } from './components/MapErrorBoundary.tsx';
+import { ImportFromGcmap } from './components/ImportFromGcmap.tsx';
 import { MapView } from './components/MapView.tsx';
 import { MobileBanner } from './components/MobileBanner.tsx';
 import { ModeToggle } from './components/ModeToggle.tsx';
@@ -26,6 +27,7 @@ import { useLocale } from './i18n/use-locale.ts';
 import { buildAirportIndex } from './lib/airport-index.ts';
 import { computeRouting } from './lib/calc/index.ts';
 import { DEFAULT_PROJECTION, type ProjectionId } from './lib/calc/projections.ts';
+import { downloadBlob, svgToPngBlob } from './lib/svg-to-png.ts';
 import { parseShareUrl } from './lib/url-schema.ts';
 import {
   PROGRAM_LABELS,
@@ -143,6 +145,8 @@ function Ready({
 }: ReadyProps): React.ReactElement {
   const { t } = useLocale();
   const [activeGroupIndex, setActiveGroupIndex] = useState(0);
+  const [showBearings, setShowBearings] = useState(false);
+  const svgRef = useRef<SVGSVGElement | null>(null);
 
   const airportIndex = useMemo(() => buildAirportIndex(data.airports), [data.airports]);
 
@@ -240,6 +244,22 @@ function Ready({
   function clearAll(): void {
     setRouting({ ...routing, groups: [{ legs: [] }] });
     setActiveGroupIndex(0);
+  }
+
+  async function downloadPng(): Promise<void> {
+    const svg = svgRef.current;
+    if (!svg) return;
+    try {
+      const blob = await svgToPngBlob(svg, 2);
+      const chain = routing.groups
+        .map((g) => g.legs.map((l) => l.from).concat([g.legs[g.legs.length - 1]?.to ?? '']).filter(Boolean).join('-'))
+        .filter(Boolean)
+        .join('_');
+      const filename = chain ? `${t('download.filename')}-${chain}.png` : `${t('download.filename')}.png`;
+      downloadBlob(blob, filename);
+    } catch (e) {
+      console.error('PNG export failed:', e);
+    }
   }
 
   function addGroup(): void {
@@ -342,6 +362,19 @@ function Ready({
               value={routing.projection ?? DEFAULT_PROJECTION}
               onChange={changeProjection}
             />
+            <label className="bearings-toggle">
+              <input
+                type="checkbox"
+                checked={showBearings}
+                onChange={(e) => setShowBearings(e.target.checked)}
+              />
+              {t('bearings.show')}
+            </label>
+            {hasAnyLegs && (
+              <button type="button" className="map-download" onClick={() => { void downloadPng(); }}>
+                {t('download.png')}
+              </button>
+            )}
           </div>
           <MapErrorBoundary groups={routing.groups}>
             <MapView
@@ -352,11 +385,20 @@ function Ready({
               width={mapSize.width}
               height={mapSize.height}
               projection={routing.projection ?? DEFAULT_PROJECTION}
+              showBearings={showBearings}
+              onSvgReady={(el) => {
+                svgRef.current = el;
+              }}
             />
           </MapErrorBoundary>
         </div>
         <aside className="app-panel" aria-label="Earning panel">
-          {showSamples && <SampleRoutings onSelect={(r) => { setRouting(r); setActiveGroupIndex(0); }} />}
+          {showSamples && (
+            <>
+              <SampleRoutings onSelect={(r) => { setRouting(r); setActiveGroupIndex(0); }} />
+              <ImportFromGcmap onImport={(r) => { setRouting(r); setActiveGroupIndex(0); }} />
+            </>
+          )}
           <EarningPanel
             result={result}
             programOrder={routing.programs}
