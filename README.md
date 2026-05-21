@@ -2,7 +2,9 @@
 
 A reimagined Great Circle Mapper for mileage runners. Drag airports onto an interactive map; see distance and **PQM/RDM (Premier Qualifying Miles / Redeemable Miles)** for multiple loyalty programs side by side. Replaces the FlyerTalk-thread habit of "anyone know how SFO-NRT-BKK on AA J earns?"
 
-**Status:** Pre-v1 scaffold. Engine + UI under construction. See [DESIGN.md](DESIGN.md) for the locked design system and `~/.gstack/projects/GreatCircleMapper/` for the full design doc, eng review, and design review.
+**Live at:** https://ftll574.github.io/gcmp/
+
+**Status:** v0.1.0 shipped. Engine + UI working with AA AAdvantage + Alaska Mileage Plan. See [DESIGN.md](DESIGN.md) for the locked design system and `~/.gstack/projects/GreatCircleMapper/` for the full design doc, eng review, and design review.
 
 ## v1 scope
 
