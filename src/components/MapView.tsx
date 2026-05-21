@@ -1,28 +1,29 @@
 /**
- * Interactive SVG world map.
+ * Interactive SVG world map. v0.4: renders multiple routing groups, each
+ * with its own color (from GROUP_COLORS), on the same projection.
  *
  *   - Multiple projections (Mercator, Equirectangular, Azimuthal Equidistant, Orthographic)
  *   - Pan via pointer drag, zoom via mouse wheel
  *   - Continent outlines from world-atlas 110m TopoJSON
- *   - Great-circle arcs per leg
- *   - Airport dots + IATA labels for chain airports
- *   - Resets viewport when projection changes
- *
- * Projections are computed once per (projection + viewport + center) — the
- * pan/zoom transform is applied as an SVG `transform` on a group so we never
- * have to re-project on every drag frame.
+ *   - Great-circle arcs per leg, colored by group
+ *   - Airport dots + IATA labels for every airport in any group's chain
  */
 
 import { useMemo, useRef, useState } from 'react';
 import { geoGraticule, geoPath, type GeoPath, type GeoProjection } from 'd3-geo';
+import { groupColor } from '../lib/group-colors.ts';
 import { greatCircleSvgPathProjected } from '../lib/calc/svg-arc.ts';
 import { buildProjection, type ProjectionId } from '../lib/calc/projections.ts';
-import type { Airport, Leg } from '../lib/types.ts';
+import type { Airport, RoutingGroup } from '../lib/types.ts';
 import { useWorldMap } from '../state/use-world-map.ts';
 
 interface Props {
-  airports: ReadonlyArray<Airport>;
-  legs: ReadonlyArray<Leg>;
+  /** Map of all airports (used to resolve IATA → coords). */
+  airportLookup: ReadonlyMap<string, Airport>;
+  /** All groups to render — each gets its own color. */
+  groups: ReadonlyArray<RoutingGroup>;
+  /** Active group index — emphasized visually. */
+  activeIndex: number;
   width: number;
   height: number;
   projection: ProjectionId;
@@ -36,21 +37,29 @@ interface PanZoomState {
 
 const IDENTITY: PanZoomState = { scale: 1, tx: 0, ty: 0 };
 
-export function MapView({ airports, legs, width, height, projection }: Props): React.ReactElement {
+export function MapView({
+  airportLookup,
+  groups,
+  activeIndex,
+  width,
+  height,
+  projection,
+}: Props): React.ReactElement {
   const { features, error: worldError } = useWorldMap();
-  // Pan/zoom resets implicitly: App.tsx remounts MapView when projection changes
-  // (via `key={projection}`), so initial state IDENTITY always applies.
   const [pz, setPz] = useState<PanZoomState>(IDENTITY);
   const [dragging, setDragging] = useState(false);
   const dragRef = useRef<{ startX: number; startY: number; origin: PanZoomState } | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
 
-  // For azimuthal + orthographic, center on the first chain airport (or 0,0).
+  // Auto-center azimuthal + orthographic on the first airport of the active group.
   const center = useMemo<{ lat: number; lon: number }>(() => {
-    const first = airports[0];
+    const activeGroup = groups[activeIndex] ?? groups[0];
+    const firstLeg = activeGroup?.legs[0];
+    if (!firstLeg) return { lat: 0, lon: 0 };
+    const first = airportLookup.get(firstLeg.from);
     if (!first) return { lat: 0, lon: 0 };
     return { lat: first.lat, lon: first.lon };
-  }, [airports]);
+  }, [groups, activeIndex, airportLookup]);
 
   const proj = useMemo<GeoProjection>(
     () => buildProjection(projection, { width, height, centerLat: center.lat, centerLon: center.lon }),
@@ -59,47 +68,64 @@ export function MapView({ airports, legs, width, height, projection }: Props): R
 
   const pathBuilder = useMemo<GeoPath>(() => geoPath(proj), [proj]);
 
-  // Continent outline SVG `d` for the loaded world geometry.
   const worldPath = useMemo<string>(() => {
     if (!features) return '';
     return pathBuilder(features) ?? '';
   }, [features, pathBuilder]);
 
-  // Graticule (10° lat/lon grid).
   const graticulePath = useMemo<string>(() => {
     const g = geoGraticule().step([30, 30])();
     return pathBuilder(g) ?? '';
   }, [pathBuilder]);
 
-  // Outer sphere edge (only meaningful for orthographic; renders a rim).
   const spherePath = useMemo<string>(() => {
     const sphere = { type: 'Sphere' as const };
     return pathBuilder(sphere) ?? '';
   }, [pathBuilder]);
 
-  // Great-circle arcs.
-  const arcs = useMemo(() => {
-    return legs.map((leg, i) => {
-      const from = airports.find((a) => a.iata === leg.from);
-      const to = airports.find((a) => a.iata === leg.to);
-      if (!from || !to) return null;
-      const d = greatCircleSvgPathProjected(from, to, proj);
-      return { d, key: `${leg.from}-${leg.to}-${i}` };
+  // Arcs per group.
+  const arcsByGroup = useMemo(() => {
+    return groups.map((group, gi) => {
+      return group.legs.map((leg, i) => {
+        const from = airportLookup.get(leg.from);
+        const to = airportLookup.get(leg.to);
+        if (!from || !to) return null;
+        const d = greatCircleSvgPathProjected(from, to, proj);
+        return { d, key: `${gi}-${leg.from}-${leg.to}-${i}`, color: groupColor(gi), groupIndex: gi };
+      });
     });
-  }, [airports, legs, proj]);
+  }, [groups, airportLookup, proj]);
 
-  // Project chain airports.
+  // Union of all airports across all groups, deduplicated.
+  const allAirports = useMemo(() => {
+    const seen = new Set<string>();
+    const out: Airport[] = [];
+    for (const g of groups) {
+      for (const leg of g.legs) {
+        for (const code of [leg.from, leg.to]) {
+          if (seen.has(code)) continue;
+          const airport = airportLookup.get(code);
+          if (airport) {
+            out.push(airport);
+            seen.add(code);
+          }
+        }
+      }
+    }
+    return out;
+  }, [groups, airportLookup]);
+
   const projectedAirports = useMemo(() => {
-    return airports.map((a) => {
+    return allAirports.map((a) => {
       const coords = proj([a.lon, a.lat]);
       if (!coords || !Number.isFinite(coords[0]) || !Number.isFinite(coords[1])) {
         return { airport: a, x: null as number | null, y: null as number | null };
       }
       return { airport: a, x: coords[0], y: coords[1] };
     });
-  }, [airports, proj]);
+  }, [allAirports, proj]);
 
-  // ── Pan + zoom handlers ──
+  // ── Pan + zoom ──
 
   function onPointerDown(e: React.PointerEvent<SVGSVGElement>): void {
     if (e.button !== 0) return;
@@ -107,21 +133,16 @@ export function MapView({ airports, legs, width, height, projection }: Props): R
     dragRef.current = { startX: e.clientX, startY: e.clientY, origin: pz };
     setDragging(true);
   }
-
   function onPointerMove(e: React.PointerEvent<SVGSVGElement>): void {
     const d = dragRef.current;
     if (!d) return;
-    const dx = e.clientX - d.startX;
-    const dy = e.clientY - d.startY;
-    setPz({ scale: d.origin.scale, tx: d.origin.tx + dx, ty: d.origin.ty + dy });
+    setPz({ scale: d.origin.scale, tx: d.origin.tx + (e.clientX - d.startX), ty: d.origin.ty + (e.clientY - d.startY) });
   }
-
   function onPointerUp(e: React.PointerEvent<SVGSVGElement>): void {
     (e.target as Element).releasePointerCapture?.(e.pointerId);
     dragRef.current = null;
     setDragging(false);
   }
-
   function onWheel(e: React.WheelEvent<SVGSVGElement>): void {
     e.preventDefault();
     const svg = svgRef.current;
@@ -132,17 +153,11 @@ export function MapView({ airports, legs, width, height, projection }: Props): R
     setPz((prev) => {
       const factor = Math.exp(-e.deltaY * 0.001);
       const nextScale = Math.max(0.4, Math.min(8, prev.scale * factor));
-      // Zoom toward the cursor — keep the point under the cursor fixed.
       const worldX = (px - prev.tx) / prev.scale;
       const worldY = (py - prev.ty) / prev.scale;
-      return {
-        scale: nextScale,
-        tx: px - worldX * nextScale,
-        ty: py - worldY * nextScale,
-      };
+      return { scale: nextScale, tx: px - worldX * nextScale, ty: py - worldY * nextScale };
     });
   }
-
   function resetView(): void {
     setPz(IDENTITY);
   }
@@ -159,9 +174,9 @@ export function MapView({ airports, legs, width, height, projection }: Props): R
       preserveAspectRatio="xMidYMid meet"
       role="img"
       aria-label={
-        airports.length === 0
+        groups.every((g) => g.legs.length === 0)
           ? 'World map'
-          : `Map showing route via ${airports.map((a) => a.iata).join(' → ')}`
+          : `Map showing ${groups.length} routing(s)`
       }
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
@@ -177,20 +192,25 @@ export function MapView({ airports, legs, width, height, projection }: Props): R
       <g clipPath="url(#map-clip)">
         <rect x={0} y={0} width={width} height={height} className="map-sea" />
         <g transform={transform}>
-          {/* Sphere rim (matters for orthographic) */}
           {spherePath && projection === 'orthographic' && (
             <path d={spherePath} className="map-sphere" fill="var(--bg-map-sea)" />
           )}
-          {/* World outline */}
           {worldPath && <path d={worldPath} className="map-land" fill="var(--bg-map-land)" />}
-          {/* Graticule */}
           {graticulePath && <path d={graticulePath} className="map-grid" fill="none" />}
-          {/* Great-circle arcs */}
-          {arcs.map(
-            (arc) =>
-              arc && <path key={arc.key} d={arc.d} className="map-arc" fill="none" />,
+          {arcsByGroup.map((arcs, gi) =>
+            arcs.map(
+              (arc) =>
+                arc && (
+                  <path
+                    key={arc.key}
+                    d={arc.d}
+                    className={`map-arc${gi === activeIndex ? ' map-arc-active' : ''}`}
+                    style={{ stroke: arc.color, opacity: gi === activeIndex ? 1 : 0.7 }}
+                    fill="none"
+                  />
+                ),
+            ),
           )}
-          {/* Airport dots */}
           {projectedAirports.map(({ airport, x, y }) => {
             if (x === null || y === null) return null;
             return (
@@ -208,17 +228,9 @@ export function MapView({ airports, legs, width, height, projection }: Props): R
             );
           })}
         </g>
-        {/* Reset-view affordance, top-right corner of viewport */}
         {(pz.scale !== 1 || pz.tx !== 0 || pz.ty !== 0) && (
           <g className="map-reset-btn-group" onClick={resetView} style={{ cursor: 'pointer' }}>
-            <rect
-              x={width - 78}
-              y={8}
-              width={70}
-              height={28}
-              rx={6}
-              className="map-reset-btn-bg"
-            />
+            <rect x={width - 78} y={8} width={70} height={28} rx={6} className="map-reset-btn-bg" />
             <text x={width - 43} y={26} textAnchor="middle" className="map-reset-btn-text">
               Reset
             </text>

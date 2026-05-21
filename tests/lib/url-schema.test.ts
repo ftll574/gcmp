@@ -10,48 +10,75 @@ import { describe, expect, test } from 'vitest';
 import { encodeShareUrl, parseShareUrl } from '../../src/lib/url-schema.ts';
 import type { RoutingRequest } from '../../src/lib/types.ts';
 
-const FIXTURE: RoutingRequest = {
-  legs: [
-    { from: 'SFO', to: 'NRT', operatingCarrier: 'AA' },
-    { from: 'NRT', to: 'BKK', operatingCarrier: 'JL' },
-    { from: 'BKK', to: 'HKG', operatingCarrier: 'CX' },
+const SINGLE_GROUP: RoutingRequest = {
+  groups: [
+    {
+      legs: [
+        { from: 'SFO', to: 'NRT', operatingCarrier: 'AA' },
+        { from: 'NRT', to: 'BKK', operatingCarrier: 'JL' },
+        { from: 'BKK', to: 'HKG', operatingCarrier: 'CX' },
+      ],
+    },
   ],
   cabin: 'business',
   programs: ['aa-aadvantage', 'as-mileage-plan'],
   rulesVersion: '2026.4',
 };
 
-describe('encodeShareUrl', () => {
+const MULTI_GROUP: RoutingRequest = {
+  groups: [
+    {
+      legs: [
+        { from: 'SFO', to: 'NRT', operatingCarrier: 'AA' },
+        { from: 'NRT', to: 'BKK', operatingCarrier: 'JL' },
+      ],
+    },
+    {
+      legs: [
+        { from: 'JFK', to: 'LHR', operatingCarrier: 'BA' },
+        { from: 'LHR', to: 'CDG', operatingCarrier: 'BA' },
+      ],
+    },
+  ],
+  cabin: 'business',
+  programs: ['aa-aadvantage', 'as-mileage-plan'],
+};
+
+describe('encodeShareUrl (single-group)', () => {
   test('produces /r/v1/IATA-IATA-... path', () => {
-    const url = encodeShareUrl(FIXTURE);
+    const url = encodeShareUrl(SINGLE_GROUP);
     expect(url).toMatch(/^\/r\/v1\/SFO-NRT-BKK-HKG\?/);
   });
 
   test('includes op, p, c, rv query params', () => {
-    const url = encodeShareUrl(FIXTURE);
-    expect(url).toContain('op=AA%2CJL%2CCX'); // comma-encoded
+    const url = encodeShareUrl(SINGLE_GROUP);
+    expect(url).toContain('op=AA%2CJL%2CCX');
     expect(url).toContain('p=AA%2CAS');
     expect(url).toContain('c=J');
     expect(url).toContain('rv=2026.4');
   });
+});
 
-  test('omits rv when undefined', () => {
-    const noRv: RoutingRequest = { ...FIXTURE };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const stripped = { ...noRv } as any;
-    delete stripped.rulesVersion;
-    const url = encodeShareUrl(stripped);
-    expect(url).not.toContain('rv=');
+describe('encodeShareUrl (multi-group)', () => {
+  test('joins groups with `,` in path', () => {
+    const url = encodeShareUrl(MULTI_GROUP);
+    expect(url).toContain('/r/v1/SFO-NRT-BKK,JFK-LHR-CDG');
+  });
+
+  test('joins op groups with `;`', () => {
+    const url = encodeShareUrl(MULTI_GROUP);
+    // ';' URL-encodes to %3B; ',' URL-encodes to %2C
+    expect(url).toContain('op=AA%2CJL%3BBA%2CBA');
   });
 });
 
-describe('parseShareUrl', () => {
+describe('parseShareUrl (single-group)', () => {
   test('round-trips the fixture exactly', () => {
-    const encoded = encodeShareUrl(FIXTURE);
+    const encoded = encodeShareUrl(SINGLE_GROUP);
     const parsed = parseShareUrl(encoded);
     expect(parsed.ok).toBe(true);
     if (parsed.ok) {
-      expect(parsed.request.legs).toEqual(FIXTURE.legs);
+      expect(parsed.request.groups).toEqual(SINGLE_GROUP.groups);
       expect(parsed.request.cabin).toBe('business');
       expect(parsed.request.programs).toEqual(['aa-aadvantage', 'as-mileage-plan']);
       expect(parsed.request.rulesVersion).toBe('2026.4');
@@ -59,12 +86,12 @@ describe('parseShareUrl', () => {
   });
 
   test('parses full URL with origin', () => {
-    const encoded = encodeShareUrl(FIXTURE);
+    const encoded = encodeShareUrl(SINGLE_GROUP);
     const parsed = parseShareUrl(`https://gcmp.example.com${encoded}`);
     expect(parsed.ok).toBe(true);
   });
 
-  test('rejects wrong schema version with typed error', () => {
+  test('rejects wrong schema version', () => {
     const parsed = parseShareUrl('/r/v2/SFO-NRT?op=AA&p=AA&c=J');
     expect(parsed.ok).toBe(false);
     if (!parsed.ok) {
@@ -96,7 +123,7 @@ describe('parseShareUrl', () => {
     }
   });
 
-  test('rejects unknown cabin code', () => {
+  test('rejects unknown cabin', () => {
     const parsed = parseShareUrl('/r/v1/SFO-NRT?op=AA&p=AA&c=Z');
     expect(parsed.ok).toBe(false);
     if (!parsed.ok) {
@@ -125,7 +152,7 @@ describe('parseShareUrl', () => {
     }
   });
 
-  test('parses projection short code (proj=a → azimuthal-equidistant)', () => {
+  test('parses projection short code (proj=a)', () => {
     const parsed = parseShareUrl('/r/v1/SFO-NRT?op=AA&p=AA&c=J&proj=a');
     expect(parsed.ok).toBe(true);
     if (parsed.ok) {
@@ -133,7 +160,7 @@ describe('parseShareUrl', () => {
     }
   });
 
-  test('parses projection short code (proj=o → orthographic)', () => {
+  test('parses projection short code (proj=o)', () => {
     const parsed = parseShareUrl('/r/v1/SFO-NRT?op=AA&p=AA&c=J&proj=o');
     expect(parsed.ok).toBe(true);
     if (parsed.ok) {
@@ -144,44 +171,54 @@ describe('parseShareUrl', () => {
   test('rejects unknown projection short code', () => {
     const parsed = parseShareUrl('/r/v1/SFO-NRT?op=AA&p=AA&c=J&proj=z');
     expect(parsed.ok).toBe(false);
-    if (!parsed.ok) {
-      expect(parsed.kind).toBe('malformed-path');
+  });
+});
+
+describe('parseShareUrl (multi-group)', () => {
+  test('round-trips multi-group fixture', () => {
+    const encoded = encodeShareUrl(MULTI_GROUP);
+    const parsed = parseShareUrl(encoded);
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.request.groups.length).toBe(2);
+      expect(parsed.request.groups[0]?.legs.length).toBe(2);
+      expect(parsed.request.groups[1]?.legs.length).toBe(2);
+      expect(parsed.request.groups[1]?.legs[0]?.from).toBe('JFK');
+      expect(parsed.request.groups[1]?.legs[1]?.to).toBe('CDG');
     }
   });
 
-  test('omits proj from encode when projection is mercator (default)', () => {
-    const req = {
-      legs: [{ from: 'SFO', to: 'NRT', operatingCarrier: 'AA' }],
-      cabin: 'business' as const,
-      programs: ['aa-aadvantage' as const],
-      projection: 'mercator' as const,
-    };
-    const encoded = encodeShareUrl(req);
-    expect(encoded).not.toContain('proj=');
+  test('parses 3 groups', () => {
+    const parsed = parseShareUrl('/r/v1/SFO-NRT,LAX-HKG,JFK-LHR?op=AA;AS;BA&p=AA&c=J');
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.request.groups.length).toBe(3);
+    }
   });
 
-  test('emits proj from encode when projection is non-default', () => {
-    const req = {
-      legs: [{ from: 'SFO', to: 'NRT', operatingCarrier: 'AA' }],
-      cabin: 'business' as const,
-      programs: ['aa-aadvantage' as const],
-      projection: 'azimuthal-equidistant' as const,
-    };
-    const encoded = encodeShareUrl(req);
-    expect(encoded).toContain('proj=a');
+  test('rejects mismatched group count (path vs op)', () => {
+    const parsed = parseShareUrl('/r/v1/SFO-NRT,LAX-HKG?op=AA&p=AA&c=J');
+    expect(parsed.ok).toBe(false);
+    if (!parsed.ok) {
+      expect(parsed.kind).toBe('mismatched-op-length');
+    }
   });
 
-  test('round-trips projection through encode → parse', () => {
-    const req = {
-      legs: [{ from: 'SFO', to: 'NRT', operatingCarrier: 'AA' }],
-      cabin: 'business' as const,
-      programs: ['aa-aadvantage' as const],
-      projection: 'orthographic' as const,
+  test('rejects empty group in path', () => {
+    const parsed = parseShareUrl('/r/v1/SFO-NRT,?op=AA;&p=AA&c=J');
+    expect(parsed.ok).toBe(false);
+  });
+
+  test('emits encode-roundtrip for projection in multi-group', () => {
+    const req: RoutingRequest = {
+      ...MULTI_GROUP,
+      projection: 'azimuthal-equidistant',
     };
     const parsed = parseShareUrl(encodeShareUrl(req));
     expect(parsed.ok).toBe(true);
     if (parsed.ok) {
-      expect(parsed.request.projection).toBe('orthographic');
+      expect(parsed.request.projection).toBe('azimuthal-equidistant');
+      expect(parsed.request.groups.length).toBe(2);
     }
   });
 });

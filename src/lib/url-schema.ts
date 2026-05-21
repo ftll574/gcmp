@@ -1,16 +1,18 @@
 /**
- * URL schema for shareable routings.
+ * URL schema for shareable routings (v1 + multi-group extension).
  *
- *   /r/v1/{IATA-IATA-...IATA}?op=AA,JL,...&p=AA,AS&c=J&rv=2026.4
+ *   Single-group (v0.1-v0.3 backwards compat):
+ *     /r/v1/SFO-NRT-BKK?op=AA,JL&p=AA,AS&c=J&rv=2026.4&proj=a
  *
- * The `/v1/` prefix is the schema version — v2 can coexist without breaking
- * shared URLs that already exist in FlyerTalk threads.
+ *   Multi-group (v0.4):
+ *     /r/v1/SFO-NRT-BKK,JFK-LHR-CDG?op=AA,JL;BA,BA&p=AA,AS&c=J
  *
- * Path:         hyphen-joined airport IATA codes (≥ 2)
- * `op` query:   per-leg operating carriers (length = airports - 1)
- * `p` query:    crediting program short codes (AA, AS, ...)
- * `c` query:    cabin: Y / W / J / F
- * `rv` query:   rules version (optional; if omitted = current)
+ *   Path:       groups separated by `,`, airports within group by `-`
+ *   `op`:       groups separated by `;`, legs within group by `,`
+ *   `p`:        global crediting programs (AA, AS, ...)
+ *   `c`:        global cabin (Y / W / J / F)
+ *   `rv`:       global rules version (optional)
+ *   `proj`:     global projection short code (m / e / a / o)
  *
  *   parseShareUrl(url)   →  RoutingRequest | UrlParseError
  *   encodeShareUrl(req)  →  path + query string
@@ -24,25 +26,12 @@ import {
   type Leg,
   type ProgramId,
   type ProgramShortCode,
+  type RoutingGroup,
   type RoutingRequest,
   type UrlParseError,
   type UrlParseResult,
 } from './types.ts';
 import type { ProjectionId } from './calc/projections.ts';
-
-const PROJECTION_BY_SHORT: Record<string, ProjectionId> = {
-  m: 'mercator',
-  e: 'equirectangular',
-  a: 'azimuthal-equidistant',
-  o: 'orthographic',
-};
-
-const PROJECTION_SHORT: Record<ProjectionId, string> = {
-  mercator: 'm',
-  equirectangular: 'e',
-  'azimuthal-equidistant': 'a',
-  orthographic: 'o',
-};
 
 const SCHEMA_VERSION = 'v1';
 
@@ -62,95 +51,128 @@ const LETTER_BY_CABIN: Record<CabinId, string> = {
 
 const RULES_VERSION_PATTERN = /^\d{4}\.[1-4]$/;
 
+const PROJECTION_BY_SHORT: Record<string, ProjectionId> = {
+  m: 'mercator',
+  e: 'equirectangular',
+  a: 'azimuthal-equidistant',
+  o: 'orthographic',
+};
+
+const PROJECTION_SHORT: Record<ProjectionId, string> = {
+  mercator: 'm',
+  equirectangular: 'e',
+  'azimuthal-equidistant': 'a',
+  orthographic: 'o',
+};
+
 function err(kind: UrlParseError['kind'], message: string): UrlParseError {
   return { ok: false, kind, message };
 }
 
-/**
- * Parse a share URL into a RoutingRequest. Accepts either the full URL
- * (`https://gcmp.app/r/v1/...`), a path-only string (`/r/v1/...`), or the
- * hash form (`#/r/v1/...`).
- */
 export function parseShareUrl(input: string): UrlParseResult {
   let pathAndQuery: string;
-
-  // Strip protocol + host if present.
   try {
     const u = new URL(input);
     pathAndQuery = u.pathname + u.search;
   } catch {
-    // Not a full URL — treat as path-or-hash.
     pathAndQuery = input.replace(/^#/, '');
     if (!pathAndQuery.startsWith('/')) {
       pathAndQuery = '/' + pathAndQuery;
     }
   }
 
-  // Split path and query.
   const qIndex = pathAndQuery.indexOf('?');
   const pathPart = qIndex === -1 ? pathAndQuery : pathAndQuery.slice(0, qIndex);
   const queryPart = qIndex === -1 ? '' : pathAndQuery.slice(qIndex + 1);
 
-  // Expect path: /r/v1/{IATA-IATA-...}
   const pathMatch = pathPart.match(/^\/r\/([^/]+)\/([^/?#]+)$/);
   if (!pathMatch) {
     return err('malformed-path', `Path does not match /r/v{N}/IATA-IATA: ${pathPart}`);
   }
   const schemaVer = pathMatch[1];
-  const iataChain = pathMatch[2];
+  const groupsStr = pathMatch[2];
   if (schemaVer !== SCHEMA_VERSION) {
     return err(
       'wrong-schema-version',
       `Unsupported share URL schema version "${schemaVer}". This build understands "${SCHEMA_VERSION}".`,
     );
   }
-  if (!iataChain) {
+  if (!groupsStr) {
     return err('malformed-path', 'Missing airport chain in path.');
   }
 
-  // Parse airport chain.
-  const iataCodes = iataChain.split('-').map((s) => s.toUpperCase());
-  for (const code of iataCodes) {
-    if (!/^[A-Z]{3}$/.test(code)) {
-      return err('unknown-airport', `Invalid IATA code in chain: "${code}"`);
-    }
-  }
-  if (iataCodes.length < 2) {
-    return err(
-      'malformed-path',
-      'Routing must have at least 2 airports (one leg).',
-    );
+  // Split groups by `,`. A single-group URL (no `,`) yields 1 chain.
+  const groupChains = groupsStr.split(',');
+  if (groupChains.length === 0 || groupChains.some((c) => c.length === 0)) {
+    return err('malformed-path', 'Empty group in path.');
   }
 
-  // Parse query params.
+  // Validate IATA codes inside every chain.
+  const iataByGroup: string[][] = [];
+  for (const chain of groupChains) {
+    const codes = chain.split('-').map((s) => s.toUpperCase());
+    if (codes.length < 2) {
+      return err('malformed-path', `Group "${chain}" must have at least 2 airports.`);
+    }
+    for (const code of codes) {
+      if (!/^[A-Z]{3}$/.test(code)) {
+        return err('unknown-airport', `Invalid IATA code in chain: "${code}"`);
+      }
+    }
+    iataByGroup.push(codes);
+  }
+
   const params = new URLSearchParams(queryPart);
   const opRaw = params.get('op');
   const pRaw = params.get('p');
   const cRaw = params.get('c');
   const rvRaw = params.get('rv');
+  const projRaw = params.get('proj');
 
-  if (!opRaw) {
-    return err('missing-required-param', 'Missing `op` (operating carriers) in query.');
-  }
-  if (!pRaw) {
-    return err('missing-required-param', 'Missing `p` (programs) in query.');
-  }
-  if (!cRaw) {
-    return err('missing-required-param', 'Missing `c` (cabin) in query.');
-  }
+  if (!opRaw) return err('missing-required-param', 'Missing `op` (operating carriers) in query.');
+  if (!pRaw) return err('missing-required-param', 'Missing `p` (programs) in query.');
+  if (!cRaw) return err('missing-required-param', 'Missing `c` (cabin) in query.');
 
-  const operatingCarriers = opRaw.split(',').map((s) => s.toUpperCase());
-  const expectedOpCount = iataCodes.length - 1;
-  if (operatingCarriers.length !== expectedOpCount) {
+  // Split op by `;` per group.
+  const opByGroupStr = opRaw.split(';');
+  if (opByGroupStr.length !== iataByGroup.length) {
     return err(
       'mismatched-op-length',
-      `Expected ${expectedOpCount} operating carrier(s) for ${iataCodes.length} airports; got ${operatingCarriers.length}.`,
+      `Expected ${iataByGroup.length} group(s) in op (semicolon-separated); got ${opByGroupStr.length}.`,
     );
   }
-  for (const carrier of operatingCarriers) {
-    if (!/^[A-Z0-9]{2,3}$/.test(carrier)) {
-      return err('malformed-path', `Invalid operating carrier code: "${carrier}"`);
+
+  const groups: RoutingGroup[] = [];
+  for (let gi = 0; gi < iataByGroup.length; gi++) {
+    const iataCodes = iataByGroup[gi];
+    const opStr = opByGroupStr[gi];
+    if (!iataCodes || opStr === undefined) {
+      return err('malformed-path', 'Internal: group construction failed.');
     }
+    const operatingCarriers = opStr.split(',').map((s) => s.toUpperCase());
+    const expectedOpCount = iataCodes.length - 1;
+    if (operatingCarriers.length !== expectedOpCount) {
+      return err(
+        'mismatched-op-length',
+        `Group ${gi + 1}: expected ${expectedOpCount} operating carrier(s) for ${iataCodes.length} airports; got ${operatingCarriers.length}.`,
+      );
+    }
+    for (const carrier of operatingCarriers) {
+      if (!/^[A-Z0-9]{2,3}$/.test(carrier)) {
+        return err('malformed-path', `Invalid operating carrier code: "${carrier}"`);
+      }
+    }
+    const legs: Leg[] = [];
+    for (let i = 0; i < iataCodes.length - 1; i++) {
+      const from = iataCodes[i];
+      const to = iataCodes[i + 1];
+      const operatingCarrier = operatingCarriers[i];
+      if (!from || !to || !operatingCarrier) {
+        return err('malformed-path', 'Internal: leg construction failed.');
+      }
+      legs.push({ from, to, operatingCarrier });
+    }
+    groups.push({ legs });
   }
 
   const programShortCodes = pRaw.split(',').map((s) => s.toUpperCase()) as ProgramShortCode[];
@@ -175,15 +197,11 @@ export function parseShareUrl(input: string): UrlParseResult {
   let rulesVersion: string | undefined;
   if (rvRaw) {
     if (!RULES_VERSION_PATTERN.test(rvRaw)) {
-      return err(
-        'malformed-path',
-        `Invalid rules version "${rvRaw}". Expected YYYY.Q (e.g. 2026.4).`,
-      );
+      return err('malformed-path', `Invalid rules version "${rvRaw}". Expected YYYY.Q.`);
     }
     rulesVersion = rvRaw;
   }
 
-  const projRaw = params.get('proj');
   let projection: ProjectionId | undefined;
   if (projRaw) {
     const resolved = PROJECTION_BY_SHORT[projRaw.toLowerCase()];
@@ -193,20 +211,8 @@ export function parseShareUrl(input: string): UrlParseResult {
     projection = resolved;
   }
 
-  // Build legs.
-  const legs: Leg[] = [];
-  for (let i = 0; i < iataCodes.length - 1; i++) {
-    const from = iataCodes[i];
-    const to = iataCodes[i + 1];
-    const operatingCarrier = operatingCarriers[i];
-    if (!from || !to || !operatingCarrier) {
-      return err('malformed-path', 'Internal: leg construction failed.');
-    }
-    legs.push({ from, to, operatingCarrier });
-  }
-
   const request: RoutingRequest = {
-    legs,
+    groups,
     cabin,
     programs,
     ...(rulesVersion !== undefined ? { rulesVersion } : {}),
@@ -219,22 +225,26 @@ export function parseShareUrl(input: string): UrlParseResult {
 /**
  * Encode a RoutingRequest into a share URL path + query.
  *
- *   { legs: [{SFO→NRT on AA}, {NRT→BKK on JL}], cabin: 'business', programs: ['aa-aadvantage', 'as-mileage-plan'] }
- *   →  /r/v1/SFO-NRT-BKK?op=AA,JL&p=AA,AS&c=J
+ *   { groups: [{legs: [SFO→NRT/AA, NRT→BKK/JL]}, {legs: [JFK→LHR/BA, LHR→CDG/BA]}], cabin: 'business', programs: ['aa-aadvantage'] }
+ *   →  /r/v1/SFO-NRT-BKK,JFK-LHR-CDG?op=AA,JL;BA,BA&p=AA&c=J
  */
 export function encodeShareUrl(req: RoutingRequest): string {
-  const iataChain = [
-    req.legs[0]?.from,
-    ...req.legs.map((leg) => leg.to),
-  ]
-    .filter((s): s is string => typeof s === 'string')
-    .join('-');
+  const groupChains = req.groups.map((group) => {
+    const codes = [
+      group.legs[0]?.from,
+      ...group.legs.map((leg) => leg.to),
+    ].filter((s): s is string => typeof s === 'string');
+    return codes.join('-');
+  });
 
-  const op = req.legs.map((leg) => leg.operatingCarrier).join(',');
+  const opByGroup = req.groups.map((group) =>
+    group.legs.map((leg) => leg.operatingCarrier).join(','),
+  );
+
+  const path = groupChains.join(',');
+  const op = opByGroup.join(';');
   const p = req.programs.map((id) => {
-    const short = Object.entries(PROGRAM_SHORT_CODES).find(
-      ([, fullId]) => fullId === id,
-    );
+    const short = Object.entries(PROGRAM_SHORT_CODES).find(([, fullId]) => fullId === id);
     return short ? short[0] : id;
   }).join(',');
   const c = LETTER_BY_CABIN[req.cabin];
@@ -247,8 +257,7 @@ export function encodeShareUrl(req: RoutingRequest): string {
     params.set('rv', req.rulesVersion);
   }
   if (req.projection !== undefined && req.projection !== 'mercator') {
-    // Mercator is default; only encode when non-default.
     params.set('proj', PROJECTION_SHORT[req.projection]);
   }
-  return `/r/${SCHEMA_VERSION}/${iataChain}?${params.toString()}`;
+  return `/r/${SCHEMA_VERSION}/${path}?${params.toString()}`;
 }

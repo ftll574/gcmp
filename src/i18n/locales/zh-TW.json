@@ -49,7 +49,19 @@
     "tpeBkkHkg": {
       "title": "台北 → 曼谷 → 香港",
       "subtitle": "國泰 CX 亞洲環飛"
+    },
+    "compareAaAs": {
+      "title": "比較兩種飛法",
+      "subtitle": "SFO → 香港 直飛 vs 經東京"
     }
+  },
+  "groups": {
+    "label": "航線",
+    "addGroup": "+ 加一條航線",
+    "removeGroup": "移除航線 {n}",
+    "groupN": "航線 {n}",
+    "grandTotal": "全部航線合計",
+    "compareHint": "在同一張地圖上比較多條航線。下面的 PQM 數字是全部航線加總。"
   },
   "cabin": {
     "label": "艙等",

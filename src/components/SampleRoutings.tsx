@@ -2,16 +2,15 @@
  * Sample-routings carousel — surfaces on first visit and in Beginner mode
  * when the chain is empty. Click a card → fills the routing immediately.
  *
- * Each sample is a pre-built RoutingRequest. The map + earning panel light
- * up so the user can SEE what the tool does without learning IATA codes.
+ * Cards include single-group ("simple") and multi-group ("comparison")
+ * routings to teach the new gcmap-style comparison feature.
  */
 
 import { useLocale } from '../i18n/use-locale.ts';
 import type { RoutingRequest } from '../lib/types.ts';
 
 interface Sample {
-  /** Translation key root — `samples.<id>.title` and `samples.<id>.subtitle`. */
-  id: 'sfoNrtBkk' | 'jfkLhrCdg' | 'laxNrtKix' | 'tpeBkkHkg';
+  id: 'sfoNrtBkk' | 'jfkLhrCdg' | 'laxNrtKix' | 'tpeBkkHkg' | 'compareAaAs';
   request: RoutingRequest;
 }
 
@@ -19,9 +18,13 @@ const SAMPLES: ReadonlyArray<Sample> = [
   {
     id: 'sfoNrtBkk',
     request: {
-      legs: [
-        { from: 'SFO', to: 'NRT', operatingCarrier: 'AA' },
-        { from: 'NRT', to: 'BKK', operatingCarrier: 'JL' },
+      groups: [
+        {
+          legs: [
+            { from: 'SFO', to: 'NRT', operatingCarrier: 'AA' },
+            { from: 'NRT', to: 'BKK', operatingCarrier: 'JL' },
+          ],
+        },
       ],
       cabin: 'business',
       programs: ['aa-aadvantage', 'as-mileage-plan'],
@@ -30,9 +33,13 @@ const SAMPLES: ReadonlyArray<Sample> = [
   {
     id: 'jfkLhrCdg',
     request: {
-      legs: [
-        { from: 'JFK', to: 'LHR', operatingCarrier: 'BA' },
-        { from: 'LHR', to: 'CDG', operatingCarrier: 'BA' },
+      groups: [
+        {
+          legs: [
+            { from: 'JFK', to: 'LHR', operatingCarrier: 'BA' },
+            { from: 'LHR', to: 'CDG', operatingCarrier: 'BA' },
+          ],
+        },
       ],
       cabin: 'business',
       programs: ['aa-aadvantage', 'as-mileage-plan'],
@@ -41,9 +48,13 @@ const SAMPLES: ReadonlyArray<Sample> = [
   {
     id: 'laxNrtKix',
     request: {
-      legs: [
-        { from: 'LAX', to: 'NRT', operatingCarrier: 'JL' },
-        { from: 'NRT', to: 'KIX', operatingCarrier: 'JL' },
+      groups: [
+        {
+          legs: [
+            { from: 'LAX', to: 'NRT', operatingCarrier: 'JL' },
+            { from: 'NRT', to: 'KIX', operatingCarrier: 'JL' },
+          ],
+        },
       ],
       cabin: 'economy',
       programs: ['aa-aadvantage', 'as-mileage-plan'],
@@ -52,9 +63,29 @@ const SAMPLES: ReadonlyArray<Sample> = [
   {
     id: 'tpeBkkHkg',
     request: {
-      legs: [
-        { from: 'TPE', to: 'BKK', operatingCarrier: 'CX' },
-        { from: 'BKK', to: 'HKG', operatingCarrier: 'CX' },
+      groups: [
+        {
+          legs: [
+            { from: 'TPE', to: 'BKK', operatingCarrier: 'CX' },
+            { from: 'BKK', to: 'HKG', operatingCarrier: 'CX' },
+          ],
+        },
+      ],
+      cabin: 'business',
+      programs: ['aa-aadvantage', 'as-mileage-plan'],
+    },
+  },
+  {
+    id: 'compareAaAs',
+    request: {
+      groups: [
+        { legs: [{ from: 'SFO', to: 'HKG', operatingCarrier: 'CX' }] },
+        {
+          legs: [
+            { from: 'SFO', to: 'NRT', operatingCarrier: 'JL' },
+            { from: 'NRT', to: 'HKG', operatingCarrier: 'CX' },
+          ],
+        },
       ],
       cabin: 'business',
       programs: ['aa-aadvantage', 'as-mileage-plan'],

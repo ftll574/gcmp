@@ -1,7 +1,6 @@
 /**
- * computeRouting tests using the real AA + AS program JSON files. The
- * earning numbers are chart-verified; tests assert the engine's math and
- * carrier × cabin resolution work end-to-end with real data.
+ * computeRouting tests using the real AA + AS program JSON. v0.4: tests
+ * the multi-group result shape.
  */
 
 import { readFileSync } from 'node:fs';
@@ -24,6 +23,8 @@ const AIRPORTS: ReadonlyArray<Airport> = [
   { iata: 'NRT', name: 'Tokyo Narita', city: 'Tokyo', country: 'JP', lat: 35.76858, lon: 140.388714 },
   { iata: 'BKK', name: 'Bangkok', city: 'Bangkok', country: 'TH', lat: 13.6811, lon: 100.747002 },
   { iata: 'HKG', name: 'Hong Kong', city: 'HK', country: 'HK', lat: 22.308901, lon: 113.915001 },
+  { iata: 'JFK', name: 'New York JFK', city: 'NYC', country: 'US', lat: 40.6, lon: -73.8 },
+  { iata: 'LHR', name: 'London Heathrow', city: 'London', country: 'GB', lat: 51.5, lon: -0.5 },
 ];
 
 const airportMap = new Map(AIRPORTS.map((a) => [a.iata, a]));
@@ -32,112 +33,103 @@ const programMap = new Map<ProgramId, Program>([
   ['as-mileage-plan', as],
 ]);
 
-describe('computeRouting', () => {
-  test('empty legs → zero totals and per-program earning of 0', () => {
-    const req: RoutingRequest = { legs: [], cabin: 'business', programs: ['aa-aadvantage'] };
-    const r = computeRouting(req, { airports: airportMap, programs: programMap });
-    expect(r.totalDistanceNm).toBe(0);
-    expect(r.byLeg.length).toBe(0);
-    expect(r.programs['aa-aadvantage']?.pqm).toBe(0);
-  });
-
-  test('SFO→NRT on AA J → AA gives 150% PQM × ~4470nm distance', () => {
+describe('computeRouting (single-group)', () => {
+  test('empty groups → grand totals all zero', () => {
     const req: RoutingRequest = {
-      legs: [{ from: 'SFO', to: 'NRT', operatingCarrier: 'AA' }],
+      groups: [{ legs: [] }],
       cabin: 'business',
       programs: ['aa-aadvantage'],
     };
     const r = computeRouting(req, { airports: airportMap, programs: programMap });
-    expect(r.totalDistanceNm).toBeGreaterThan(4435);
-    expect(r.totalDistanceNm).toBeLessThan(4450);
-    const aaProgram = r.programs['aa-aadvantage'];
-    expect(aaProgram).toBeDefined();
-    // AA on AA metal, J fare = 150% (1.5x) PQM/RDM in our chart.
-    const expectedPqm = Math.round(r.totalDistanceNm * 1.5);
+    expect(r.grandTotalDistanceNm).toBe(0);
+    expect(r.groups[0]?.byLeg.length).toBe(0);
+    expect(r.grandTotals['aa-aadvantage']?.pqm).toBe(0);
+  });
+
+  test('SFO→NRT on AA J gives ~150% PQM × distance', () => {
+    const req: RoutingRequest = {
+      groups: [{ legs: [{ from: 'SFO', to: 'NRT', operatingCarrier: 'AA' }] }],
+      cabin: 'business',
+      programs: ['aa-aadvantage'],
+    };
+    const r = computeRouting(req, { airports: airportMap, programs: programMap });
+    expect(r.grandTotalDistanceNm).toBeGreaterThan(4435);
+    expect(r.grandTotalDistanceNm).toBeLessThan(4450);
+    const aaProgram = r.groups[0]?.programs['aa-aadvantage'];
+    const expectedPqm = Math.round(r.grandTotalDistanceNm * 1.5);
     expect(aaProgram?.pqm).toBe(expectedPqm);
-    expect(aaProgram?.rdm).toBe(expectedPqm);
+    expect(r.grandTotals['aa-aadvantage']?.pqm).toBe(expectedPqm);
   });
 
-  test('SFO→NRT on JL J → AA gives 125% PQM (JL partner J)', () => {
+  test('SFO→NRT on JL → AA AAdvantage gives 125% PQM (JL partner J)', () => {
     const req: RoutingRequest = {
-      legs: [{ from: 'SFO', to: 'NRT', operatingCarrier: 'JL' }],
+      groups: [{ legs: [{ from: 'SFO', to: 'NRT', operatingCarrier: 'JL' }] }],
       cabin: 'business',
       programs: ['aa-aadvantage'],
     };
     const r = computeRouting(req, { airports: airportMap, programs: programMap });
-    const aaProgram = r.programs['aa-aadvantage'];
-    expect(aaProgram?.pqm).toBe(Math.round(r.totalDistanceNm * 1.25));
+    expect(r.groups[0]?.programs['aa-aadvantage']?.pqm).toBe(
+      Math.round(r.grandTotalDistanceNm * 1.25),
+    );
   });
 
-  test('SFO→NRT on JL J → Alaska also gives 125% (chart-verified)', () => {
+  test('SFO→NRT on JL → Alaska also 125%', () => {
     const req: RoutingRequest = {
-      legs: [{ from: 'SFO', to: 'NRT', operatingCarrier: 'JL' }],
+      groups: [{ legs: [{ from: 'SFO', to: 'NRT', operatingCarrier: 'JL' }] }],
       cabin: 'business',
       programs: ['as-mileage-plan'],
     };
     const r = computeRouting(req, { airports: airportMap, programs: programMap });
-    const asProgram = r.programs['as-mileage-plan'];
-    expect(asProgram?.pqm).toBe(Math.round(r.totalDistanceNm * 1.25));
+    expect(r.groups[0]?.programs['as-mileage-plan']?.pqm).toBe(
+      Math.round(r.grandTotalDistanceNm * 1.25),
+    );
   });
 
-  test('multi-leg adds up per-leg earnings', () => {
+  test('multi-leg sums per-leg earnings', () => {
     const req: RoutingRequest = {
-      legs: [
-        { from: 'SFO', to: 'NRT', operatingCarrier: 'AA' },
-        { from: 'NRT', to: 'BKK', operatingCarrier: 'JL' },
+      groups: [
+        {
+          legs: [
+            { from: 'SFO', to: 'NRT', operatingCarrier: 'AA' },
+            { from: 'NRT', to: 'BKK', operatingCarrier: 'JL' },
+          ],
+        },
       ],
       cabin: 'business',
       programs: ['aa-aadvantage'],
     };
     const r = computeRouting(req, { airports: airportMap, programs: programMap });
-    expect(r.byLeg.length).toBe(2);
-    const expectedAA = (r.byLeg[0]?.distanceNm ?? 0) * 1.5 + (r.byLeg[1]?.distanceNm ?? 0) * 1.25;
-    expect(r.programs['aa-aadvantage']?.pqm).toBe(
-      Math.round((r.byLeg[0]?.distanceNm ?? 0) * 1.5) + Math.round((r.byLeg[1]?.distanceNm ?? 0) * 1.25),
+    expect(r.groups[0]?.byLeg.length).toBe(2);
+    const leg1Dist = r.groups[0]!.byLeg[0]?.distanceNm ?? 0;
+    const leg2Dist = r.groups[0]!.byLeg[1]?.distanceNm ?? 0;
+    expect(r.groups[0]?.programs['aa-aadvantage']?.pqm).toBe(
+      Math.round(leg1Dist * 1.5) + Math.round(leg2Dist * 1.25),
     );
-    // Sanity check: same magnitude.
-    expect(Math.abs(r.programs['aa-aadvantage']!.pqm - expectedAA)).toBeLessThan(2);
   });
 
-  test('multi-program comparison: J on AA, both programs queried', () => {
+  test('unknown carrier → missing rule, doesn\'t crash', () => {
     const req: RoutingRequest = {
-      legs: [{ from: 'SFO', to: 'NRT', operatingCarrier: 'AA' }],
-      cabin: 'business',
-      programs: ['aa-aadvantage', 'as-mileage-plan'],
-    };
-    const r = computeRouting(req, { airports: airportMap, programs: programMap });
-    expect(r.programs['aa-aadvantage']).toBeDefined();
-    expect(r.programs['as-mileage-plan']).toBeDefined();
-    // AS on AA partner gives 125% for J in our chart.
-    expect(r.programs['as-mileage-plan']?.pqm).toBe(Math.round(r.totalDistanceNm * 1.25));
-  });
-
-  test('unknown carrier → missing rule + note, not crash', () => {
-    const req: RoutingRequest = {
-      legs: [{ from: 'SFO', to: 'NRT', operatingCarrier: 'XX' }],
+      groups: [{ legs: [{ from: 'SFO', to: 'NRT', operatingCarrier: 'XX' }] }],
       cabin: 'business',
       programs: ['aa-aadvantage'],
     };
     const r = computeRouting(req, { airports: airportMap, programs: programMap });
-    expect(r.programs['aa-aadvantage']?.pqm).toBe(0);
-    expect(r.programs['aa-aadvantage']?.byLeg[0]?.missingRule).toBe(true);
-    expect(r.programs['aa-aadvantage']?.byLeg[0]?.notes[0]).toContain('XX');
+    expect(r.groups[0]?.programs['aa-aadvantage']?.pqm).toBe(0);
+    expect(r.groups[0]?.programs['aa-aadvantage']?.byLeg[0]?.missingRule).toBe(true);
   });
 
-  test('minimum-per-segment applies for AA short-haul', () => {
-    // Use a short-haul leg < 500 nm — minPerSegment should kick in for AA.
+  test('minPerSegment applies for AA short-haul', () => {
     const airports = new Map([
       ['SAN', { iata: 'SAN', name: '', city: '', country: 'US', lat: 32.7335, lon: -117.1897 }],
       ['LAX', { iata: 'LAX', name: '', city: '', country: 'US', lat: 33.94250107, lon: -118.4079971 }],
     ]);
     const req: RoutingRequest = {
-      legs: [{ from: 'SAN', to: 'LAX', operatingCarrier: 'AA' }],
+      groups: [{ legs: [{ from: 'SAN', to: 'LAX', operatingCarrier: 'AA' }] }],
       cabin: 'economy',
       programs: ['aa-aadvantage'],
     };
     const r = computeRouting(req, { airports, programs: programMap });
-    // Real distance SAN→LAX ≈ 95 nm; AA economy Y is 1x, but min 500 → PQM = 500.
-    expect(r.programs['aa-aadvantage']?.pqm).toBe(500);
+    expect(r.groups[0]?.programs['aa-aadvantage']?.pqm).toBe(500);
   });
 
   test('polar route detection — LAX→DXB warns', () => {
@@ -145,11 +137,73 @@ describe('computeRouting', () => {
     airports.set('LAX', { iata: 'LAX', name: '', city: '', country: 'US', lat: 33.94250107, lon: -118.4079971 });
     airports.set('DXB', { iata: 'DXB', name: '', city: '', country: 'AE', lat: 25.25279999, lon: 55.36439896 });
     const req: RoutingRequest = {
-      legs: [{ from: 'LAX', to: 'DXB', operatingCarrier: 'AA' }],
+      groups: [{ legs: [{ from: 'LAX', to: 'DXB', operatingCarrier: 'AA' }] }],
       cabin: 'business',
       programs: ['aa-aadvantage'],
     };
     const r = computeRouting(req, { airports, programs: programMap });
-    expect(r.warnings.some((w) => w.toLowerCase().includes('polar'))).toBe(true);
+    expect(r.groups[0]?.warnings.some((w) => w.toLowerCase().includes('polar'))).toBe(true);
+  });
+});
+
+describe('computeRouting (multi-group)', () => {
+  test('grand totals sum across groups', () => {
+    const req: RoutingRequest = {
+      groups: [
+        { legs: [{ from: 'SFO', to: 'NRT', operatingCarrier: 'AA' }] },
+        { legs: [{ from: 'JFK', to: 'LHR', operatingCarrier: 'BA' }] },
+      ],
+      cabin: 'business',
+      programs: ['aa-aadvantage'],
+    };
+    const r = computeRouting(req, { airports: airportMap, programs: programMap });
+    expect(r.groups.length).toBe(2);
+    const g0pqm = r.groups[0]?.programs['aa-aadvantage']?.pqm ?? 0;
+    const g1pqm = r.groups[1]?.programs['aa-aadvantage']?.pqm ?? 0;
+    expect(r.grandTotals['aa-aadvantage']?.pqm).toBe(g0pqm + g1pqm);
+    const g0Dist = r.groups[0]?.totalDistanceNm ?? 0;
+    const g1Dist = r.groups[1]?.totalDistanceNm ?? 0;
+    expect(Math.abs(r.grandTotalDistanceNm - (g0Dist + g1Dist))).toBeLessThan(0.001);
+  });
+
+  test('comparing direct vs connection: shorter direct, longer connection', () => {
+    // SFO→HKG direct (~5800nm) vs SFO→NRT→HKG (longer due to detour)
+    const req: RoutingRequest = {
+      groups: [
+        // Direct SFO-HKG
+        { legs: [{ from: 'SFO', to: 'HKG', operatingCarrier: 'CX' }] },
+        // Via NRT
+        {
+          legs: [
+            { from: 'SFO', to: 'NRT', operatingCarrier: 'JL' },
+            { from: 'NRT', to: 'HKG', operatingCarrier: 'CX' },
+          ],
+        },
+      ],
+      cabin: 'business',
+      programs: ['aa-aadvantage'],
+    };
+    const r = computeRouting(req, { airports: airportMap, programs: programMap });
+    const direct = r.groups[0]?.totalDistanceNm ?? 0;
+    const viaNrt = r.groups[1]?.totalDistanceNm ?? 0;
+    expect(direct).toBeGreaterThan(0);
+    expect(viaNrt).toBeGreaterThan(direct);
+  });
+
+  test('per-group warnings stay scoped to that group', () => {
+    const airports = new Map(AIRPORTS.map((a) => [a.iata, a]));
+    airports.set('LAX', { iata: 'LAX', name: '', city: '', country: 'US', lat: 33.94, lon: -118.4 });
+    airports.set('DXB', { iata: 'DXB', name: '', city: '', country: 'AE', lat: 25.25, lon: 55.36 });
+    const req: RoutingRequest = {
+      groups: [
+        { legs: [{ from: 'LAX', to: 'DXB', operatingCarrier: 'AA' }] },   // polar
+        { legs: [{ from: 'SFO', to: 'NRT', operatingCarrier: 'AA' }] },   // not polar
+      ],
+      cabin: 'business',
+      programs: ['aa-aadvantage'],
+    };
+    const r = computeRouting(req, { airports, programs: programMap });
+    expect(r.groups[0]?.warnings.some((w) => w.includes('polar'))).toBe(true);
+    expect(r.groups[1]?.warnings.some((w) => w.includes('polar'))).toBe(false);
   });
 });

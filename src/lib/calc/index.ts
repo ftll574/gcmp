@@ -1,29 +1,33 @@
 /**
  * Routing engine entry point. Pure functions only — no React, no DOM.
  *
- *   computeRouting(request, airports, programs)  →  RoutingResult
+ *   computeRouting(request, inputs)  →  RoutingResult
  *
- * For each leg:
- *   1. Compute great-circle distance (haversine).
- *   2. For each requested program: look up earning rule for
- *      (operatingCarrier, cabin). Multiply distance × pqm/rdm, honoring
- *      minPerSegment. Aggregate across legs.
- *   3. Detect polar routes; add warning.
+ * For each group:
+ *   For each leg:
+ *     1. Compute great-circle distance (haversine).
+ *     2. For each requested program: look up earning rule for
+ *        (operatingCarrier, cabin). Multiply distance × pqm/rdm, honoring
+ *        minPerSegment.
+ *   Aggregate per-group.
+ * Then sum across groups for grand totals.
  *
  * Honesty:
- *   - Missing carrier in a program's rule set → 0 + note + missingRule=true
+ *   - Missing carrier → 0 + note + missingRule=true
  *   - Mixed confidence across legs → program-level confidence becomes 'mixed'
- *   - Antipodal pairs degrade gracefully (haversine still works; UI shows arc)
+ *   - Antipodal pairs degrade gracefully
  */
 
 import {
   PROGRAM_LABELS,
   type Airport,
   type CabinId,
+  type GroupResult,
   type LegDistance,
   type LegEarning,
   type ProgramEarning,
   type ProgramId,
+  type RoutingGroup,
   type RoutingRequest,
   type RoutingResult,
 } from '../types.ts';
@@ -32,7 +36,6 @@ import { crossesPolar, distanceNm } from './haversine.ts';
 
 export interface EngineInputs {
   readonly airports: ReadonlyMap<string, Airport>;
-  /** Map of programId → loaded+validated Program rules. */
   readonly programs: ReadonlyMap<ProgramId, Program>;
 }
 
@@ -52,7 +55,6 @@ function resolveBucket(
     const bucket = carrier.fareBuckets[preferredLetter];
     if (bucket) return { bucket, letter: preferredLetter };
   }
-  // Fall back: try the conventional letters for this cabin.
   for (const letter of CABIN_FALLBACK_ORDER[cabin]) {
     const bucket = carrier.fareBuckets[letter];
     if (bucket && bucket.cabin === cabin) {
@@ -84,28 +86,19 @@ function reconcileConfidence(
   return 'mixed';
 }
 
-/**
- * Compute distance + per-program earning for a routing.
- *
- *   request → for each leg:
- *               distance via haversine
- *               for each program: lookup carrier × cabin → multiply by distance
- *           ↓
- *   per-leg array + per-program totals + warnings
- */
-export function computeRouting(
-  request: RoutingRequest,
-  inputs: EngineInputs,
-): RoutingResult {
-  const { airports, programs } = inputs;
-
-  // Per-leg distances.
+function computeGroup(
+  group: RoutingGroup,
+  cabin: CabinId,
+  requestedPrograms: ReadonlyArray<ProgramId>,
+  airports: ReadonlyMap<string, Airport>,
+  programs: ReadonlyMap<ProgramId, Program>,
+): GroupResult {
   const byLeg: LegDistance[] = [];
   let totalDistanceNm = 0;
   const warnings: string[] = [];
   let polarDetected = false;
 
-  for (const leg of request.legs) {
+  for (const leg of group.legs) {
     const from = airports.get(leg.from);
     const to = airports.get(leg.to);
     if (!from || !to) {
@@ -116,20 +109,14 @@ export function computeRouting(
     const d = distanceNm(from, to);
     byLeg.push({ leg, distanceNm: d });
     totalDistanceNm += d;
-    if (!polarDetected && crossesPolar(from, to, 70)) {
-      polarDetected = true;
-    }
+    if (!polarDetected && crossesPolar(from, to, 70)) polarDetected = true;
   }
-
   if (polarDetected) {
-    warnings.push(
-      'Route crosses polar region — distance accurate, but Mercator map will distort the arc.',
-    );
+    warnings.push('Route crosses polar region — distance accurate, but Mercator map will distort the arc.');
   }
 
-  // Per-program totals.
   const programResults: Partial<Record<ProgramId, ProgramEarning>> = {};
-  for (const programId of request.programs) {
+  for (const programId of requestedPrograms) {
     const program = programs.get(programId);
     const label = PROGRAM_LABELS[programId] ?? programId;
     if (!program) {
@@ -166,12 +153,12 @@ export function computeRouting(
         confidences.push(null);
         continue;
       }
-      const resolved = resolveBucket(carrier, request.cabin);
+      const resolved = resolveBucket(carrier, cabin);
       if (!resolved) {
         perLeg.push(
           emptyLegEarning(
             ld.distanceNm,
-            `${program.label}: no ${request.cabin} bucket for ${op}.`,
+            `${program.label}: no ${cabin} bucket for ${op}.`,
           ),
         );
         confidences.push(carrier.confidence);
@@ -179,25 +166,17 @@ export function computeRouting(
       }
       const { bucket } = resolved;
       const min = bucket.minPerSegment ?? 0;
-      const rawDistance = ld.distanceNm;
-      const effectiveDistance = Math.max(rawDistance, min);
-      const pqm = Math.round(effectiveDistance * bucket.pqm);
-      const rdm = Math.round(effectiveDistance * bucket.rdm);
+      const raw = ld.distanceNm;
+      const effective = Math.max(raw, min);
+      const pqm = Math.round(effective * bucket.pqm);
+      const rdm = Math.round(effective * bucket.rdm);
       totalPqm += pqm;
       totalRdm += rdm;
       const legNotes: string[] = [];
-      if (rawDistance < min) {
-        legNotes.push(`Minimum ${min} mi/segment applied.`);
-      }
+      if (raw < min) legNotes.push(`Minimum ${min} mi/segment applied.`);
       if (bucket.notes) legNotes.push(...bucket.notes);
       if (carrier.notes) legNotes.push(...carrier.notes);
-      perLeg.push({
-        pqm,
-        rdm,
-        distanceNm: rawDistance,
-        notes: legNotes,
-        missingRule: false,
-      });
+      perLeg.push({ pqm, rdm, distanceNm: raw, notes: legNotes, missingRule: false });
       confidences.push(carrier.confidence);
     }
 
@@ -215,15 +194,43 @@ export function computeRouting(
     };
   }
 
-  // Cast the partial record back to the full type — we filled in entries for
-  // every requested program (success or failure stub).
-  const programs_record = programResults as Record<ProgramId, ProgramEarning>;
-
   return {
     totalDistanceNm,
     byLeg,
-    programs: programs_record,
+    programs: programResults as Record<ProgramId, ProgramEarning>,
     warnings,
+  };
+}
+
+export function computeRouting(
+  request: RoutingRequest,
+  inputs: EngineInputs,
+): RoutingResult {
+  const groups = request.groups.map((g) =>
+    computeGroup(g, request.cabin, request.programs, inputs.airports, inputs.programs),
+  );
+
+  const grandTotals: Partial<Record<ProgramId, { pqm: number; rdm: number }>> = {};
+  for (const programId of request.programs) {
+    grandTotals[programId] = { pqm: 0, rdm: 0 };
+  }
+  let grandTotalDistanceNm = 0;
+  for (const g of groups) {
+    grandTotalDistanceNm += g.totalDistanceNm;
+    for (const programId of request.programs) {
+      const e = g.programs[programId];
+      if (e) {
+        const t = grandTotals[programId]!;
+        t.pqm += e.pqm;
+        t.rdm += e.rdm;
+      }
+    }
+  }
+
+  return {
+    groups,
+    grandTotalDistanceNm,
+    grandTotals: grandTotals as Record<ProgramId, { pqm: number; rdm: number }>,
     rulesVersionUsed: request.rulesVersion ?? 'current',
   };
 }
