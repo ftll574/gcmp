@@ -54,6 +54,206 @@
   letter-spacing: 0.1em;
 }
 
+.app-header-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+/* ── Language picker ── */
+.lang-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  border: 1px solid var(--rule);
+  border-radius: var(--border-radius-button);
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--type-chip);
+}
+.lang-picker-icon {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+.lang-picker-select {
+  border: none;
+  background: transparent;
+  font-size: var(--type-chip);
+  cursor: pointer;
+  padding: 2px var(--space-1);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+}
+.lang-picker-select:focus {
+  outline: none;
+}
+
+/* ── Mode toggle ── */
+.mode-toggle {
+  display: inline-flex;
+  border: 1px solid var(--rule);
+  border-radius: var(--border-radius-button);
+  overflow: hidden;
+}
+.mode-toggle-button {
+  border: none;
+  background: var(--bg-page);
+  color: var(--text-secondary);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--type-chip);
+  cursor: pointer;
+  border-right: 1px solid var(--rule);
+}
+.mode-toggle-button:last-child {
+  border-right: none;
+}
+.mode-toggle-button.active {
+  background: var(--accent);
+  color: var(--bg-page);
+}
+
+/* ── Glossary tooltip ── */
+.glossary {
+  position: relative;
+  display: inline;
+  border-bottom: 1px dotted var(--accent);
+  cursor: help;
+}
+.glossary:focus-visible {
+  outline-offset: 2px;
+}
+.glossary-term {
+  color: inherit;
+}
+.glossary-popover {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  max-width: 28ch;
+  width: max-content;
+  padding: var(--space-2) var(--space-3);
+  background: var(--text-primary);
+  color: var(--bg-page);
+  font-family: var(--font-sans);
+  font-size: var(--type-detail);
+  line-height: 1.4;
+  border-radius: var(--border-radius-chip);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  white-space: normal;
+}
+.glossary-popover::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--text-primary);
+}
+.glossary-pro {
+  display: inline;
+}
+
+/* ── Sample routings ── */
+.sample-routings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-bottom: var(--space-6);
+  border-bottom: 1px solid var(--rule);
+}
+.sample-routings-hint {
+  margin: 0;
+  font-size: var(--type-detail);
+  color: var(--text-secondary);
+}
+.sample-routings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+.sample-routing-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  background: var(--bg-map-land);
+  border: 1px solid var(--rule);
+  border-radius: var(--border-radius-button);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 150ms ease-out, transform 150ms ease-out;
+}
+.sample-routing-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+.sample-routing-title {
+  font-size: var(--type-chip);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+.sample-routing-subtitle {
+  font-family: var(--font-mono);
+  font-size: var(--type-detail);
+  color: var(--text-secondary);
+}
+
+/* ── Beginner mode additions ── */
+.earning-panel-comparison {
+  margin: 0 0 var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-map-land);
+  border-left: 3px solid var(--accent);
+  font-size: var(--type-detail);
+  color: var(--text-secondary);
+  border-radius: 0 var(--border-radius-chip) var(--border-radius-chip) 0;
+}
+.earning-program-summary {
+  margin: 0 0 var(--space-2);
+  font-size: var(--type-detail);
+  color: var(--text-secondary);
+}
+.mode-beginner .earning-number-unit {
+  font-family: var(--font-sans);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* ── App controls ── */
+.app-controls-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.app-controls-label {
+  font-size: var(--type-detail);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+}
+.app-clear {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--type-chip);
+  cursor: pointer;
+  border-radius: var(--border-radius-chip);
+}
+.app-clear:hover {
+  background: var(--rule);
+  color: var(--text-primary);
+}
+
+/* ── Autocomplete city-code hint ── */
+.autocomplete-city-code-hint {
+  background: var(--bg-map-land);
+  color: var(--accent);
+}
+
 /* ── Banner ── */
 .app-banner {
   padding: var(--space-2) var(--space-6);

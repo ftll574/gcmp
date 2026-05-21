@@ -1,10 +1,10 @@
 /**
  * Save / Share URL action row. "Copy as FlyerTalk post" was cut per
- * eng review OV7 (thesis contradiction — if the tool replaces FT, why
- * help you post on FT).
+ * eng review OV7.
  */
 
 import { useState } from 'react';
+import { useLocale } from '../i18n/use-locale.ts';
 
 interface Props {
   shareUrl: string | null;
@@ -13,13 +13,14 @@ interface Props {
 }
 
 export function ActionRow({ shareUrl, canSave, onSave }: Props): React.ReactElement {
+  const { t } = useLocale();
   const [saving, setSaving] = useState(false);
   const [saveName, setSaveName] = useState('');
   const [shareCopied, setShareCopied] = useState(false);
 
   function copyShareUrl(): void {
     if (!shareUrl) return;
-    const full = `${window.location.origin}${shareUrl}`;
+    const full = `${window.location.origin}${window.location.pathname}${shareUrl}`;
     void navigator.clipboard.writeText(full).then(() => {
       setShareCopied(true);
       setTimeout(() => setShareCopied(false), 1200);
@@ -42,7 +43,7 @@ export function ActionRow({ shareUrl, canSave, onSave }: Props): React.ReactElem
             className="action-save-input"
             value={saveName}
             onChange={(e) => setSaveName(e.target.value)}
-            placeholder="Routing name"
+            placeholder={t('save.promptName')}
             autoFocus
             onKeyDown={(e) => {
               if (e.key === 'Enter') commitSave();
@@ -53,7 +54,7 @@ export function ActionRow({ shareUrl, canSave, onSave }: Props): React.ReactElem
             }}
           />
           <button type="button" className="action-button primary" onClick={commitSave}>
-            Save
+            {t('save.save')}
           </button>
           <button
             type="button"
@@ -63,7 +64,7 @@ export function ActionRow({ shareUrl, canSave, onSave }: Props): React.ReactElem
               setSaveName('');
             }}
           >
-            Cancel
+            {t('save.cancel')}
           </button>
         </div>
       ) : (
@@ -73,18 +74,16 @@ export function ActionRow({ shareUrl, canSave, onSave }: Props): React.ReactElem
             className="action-button"
             onClick={() => setSaving(true)}
             disabled={!canSave}
-            aria-label="Save routing to local list"
           >
-            Save
+            {t('header.save')}
           </button>
           <button
             type="button"
             className="action-button"
             onClick={copyShareUrl}
             disabled={!shareUrl}
-            aria-label="Copy share URL to clipboard"
           >
-            {shareCopied ? 'Copied ✓' : 'Share URL'}
+            {shareCopied ? t('header.copied') : t('header.shareUrl')}
           </button>
         </>
       )}

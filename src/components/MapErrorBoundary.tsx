@@ -1,11 +1,6 @@
-/**
- * Error boundary around the map. If anything throws during render, fall
- * back to a text-rendered route list + retry button. Earning panel keeps
- * working — the map failing doesn't take down the whole page.
- */
-
 import { Component, type ReactNode } from 'react';
 import type { Airport, Leg } from '../lib/types.ts';
+import { t } from '../i18n/i18n.ts';
 
 interface Props {
   airports: ReadonlyArray<Airport>;
@@ -28,7 +23,6 @@ export class MapErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: unknown): void {
-    // Log for the developer; this is a non-fatal fallback path.
     console.error('MapView error caught by boundary:', error);
   }
 
@@ -41,13 +35,11 @@ export class MapErrorBoundary extends Component<Props, State> {
     const chain = this.props.airports.map((a) => a.iata).join(' → ');
     return (
       <div className="map-fallback" role="alert">
-        <p className="map-fallback-heading">Map failed to render.</p>
-        <p className="map-fallback-route">{chain || '(empty routing)'}</p>
-        <p className="map-fallback-hint">
-          The earning calculations still work. Retry the map render below.
-        </p>
+        <p className="map-fallback-heading">{t('map.fallbackHeading')}</p>
+        <p className="map-fallback-route">{chain || '—'}</p>
+        <p className="map-fallback-hint">{t('map.fallbackHint')}</p>
         <button type="button" className="map-fallback-retry" onClick={this.reset}>
-          Retry
+          {t('map.retry')}
         </button>
       </div>
     );

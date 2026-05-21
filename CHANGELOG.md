@@ -2,6 +2,51 @@
 
 All notable changes to this project will be documented in this file. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow `MAJOR.MINOR.PATCH.MICRO`.
 
+## [0.2.0.0] - 2026-05-22
+
+### Added — newbie-friendly + multilingual
+
+- **i18n foundation** (`src/i18n/`):
+  - Hand-rolled `t(key, params)` translator with dotted-key paths and `{name}` interpolation
+  - `useLocale()` hook backed by `useSyncExternalStore`
+  - Locale detection order: `?lang=` URL → localStorage → navigator.language → English fallback
+  - Sets `<html lang>` on switch
+  - Locales: English (en) + 繁體中文 (zh-TW) — every UI string translated
+- **LanguagePicker** in the header (top-right)
+- **Beginner / Pro mode toggle**:
+  - Beginner: jargon glossary tooltips, sample-routing cards, plain-language earning summary, expanded placeholders
+  - Pro: compact data-dense UI from v0.1
+  - Choice persists in localStorage
+- **Glossary tooltips** (`Glossary.tsx`) on PQM / RDM / cabin / credit / operating carrier (definitions in locale JSON)
+- **Sample routings carousel** (`SampleRoutings.tsx`) — 4 preset routings (Trans-Pacific, Trans-Atlantic, US-Japan, Asia loop). Click → fills the routing immediately. Shown in Beginner mode when chain is empty.
+- **City pseudo-code support** (`src/lib/city-codes.ts`):
+  - NYC → JFK/LGA/EWR, TYO → HND/NRT, LON → LHR/LGW/STN/LCY/LTN/SEN, PAR/WAS/CHI/MOW/BJS/SHA/SEL/OSA/YTO/YMQ/MIL/STO/SAO/BUE/RIO
+  - Autocomplete shows "{code} is a city — pick the airport you want" hint
+  - Enter does NOT auto-commit ambiguous city codes
+- **Localized airport search** (`src/i18n/localized-cities.ts`):
+  - ~80 major hubs aliased in zh-TW
+  - Type 東京 → finds HND + NRT; 倫敦 → LHR + LGW + STN; etc.
+- **Plain-language summary** in Beginner mode panel: "在 American Airlines 飛 商務艙，你能賺：" above each program's PQM/RDM
+- **"Clear" button** to reset the leg chain quickly
+
+### Changed
+
+- `EarningPanel` shows "Status Miles" / "Award Miles" full names in Beginner mode (with Glossary tooltips); reverts to "PQM" / "RDM" mono shorthand in Pro mode
+- `CabinSelector` hides labels in Pro mode (letter-only) for compactness
+- `AirportAutocomplete` now accepts a `mode` prop; Beginner placeholder mentions IATA + city + city codes; Pro placeholder is IATA-only
+- `airport-index.search()` now returns `SearchResult[]` (was `Airport[]`) with a `match` field — 7 match-type tiers (exact-iata, localized, city-code, iata-prefix, icao-prefix, city-prefix, name-substring)
+
+### Tests
+
+- Added: airport-index covers city-code resolution, localized-alias matching, locale-aware fallback (no zh-TW alias matches when locale unset)
+- 45 tests passing (was 41)
+
+### Notes
+
+- Bundle: 95.52 KB gzipped initial JS (well under 350 KB budget; was 87 KB in v0.1)
+- All v0.1 features remain — pro mode is a strict superset
+- Next: v0.3.0 interactive map + multi-group routings + projections + continent outlines
+
 ## [0.1.0.0] - 2026-05-22
 
 ### Added
