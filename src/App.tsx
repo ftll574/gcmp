@@ -19,11 +19,13 @@ import { MapErrorBoundary } from './components/MapErrorBoundary.tsx';
 import { MapView } from './components/MapView.tsx';
 import { MobileBanner } from './components/MobileBanner.tsx';
 import { ModeToggle } from './components/ModeToggle.tsx';
+import { ProjectionPicker } from './components/ProjectionPicker.tsx';
 import { SampleRoutings } from './components/SampleRoutings.tsx';
 import { SavedRoutings } from './components/SavedRoutings.tsx';
 import { useLocale } from './i18n/use-locale.ts';
 import { buildAirportIndex } from './lib/airport-index.ts';
 import { computeRouting } from './lib/calc/index.ts';
+import { DEFAULT_PROJECTION, type ProjectionId } from './lib/calc/projections.ts';
 import { parseShareUrl } from './lib/url-schema.ts';
 import {
   PROGRAM_LABELS,
@@ -197,6 +199,10 @@ function Ready({
     setRouting({ ...routing, cabin });
   }
 
+  function changeProjection(projection: ProjectionId): void {
+    setRouting({ ...routing, projection });
+  }
+
   function toggleProgram(programId: ProgramId): void {
     const set = new Set(routing.programs);
     if (set.has(programId)) set.delete(programId);
@@ -290,12 +296,20 @@ function Ready({
       </section>
       <main className="app-body">
         <div ref={mapRef} className="app-map-wrap">
+          <div className="app-map-toolbar">
+            <ProjectionPicker
+              value={routing.projection ?? DEFAULT_PROJECTION}
+              onChange={changeProjection}
+            />
+          </div>
           <MapErrorBoundary airports={chainAirports} legs={routing.legs}>
             <MapView
+              key={routing.projection ?? DEFAULT_PROJECTION}
               airports={chainAirports}
               legs={routing.legs}
               width={mapSize.width}
               height={mapSize.height}
+              projection={routing.projection ?? DEFAULT_PROJECTION}
             />
           </MapErrorBoundary>
         </div>

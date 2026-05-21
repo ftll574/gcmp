@@ -2,6 +2,54 @@
 
 All notable changes to this project will be documented in this file. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow `MAJOR.MINOR.PATCH.MICRO`.
 
+## [0.3.0.0] - 2026-05-22
+
+### Added — interactive map + projections + continent outlines
+
+- **4 map projections** via `d3-geo`, switchable in-place:
+  - **Mercator** (default) — familiar
+  - **Equirectangular** — flat 2:1 ratio
+  - **Azimuthal Equidistant** — gcmap's signature; great-circle distances FROM CENTER appear as straight radial lines
+  - **Orthographic** — globe view, only the visible hemisphere drawn
+  - Azimuthal + Orthographic auto-center on the first airport in the chain
+- **Pan and zoom on the map:**
+  - Drag with mouse / touch to pan
+  - Mouse wheel to zoom (zooms toward the cursor — keeps the point under the pointer fixed)
+  - `Reset` button appears top-right when the view is panned/zoomed
+  - Airport dot + label size compensate for zoom level (don't get huge when zoomed in)
+- **Continent outlines** rendered from `world-atlas` 110m TopoJSON (~25 KB gzipped)
+  - Land in cream parchment, sea in muted blue-gray (per DESIGN.md)
+  - Graticule (lat/lon grid every 30°) drawn over the land
+- **`ProjectionPicker`** — floating control top-left of the map
+- **URL schema extended** with optional `?proj=<short>` param:
+  - `m` = mercator (default — omitted from URL)
+  - `e` = equirectangular
+  - `a` = azimuthal-equidistant
+  - `o` = orthographic
+  - Shared URLs preserve the user's projection choice
+- **`useWorldMap()`** hook backed by `useSyncExternalStore` — fetches world outline once per session, caches in module scope
+
+### Changed
+
+- `MapView` rewritten around `d3-geo` projection abstraction. Old hand-rolled Mercator math kept in `svg-arc.ts` for tests and backwards compat.
+- Pan/zoom resets on projection change via React `key` (component remounts) — clean state, no setState-in-effect.
+
+### Dependencies
+
+- `d3-geo`, `d3-geo-projection`, `topojson-client`, `world-atlas` (runtime)
+- `@types/d3-geo`, `@types/topojson-client` (dev)
+
+### Tests
+
+- Added 6 projection URL tests — round-trip for `a/e/o/m`, encode omits `m`, parse rejects unknown short code
+- 51 tests passing (was 45)
+
+### Notes
+
+- Bundle: 95.52 KB gzipped → **106.93 KB gzipped** (d3-geo + topojson cost ~11 KB; under 350 KB budget)
+- World atlas JSON loaded separately as `/data/world-countries-110m.json` (~25 KB gzipped), not bundled
+- Next: v0.4.0 multi-group routings (gcmap-style `?P=SFO-NRT,JFK-LHR`)
+
 ## [0.2.0.0] - 2026-05-22
 
 ### Added — newbie-friendly + multilingual

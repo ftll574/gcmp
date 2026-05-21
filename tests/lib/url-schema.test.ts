@@ -124,4 +124,64 @@ describe('parseShareUrl', () => {
       expect(parsed.kind).toBe('malformed-path');
     }
   });
+
+  test('parses projection short code (proj=a → azimuthal-equidistant)', () => {
+    const parsed = parseShareUrl('/r/v1/SFO-NRT?op=AA&p=AA&c=J&proj=a');
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.request.projection).toBe('azimuthal-equidistant');
+    }
+  });
+
+  test('parses projection short code (proj=o → orthographic)', () => {
+    const parsed = parseShareUrl('/r/v1/SFO-NRT?op=AA&p=AA&c=J&proj=o');
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.request.projection).toBe('orthographic');
+    }
+  });
+
+  test('rejects unknown projection short code', () => {
+    const parsed = parseShareUrl('/r/v1/SFO-NRT?op=AA&p=AA&c=J&proj=z');
+    expect(parsed.ok).toBe(false);
+    if (!parsed.ok) {
+      expect(parsed.kind).toBe('malformed-path');
+    }
+  });
+
+  test('omits proj from encode when projection is mercator (default)', () => {
+    const req = {
+      legs: [{ from: 'SFO', to: 'NRT', operatingCarrier: 'AA' }],
+      cabin: 'business' as const,
+      programs: ['aa-aadvantage' as const],
+      projection: 'mercator' as const,
+    };
+    const encoded = encodeShareUrl(req);
+    expect(encoded).not.toContain('proj=');
+  });
+
+  test('emits proj from encode when projection is non-default', () => {
+    const req = {
+      legs: [{ from: 'SFO', to: 'NRT', operatingCarrier: 'AA' }],
+      cabin: 'business' as const,
+      programs: ['aa-aadvantage' as const],
+      projection: 'azimuthal-equidistant' as const,
+    };
+    const encoded = encodeShareUrl(req);
+    expect(encoded).toContain('proj=a');
+  });
+
+  test('round-trips projection through encode → parse', () => {
+    const req = {
+      legs: [{ from: 'SFO', to: 'NRT', operatingCarrier: 'AA' }],
+      cabin: 'business' as const,
+      programs: ['aa-aadvantage' as const],
+      projection: 'orthographic' as const,
+    };
+    const parsed = parseShareUrl(encodeShareUrl(req));
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.request.projection).toBe('orthographic');
+    }
+  });
 });
