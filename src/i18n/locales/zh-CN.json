@@ -13,6 +13,8 @@
   "header": {
     "save": "保存",
     "shareUrl": "分享链接",
+    "copyText": "复制文字版",
+    "copyTextTitle": "纯文字航段表 — 可贴到飞客茶馆 / PTT / FlyerTalk",
     "copied": "已复制 ✓",
     "modeBeginner": "新手",
     "modePro": "老手",

@@ -373,6 +373,8 @@ function Ready({
             onSave={(name) => {
               if (shareUrl) save(name, shareUrl);
             }}
+            result={result}
+            routing={routing}
           />
         </div>
       </header>

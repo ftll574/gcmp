@@ -13,6 +13,8 @@
   "header": {
     "save": "Save",
     "shareUrl": "Share URL",
+    "copyText": "Copy text",
+    "copyTextTitle": "Plain-text routing table — paste into FlyerTalk / 飞客茶馆 / PTT",
     "copied": "Copied ✓",
     "modeBeginner": "Beginner",
     "modePro": "Pro",
