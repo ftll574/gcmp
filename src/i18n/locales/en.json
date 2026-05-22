@@ -69,6 +69,19 @@
     "grandTotal": "Across all routings",
     "compareHint": "Compare multiple routings on one map. The PQM totals below sum across all routings."
   },
+  "tier": {
+    "label": "Elite tier",
+    "none": "None",
+    "mid": "Silver",
+    "high": "Gold",
+    "top": "Plat / 1K",
+    "bonusLine": "+{count} elite bonus ({pct}%)",
+    "tip": "Generalized tier — applies a bonus % to Award Miles only. None = 0%, Silver = +25%, Gold = +50%, Plat/1K = +100%."
+  },
+  "revenueBased": {
+    "chip": "estimate",
+    "tip": "This program uses revenue-based earning (you earn miles per dollar spent on the fare, not per distance flown). Numbers shown are a cabin-bucket approximation — verify against your statement."
+  },
   "cabin": {
     "label": "Cabin",
     "economy": "Economy",

@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow `MAJOR.MINOR.PATCH.MICRO`.
 
+## [1.9.0.0] - 2026-05-23
+
+### Added — generalized elite tier + revenue-based disclaimer
+
+Final piece of the post-v1.5 follow-up backlog. Two convergent persona asks land here:
+
+- **Status tier selector** (universal): Priya + Frank — Award Miles bonuses scale with elite status. None / Silver / Gold / Plat-1K → +0% / +25% / +50% / +100% on RDM. Status Miles (PQM) are never bonused.
+- **Revenue-based disclaimer**: Frank's UA-PQP-since-2020 callback. UA / AA / DL are flagged with an orange "estimate" chip on their program cards. The distance-multiplier numbers are kept as a cabin-bucket approximation; the chip tells users to verify against statement.
+
+### Engine + URL
+
+- New `EliteTier` type: `'none' | 'mid' | 'high' | 'top'` + `ELITE_TIER_BONUS` lookup table.
+- `RoutingRequest.tier?: EliteTier` (optional).
+- URL: `&st=n|m|h|t`. Omitted when 'none' — every v0–v1.8 URL still parses identically.
+- `ProgramEarning` extended with: `rdmBase` (pre-bonus), `tierBonus` (applied multiplier), `revenueBased` (flag).
+- `computeGroup` applies the bonus to `totalRdm` per program when tier > 0. PQM untouched.
+- New `REVENUE_BASED_PROGRAMS` set in `src/lib/calc/index.ts` — currently UA, AA, DL. Surfaced via `revenueBased: true` on the ProgramEarning.
+
+### UI
+
+- New `TierSelector` segmented control next to Cabin + ProgramPicker. iOS sliding-pill style. Labels: None / Silver / Gold / Plat-1K (4 locales).
+- Each program card shows a `+1,200 elite bonus (25%)` line below RDM when a non-none tier is active.
+- Revenue-based programs get an orange `estimate` pill next to the confidence chip. Hover tooltip explains the limitation.
+- All 4 locales updated (tier labels + revenue-based tooltip text).
+
+### Tests
+
+- 4 new engine tests: no-tier base case, top → +100%, mid → +25%, revenue-based flag presence.
+- 5 new URL-schema tests: encode omits when none, encode/parse round-trip top, reject malformed, backwards-compat.
+- **101/101 total tests pass** (was 92 → +9).
+
+### Notes
+
+- Bundle: ~7.35 → 7.5 KB gzip CSS · ~123 → 124.5 KB gzip JS
+- Backwards-compat: every URL from v0.x–v1.8 still loads identically (no tier in URL → behaves as v1.8 did)
+
 ## [1.8.0.0] - 2026-05-23
 
 ### Added — map polish (Kenji bucket)

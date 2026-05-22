@@ -35,6 +35,7 @@ import {
   type AirlineIata,
   type Airport,
   type CabinId,
+  type EliteTier,
   type Iata,
   type Leg,
   type ProgramId,
@@ -307,6 +308,22 @@ function Ready({
     setRouting({ ...routing, projection });
   }
 
+  function changeTier(tier: EliteTier): void {
+    if (tier === 'none') {
+      // Drop the field to keep URL clean (encoder also omits 'none').
+      const next: RoutingRequest = {
+        groups: routing.groups,
+        cabin: routing.cabin,
+        programs: routing.programs,
+        ...(routing.rulesVersion !== undefined ? { rulesVersion: routing.rulesVersion } : {}),
+        ...(routing.projection !== undefined ? { projection: routing.projection } : {}),
+      };
+      setRouting(next);
+    } else {
+      setRouting({ ...routing, tier });
+    }
+  }
+
   function toggleProgram(programId: ProgramId): void {
     const set = new Set(routing.programs);
     if (set.has(programId)) set.delete(programId);
@@ -465,6 +482,10 @@ function Ready({
               </span>
               <ProgramPicker active={routing.programs} onToggle={toggleProgram} />
             </div>
+            <div className="app-controls-group">
+              <span className="app-controls-label">{t('tier.label')}</span>
+              <TierSelector value={routing.tier ?? 'none'} onChange={changeTier} />
+            </div>
             <button type="button" className="app-clear" onClick={clearAll}>
               {t('input.clearAll')}
             </button>
@@ -552,6 +573,37 @@ function Ready({
         </span>
         <span className="app-footer-note">{t('footer.disclaimer')}</span>
       </footer>
+    </div>
+  );
+}
+
+interface TierSelectorProps {
+  value: EliteTier;
+  onChange: (tier: EliteTier) => void;
+}
+
+function TierSelector({ value, onChange }: TierSelectorProps): React.ReactElement {
+  const { t } = useLocale();
+  const tiers: ReadonlyArray<{ id: EliteTier; key: string }> = [
+    { id: 'none', key: 'tier.none' },
+    { id: 'mid', key: 'tier.mid' },
+    { id: 'high', key: 'tier.high' },
+    { id: 'top', key: 'tier.top' },
+  ];
+  return (
+    <div className="tier-selector" role="radiogroup" aria-label={t('tier.label')}>
+      {tiers.map((tt) => (
+        <button
+          key={tt.id}
+          type="button"
+          role="radio"
+          aria-checked={value === tt.id}
+          className={`tier-tab${value === tt.id ? ' selected' : ''}`}
+          onClick={() => onChange(tt.id)}
+        >
+          {t(tt.key)}
+        </button>
+      ))}
     </div>
   );
 }

@@ -30,6 +30,7 @@
 import {
   PROGRAM_SHORT_CODES,
   type CabinId,
+  type EliteTier,
   type Leg,
   type ProgramId,
   type ProgramShortCode,
@@ -38,6 +39,19 @@ import {
   type UrlParseError,
   type UrlParseResult,
 } from './types.ts';
+
+const TIER_BY_LETTER: Record<string, EliteTier> = {
+  n: 'none',
+  m: 'mid',
+  h: 'high',
+  t: 'top',
+};
+const LETTER_BY_TIER: Record<EliteTier, string> = {
+  none: 'n',
+  mid: 'm',
+  high: 'h',
+  top: 't',
+};
 import type { ProjectionId } from './calc/projections.ts';
 
 const SCHEMA_VERSION = 'v1';
@@ -136,6 +150,7 @@ export function parseShareUrl(input: string): UrlParseResult {
   const fcRaw = params.get('fc');
   const rvRaw = params.get('rv');
   const projRaw = params.get('proj');
+  const stRaw = params.get('st');
 
   if (!opRaw) return err('missing-required-param', 'Missing `op` (operating carriers) in query.');
   if (!pRaw) return err('missing-required-param', 'Missing `p` (programs) in query.');
@@ -271,12 +286,22 @@ export function parseShareUrl(input: string): UrlParseResult {
     projection = resolved;
   }
 
+  let tier: EliteTier | undefined;
+  if (stRaw) {
+    const resolved = TIER_BY_LETTER[stRaw.toLowerCase()];
+    if (!resolved) {
+      return err('malformed-path', `Invalid status tier "${stRaw}". Expected n / m / h / t.`);
+    }
+    if (resolved !== 'none') tier = resolved;
+  }
+
   const request: RoutingRequest = {
     groups,
     cabin,
     programs,
     projection,
     ...(rulesVersion !== undefined ? { rulesVersion } : {}),
+    ...(tier !== undefined ? { tier } : {}),
   };
 
   return { ok: true, request };
@@ -333,6 +358,11 @@ export function encodeShareUrl(req: RoutingRequest): string {
   // only one we still omit for backwards-compat with v1.0 shared URLs.
   if (req.projection !== undefined && req.projection !== 'mercator') {
     params.set('proj', PROJECTION_SHORT[req.projection]);
+  }
+  // Status tier (v1.9). Omit when 'none' — keeps URL clean and preserves
+  // every v0-v1.8 URL exactly.
+  if (req.tier !== undefined && req.tier !== 'none') {
+    params.set('st', LETTER_BY_TIER[req.tier]);
   }
   return `/r/${SCHEMA_VERSION}/${path}?${params.toString()}`;
 }
