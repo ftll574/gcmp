@@ -2,6 +2,88 @@
 
 All notable changes to this project will be documented in this file. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow `MAJOR.MINOR.PATCH.MICRO`.
 
+## [1.5.0.0] - 2026-05-23
+
+### Added — fare class, copy-as-text, native Asian glossary
+
+User feedback after v1.4: *"總覺得跟我們要的差很多"* — the Apple visual redesign was polish on a calculator that had the wrong primitive. Spawned 4 research agents across wheretocredit.com, gcmap.com / flightconnections, TPG redemption tools, and the Asian Chinese/Japanese mileage community. Three convergent gaps emerged; this release ships all three.
+
+#### Phase A — per-leg fare class (engine + URL)
+
+- `Leg` extended with optional `fareClass?: string` (single letter A-Z)
+- `resolveBucket(carrier, cabin, fareClassOverride?)` uses the exact letter when set, falls back to `defaultLetterByCabin[cabin]` otherwise. Per-leg warning when an override letter doesn't exist on the carrier.
+- URL schema extended: `&fc=J,C,Y;F,F` — mirrors `op` shape (semicolon per group, comma per leg). Empty cells (`fc=J,,Y`) mean "use cabin default for that leg". Skipped entirely when no leg has a fareClass — **every v0.x–v1.4 URL still parses + renders identically**.
+- 11 new tests; 81/81 url-schema tests pass.
+
+This is the wheretocredit/milelion table-stakes input the v1.4 model was missing. CX I=25% vs J=150% in the same J cabin. SQ V vs T. BA K vs N. Without the letter, partner credit was guesswork.
+
+#### Phase B — fare-class chip on every leg
+
+- LegChain renders a single-letter dropdown next to the carrier
+- Defaults to "—" (cabin default); lights up tint-blue when overridden
+- Options grouped by cabin: First (F A P R) · Business (J C D I Z) · Premium (W E T O) · Economy (Y B M H K L Q V S N G X)
+- App.tsx wired with `changeFareClass(legIndex, letter | undefined)`
+- 4 locales: 繁中 預訂艙等 · 简中 订位舱等 · 日本語 予約クラス
+
+Verified: setting SFO→NRT on AA to fare class D drops AA AAdvantage from 9,801 → 7,580 Status Miles. The math reflects reality.
+
+#### Phase C — "Copy text" plain-text forum-post exporter
+
+- New `src/lib/forum-post.ts` — pure function `formatForumPost({ request, result, shareUrl })`
+- Monospace ASCII table auto-fits column widths, includes route / cabin / rules version / per-leg fare class / per-program per-leg + totals / horizontal rule / share URL on last line
+- New "Copy text" button in the header next to "Share URL"
+- 11 new tests for structural invariants (no NaN, includes route, fare classes, totals, share URL)
+
+Asian flyertea/PTT users and US FlyerTalk users both paste routings as ASCII tables, not screenshots — this is the lowest-effort highest-leverage win.
+
+Example output (SFO-NRT-BKK, AA + Alaska):
+
+```
+gcmp · SFO → NRT → BKK · Business · Rules 2026.4
+
+LEG       OP  FC    DIST     AA  Alaska
+SFO→NRT   AA  J    4,442  6,663   5,553
+NRT→BKK   JL  D    2,510  3,138   3,138
+────────────────────────────────────────
+TOTAL              6,953  9,801   8,691
+
+https://gcmp.app/#/r/v1/SFO-NRT-BKK?op=AA,JL&p=AA,AS&c=J&fc=J,D
+```
+
+#### Phase D — native points-and-miles glossary (繁中/简中)
+
+Replaced literal translations with native Asian points-and-miles terminology, per Asia research agent:
+
+| Concept | Old | New (繁) | New (简) |
+|---|---|---|---|
+| Status Miles | 升等哩程 / 升级里程 | 菁英資格哩數 | 精英资格里程 |
+| Redeemable Miles | 兌換哩程 / 兑换里程 | 酬賓里數 | 酬宾里数 |
+| Booking Class | (lit.) 票價代碼 | 訂位艙等代碼 | 订位舱等代码 |
+| Partner Airline | (lit.) | 合作夥伴航空 | 合作伙伴航空 |
+| Great Circle | (absent) | 大圓航線 | 大圆航线 |
+| Operating Carrier | 實際飛 | 實際執飛 | 实际执飞 |
+| Routing copy | "找出每段航班…" | 搭 X 的 Y, 這條航線可以累積 | 搭 X 的 Y, 这条航线可以累积 |
+
+Plus polished tagline ("查票計算機" → "哩程查票計算機"), footer copy, picker hints, glossary popovers across panel + glossary + projection.
+
+### Notes
+
+- Bundle: 6.76 → **6.84 KB gzipped CSS** (+0.08 KB) · 118.20 → **119.91 KB gzipped JS** (+1.7 KB)
+- **92/92 tests pass** (was 71 in v1.4 → +21 new across phases A and C)
+- Backwards-compat: every URL from v0.x–v1.4 still parses + renders identically
+- Known minor polish: header overflows at narrow widths now with 4 controls (Save / Share URL / Copy text / mode); needs wrap-friendly responsive layout
+
+### Known follow-ups (researched but not in v1.5)
+
+- Add more programs (CI, MU, KE, TG, MH, JL) — Asia agent's #3
+- ¢/mile chip + cash-equivalent total per program (TPG May 2026 valuations) — redemption-bridge agent's #1
+- Outbound deeplink to seats.aero — redemption-bridge #2
+- "Where to credit?" inverse view (carrier+fare → sorted programs)
+- Browse-by-airline matrix pages (`/airline/JL`) — wheretocredit's SEO moat
+- UA-correct PQP/PQF math (Frank's #1; data accuracy)
+- Map polish: distance label on arc, SVG export, transparent PNG, polar-crossing dots (Kenji)
+- Status tier selector (Silver/Gold/1K bonus)
+
 ## [1.4.0.0] - 2026-05-22
 
 ### Changed — Apple design language redesign + recommendation badge
