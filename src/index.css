@@ -1,45 +1,200 @@
 /* ───────────────────────────────────────────────────────────────────
-   gcmp — design tokens, from DESIGN.md
+   gcmp — design tokens (v1.4 Apple redesign)
+
+   Modeled on Apple's HIG semantic colors. Two layers:
+
+   1.  iOS-style semantic tokens with full light/dark coverage:
+       --label, --secondary-label, --separator, --tint, --system-background,
+       --secondary-system-background, --tertiary-system-background, --fill,
+       --semantic-{green,orange,red,yellow}, etc.
+
+   2.  Legacy aliases (--bg-page, --accent, --text-primary, …) that mapped
+       to the editorial palette in v1.0–v1.3. They're now reassigned to the
+       new semantic tokens so the entire app picks up the redesign without
+       per-selector rewrites.
+
+   Dark mode is implemented via prefers-color-scheme. Set `color-scheme:
+   light dark` so the browser also themes scrollbars + form controls
+   correctly.
+
+   Type stack: SF Pro Display + SF Pro Text via -apple-system, falling
+   back to BlinkMacSystemFont, Segoe UI, Roboto, system-ui. Mono is
+   ui-monospace which resolves to SF Mono on Apple platforms.
+
+   Spacing follows an 8-pt grid (with 4-pt half-steps where needed).
+   Radii follow Apple's "rounded rectangles" — pills for chips, 10 px
+   for buttons, 14 px for cards, 28 px for sheets.
    ─────────────────────────────────────────────────────────────────── */
 
 :root {
-  /* Color palette */
-  --bg-page: #F4EFE6;       /* parchment */
-  --bg-map-land: #FAF6EE;
-  --bg-map-sea: #DCE5E8;
-  --text-primary: #1F1F1F;  /* charcoal */
-  --text-secondary: #6B6359;
-  --accent: #0D5C73;        /* navigational chart teal */
-  --accent-hover: #0A4858;
-  --warning: #C97A3F;       /* amber */
-  --rule: #E5DECF;          /* hairline */
+  /* ── Apple semantic colors — Light ── */
+  --label: #1d1d1f;
+  --secondary-label: rgba(60, 60, 67, 0.6);
+  --tertiary-label: rgba(60, 60, 67, 0.3);
+  --quaternary-label: rgba(60, 60, 67, 0.18);
+  --separator: rgba(60, 60, 67, 0.12);
+  --opaque-separator: #c6c6c8;
 
-  /* Typography */
-  --type-brand: 28px;
-  --type-headline: 28px;
-  --type-body: 16px;
-  --type-chip: 14px;
+  --system-background: #ffffff;
+  --secondary-system-background: #f2f2f7;
+  --tertiary-system-background: #ffffff;
+  --grouped-background: #f2f2f7;
+  --secondary-grouped-background: #ffffff;
+
+  --fill: rgba(120, 120, 128, 0.2);
+  --secondary-fill: rgba(120, 120, 128, 0.16);
+  --tertiary-fill: rgba(118, 118, 128, 0.12);
+  --quaternary-fill: rgba(116, 116, 128, 0.08);
+
+  --tint: #007aff;            /* iOS system blue */
+  --tint-pressed: #0051d4;
+  --tint-fill-soft: rgba(0, 122, 255, 0.12);
+
+  --semantic-green: #34c759;
+  --semantic-orange: #ff9500;
+  --semantic-red: #ff3b30;
+  --semantic-yellow: #ffcc00;
+  --semantic-purple: #af52de;
+
+  /* Map theming — light = editorial-warm */
+  --map-land: #f7f7f9;
+  --map-sea: #eaeef2;
+  --map-coast: rgba(60, 60, 67, 0.22);
+  --map-graticule: rgba(60, 60, 67, 0.08);
+
+  /* Shadows (Apple Sonoma-style — soft, layered) */
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 1px rgba(0, 0, 0, 0.03);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
+  --shadow-popover: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-sheet: 0 -8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-modal: 0 8px 32px rgba(0, 0, 0, 0.16);
+
+  /* Vibrancy (translucent layer) */
+  --material-thin: rgba(255, 255, 255, 0.72);
+  --material-regular: rgba(255, 255, 255, 0.8);
+  --material-thick: rgba(255, 255, 255, 0.92);
+
+  /* ── Typography ── */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text',
+    'Helvetica Neue', 'Segoe UI', Roboto, system-ui, sans-serif;
+  --font-mono:
+    ui-monospace, 'SF Mono', Menlo, 'JetBrains Mono', Consolas, monospace;
+
+  /* Type scale (matches Apple HIG sizes, slightly fluid) */
+  --type-display: clamp(28px, 3.6vw, 34px);     /* Title 1 */
+  --type-title: 22px;                            /* Title 2 */
+  --type-headline: 17px;                         /* Headline (semibold) */
+  --type-body: 17px;
+  --type-callout: 16px;
+  --type-subheadline: 15px;
+  --type-footnote: 13px;
+  --type-caption: 12px;
+  --type-caption-2: 11px;
+
+  /* Legacy type aliases */
+  --type-brand: 22px;
+  --type-chip: 13px;
   --type-detail: 12px;
-  --font-sans: 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  /* Spacing scale */
+  /* ── Spacing (8-pt grid) ── */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
   --space-4: 16px;
+  --space-5: 20px;
   --space-6: 24px;
   --space-8: 32px;
+  --space-10: 40px;
   --space-12: 48px;
   --space-16: 64px;
 
-  /* Misc */
-  --border-radius-chip: 4px;
-  --border-radius-button: 6px;
-  --focus-ring-offset: 2px;
-  --focus-ring-width: 2px;
+  /* ── Radii ── */
+  --radius-pill: 9999px;
+  --radius-button: 10px;
+  --radius-input: 12px;
+  --radius-card: 14px;
+  --radius-sheet: 28px;
 
-  color-scheme: light;
+  --border-radius-chip: var(--radius-pill);
+  --border-radius-button: var(--radius-button);
+
+  /* ── Focus ring ── */
+  --focus-ring-color: var(--tint);
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 2px;
+
+  /* ── Motion ── */
+  --motion-fast: 120ms;
+  --motion-base: 220ms;
+  --motion-slow: 360ms;
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ── Legacy palette aliases — map old names to new semantic tokens. ── */
+  --bg-page: var(--system-background);
+  --bg-map-land: var(--map-land);
+  --bg-map-sea: var(--map-sea);
+  --text-primary: var(--label);
+  --text-secondary: var(--secondary-label);
+  --accent: var(--tint);
+  --accent-hover: var(--tint-pressed);
+  --warning: var(--semantic-orange);
+  --rule: var(--separator);
+  --warn-bg: rgba(255, 149, 0, 0.12);
+  --bg-muted: var(--quaternary-fill);
+
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* ── Apple semantic colors — Dark ── */
+    --label: #ffffff;
+    --secondary-label: rgba(235, 235, 245, 0.6);
+    --tertiary-label: rgba(235, 235, 245, 0.3);
+    --quaternary-label: rgba(235, 235, 245, 0.18);
+    --separator: rgba(84, 84, 88, 0.65);
+    --opaque-separator: #38383a;
+
+    --system-background: #000000;
+    --secondary-system-background: #1c1c1e;
+    --tertiary-system-background: #2c2c2e;
+    --grouped-background: #000000;
+    --secondary-grouped-background: #1c1c1e;
+
+    --fill: rgba(120, 120, 128, 0.36);
+    --secondary-fill: rgba(120, 120, 128, 0.32);
+    --tertiary-fill: rgba(118, 118, 128, 0.24);
+    --quaternary-fill: rgba(118, 118, 128, 0.18);
+
+    --tint: #0a84ff;
+    --tint-pressed: #409cff;
+    --tint-fill-soft: rgba(10, 132, 255, 0.2);
+
+    --semantic-green: #30d158;
+    --semantic-orange: #ff9f0a;
+    --semantic-red: #ff453a;
+    --semantic-yellow: #ffd60a;
+    --semantic-purple: #bf5af2;
+
+    --map-land: #1c1c1e;
+    --map-sea: #0a0a0c;
+    --map-coast: rgba(235, 235, 245, 0.24);
+    --map-graticule: rgba(235, 235, 245, 0.08);
+
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
+    --shadow-popover: 0 4px 16px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.4);
+    --shadow-sheet: 0 -8px 24px rgba(0, 0, 0, 0.5);
+    --shadow-modal: 0 8px 32px rgba(0, 0, 0, 0.6);
+
+    --material-thin: rgba(28, 28, 30, 0.72);
+    --material-regular: rgba(28, 28, 30, 0.84);
+    --material-thick: rgba(28, 28, 30, 0.94);
+
+    --warn-bg: rgba(255, 159, 10, 0.18);
+  }
 }
 
 * {
@@ -52,13 +207,14 @@ body,
   margin: 0;
   padding: 0;
   height: 100%;
-  background: var(--bg-page);
-  color: var(--text-primary);
+  background: var(--system-background);
+  color: var(--label);
   font-family: var(--font-sans);
   font-size: var(--type-body);
   line-height: 1.4;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 button,
@@ -70,15 +226,19 @@ textarea {
 }
 
 a {
-  color: var(--accent);
+  color: var(--tint);
+  text-decoration: none;
 }
 
 a:hover {
-  color: var(--accent-hover);
+  color: var(--tint-pressed);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 button {
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 button:disabled {
@@ -87,11 +247,25 @@ button:disabled {
 }
 
 :focus-visible {
-  outline: var(--focus-ring-width) solid var(--accent);
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
   outline-offset: var(--focus-ring-offset);
+  border-radius: var(--radius-button);
+}
+
+::selection {
+  background: var(--tint-fill-soft);
+}
+
+/* iOS-style scroll smoothing on touch */
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   *,
   *::before,
   *::after {

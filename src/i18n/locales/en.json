@@ -135,7 +135,7 @@
     "ariaLabel": "Map showing route via {chain}"
   },
   "mobile": {
-    "banner": "Best viewed on desktop. Routing is read-only on phone — drag + edit comes in v1.2."
+    "banner": "Mobile view — tap a sample to explore. Full editing works best on a larger screen."
   },
   "projection": {
     "label": "Map projection",
