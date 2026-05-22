@@ -140,6 +140,12 @@ export interface ProgramEarning {
   readonly rdm: number;
   readonly byLeg: ReadonlyArray<LegEarning>;
   readonly notes: ReadonlyArray<string>;
+  /** Rules version used to compute this earning (e.g. "2026.4"). */
+  readonly rulesVersion: string;
+  /** ISO date the rules were last verified against the airline's chart. */
+  readonly lastVerified: string;
+  /** Source URL for audit — typically the airline's partner-earning chart. */
+  readonly sourceUrl: string;
 }
 
 /** Per-group computed result. */

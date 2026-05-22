@@ -33,6 +33,10 @@
     "exampleHint": "點下面的範例航線看看怎麼用",
     "clearAll": "清除"
   },
+  "hero": {
+    "tagline": "找出每段航班最划算的常客計畫。",
+    "subtagline": "選機場、選艙等，馬上比 12 家常客計畫、4 大聯盟誰給最多哩程。"
+  },
   "samples": {
     "sfoNrtBkk": {
       "title": "舊金山 → 東京 → 曼谷",
@@ -135,7 +139,7 @@
     "ariaLabel": "地圖顯示航線：{chain}"
   },
   "mobile": {
-    "banner": "建議在桌面瀏覽。手機目前只能讀取，編輯功能 v1.2 推出。"
+    "banner": "手機版 — 點一個範例先看看，完整編輯體驗在桌機最佳。"
   },
   "projection": {
     "label": "地圖投影",
@@ -161,6 +165,17 @@
   },
   "bearings": {
     "show": "顯示方位角"
+  },
+  "best": {
+    "badge": "推薦",
+    "label": "這條航線最划算的常客計畫",
+    "creditTo": "建議掛 {program}",
+    "delta": "比第二名多 {count} 哩（{pct}%）",
+    "pill": "最佳"
+  },
+  "provenance": {
+    "line": "規則 {version} · 校對於 {date}",
+    "source": "來源表"
   },
   "programPicker": {
     "label": "累積哩程的常客計畫",

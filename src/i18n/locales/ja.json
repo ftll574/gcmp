@@ -33,6 +33,10 @@
     "exampleHint": "サンプル経路をクリックして使い方を確認",
     "clearAll": "クリア"
   },
+  "hero": {
+    "tagline": "どのマイレージプログラムが一番お得か、ひと目で。",
+    "subtagline": "空港とクラスを選ぶだけで、12 のプログラム・4 つのアライアンスを比較。"
+  },
   "samples": {
     "sfoNrtBkk": {
       "title": "サンフランシスコ → 東京 → バンコク",
@@ -135,7 +139,7 @@
     "ariaLabel": "経路を表示：{chain}"
   },
   "mobile": {
-    "banner": "PC での閲覧を推奨します。スマホでは閲覧のみ可能、編集機能は v1.2 で対応予定。"
+    "banner": "モバイル版 — まずはサンプルから。本格的な編集はPCがおすすめです。"
   },
   "projection": {
     "label": "地図投影",
@@ -161,6 +165,17 @@
   },
   "bearings": {
     "show": "方位角を表示"
+  },
+  "best": {
+    "badge": "おすすめ",
+    "label": "この経路にベストなプログラム",
+    "creditTo": "{program} に積算",
+    "delta": "2位より {count} マイル多い（{pct}%）",
+    "pill": "ベスト"
+  },
+  "provenance": {
+    "line": "ルール {version} · {date} 確認済み",
+    "source": "ソースチャート"
   },
   "programPicker": {
     "label": "マイルを貯めるプログラム",

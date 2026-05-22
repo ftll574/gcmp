@@ -33,6 +33,10 @@
     "exampleHint": "Click a sample routing to see how it works",
     "clearAll": "Clear"
   },
+  "hero": {
+    "tagline": "Find the best frequent-flyer program for any flight.",
+    "subtagline": "Pick airports, pick a cabin, see who credits more — across 12 programs and 4 alliances."
+  },
   "samples": {
     "sfoNrtBkk": {
       "title": "Trans-Pacific to Bangkok",
@@ -135,7 +139,7 @@
     "ariaLabel": "Map showing route via {chain}"
   },
   "mobile": {
-    "banner": "Best viewed on desktop. Routing is read-only on phone — drag + edit comes in v1.2."
+    "banner": "Mobile view — tap a sample to explore. Full editing works best on a larger screen."
   },
   "projection": {
     "label": "Map projection",
@@ -161,6 +165,17 @@
   },
   "bearings": {
     "show": "Show bearings"
+  },
+  "best": {
+    "badge": "Recommended",
+    "label": "Best program for this routing",
+    "creditTo": "Credit to {program}",
+    "delta": "{count} more Award Miles ({pct}% over runner-up)",
+    "pill": "Best"
+  },
+  "provenance": {
+    "line": "Rules {version} · verified {date}",
+    "source": "Source chart"
   },
   "programPicker": {
     "label": "Crediting programs",

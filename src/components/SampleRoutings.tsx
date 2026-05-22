@@ -101,6 +101,10 @@ export function SampleRoutings({ onSelect }: Props): React.ReactElement {
   const { t } = useLocale();
   return (
     <section className="sample-routings" aria-label={t('input.exampleButton')}>
+      <header className="sample-routings-hero">
+        <h2 className="sample-routings-tagline">{t('hero.tagline')}</h2>
+        <p className="sample-routings-subtagline">{t('hero.subtagline')}</p>
+      </header>
       <p className="sample-routings-hint">{t('input.exampleHint')}</p>
       <div className="sample-routings-grid">
         {SAMPLES.map((s) => (
