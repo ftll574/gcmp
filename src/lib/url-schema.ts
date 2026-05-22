@@ -1,5 +1,5 @@
 /**
- * URL schema for shareable routings (v1 + multi-group extension).
+ * URL schema for shareable routings (v1 + multi-group + fare-class extension).
  *
  *   Single-group (v0.1-v0.3 backwards compat):
  *     /r/v1/SFO-NRT-BKK?op=AA,JL&p=AA,AS&c=J&rv=2026.4&proj=a
@@ -7,8 +7,15 @@
  *   Multi-group (v0.4):
  *     /r/v1/SFO-NRT-BKK,JFK-LHR-CDG?op=AA,JL;BA,BA&p=AA,AS&c=J
  *
+ *   Per-leg fare class (v1.5):
+ *     /r/v1/SFO-NRT-BKK?op=AA,JL&p=AA,AS&c=J&fc=J,C
+ *     → per-leg single-letter A-Z; format mirrors `op` (semicolon per group,
+ *       comma per leg). Optional — when absent, engine falls back to the
+ *       carrier's defaultLetterByCabin[cabin].
+ *
  *   Path:       groups separated by `,`, airports within group by `-`
  *   `op`:       groups separated by `;`, legs within group by `,`
+ *   `fc`:       per-leg fare class letters, same shape as `op` — optional
  *   `p`:        global crediting programs (AA, AS, ...)
  *   `c`:        global cabin (Y / W / J / F)
  *   `rv`:       global rules version (optional)
@@ -126,6 +133,7 @@ export function parseShareUrl(input: string): UrlParseResult {
   const opRaw = params.get('op');
   const pRaw = params.get('p');
   const cRaw = params.get('c');
+  const fcRaw = params.get('fc');
   const rvRaw = params.get('rv');
   const projRaw = params.get('proj');
 
@@ -140,6 +148,20 @@ export function parseShareUrl(input: string): UrlParseResult {
       'mismatched-op-length',
       `Expected ${iataByGroup.length} group(s) in op (semicolon-separated); got ${opByGroupStr.length}.`,
     );
+  }
+
+  // Per-leg fare classes. Optional. Same shape as op: `;`-separated groups,
+  // `,`-separated legs. An empty entry (e.g. "J,,Y") means "use cabin default
+  // for this leg" — we don't require fare classes for every leg.
+  let fcByGroupStr: string[] | null = null;
+  if (fcRaw) {
+    fcByGroupStr = fcRaw.split(';');
+    if (fcByGroupStr.length !== iataByGroup.length) {
+      return err(
+        'mismatched-op-length',
+        `Expected ${iataByGroup.length} group(s) in fc (semicolon-separated); got ${fcByGroupStr.length}.`,
+      );
+    }
   }
 
   const groups: RoutingGroup[] = [];
@@ -162,6 +184,35 @@ export function parseShareUrl(input: string): UrlParseResult {
         return err('malformed-path', `Invalid operating carrier code: "${carrier}"`);
       }
     }
+
+    // Decode fare-class letters for this group, if present.
+    let fareClasses: ReadonlyArray<string | undefined> | null = null;
+    if (fcByGroupStr) {
+      const groupFcStr = fcByGroupStr[gi] ?? '';
+      const rawFc = groupFcStr === '' ? [] : groupFcStr.split(',');
+      if (rawFc.length > 0 && rawFc.length !== expectedOpCount) {
+        return err(
+          'mismatched-op-length',
+          `Group ${gi + 1}: expected ${expectedOpCount} fare class(es) in fc; got ${rawFc.length}.`,
+        );
+      }
+      const padded = rawFc.length === 0
+        ? new Array<string>(expectedOpCount).fill('')
+        : rawFc;
+      const out: Array<string | undefined> = [];
+      for (const cell of padded) {
+        const cleaned = (cell ?? '').toUpperCase().trim();
+        if (cleaned === '') {
+          out.push(undefined);
+        } else if (/^[A-Z]$/.test(cleaned)) {
+          out.push(cleaned);
+        } else {
+          return err('malformed-path', `Invalid fare-class letter: "${cell}". Expected single A-Z.`);
+        }
+      }
+      fareClasses = out;
+    }
+
     const legs: Leg[] = [];
     for (let i = 0; i < iataCodes.length - 1; i++) {
       const from = iataCodes[i];
@@ -170,7 +221,12 @@ export function parseShareUrl(input: string): UrlParseResult {
       if (!from || !to || !operatingCarrier) {
         return err('malformed-path', 'Internal: leg construction failed.');
       }
-      legs.push({ from, to, operatingCarrier });
+      const fc = fareClasses?.[i];
+      legs.push(
+        fc !== undefined
+          ? { from, to, operatingCarrier, fareClass: fc }
+          : { from, to, operatingCarrier },
+      );
     }
     groups.push({ legs });
   }
@@ -245,6 +301,15 @@ export function encodeShareUrl(req: RoutingRequest): string {
     group.legs.map((leg) => leg.operatingCarrier).join(','),
   );
 
+  // Per-leg fare classes. Encode as `fc=J,C;F,F` mirroring `op` shape.
+  // Empty cell `""` for legs without an override. Skip the whole param when
+  // no leg in any group has a fare class — preserves URL compatibility with
+  // every v0.x–v1.4 link.
+  const anyFc = req.groups.some((g) => g.legs.some((l) => l.fareClass !== undefined));
+  const fcByGroup = anyFc
+    ? req.groups.map((group) => group.legs.map((leg) => leg.fareClass ?? '').join(','))
+    : null;
+
   const path = groupChains.join(',');
   const op = opByGroup.join(';');
   const p = req.programs.map((id) => {
@@ -257,6 +322,9 @@ export function encodeShareUrl(req: RoutingRequest): string {
   params.set('op', op);
   params.set('p', p);
   params.set('c', c);
+  if (fcByGroup) {
+    params.set('fc', fcByGroup.join(';'));
+  }
   if (req.rulesVersion !== undefined) {
     params.set('rv', req.rulesVersion);
   }

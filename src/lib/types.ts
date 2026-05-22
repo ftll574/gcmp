@@ -86,10 +86,21 @@ export const PROGRAM_ALLIANCES: Readonly<Record<ProgramId, Alliance>> = Object.f
   Object.fromEntries(PROGRAM_REGISTRY.map((p) => [p.id, p.alliance])),
 );
 
+/**
+ * Single-letter fare class / booking class (e.g. "J", "C", "D", "Y", "I").
+ * Earning multipliers are keyed by this letter inside `carrier.fareBuckets`.
+ * Optional on Leg — when absent, the engine falls back to the carrier's
+ * `defaultLetterByCabin[globalCabin]`. Asian booking-class buckets matter:
+ * CX I=25% vs J=150% on the same partner credit; SQ V vs T; BA K vs N.
+ */
+export type FareClass = string;
+
 export interface Leg {
   readonly from: Iata;
   readonly to: Iata;
   readonly operatingCarrier: AirlineIata;
+  /** Optional per-leg fare class letter override. */
+  readonly fareClass?: FareClass;
 }
 
 export type ProjectionShortCode = 'm' | 'e' | 'a' | 'o';

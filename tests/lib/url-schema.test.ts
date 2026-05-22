@@ -271,3 +271,126 @@ describe('parseShareUrl (multi-group)', () => {
     }
   });
 });
+
+describe('per-leg fare class (v1.5)', () => {
+  test('encode omits fc when no leg has a fare class — preserves v0-v1.4 URLs', () => {
+    const url = encodeShareUrl(SINGLE_GROUP);
+    expect(url).not.toContain('fc=');
+  });
+
+  test('encode includes fc when at least one leg has a fare class', () => {
+    const req: RoutingRequest = {
+      ...SINGLE_GROUP,
+      groups: [
+        {
+          legs: [
+            { from: 'SFO', to: 'NRT', operatingCarrier: 'AA', fareClass: 'J' },
+            { from: 'NRT', to: 'BKK', operatingCarrier: 'JL', fareClass: 'D' },
+            { from: 'BKK', to: 'HKG', operatingCarrier: 'CX', fareClass: 'I' },
+          ],
+        },
+      ],
+    };
+    const url = encodeShareUrl(req);
+    // %2C is `,`
+    expect(url).toContain('fc=J%2CD%2CI');
+  });
+
+  test('encode keeps empty cells for legs without fare class', () => {
+    const req: RoutingRequest = {
+      ...SINGLE_GROUP,
+      groups: [
+        {
+          legs: [
+            { from: 'SFO', to: 'NRT', operatingCarrier: 'AA', fareClass: 'J' },
+            { from: 'NRT', to: 'BKK', operatingCarrier: 'JL' },
+            { from: 'BKK', to: 'HKG', operatingCarrier: 'CX', fareClass: 'I' },
+          ],
+        },
+      ],
+    };
+    const url = encodeShareUrl(req);
+    // `,` → %2C; expect "fc=J,,I" → fc=J%2C%2CI
+    expect(url).toContain('fc=J%2C%2CI');
+  });
+
+  test('parse round-trips per-leg fare class', () => {
+    const req: RoutingRequest = {
+      ...SINGLE_GROUP,
+      groups: [
+        {
+          legs: [
+            { from: 'SFO', to: 'NRT', operatingCarrier: 'AA', fareClass: 'J' },
+            { from: 'NRT', to: 'BKK', operatingCarrier: 'JL', fareClass: 'D' },
+            { from: 'BKK', to: 'HKG', operatingCarrier: 'CX', fareClass: 'I' },
+          ],
+        },
+      ],
+    };
+    const parsed = parseShareUrl(encodeShareUrl(req));
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.request.groups[0]?.legs[0]?.fareClass).toBe('J');
+      expect(parsed.request.groups[0]?.legs[1]?.fareClass).toBe('D');
+      expect(parsed.request.groups[0]?.legs[2]?.fareClass).toBe('I');
+    }
+  });
+
+  test('parse handles per-leg empty cells', () => {
+    // 4 airports → 3 legs → fc has 3 cells; the middle one is empty.
+    const parsed = parseShareUrl('/r/v1/SFO-NRT-BKK-HKG?op=AA,JL,CX&p=AA&c=J&fc=J,,Y');
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.request.groups[0]?.legs[0]?.fareClass).toBe('J');
+      expect(parsed.request.groups[0]?.legs[1]?.fareClass).toBeUndefined();
+      expect(parsed.request.groups[0]?.legs[2]?.fareClass).toBe('Y');
+    }
+  });
+
+  test('parse handles multi-group fc semicolons', () => {
+    const parsed = parseShareUrl(
+      '/r/v1/SFO-NRT,JFK-LHR-CDG?op=AA;BA,BA&p=AA&c=J&fc=J;C,C',
+    );
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.request.groups[0]?.legs[0]?.fareClass).toBe('J');
+      expect(parsed.request.groups[1]?.legs[0]?.fareClass).toBe('C');
+      expect(parsed.request.groups[1]?.legs[1]?.fareClass).toBe('C');
+    }
+  });
+
+  test('parse rejects malformed fare-class letter', () => {
+    const parsed = parseShareUrl('/r/v1/SFO-NRT?op=AA&p=AA&c=J&fc=JJ');
+    expect(parsed.ok).toBe(false);
+    if (!parsed.ok) {
+      expect(parsed.kind).toBe('malformed-path');
+    }
+  });
+
+  test('parse rejects fc group count mismatch with path', () => {
+    const parsed = parseShareUrl('/r/v1/SFO-NRT,JFK-LHR?op=AA;BA&p=AA&c=J&fc=J');
+    expect(parsed.ok).toBe(false);
+    if (!parsed.ok) {
+      expect(parsed.kind).toBe('mismatched-op-length');
+    }
+  });
+
+  test('parse rejects fc leg count mismatch within group', () => {
+    const parsed = parseShareUrl('/r/v1/SFO-NRT-BKK?op=AA,JL&p=AA&c=J&fc=J');
+    expect(parsed.ok).toBe(false);
+    if (!parsed.ok) {
+      expect(parsed.kind).toBe('mismatched-op-length');
+    }
+  });
+
+  test('every v0-v1.4 URL without fc still parses identically', () => {
+    // The exact format of pre-fc URLs.
+    const parsed = parseShareUrl('/r/v1/SFO-NRT-BKK?op=AA,JL&p=AA,AS&c=J');
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      for (const leg of parsed.request.groups[0]?.legs ?? []) {
+        expect(leg.fareClass).toBeUndefined();
+      }
+    }
+  });
+});
