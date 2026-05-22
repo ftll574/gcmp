@@ -2,6 +2,72 @@
 
 All notable changes to this project will be documented in this file. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow `MAJOR.MINOR.PATCH.MICRO`.
 
+## [1.4.0.0] - 2026-05-22
+
+### Changed — Apple design language redesign + recommendation badge
+
+User-driven redesign. 5 subagent personas (mileage runner, status chaser, award redeemer, aviation hobbyist, complete newbie) walked through the app and reported pain points. Three asks converged across personas:
+
+1. **"Tell me the answer, don't just show me numbers"** (Priya, Marcus, Sarah)
+2. **"I can't audit a number with no source"** (Priya, Marcus, Frank)
+3. **"The page never explained what it's for"** (Sarah)
+
+This release ships all three, plus a complete visual refresh in Apple HIG language with **full dark-mode parity**.
+
+### Added
+
+- **Recommendation hero**: when ≥2 programs are selected, a tint-gradient card sits at the top of the panel — `"RECOMMENDED · Credit to AA AAdvantage · 1,110 more Award Miles (13% over runner-up)"`. Programs are sorted by Award Miles descending; the winner gets a tint outline + "BEST" pill.
+- **Provenance** per program card: `"Rules 2026.4 · verified 2026-05-21 · Source chart"` (link to the airline's partner chart). Backing fields (`rulesVersion`, `lastVerified`, `sourceUrl`) flow from `ProgramSchema` through `ProgramEarning` to the UI.
+- **Empty-state hero**: tagline + subtagline in 4 locales answers "what is this for?" the moment a newbie lands. EN: *"Find the best frequent-flyer program for any flight."*
+- **iOS toggle switch**: the bearings checkbox is now a native-feeling 32×20 pill switch with a spring-physics thumb translate, green when on.
+- **Dark mode** via `prefers-color-scheme` — true black for OLED, semantic dark fills, dark map theme.
+
+### Changed — visual system
+
+- New design tokens (`src/index.css`):
+  - Apple HIG semantic colors (`--label`, `--secondary-label`, `--tertiary-label`, `--separator`, `--system-background`, `--secondary-system-background`, `--fill` family, `--tint` = #007aff/#0a84ff, `--semantic-{green,orange,red,yellow,purple}`)
+  - `--material-{thin,regular,thick}` for vibrancy / backdrop-filter glass
+  - `--radius-{pill,button,input,card,sheet}`
+  - `--shadow-{1,card,popover,sheet,modal}` (Sonoma-soft)
+  - `--motion-{fast,base,slow}` + `--ease-{standard,spring}`
+- Font stack switched from IBM Plex to system: `-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", "Segoe UI", Roboto, system-ui`
+- Legacy palette aliases (`--bg-page`, `--accent`, `--text-primary`, `--rule`, …) remapped to new semantic tokens so existing CSS picks up the redesign without per-selector rewrites
+- **Header**: sticky vibrancy (backdrop-filter blur 20px), iOS segmented control for Beginner/Pro, pill language picker
+- **Cabin selector + Projection picker**: iOS segmented controls with sliding white pill on active state
+- **Buttons**: pill-shaped, semibold, system tint for primary (Save / Share); secondary-fill for chrome; press-scale 0.97
+- **ProgramPicker**: material-thick glass popover with saturate(180%) blur, inset-grouped checkbox list, accent-color iOS checkboxes, spring-physics `popoverIn` animation
+- **AirportAutocomplete**: search-bar feel (rounded 12px, filled secondary, tint focus ring with soft outer glow), dropdown as glass popover
+- **Leg chips**: pill chips with grab cursor; ✕ remove button turns red on hover
+- **Group tabs**: pill tabs that "elevate" (white bg + shadow + tint outline) when active
+- **Earnings panel cards**: 14 px radius, 1 px separator border, soft `shadow-1`. Numbers in tabular SF Mono, 28 px, weight 700, -0.02em tracking
+- **Confidence chips**: semantic green (community-corrected), orange (mixed), neutral (chart-verified)
+- **Glossary tooltip**: dark pill with `shadow-popover`, dashed underline in tertiary-label
+- **Map toolbar**: bearings switch + Download PNG pill on `material-thick` glass with `shadow-1`
+- **Mobile banner** copy reframed in all 4 locales — was "Best viewed on desktop. Routing is read-only on phone" (Sarah persona reported this as 'go away'); now reads *"Mobile view — tap a sample to explore. Full editing works best on a larger screen."* Style: tint-soft chip
+
+### Accessibility
+
+- 3 px focus-visible ring in tint at 2 px offset
+- `prefers-reduced-motion` disables animations
+- ARIA roles preserved
+- High-contrast in dark mode (true black + bright label)
+- Native `<input type="checkbox">` semantics under the iOS-switch CSS
+
+### Notes
+
+- Bundle: 4.38 → **6.76 KB gzipped CSS** (+2.38 KB total — the whole redesign costs less than a single 100 KB hero image). JS 115.39 → **118.20 KB gzipped** (+2.8 KB for `BestRecommendation` + hero + provenance components)
+- 71/71 tests still pass
+- Backwards-compat: every URL from v0.x → v1.3 still loads identically
+
+### Known follow-ups (surfaced by personas, out of scope for visual redesign)
+
+- UA killed PQM in 2020; needs PQP/PQF/PQD math (Frank's #1)
+- Per-leg cabin + fare-class input (Frank, Priya, Marcus)
+- LATAM, JetBlue, Hawaiian, Turkish carrier coverage (Marcus)
+- ProgramPicker search + pin favorites (Priya)
+- Mobile edit mode (Priya, Sarah)
+- SVG export + transparent-background PNG (Kenji)
+
 ## [1.3.1.0] - 2026-05-22
 
 ### Fixed — adding a single airport now shows it as a pending chip
