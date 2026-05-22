@@ -137,6 +137,17 @@
   "mobile": {
     "banner": "建議在桌面瀏覽。手機目前只能讀取，編輯功能 v1.2 推出。"
   },
+  "projection": {
+    "label": "地圖投影",
+    "mercator": "麥卡托",
+    "mercatorTip": "熟悉的平面地圖。極區航線會扭曲。",
+    "flat": "平面",
+    "flatTip": "等距方格投影，渲染最快。",
+    "azimuthal": "方位",
+    "azimuthalTip": "以中心點出發的大圓變成放射狀直線（gcmap 招牌）。",
+    "globe": "地球儀",
+    "globeTip": "真正的 3D 地球儀。拖拉旋轉、滾輪縮放。"
+  },
   "gcmapImport": {
     "open": "從 gcmap 匯入",
     "label": "貼上 gcmap.com 連結或航線字串",

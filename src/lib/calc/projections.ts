@@ -76,15 +76,14 @@ export function buildProjection(
     }
   }
 
-  // Fit the projection to the viewport.
+  // Fit the projection to the viewport; then apply an optional scale multiplier.
+  const worldFeature = { type: 'Sphere' as const };
+  p.fitSize([width, height], worldFeature);
   if (scale !== undefined) {
-    p.scale(scale).translate([width / 2, height / 2]);
-  } else {
-    // d3.geoPath fits a feature to a bounding box; we use a world rect as the feature.
-    const worldFeature = {
-      type: 'Sphere' as const,
-    };
-    p.fitSize([width, height], worldFeature);
+    // Multiply the auto-fit scale so zoom plays nicely with viewport changes.
+    p.scale(p.scale() * scale);
+    // Re-center after scale change so the projection still sits in the viewport.
+    p.translate([width / 2, height / 2]);
   }
   return p;
 }
@@ -106,4 +105,11 @@ export function project(
   return { x: coords[0], y: coords[1] };
 }
 
-export const DEFAULT_PROJECTION: ProjectionId = 'mercator';
+/**
+ * Default projection is the orthographic 3D globe — this matches what most
+ * users expect a modern flight-routing map to look like (and what makes
+ * gcmap's signature "Azimuthal Equidistant" mode discoverable as a sibling
+ * projection on the toolbar). Users with an explicit `?proj=` in their URL
+ * see that projection instead.
+ */
+export const DEFAULT_PROJECTION: ProjectionId = 'orthographic';

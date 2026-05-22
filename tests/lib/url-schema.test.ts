@@ -172,6 +172,34 @@ describe('parseShareUrl (single-group)', () => {
     const parsed = parseShareUrl('/r/v1/SFO-NRT?op=AA&p=AA&c=J&proj=z');
     expect(parsed.ok).toBe(false);
   });
+
+  test('backwards-compat: URL with no proj= defaults to mercator (v1.0 behavior)', () => {
+    const parsed = parseShareUrl('/r/v1/SFO-NRT?op=AA&p=AA&c=J');
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.request.projection).toBe('mercator');
+    }
+  });
+
+  test('encode omits proj=m (mercator is the historic default)', () => {
+    const req = {
+      groups: [{ legs: [{ from: 'SFO', to: 'NRT', operatingCarrier: 'AA' }] }],
+      cabin: 'business' as const,
+      programs: ['aa-aadvantage' as const],
+      projection: 'mercator' as const,
+    };
+    expect(encodeShareUrl(req)).not.toContain('proj=');
+  });
+
+  test('encode includes proj=o for orthographic', () => {
+    const req = {
+      groups: [{ legs: [{ from: 'SFO', to: 'NRT', operatingCarrier: 'AA' }] }],
+      cabin: 'business' as const,
+      programs: ['aa-aadvantage' as const],
+      projection: 'orthographic' as const,
+    };
+    expect(encodeShareUrl(req)).toContain('proj=o');
+  });
 });
 
 describe('parseShareUrl (multi-group)', () => {
