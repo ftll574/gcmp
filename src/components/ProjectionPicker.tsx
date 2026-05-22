@@ -11,18 +11,17 @@ interface Props {
   onChange: (next: ProjectionId) => void;
 }
 
-const PROJECTIONS: Array<{ id: ProjectionId; iconKey: string; labelKey: string }> = [
-  { id: 'mercator', iconKey: '◫', labelKey: 'Mercator' },
-  { id: 'equirectangular', iconKey: '⊞', labelKey: 'Flat' },
-  { id: 'azimuthal-equidistant', iconKey: '◉', labelKey: 'Azimuthal' },
-  { id: 'orthographic', iconKey: '◯', labelKey: 'Globe' },
+const PROJECTIONS: Array<{ id: ProjectionId; icon: string; labelKey: string; tipKey: string }> = [
+  { id: 'mercator', icon: '◫', labelKey: 'projection.mercator', tipKey: 'projection.mercatorTip' },
+  { id: 'equirectangular', icon: '⊞', labelKey: 'projection.flat', tipKey: 'projection.flatTip' },
+  { id: 'azimuthal-equidistant', icon: '◉', labelKey: 'projection.azimuthal', tipKey: 'projection.azimuthalTip' },
+  { id: 'orthographic', icon: '◯', labelKey: 'projection.globe', tipKey: 'projection.globeTip' },
 ];
 
 export function ProjectionPicker({ value, onChange }: Props): React.ReactElement {
-  const { t: _t } = useLocale();
-  void _t; // future i18n keys go here
+  const { t } = useLocale();
   return (
-    <div className="projection-picker" role="radiogroup" aria-label="Map projection">
+    <div className="projection-picker" role="radiogroup" aria-label={t('projection.label')}>
       {PROJECTIONS.map((p) => (
         <button
           key={p.id}
@@ -31,12 +30,12 @@ export function ProjectionPicker({ value, onChange }: Props): React.ReactElement
           type="button"
           className={`projection-picker-button${value === p.id ? ' active' : ''}`}
           onClick={() => onChange(p.id)}
-          title={p.labelKey}
+          title={t(p.tipKey)}
         >
           <span className="projection-picker-icon" aria-hidden="true">
-            {p.iconKey}
+            {p.icon}
           </span>
-          <span className="projection-picker-label">{p.labelKey}</span>
+          <span className="projection-picker-label">{t(p.labelKey)}</span>
         </button>
       ))}
     </div>

@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow `MAJOR.MINOR.PATCH.MICRO`.
 
+## [1.1.0.0] - 2026-05-22
+
+### Fixed — globe view is now a real 3D globe
+
+The orthographic projection in v1.0 clipped the back hemisphere (correct math) but had no way to rotate, so any arc spanning more than ~90° just disappeared off the edge — exactly the "breaks" you saw in the v1.0 globe.
+
+This release makes the globe a true rotatable 3D sphere:
+
+- **Drag to rotate** — pointer drag rotates the projection's rotation parameter (longitude + latitude), so previously-hidden arcs come into view as you spin the globe
+- **Wheel to zoom** — scrolls scale up/down the projection (not an SVG transform), so the globe stays a clean sphere at every zoom level
+- **Rotation sensitivity scales with zoom** — zoomed in 4×, each pixel-drag rotates less; matches user expectation
+- **Sphere shading** — soft radial gradient on the sphere disk gives it 3D depth
+- **Sphere rim** — accent-colored outline marks the edge of the globe
+- **Reset button** — returns to the initial center (first airport in active chain) at 1× scale
+
+### Changed
+
+- **Default projection is now `orthographic` (globe)** — new visitors see a 3D globe immediately. The toolbar still has all 4 projections; switching is one click.
+- URL encoding **always includes `proj=` when non-Mercator**. A shared URL pins the recipient to the sender's chosen view.
+- URL parsing for missing `proj=` defaults to **`mercator`** (the v1.0 historic default) for backwards compatibility — every pre-v1.1 shared URL still renders exactly as it did when created.
+- **Projection picker labels are now localized** in all 4 locales (was English-only).
+- Mercator antimeridian split detection now uses a viewport-aware threshold (`projection.translate() * 0.95`) instead of a hardcoded 200px — same arc renders correctly on phone and 4K monitor.
+
+### Added
+
+- New i18n keys: `projection.mercator/flat/azimuthal/globe` + their `*Tip` tooltip versions in all 4 locales
+
+### Tests
+
+- 67 → **70 passing**:
+  - backwards-compat: URL with no `proj=` defaults to Mercator
+  - encode omits `proj=m` (Mercator stays bare for v1.0 compat)
+  - encode includes `proj=o` for orthographic
+
+### Notes
+
+- Bundle: 114.20 → **115.26 KB gzipped** (well under 350 budget)
+- Hash-based shared URLs preserved; every pre-v1.1 URL still works
+- The globe is the default; users can still pick Mercator from the toolbar (URL gets no `proj=`)
+
 ## [1.0.0.0] - 2026-05-22
 
 ### v1.0 launch — feature-complete vs gcmap.com + every pain-point fix shipped

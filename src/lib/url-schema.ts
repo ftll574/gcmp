@@ -202,7 +202,11 @@ export function parseShareUrl(input: string): UrlParseResult {
     rulesVersion = rvRaw;
   }
 
-  let projection: ProjectionId | undefined;
+  // Backwards compat: a URL with no `proj=` was created before v1.1 when the
+  // runtime default was Mercator. Such URLs must continue to render as
+  // Mercator regardless of the current runtime default, otherwise every
+  // shared v1.0 link silently changes appearance.
+  let projection: ProjectionId = 'mercator';
   if (projRaw) {
     const resolved = PROJECTION_BY_SHORT[projRaw.toLowerCase()];
     if (!resolved) {
@@ -215,8 +219,8 @@ export function parseShareUrl(input: string): UrlParseResult {
     groups,
     cabin,
     programs,
+    projection,
     ...(rulesVersion !== undefined ? { rulesVersion } : {}),
-    ...(projection !== undefined ? { projection } : {}),
   };
 
   return { ok: true, request };
@@ -256,6 +260,9 @@ export function encodeShareUrl(req: RoutingRequest): string {
   if (req.rulesVersion !== undefined) {
     params.set('rv', req.rulesVersion);
   }
+  // Always encode the projection so the shared URL pins the recipient to
+  // the sender's chosen view. Mercator (the v1.0 historic default) is the
+  // only one we still omit for backwards-compat with v1.0 shared URLs.
   if (req.projection !== undefined && req.projection !== 'mercator') {
     params.set('proj', PROJECTION_SHORT[req.projection]);
   }

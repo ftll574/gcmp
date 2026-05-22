@@ -137,6 +137,17 @@
   "mobile": {
     "banner": "PC での閲覧を推奨します。スマホでは閲覧のみ可能、編集機能は v1.2 で対応予定。"
   },
+  "projection": {
+    "label": "地図投影",
+    "mercator": "メルカトル",
+    "mercatorTip": "おなじみの平面地図。極域経路が歪みます。",
+    "flat": "平面",
+    "flatTip": "正距方格投影。最速で描画。",
+    "azimuthal": "方位",
+    "azimuthalTip": "中心点からの大圏が放射状の直線に表示（gcmap の定番）。",
+    "globe": "地球儀",
+    "globeTip": "本物の 3D 地球儀。ドラッグで回転、ホイールでズーム。"
+  },
   "gcmapImport": {
     "open": "gcmap からインポート",
     "label": "gcmap.com の URL または経路文字列を貼り付け",

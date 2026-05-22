@@ -137,6 +137,17 @@
   "mobile": {
     "banner": "Best viewed on desktop. Routing is read-only on phone — drag + edit comes in v1.2."
   },
+  "projection": {
+    "label": "Map projection",
+    "mercator": "Mercator",
+    "mercatorTip": "Familiar flat-map projection. Distorts polar routes.",
+    "flat": "Flat",
+    "flatTip": "Equirectangular projection. Fastest to render.",
+    "azimuthal": "Azimuthal",
+    "azimuthalTip": "Great-circle distances from the center appear as straight lines (the gcmap classic).",
+    "globe": "Globe",
+    "globeTip": "True 3D globe. Drag to rotate, scroll to zoom."
+  },
   "gcmapImport": {
     "open": "Import from gcmap",
     "label": "Paste a gcmap.com URL or routing string",
