@@ -31,6 +31,7 @@ import { DEFAULT_PROJECTION, type ProjectionId } from './lib/calc/projections.ts
 import { downloadBlob, svgToPngBlob } from './lib/svg-to-png.ts';
 import { parseShareUrl } from './lib/url-schema.ts';
 import {
+  PROGRAM_REGISTRY,
   type AirlineIata,
   type Airport,
   type CabinId,
@@ -190,6 +191,19 @@ function Ready({
       airports: airportIndex.byIata,
       programs: data.programs,
     });
+  }, [routing, airportIndex, data.programs]);
+
+  // "Where to credit?" — run the engine against EVERY program in the
+  // registry, not just the user's selection. Used by the inverse-view
+  // panel that ranks all 18+ programs for this exact routing. Memoized
+  // separately so toggling the picker doesn't recompute this.
+  const allProgramsResult = useMemo(() => {
+    if (routing.groups.every((g) => g.legs.length === 0)) return null;
+    const allIds = PROGRAM_REGISTRY.map((p) => p.id);
+    return computeRouting(
+      { ...routing, programs: allIds },
+      { airports: airportIndex.byIata, programs: data.programs },
+    );
   }, [routing, airportIndex, data.programs]);
 
   // ── Mutators ──
@@ -483,12 +497,23 @@ function Ready({
             mode={mode}
             cabin={routing.cabin}
             valuations={data.valuations}
+            allProgramsResult={allProgramsResult}
+            onAddProgram={(id) => {
+              if (!routing.programs.includes(id)) {
+                setRouting({ ...routing, programs: [...routing.programs, id] });
+              }
+            }}
           />
           <SavedRoutings saved={saved} onLoad={loadSaved} onDelete={remove} />
         </aside>
       </main>
       <footer className="app-footer">
-        <span>{t('footer.openSource')}</span>
+        <span>
+          {t('footer.openSource')} ·{' '}
+          <a href="airline/" className="app-footer-link">
+            {t('footer.browseByAirline')}
+          </a>
+        </span>
         <span className="app-footer-note">{t('footer.disclaimer')}</span>
       </footer>
     </div>

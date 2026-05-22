@@ -133,7 +133,8 @@
     "delete": "{name} を削除"
   },
   "footer": {
-    "openSource": "gcmp v0 — オープンソース on GitHub",
+    "openSource": "gcmp — GitHub オープンソース",
+    "browseByAirline": "キャリア別に見る",
     "disclaimer": "マイル数は公式パートナー表に基づく計算です。実際の付与マイルをご確認ください。"
   },
   "map": {
@@ -190,6 +191,12 @@
   "seats": {
     "findAwards": "特典航空券を検索",
     "tip": "同じ経路 + クラスで seats.aero を開きます。"
+  },
+  "whereToCredit": {
+    "toggle": "どこに積算？— 18 プログラムをランキング表示",
+    "hint": "価値順（マイル × ¢/マイル）で並べ替え。+ で選択に追加。",
+    "empty": "これらのキャリアの積算ルールがまだありません。",
+    "addLabel": "{program} を選択に追加"
   },
   "programPicker": {
     "label": "マイルを貯めるプログラム",

@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow `MAJOR.MINOR.PATCH.MICRO`.
 
+## [1.7.0.0] - 2026-05-23
+
+### Added — "Where to credit?" inverse view + browse-by-airline SEO pages
+
+Two cross-persona asks from v1.5 research land here: the inverse query (Asia + redemption agents) and the browse-by-airline matrix (Asia + earning-calculator agents — wheretocredit.com's SEO moat).
+
+#### "Where to credit?" inverse view
+
+- App.tsx now computes a parallel `allProgramsResult` against EVERY program in PROGRAM_REGISTRY (18 today, drop-in extensible)
+- EarningPanel adds a collapsible **"Where to credit? — show all 18 programs ranked"** section
+- Inside: compact ranked list `#1 AA AAdvantage · 9,801 · $157 · ✓` (selected) / `#2 BA Executive Club · 9,801 · $137 · +` (clickable to add)
+- Sorted by value-weighted miles (rdm × ¢/mile) when valuations loaded, raw RDM otherwise
+- + button adds a program to the user's selection — gives the existing card view the full data via the normal flow
+- Programs with no rules for the routing's carriers are filtered out (not shown as zero rows)
+
+#### Browse-by-airline static pages
+
+- New build script `scripts/build-airline-pages.ts` reads every program JSON and writes self-contained, no-JS HTML files to `public/airline/{XX}/index.html`
+- 30 pages generated automatically — one for every operating carrier any program credits
+- Each page shows the carrier name + every program that credits it + per-fare-class PQM/RDM % multipliers + last-verified date + source-chart link
+- Index page at `/airline/` lists all 30 carriers in a grid
+- Footer link "Browse by airline" added across all 4 locales
+- Wired into `npm run build` so they regenerate every deploy
+- Apple HIG visual language (system font, semantic dark mode, rounded cards) — matches the SPA
+- SEO: each page has unique title, meta description, canonical URL, structured data
+- `.gitignore` excludes `public/airline/` since it's generated
+
+### Notes
+
+- Bundle: 6.99 → **7.25 KB gzip CSS** (+0.26) · 121.41 → **122.34 KB gzip JS** (+0.93)
+- 92/92 tests still pass
+- 30 static HTML files added to `dist/airline/` at build (none in repo)
+
 ## [1.6.0.0] - 2026-05-23
 
 ### Added — 6 Asian programs + redemption-side bridge + header polish

@@ -133,7 +133,8 @@
     "delete": "Delete {name}"
   },
   "footer": {
-    "openSource": "gcmp v0 — open source on GitHub",
+    "openSource": "gcmp — open source on GitHub",
+    "browseByAirline": "Browse by airline",
     "disclaimer": "Earning numbers are chart-verified against published partner charts. Verify against your statement."
   },
   "map": {
@@ -190,6 +191,12 @@
   "seats": {
     "findAwards": "Find award seats",
     "tip": "Open seats.aero with this route + cabin pre-filled."
+  },
+  "whereToCredit": {
+    "toggle": "Where to credit? — show all 18 programs ranked",
+    "hint": "Programs sorted by value (miles × ¢/mile). Tap + to add one to your selection.",
+    "empty": "No programs have rules for these carriers yet.",
+    "addLabel": "Add {program} to my selection"
   },
   "programPicker": {
     "label": "Crediting programs",
