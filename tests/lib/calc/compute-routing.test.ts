@@ -118,6 +118,22 @@ describe('computeRouting (single-group)', () => {
     expect(r.groups[0]?.programs['aa-aadvantage']?.byLeg[0]?.missingRule).toBe(true);
   });
 
+  test('surface sector keeps distance but earns zero miles', () => {
+    const req: RoutingRequest = {
+      groups: [{ legs: [{ from: 'SFO', to: 'NRT', operatingCarrier: 'AA', surface: true }] }],
+      cabin: 'business',
+      programs: ['aa-aadvantage'],
+    };
+    const r = computeRouting(req, { airports: airportMap, programs: programMap });
+    const earning = r.groups[0]?.programs['aa-aadvantage'];
+
+    expect(r.grandTotalDistanceNm).toBeGreaterThan(4435);
+    expect(earning?.pqm).toBe(0);
+    expect(earning?.rdm).toBe(0);
+    expect(earning?.byLeg[0]?.missingRule).toBe(true);
+    expect(earning?.byLeg[0]?.notes[0]).toContain('Surface/open-jaw');
+  });
+
   test('minPerSegment applies for AA short-haul', () => {
     const airports = new Map([
       ['SAN', { iata: 'SAN', name: '', city: '', country: 'US', lat: 32.7335, lon: -117.1897 }],

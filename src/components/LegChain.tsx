@@ -35,6 +35,10 @@ interface Props {
   operatingCarriers: ReadonlyArray<AirlineIata>;
   /** Per-leg explicit fare-class override. undefined = use cabin default. */
   fareClasses: ReadonlyArray<string | undefined>;
+  /** Per-leg stopover marker. undefined = timing unknown. */
+  stopovers: ReadonlyArray<boolean | undefined>;
+  /** Per-leg surface/open-jaw marker. */
+  surfaces: ReadonlyArray<boolean | undefined>;
   /** Pool of carriers for the badge dropdown. */
   airlines: ReadonlyArray<Airline>;
   onReorder: (newOrder: ReadonlyArray<Iata>) => void;
@@ -42,17 +46,23 @@ interface Props {
   onCarrierChange: (legIndex: number, carrier: AirlineIata) => void;
   /** Set undefined to clear the override (let cabin default apply). */
   onFareClassChange: (legIndex: number, fareClass: string | undefined) => void;
+  onStopoverChange: (legIndex: number, stopover: boolean | undefined) => void;
+  onSurfaceChange: (legIndex: number, surface: boolean) => void;
 }
 
 export function LegChain({
   airports,
   operatingCarriers,
   fareClasses,
+  stopovers,
+  surfaces,
   airlines,
   onReorder,
   onRemove,
   onCarrierChange,
   onFareClassChange,
+  onStopoverChange,
+  onSurfaceChange,
 }: Props): React.ReactElement {
   const { t } = useLocale();
   const [dragIndex, setDragIndex] = useState<number | null>(null);
@@ -160,6 +170,37 @@ export function LegChain({
                     </optgroup>
                   ))}
                 </select>
+                <select
+                  className={`leg-chip-stopover${stopovers[legIndex] !== undefined ? ' is-set' : ''}`}
+                  value={
+                    stopovers[legIndex] === undefined
+                      ? ''
+                      : stopovers[legIndex]
+                        ? 'stopover'
+                        : 'transfer'
+                  }
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    onStopoverChange(legIndex, v === '' ? undefined : v === 'stopover');
+                  }}
+                  aria-label={t('rtw.legChip.stopoverLabel', { n: legIndex + 1 })}
+                  title={t('rtw.legChip.stopoverTitle')}
+                >
+                  <option value="">{t('rtw.timing.unknownShort')}</option>
+                  <option value="transfer">{t('rtw.timing.transfer')}</option>
+                  <option value="stopover">{t('rtw.timing.stopover')}</option>
+                </select>
+                <label
+                  className={`leg-chip-surface${surfaces[legIndex] === true ? ' is-surface' : ''}`}
+                  title={t('rtw.legChip.surfaceTitle')}
+                >
+                  <input
+                    type="checkbox"
+                    checked={surfaces[legIndex] === true}
+                    onChange={(e) => onSurfaceChange(legIndex, e.target.checked)}
+                  />
+                  {t('rtw.timing.surface')}
+                </label>
               </span>
             )}
           </li>

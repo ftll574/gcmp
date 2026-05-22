@@ -1,0 +1,448 @@
+{
+  "version": "2026.2",
+  "lastVerified": "2026-05-23",
+  "sourceUrls": [
+    "https://www.oneworld.com/members",
+    "https://www.oneworld.com/news/oneworld-welcomes-hawaiian-airlines",
+    "https://roundtheworld.staralliance.com/staralliance/en/round-the-world",
+    "https://www.evaair.com/en-us/about-eva-air/news/star-alliance-press-releases/2026-04-02-ita-staralliance.html",
+    "https://www.skyteam.com/en/about/our-members/",
+    "https://www.skyteam.com/en/about/press-releases/press-releases-2025/ita-airways-exits-skyteam-alliance"
+  ],
+  "memberships": [
+    {
+      "airline": "AS",
+      "airlineName": "Alaska Airlines",
+      "alliance": "oneworld",
+      "status": "member",
+      "effectiveFrom": "2021-03-31",
+      "sourceUrl": "https://www.oneworld.com/members"
+    },
+    {
+      "airline": "AA",
+      "airlineName": "American Airlines",
+      "alliance": "oneworld",
+      "status": "member",
+      "sourceUrl": "https://www.oneworld.com/members"
+    },
+    {
+      "airline": "BA",
+      "airlineName": "British Airways",
+      "alliance": "oneworld",
+      "status": "member",
+      "sourceUrl": "https://www.oneworld.com/members"
+    },
+    {
+      "airline": "CX",
+      "airlineName": "Cathay Pacific",
+      "alliance": "oneworld",
+      "status": "member",
+      "sourceUrl": "https://www.oneworld.com/members"
+    },
+    {
+      "airline": "FJ",
+      "airlineName": "Fiji Airways",
+      "alliance": "oneworld",
+      "status": "member",
+      "sourceUrl": "https://www.oneworld.com/members"
+    },
+    {
+      "airline": "AY",
+      "airlineName": "Finnair",
+      "alliance": "oneworld",
+      "status": "member",
+      "sourceUrl": "https://www.oneworld.com/members"
+    },
+    {
+      "airline": "HA",
+      "airlineName": "Hawaiian Airlines",
+      "alliance": "oneworld",
+      "status": "member",
+      "effectiveFrom": "2026-04-23",
+      "sourceUrl": "https://www.oneworld.com/news/oneworld-welcomes-hawaiian-airlines"
+    },
+    {
+      "airline": "IB",
+      "airlineName": "Iberia",
+      "alliance": "oneworld",
+      "status": "member",
+      "sourceUrl": "https://www.oneworld.com/members"
+    },
+    {
+      "airline": "JL",
+      "airlineName": "Japan Airlines",
+      "alliance": "oneworld",
+      "status": "member",
+      "sourceUrl": "https://www.oneworld.com/members"
+    },
+    {
+      "airline": "MH",
+      "airlineName": "Malaysia Airlines",
+      "alliance": "oneworld",
+      "status": "member",
+      "sourceUrl": "https://www.oneworld.com/members"
+    },
+    {
+      "airline": "WY",
+      "airlineName": "Oman Air",
+      "alliance": "oneworld",
+      "status": "member",
+      "effectiveFrom": "2025-07-01",
+      "sourceUrl": "https://www.oneworld.com/news/2025-06-30-oneworld-welcomes-oman-air"
+    },
+    {
+      "airline": "QF",
+      "airlineName": "Qantas",
+      "alliance": "oneworld",
+      "status": "member",
+      "sourceUrl": "https://www.oneworld.com/members"
+    },
+    {
+      "airline": "QR",
+      "airlineName": "Qatar Airways",
+      "alliance": "oneworld",
+      "status": "member",
+      "sourceUrl": "https://www.oneworld.com/members"
+    },
+    {
+      "airline": "AT",
+      "airlineName": "Royal Air Maroc",
+      "alliance": "oneworld",
+      "status": "member",
+      "sourceUrl": "https://www.oneworld.com/members"
+    },
+    {
+      "airline": "RJ",
+      "airlineName": "Royal Jordanian",
+      "alliance": "oneworld",
+      "status": "member",
+      "sourceUrl": "https://www.oneworld.com/members"
+    },
+    {
+      "airline": "UL",
+      "airlineName": "SriLankan Airlines",
+      "alliance": "oneworld",
+      "status": "member",
+      "sourceUrl": "https://www.oneworld.com/members"
+    },
+    {
+      "airline": "S7",
+      "airlineName": "S7 Airlines",
+      "alliance": "oneworld",
+      "status": "suspended",
+      "effectiveTo": "2022-04-19",
+      "sourceUrl": "https://www.oneworld.com/members",
+      "notes": ["Membership suspended effective 2022-04-19 until further notice."]
+    },
+    {
+      "airline": "A3",
+      "airlineName": "Aegean Airlines",
+      "alliance": "star",
+      "status": "member",
+      "sourceUrl": "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+    },
+    {
+      "airline": "AC",
+      "airlineName": "Air Canada",
+      "alliance": "star",
+      "status": "member",
+      "sourceUrl": "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+    },
+    {
+      "airline": "CA",
+      "airlineName": "Air China",
+      "alliance": "star",
+      "status": "member",
+      "sourceUrl": "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+    },
+    {
+      "airline": "AI",
+      "airlineName": "Air India",
+      "alliance": "star",
+      "status": "member",
+      "sourceUrl": "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+    },
+    {
+      "airline": "NZ",
+      "airlineName": "Air New Zealand",
+      "alliance": "star",
+      "status": "member",
+      "sourceUrl": "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+    },
+    {
+      "airline": "NH",
+      "airlineName": "All Nippon Airways",
+      "alliance": "star",
+      "status": "member",
+      "sourceUrl": "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+    },
+    {
+      "airline": "OZ",
+      "airlineName": "Asiana Airlines",
+      "alliance": "star",
+      "status": "member",
+      "sourceUrl": "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+    },
+    {
+      "airline": "OS",
+      "airlineName": "Austrian Airlines",
+      "alliance": "star",
+      "status": "member",
+      "sourceUrl": "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+    },
+    {
+      "airline": "AV",
+      "airlineName": "Avianca",
+      "alliance": "star",
+      "status": "member",
+      "sourceUrl": "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+    },
+    {
+      "airline": "SN",
+      "airlineName": "Brussels Airlines",
+      "alliance": "star",
+      "status": "member",
+      "sourceUrl": "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+    },
+    {
+      "airline": "CM",
+      "airlineName": "Copa Airlines",
+      "alliance": "star",
+      "status": "member",
+      "sourceUrl": "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+    },
+    {
+      "airline": "OU",
+      "airlineName": "Croatia Airlines",
+      "alliance": "star",
+      "status": "member",
+      "sourceUrl": "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+    },
+    {
+      "airline": "MS",
+      "airlineName": "Egyptair",
+      "alliance": "star",
+      "status": "member",
+      "sourceUrl": "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+    },
+    {
+      "airline": "ET",
+      "airlineName": "Ethiopian Airlines",
+      "alliance": "star",
+      "status": "member",
+      "sourceUrl": "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+    },
+    {
+      "airline": "BR",
+      "airlineName": "EVA Air",
+      "alliance": "star",
+      "status": "member",
+      "sourceUrl": "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+    },
+    {
+      "airline": "AZ",
+      "airlineName": "ITA Airways",
+      "alliance": "star",
+      "status": "member",
+      "effectiveFrom": "2026-04-01",
+      "sourceUrl": "https://www.evaair.com/en-us/about-eva-air/news/star-alliance-press-releases/2026-04-02-ita-staralliance.html"
+    },
+    {
+      "airline": "LO",
+      "airlineName": "LOT Polish Airlines",
+      "alliance": "star",
+      "status": "member",
+      "sourceUrl": "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+    },
+    {
+      "airline": "LH",
+      "airlineName": "Lufthansa",
+      "alliance": "star",
+      "status": "member",
+      "sourceUrl": "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+    },
+    {
+      "airline": "ZH",
+      "airlineName": "Shenzhen Airlines",
+      "alliance": "star",
+      "status": "member",
+      "sourceUrl": "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+    },
+    {
+      "airline": "SQ",
+      "airlineName": "Singapore Airlines",
+      "alliance": "star",
+      "status": "member",
+      "sourceUrl": "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+    },
+    {
+      "airline": "SA",
+      "airlineName": "South African Airways",
+      "alliance": "star",
+      "status": "member",
+      "sourceUrl": "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+    },
+    {
+      "airline": "LX",
+      "airlineName": "Swiss International Air Lines",
+      "alliance": "star",
+      "status": "member",
+      "sourceUrl": "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+    },
+    {
+      "airline": "TP",
+      "airlineName": "TAP Air Portugal",
+      "alliance": "star",
+      "status": "member",
+      "sourceUrl": "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+    },
+    {
+      "airline": "TG",
+      "airlineName": "Thai Airways",
+      "alliance": "star",
+      "status": "member",
+      "sourceUrl": "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+    },
+    {
+      "airline": "TK",
+      "airlineName": "Turkish Airlines",
+      "alliance": "star",
+      "status": "member",
+      "sourceUrl": "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+    },
+    {
+      "airline": "UA",
+      "airlineName": "United Airlines",
+      "alliance": "star",
+      "status": "member",
+      "sourceUrl": "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+    },
+    {
+      "airline": "AR",
+      "airlineName": "Aerolíneas Argentinas",
+      "alliance": "skyteam",
+      "status": "member",
+      "sourceUrl": "https://www.skyteam.com/en/about/our-members/"
+    },
+    {
+      "airline": "AM",
+      "airlineName": "Aeromexico",
+      "alliance": "skyteam",
+      "status": "member",
+      "sourceUrl": "https://www.skyteam.com/en/about/our-members/"
+    },
+    {
+      "airline": "UX",
+      "airlineName": "Air Europa",
+      "alliance": "skyteam",
+      "status": "member",
+      "sourceUrl": "https://www.skyteam.com/en/about/our-members/"
+    },
+    {
+      "airline": "AF",
+      "airlineName": "Air France",
+      "alliance": "skyteam",
+      "status": "member",
+      "sourceUrl": "https://www.skyteam.com/en/about/our-members/"
+    },
+    {
+      "airline": "CI",
+      "airlineName": "China Airlines",
+      "alliance": "skyteam",
+      "status": "member",
+      "sourceUrl": "https://www.skyteam.com/en/about/our-members/"
+    },
+    {
+      "airline": "MU",
+      "airlineName": "China Eastern",
+      "alliance": "skyteam",
+      "status": "member",
+      "sourceUrl": "https://www.skyteam.com/en/about/our-members/"
+    },
+    {
+      "airline": "DL",
+      "airlineName": "Delta Air Lines",
+      "alliance": "skyteam",
+      "status": "member",
+      "sourceUrl": "https://www.skyteam.com/en/about/our-members/"
+    },
+    {
+      "airline": "GA",
+      "airlineName": "Garuda Indonesia",
+      "alliance": "skyteam",
+      "status": "member",
+      "sourceUrl": "https://www.skyteam.com/en/about/our-members/"
+    },
+    {
+      "airline": "KQ",
+      "airlineName": "Kenya Airways",
+      "alliance": "skyteam",
+      "status": "member",
+      "sourceUrl": "https://www.skyteam.com/en/about/our-members/"
+    },
+    {
+      "airline": "KL",
+      "airlineName": "KLM Royal Dutch Airlines",
+      "alliance": "skyteam",
+      "status": "member",
+      "sourceUrl": "https://www.skyteam.com/en/about/our-members/"
+    },
+    {
+      "airline": "KE",
+      "airlineName": "Korean Air",
+      "alliance": "skyteam",
+      "status": "member",
+      "sourceUrl": "https://www.skyteam.com/en/about/our-members/"
+    },
+    {
+      "airline": "ME",
+      "airlineName": "Middle East Airlines",
+      "alliance": "skyteam",
+      "status": "member",
+      "sourceUrl": "https://www.skyteam.com/en/about/our-members/"
+    },
+    {
+      "airline": "SK",
+      "airlineName": "SAS",
+      "alliance": "skyteam",
+      "status": "member",
+      "effectiveFrom": "2024-09-01",
+      "sourceUrl": "https://www.skyteam.com/en/about/our-members/"
+    },
+    {
+      "airline": "SV",
+      "airlineName": "Saudia",
+      "alliance": "skyteam",
+      "status": "member",
+      "sourceUrl": "https://www.skyteam.com/en/about/our-members/"
+    },
+    {
+      "airline": "RO",
+      "airlineName": "TAROM",
+      "alliance": "skyteam",
+      "status": "member",
+      "sourceUrl": "https://www.skyteam.com/en/about/our-members/"
+    },
+    {
+      "airline": "VN",
+      "airlineName": "Vietnam Airlines",
+      "alliance": "skyteam",
+      "status": "member",
+      "sourceUrl": "https://www.skyteam.com/en/about/our-members/"
+    },
+    {
+      "airline": "VS",
+      "airlineName": "Virgin Atlantic",
+      "alliance": "skyteam",
+      "status": "member",
+      "sourceUrl": "https://www.skyteam.com/en/about/our-members/"
+    },
+    {
+      "airline": "MF",
+      "airlineName": "XiamenAir",
+      "alliance": "skyteam",
+      "status": "member",
+      "sourceUrl": "https://www.skyteam.com/en/about/our-members/"
+    }
+  ]
+}

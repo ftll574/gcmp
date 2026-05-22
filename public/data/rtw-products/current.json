@@ -1,0 +1,231 @@
+{
+  "version": "2026.2",
+  "lastVerified": "2026-05-23",
+  "products": [
+    {
+      "id": "br-infinity-star-alliance-world-travel-award",
+      "label": "EVA Infinity MileageLands Star Alliance World Travel Award",
+      "kind": "award-rtw",
+      "owner": "airline",
+      "airline": "BR",
+      "alliance": "star",
+      "version": "2026.2",
+      "status": "active",
+      "bookingStatusNote": "EVA states Star Alliance award tickets with stopovers and Star Alliance World Travel Award tickets can only be booked through EVA reservation offices.",
+      "sourceUrls": [
+        "https://www.evaair.com/zh-hk/infinity-mileagelands/mileage-award-program/mileage-redemption/award-ticket/star-alliance/"
+      ],
+      "limits": {
+        "maxFlights": 10,
+        "maxStopovers": 7,
+        "minTripDays": 10
+      },
+      "geography": {
+        "startEnd": "same-country",
+        "directionPolicy": "east-or-west-continuous",
+        "requiresAtlanticCrossing": true,
+        "requiresPacificCrossing": true,
+        "oceanCrossingCount": "once",
+        "pricingBasis": "distance"
+      },
+      "airlineEligibility": {
+        "type": "alliance-members",
+        "alliance": "star",
+        "includeAffiliates": false
+      }
+    },
+    {
+      "id": "cx-asia-miles-oneworld-multi-carrier-award",
+      "label": "Cathay Asia Miles oneworld Multi-carrier Award",
+      "kind": "multi-carrier-award",
+      "owner": "airline",
+      "airline": "CX",
+      "alliance": "oneworld",
+      "version": "2026.2",
+      "status": "active",
+      "sourceUrls": [
+        "https://www.cathaypacific.com/content/dam/focal-point/cx/membership/programme-update/Cathay-membership-programme-terms-and-conditions-2026-EN.pdf"
+      ],
+      "limits": {
+        "maxStopovers": 5,
+        "maxTransfers": 2,
+        "maxSurfaceSectors": 2,
+        "maxStopoversPerCity": 1,
+        "maxDistanceMiles": 50000
+      },
+      "geography": {
+        "startEnd": "open",
+        "directionPolicy": "flexible",
+        "pricingBasis": "distance"
+      },
+      "airlineEligibility": {
+        "type": "alliance-members",
+        "alliance": "oneworld",
+        "includeAffiliates": false
+      },
+      "carrierCombination": {
+        "triggerCarrier": "CX",
+        "minCarriersWithoutTrigger": 2,
+        "minCarriersWithTrigger": 3
+      }
+    },
+    {
+      "id": "oneworld-explorer",
+      "label": "oneworld Explorer",
+      "kind": "cash-rtw-fare",
+      "owner": "oneworld",
+      "alliance": "oneworld",
+      "version": "2026.2",
+      "status": "active",
+      "sourceUrls": [
+        "https://www.oneworld.com/round-the-world"
+      ],
+      "limits": {
+        "minFlights": 3,
+        "maxFlights": 16,
+        "minTripDays": 10,
+        "maxTripMonths": 12
+      },
+      "geography": {
+        "startEnd": "same-city",
+        "directionPolicy": "east-or-west-continuous",
+        "requiresAtlanticCrossing": true,
+        "requiresPacificCrossing": true,
+        "oceanCrossingCount": "at-least-once",
+        "pricingBasis": "continents"
+      },
+      "airlineEligibility": {
+        "type": "alliance-members",
+        "alliance": "oneworld",
+        "includeAffiliates": true
+      }
+    },
+    {
+      "id": "star-alliance-rtw-fare",
+      "label": "Star Alliance Round the World Fare",
+      "kind": "cash-rtw-fare",
+      "owner": "star",
+      "alliance": "star",
+      "version": "2026.2",
+      "status": "active",
+      "sourceUrls": [
+        "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+      ],
+      "limits": {
+        "maxFlights": 16,
+        "minStopovers": 2,
+        "maxStopovers": 15,
+        "minTripDays": 10,
+        "maxTripMonths": 12
+      },
+      "geography": {
+        "startEnd": "same-country",
+        "directionPolicy": "east-or-west-continuous",
+        "requiresAtlanticCrossing": true,
+        "requiresPacificCrossing": true,
+        "oceanCrossingCount": "at-least-once",
+        "pricingBasis": "distance"
+      },
+      "airlineEligibility": {
+        "type": "alliance-members",
+        "alliance": "star",
+        "includeAffiliates": false
+      }
+    },
+    {
+      "id": "qantas-oneworld-classic-flight-reward",
+      "label": "Qantas oneworld Classic Flight Reward",
+      "kind": "multi-carrier-award",
+      "owner": "airline",
+      "airline": "QF",
+      "alliance": "oneworld",
+      "version": "2026.2",
+      "status": "active",
+      "sourceUrls": [
+        "https://www.qantas.com/ch/en/frequent-flyer/use-points/classic-flight-rewards.html",
+        "https://www.qantas.com/ca/en/frequent-flyer/discover-and-join/terms-and-conditions.html"
+      ],
+      "limits": {
+        "maxStopovers": 5,
+        "maxTransfersPerCity": 2,
+        "maxStopoversPerCity": 1,
+        "maxDistanceMiles": 35000
+      },
+      "geography": {
+        "startEnd": "open",
+        "directionPolicy": "flexible",
+        "pricingBasis": "distance"
+      },
+      "airlineEligibility": {
+        "type": "alliance-members",
+        "alliance": "oneworld",
+        "includeAffiliates": true
+      }
+    },
+    {
+      "id": "ana-star-alliance-rtw-award",
+      "label": "ANA Star Alliance Round the World Award",
+      "kind": "award-rtw",
+      "owner": "airline",
+      "airline": "NH",
+      "alliance": "star",
+      "version": "2026.2",
+      "status": "discontinued",
+      "bookingStatusNote": "New Star Alliance Round the World Award tickets are no longer issued as of 2025-06-23. Existing tickets issued up to that date can be used until expiration.",
+      "sourceUrls": [
+        "https://www.ana.co.jp/en/gb/amc/partner-flight-awards/around-the-world/"
+      ],
+      "limits": {
+        "maxFlights": 12,
+        "maxStopovers": 8,
+        "maxSurfaceSectors": 4,
+        "minTripDays": 10
+      },
+      "geography": {
+        "startEnd": "same-country",
+        "directionPolicy": "no-backtracking",
+        "requiresAtlanticCrossing": true,
+        "requiresPacificCrossing": true,
+        "oceanCrossingCount": "once",
+        "pricingBasis": "distance"
+      },
+      "airlineEligibility": {
+        "type": "alliance-members",
+        "alliance": "star",
+        "includeAffiliates": false
+      }
+    },
+    {
+      "id": "china-airlines-skyteam-partner-award",
+      "label": "China Airlines SkyTeam Partner Award",
+      "kind": "multi-carrier-award",
+      "owner": "airline",
+      "airline": "CI",
+      "alliance": "skyteam",
+      "version": "2026.2",
+      "status": "active",
+      "bookingStatusNote": "Important Taiwan award product, but not a true RTW candidate: China Airlines states itineraries crossing both the Pacific and Atlantic are not accepted.",
+      "sourceUrls": [
+        "https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/reward-tickets-skyteam"
+      ],
+      "limits": {
+        "maxFlights": 6,
+        "maxStopovers": 1,
+        "maxSurfaceSectors": 1
+      },
+      "geography": {
+        "startEnd": "open",
+        "directionPolicy": "no-backtracking",
+        "requiresAtlanticCrossing": false,
+        "requiresPacificCrossing": false,
+        "rejectsAtlanticAndPacificCrossing": true,
+        "pricingBasis": "zones"
+      },
+      "airlineEligibility": {
+        "type": "alliance-members",
+        "alliance": "skyteam",
+        "includeAffiliates": false
+      }
+    }
+  ]
+}

@@ -130,6 +130,18 @@ export interface Leg {
   readonly operatingCarrier: AirlineIata;
   /** Optional per-leg fare class letter override. */
   readonly fareClass?: FareClass;
+  /**
+   * RTW planning metadata. Stopovers are stays of 24h+ at the arrival point;
+   * transfers are shorter connections. Undefined means "unknown" so the RTW
+   * validator can avoid pretending it knows timing before the user enters it.
+   */
+  readonly stopover?: boolean;
+  /**
+   * Surface/open-jaw sector: user travels from `from` to `to` without a flight.
+   * Distance may still count for some award products, but it is not a flight
+   * coupon and has no operating carrier eligibility.
+   */
+  readonly surface?: boolean;
 }
 
 export type ProjectionShortCode = 'm' | 'e' | 'a' | 'o';
@@ -155,6 +167,12 @@ export interface RoutingRequest {
   readonly rulesVersion?: string;
   /** Map projection preference. Undefined → default (mercator). */
   readonly projection?: import('./calc/projections.ts').ProjectionId;
+  /** RTW trip start date, ISO YYYY-MM-DD. Optional until user sets dates. */
+  readonly startDate?: string;
+  /** RTW trip final arrival date, ISO YYYY-MM-DD. Optional until user sets dates. */
+  readonly endDate?: string;
+  /** Selected RTW fare/award product id. Optional for backwards-compatible URLs. */
+  readonly rtwProductId?: string;
   /**
    * Elite tier for RDM bonusing. Undefined → 'none'. Applies a single
    * generalized bonus % across all selected programs.

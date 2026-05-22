@@ -19,6 +19,7 @@
  *   `p`:        global crediting programs (AA, AS, ...)
  *   `c`:        global cabin (Y / W / J / F)
  *   `rv`:       global rules version (optional)
+ *   `rtw`:      selected RTW fare/award product id (optional)
  *   `proj`:     global projection short code (m / e / a / o)
  *
  *   parseShareUrl(url)   →  RoutingRequest | UrlParseError
@@ -71,6 +72,8 @@ const LETTER_BY_CABIN: Record<CabinId, string> = {
 };
 
 const RULES_VERSION_PATTERN = /^\d{4}\.[1-4]$/;
+const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const RTW_PRODUCT_ID_PATTERN = /^[a-z0-9][a-z0-9-]*$/;
 
 const PROJECTION_BY_SHORT: Record<string, ProjectionId> = {
   m: 'mercator',
@@ -148,7 +151,12 @@ export function parseShareUrl(input: string): UrlParseResult {
   const pRaw = params.get('p');
   const cRaw = params.get('c');
   const fcRaw = params.get('fc');
+  const stopoverRaw = params.get('stp');
+  const surfaceRaw = params.get('surf');
   const rvRaw = params.get('rv');
+  const sdRaw = params.get('sd');
+  const edRaw = params.get('ed');
+  const rtwRaw = params.get('rtw');
   const projRaw = params.get('proj');
   const stRaw = params.get('st');
 
@@ -177,6 +185,51 @@ export function parseShareUrl(input: string): UrlParseResult {
         `Expected ${iataByGroup.length} group(s) in fc (semicolon-separated); got ${fcByGroupStr.length}.`,
       );
     }
+  }
+
+  function parseBooleanShape(raw: string | null, param: 'stp' | 'surf'): string[] | null {
+    if (!raw) return null;
+    const byGroup = raw.split(';');
+    if (byGroup.length !== iataByGroup.length) {
+      throw new Error(
+        `Expected ${iataByGroup.length} group(s) in ${param} (semicolon-separated); got ${byGroup.length}.`,
+      );
+    }
+    return byGroup;
+  }
+
+  let stopoverByGroupStr: string[] | null;
+  let surfaceByGroupStr: string[] | null;
+  try {
+    stopoverByGroupStr = parseBooleanShape(stopoverRaw, 'stp');
+    surfaceByGroupStr = parseBooleanShape(surfaceRaw, 'surf');
+  } catch (e) {
+    return err('mismatched-op-length', e instanceof Error ? e.message : String(e));
+  }
+
+  function decodeBooleanCells(
+    rawGroup: string,
+    expectedCount: number,
+    groupIndex: number,
+    param: 'stp' | 'surf',
+  ): Array<boolean | undefined> | UrlParseError {
+    const rawCells = rawGroup === '' ? [] : rawGroup.split(',');
+    if (rawCells.length > 0 && rawCells.length !== expectedCount) {
+      return err(
+        'mismatched-op-length',
+        `Group ${groupIndex + 1}: expected ${expectedCount} value(s) in ${param}; got ${rawCells.length}.`,
+      );
+    }
+    const padded = rawCells.length === 0 ? new Array<string>(expectedCount).fill('') : rawCells;
+    const out: Array<boolean | undefined> = [];
+    for (const cell of padded) {
+      const cleaned = (cell ?? '').toLowerCase().trim();
+      if (cleaned === '') out.push(undefined);
+      else if (cleaned === '1' || cleaned === 'y' || cleaned === 'true') out.push(true);
+      else if (cleaned === '0' || cleaned === 'n' || cleaned === 'false') out.push(false);
+      else return err('malformed-path', `Invalid ${param} value: "${cell}". Expected 1 / 0.`);
+    }
+    return out;
   }
 
   const groups: RoutingGroup[] = [];
@@ -228,6 +281,20 @@ export function parseShareUrl(input: string): UrlParseResult {
       fareClasses = out;
     }
 
+    let stopovers: ReadonlyArray<boolean | undefined> | null = null;
+    if (stopoverByGroupStr) {
+      const decoded = decodeBooleanCells(stopoverByGroupStr[gi] ?? '', expectedOpCount, gi, 'stp');
+      if (!Array.isArray(decoded)) return decoded;
+      stopovers = decoded;
+    }
+
+    let surfaces: ReadonlyArray<boolean | undefined> | null = null;
+    if (surfaceByGroupStr) {
+      const decoded = decodeBooleanCells(surfaceByGroupStr[gi] ?? '', expectedOpCount, gi, 'surf');
+      if (!Array.isArray(decoded)) return decoded;
+      surfaces = decoded;
+    }
+
     const legs: Leg[] = [];
     for (let i = 0; i < iataCodes.length - 1; i++) {
       const from = iataCodes[i];
@@ -237,11 +304,16 @@ export function parseShareUrl(input: string): UrlParseResult {
         return err('malformed-path', 'Internal: leg construction failed.');
       }
       const fc = fareClasses?.[i];
-      legs.push(
-        fc !== undefined
-          ? { from, to, operatingCarrier, fareClass: fc }
-          : { from, to, operatingCarrier },
-      );
+      const stopover = stopovers?.[i];
+      const surface = surfaces?.[i];
+      legs.push({
+        from,
+        to,
+        operatingCarrier,
+        ...(fc !== undefined ? { fareClass: fc } : {}),
+        ...(stopover !== undefined ? { stopover } : {}),
+        ...(surface !== undefined ? { surface } : {}),
+      });
     }
     groups.push({ legs });
   }
@@ -273,6 +345,30 @@ export function parseShareUrl(input: string): UrlParseResult {
     rulesVersion = rvRaw;
   }
 
+  let startDate: string | undefined;
+  if (sdRaw) {
+    if (!ISO_DATE_PATTERN.test(sdRaw)) {
+      return err('malformed-path', `Invalid start date "${sdRaw}". Expected YYYY-MM-DD.`);
+    }
+    startDate = sdRaw;
+  }
+
+  let endDate: string | undefined;
+  if (edRaw) {
+    if (!ISO_DATE_PATTERN.test(edRaw)) {
+      return err('malformed-path', `Invalid end date "${edRaw}". Expected YYYY-MM-DD.`);
+    }
+    endDate = edRaw;
+  }
+
+  let rtwProductId: string | undefined;
+  if (rtwRaw) {
+    if (!RTW_PRODUCT_ID_PATTERN.test(rtwRaw)) {
+      return err('malformed-path', `Invalid RTW product id "${rtwRaw}".`);
+    }
+    rtwProductId = rtwRaw;
+  }
+
   // Backwards compat: a URL with no `proj=` was created before v1.1 when the
   // runtime default was Mercator. Such URLs must continue to render as
   // Mercator regardless of the current runtime default, otherwise every
@@ -301,6 +397,9 @@ export function parseShareUrl(input: string): UrlParseResult {
     programs,
     projection,
     ...(rulesVersion !== undefined ? { rulesVersion } : {}),
+    ...(startDate !== undefined ? { startDate } : {}),
+    ...(endDate !== undefined ? { endDate } : {}),
+    ...(rtwProductId !== undefined ? { rtwProductId } : {}),
     ...(tier !== undefined ? { tier } : {}),
   };
 
@@ -334,6 +433,14 @@ export function encodeShareUrl(req: RoutingRequest): string {
   const fcByGroup = anyFc
     ? req.groups.map((group) => group.legs.map((leg) => leg.fareClass ?? '').join(','))
     : null;
+  const anyStopover = req.groups.some((g) => g.legs.some((l) => l.stopover !== undefined));
+  const stopoverByGroup = anyStopover
+    ? req.groups.map((group) => group.legs.map((leg) => leg.stopover === undefined ? '' : leg.stopover ? '1' : '0').join(','))
+    : null;
+  const anySurface = req.groups.some((g) => g.legs.some((l) => l.surface !== undefined));
+  const surfaceByGroup = anySurface
+    ? req.groups.map((group) => group.legs.map((leg) => leg.surface === undefined ? '' : leg.surface ? '1' : '0').join(','))
+    : null;
 
   const path = groupChains.join(',');
   const op = opByGroup.join(';');
@@ -350,8 +457,23 @@ export function encodeShareUrl(req: RoutingRequest): string {
   if (fcByGroup) {
     params.set('fc', fcByGroup.join(';'));
   }
+  if (stopoverByGroup) {
+    params.set('stp', stopoverByGroup.join(';'));
+  }
+  if (surfaceByGroup) {
+    params.set('surf', surfaceByGroup.join(';'));
+  }
   if (req.rulesVersion !== undefined) {
     params.set('rv', req.rulesVersion);
+  }
+  if (req.startDate !== undefined) {
+    params.set('sd', req.startDate);
+  }
+  if (req.endDate !== undefined) {
+    params.set('ed', req.endDate);
+  }
+  if (req.rtwProductId !== undefined) {
+    params.set('rtw', req.rtwProductId);
   }
   // Always encode the projection so the shared URL pins the recipient to
   // the sender's chosen view. Mercator (the v1.0 historic default) is the

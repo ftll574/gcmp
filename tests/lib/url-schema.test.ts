@@ -432,3 +432,95 @@ describe('status tier (v1.9)', () => {
     }
   });
 });
+
+describe('RTW metadata (stopover + surface)', () => {
+  test('encode omits stp/surf when no RTW metadata is present', () => {
+    const url = encodeShareUrl(SINGLE_GROUP);
+
+    expect(url).not.toContain('stp=');
+    expect(url).not.toContain('surf=');
+  });
+
+  test('round-trips stopover and surface flags', () => {
+    const req: RoutingRequest = {
+      ...SINGLE_GROUP,
+      groups: [
+        {
+          legs: [
+            { from: 'SFO', to: 'NRT', operatingCarrier: 'AA', stopover: true },
+            { from: 'NRT', to: 'BKK', operatingCarrier: 'JL', stopover: false },
+            { from: 'BKK', to: 'HKG', operatingCarrier: 'CX', surface: true },
+          ],
+        },
+      ],
+    };
+
+    const parsed = parseShareUrl(encodeShareUrl(req));
+
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.request.groups[0]?.legs[0]?.stopover).toBe(true);
+      expect(parsed.request.groups[0]?.legs[1]?.stopover).toBe(false);
+      expect(parsed.request.groups[0]?.legs[2]?.surface).toBe(true);
+    }
+  });
+
+  test('rejects malformed stopover flag', () => {
+    const parsed = parseShareUrl('/r/v1/SFO-NRT?op=AA&p=AA&c=J&stp=x');
+
+    expect(parsed.ok).toBe(false);
+    if (!parsed.ok) {
+      expect(parsed.kind).toBe('malformed-path');
+    }
+  });
+
+  test('round-trips trip start/end dates', () => {
+    const req: RoutingRequest = {
+      ...SINGLE_GROUP,
+      startDate: '2026-09-01',
+      endDate: '2026-09-21',
+    };
+
+    const parsed = parseShareUrl(encodeShareUrl(req));
+
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.request.startDate).toBe('2026-09-01');
+      expect(parsed.request.endDate).toBe('2026-09-21');
+    }
+  });
+
+  test('round-trips selected RTW product id', () => {
+    const req: RoutingRequest = {
+      ...SINGLE_GROUP,
+      rtwProductId: 'br-infinity-star-alliance-world-travel-award',
+    };
+
+    const url = encodeShareUrl(req);
+    const parsed = parseShareUrl(url);
+
+    expect(url).toContain('rtw=br-infinity-star-alliance-world-travel-award');
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.request.rtwProductId).toBe('br-infinity-star-alliance-world-travel-award');
+    }
+  });
+
+  test('rejects malformed RTW product id', () => {
+    const parsed = parseShareUrl('/r/v1/SFO-NRT?op=AA&p=AA&c=J&rtw=Bad_ID');
+
+    expect(parsed.ok).toBe(false);
+    if (!parsed.ok) {
+      expect(parsed.kind).toBe('malformed-path');
+    }
+  });
+
+  test('rejects malformed trip date', () => {
+    const parsed = parseShareUrl('/r/v1/SFO-NRT?op=AA&p=AA&c=J&sd=2026/09/01');
+
+    expect(parsed.ok).toBe(false);
+    if (!parsed.ok) {
+      expect(parsed.kind).toBe('malformed-path');
+    }
+  });
+});

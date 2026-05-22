@@ -1,7 +1,7 @@
 {
   "brand": {
     "name": "gcmp",
-    "tagline": "哩程查票計算機"
+    "tagline": "環球票路線規劃"
   },
   "lang": {
     "english": "English",
@@ -20,7 +20,7 @@
     "modePro": "老手",
     "modeHint": "新手模式會附上解釋。隨時可切換。"
   },
-  "loading": "載入機場資料 + 哩程規則中…",
+  "loading": "載入機場資料 + 環球票規則中…",
   "errors": {
     "loadFailed": "資料載入失敗：{message}",
     "loadFailedHelp": "請重新整理。若持續失敗，請至 GitHub 開 issue。"
@@ -36,8 +36,8 @@
     "clearAll": "清除"
   },
   "hero": {
-    "tagline": "找出每段航班最划算的常客計畫。",
-    "subtagline": "選機場、選艙等，馬上比 18 家常客計畫、4 大聯盟誰給最多哩程。"
+    "tagline": "規劃並檢查環球票路線。",
+    "subtagline": "輸入航線、標記停留與地面段，檢查環球票與多航司獎勵票規則。"
   },
   "samples": {
     "sfoNrtBkk": {
@@ -67,7 +67,7 @@
     "removeGroup": "移除航線 {n}",
     "groupN": "航線 {n}",
     "grandTotal": "全部航線合計",
-    "compareHint": "在同一張地圖上比較多條航線。下面的 PQM 數字是全部航線加總。"
+    "compareHint": "在同一張地圖上比較多條航線。環球票規則檢查以目前選取的航線為主。"
   },
   "tier": {
     "label": "會籍等級",
@@ -148,11 +148,11 @@
   "footer": {
     "openSource": "gcmp — GitHub 開源專案",
     "browseByAirline": "依航空公司瀏覽",
-    "disclaimer": "哩程數依官方公布的合作夥伴累積表計算，請以實際入帳為準。"
+    "disclaimer": "環球票檢查僅驗證結構規則；獎勵機位與實際開票仍需向航空公司確認。"
   },
   "map": {
     "fallbackHeading": "地圖渲染失敗。",
-    "fallbackHint": "哩程計算仍然有效。下面可重試渲染地圖。",
+    "fallbackHint": "環球票規則檢查仍然有效。下面可重試渲染地圖。",
     "retry": "重試",
     "ariaLabelEmpty": "世界地圖",
     "ariaLabel": "地圖顯示航線：{chain}"
@@ -229,6 +229,154 @@
     "star": "星空聯盟",
     "skyteam": "天合聯盟",
     "none": "無聯盟"
+  },
+  "rtw": {
+    "noProducts": "尚未載入環球票產品。",
+    "planningEyebrow": "規劃條件",
+    "planningTitle": "{market}優先環球票路線",
+    "validationEyebrow": "台灣優先環球票規劃器",
+    "validationTitle": "路線規則檢查",
+    "product": "環球票產品",
+    "productShort": "產品",
+    "alliance": "航空聯盟",
+    "type": "票種",
+    "carrierSeed": "預設航司",
+    "empty": "加入至少一段飛行航段後，就能開始檢查環球票規則。",
+    "mileageEstimate": "哩程估算",
+    "market": {
+      "TW": "台灣"
+    },
+    "productKind": {
+      "cash": "現金環球票",
+      "award": "環球獎勵票",
+      "multiCarrier": "多航司獎勵票"
+    },
+    "startEnd": {
+      "label": "起訖限制",
+      "sameCity": "同城市",
+      "sameCountry": "同國家",
+      "open": "可 open jaw"
+    },
+    "limits": {
+      "maxFlights": "最多 {count} 段飛行",
+      "maxStopovers": "最多 {count} 個停留",
+      "distanceCap": "{count} 哩上限",
+      "rulesLoaded": "已載入規則",
+      "crossOceans": "跨越 {oceans}"
+    },
+    "ocean": {
+      "pacific": "太平洋",
+      "atlantic": "大西洋"
+    },
+    "status": {
+      "valid": "目前可行",
+      "invalid": "需要修正",
+      "empty": "加入路線"
+    },
+    "summary": {
+      "segments": "飛行段數",
+      "miles": "總哩程",
+      "carrierIssues": "航司問題",
+      "stopovers": "停留",
+      "surface": "地面段",
+      "transfers": "轉機",
+      "oceans": "跨洋",
+      "direction": "方向",
+      "cityRepeats": "城市重複",
+      "tripDays": "旅程天數"
+    },
+    "direction": {
+      "eastbound": "向東",
+      "westbound": "向西",
+      "mixed": "混合",
+      "unknown": "未知"
+    },
+    "award": {
+      "estimate": "獎勵票估算",
+      "miles": "{count} 哩",
+      "milesBand": "哩區間",
+      "sources": "來源與備註",
+      "confidence": {
+        "officialFixed": "官方固定表",
+        "publishedChart": "公開表",
+        "recheck": "需複查"
+      },
+      "cabin": {
+        "economy": "經濟艙",
+        "business": "商務艙",
+        "first": "頭等艙"
+      }
+    },
+    "tripDates": {
+      "eyebrow": "環球票旅程天數",
+      "title": "旅行日期",
+      "start": "出發",
+      "end": "返回"
+    },
+    "legTable": {
+      "eyebrow": "環球票航段明細",
+      "title": "飛行、停留與地面段",
+      "leg": "航段",
+      "operating": "執飛",
+      "timing": "停留/轉機",
+      "surface": "地面段",
+      "operatingLabel": "{from} 到 {to} 的執飛航司",
+      "timingLabel": "{from} 到 {to} 的停留/轉機狀態",
+      "surfaceLabel": "{from} 到 {to} 的地面段"
+    },
+    "legChip": {
+      "stopoverLabel": "第 {n} 段停留/轉機狀態",
+      "stopoverTitle": "環球票時間規則：24 小時內通常是轉機，24 小時以上通常是停留。",
+      "surfaceTitle": "地面段 / open-jaw：這一段不搭飛機移動。"
+    },
+    "timing": {
+      "unknownShort": "時間？",
+      "unknown": "未知",
+      "transfer": "轉機",
+      "transferLong": "轉機（<24h）",
+      "stopover": "停留",
+      "stopoverLong": "停留（24h+）",
+      "surface": "地面段"
+    },
+    "findings": {
+      "productStatusNote": "{note}",
+      "productStatus": "{label} 目前狀態為 {status}。",
+      "airlineEligibilityPass": "所有執飛航司都符合此產品的航司資格規則。",
+      "airlineEligibilityFail": "有一段或多段執飛航司不符合此產品資格。",
+      "flightSegmentsPass": "路線共有 {count} 段飛行，符合段數限制。",
+      "flightSegmentsFail": "路線共有 {count} 段飛行；允許範圍是 {min}-{max}。",
+      "maxDistancePass": "路線距離 {miles} 哩，低於 {max} 哩上限。",
+      "maxDistanceFail": "路線距離 {miles} 哩；上限為 {max} 哩。",
+      "tripDurationUnknown": "尚未設定出發與返回日期，無法檢查旅程天數。",
+      "tripDurationPass": "旅程共 {days} 天，符合天數限制。",
+      "tripDurationFail": "旅程共 {days} 天；允許範圍是 {min}-{max} 天。",
+      "stopoversUnknown": "已標記 {count} 個停留，仍有 {unknown} 段時間未知。請標記轉機或停留以完成檢查。",
+      "stopoversPass": "路線共有 {count} 個停留，符合限制。",
+      "stopoversFail": "路線共有 {count} 個停留；允許範圍是 {min}-{max}。",
+      "transfersUnknown": "已標記 {count} 個轉機，仍有 {unknown} 段時間未知。請標記轉機或停留以完成檢查。",
+      "transfersPass": "路線共有 {count} 個轉機，低於 {max} 個轉機上限。",
+      "transfersFail": "路線共有 {count} 個轉機；上限為 {max}。",
+      "surfaceSectorsPass": "路線共有 {count} 個地面段，低於 {max} 個地面段上限。",
+      "surfaceSectorsFail": "路線共有 {count} 個地面段；上限為 {max}。",
+      "stopoversPerCityPass": "沒有城市超過每城 {max} 次停留的限制。",
+      "stopoversPerCityFail": "以下城市停留次數過多：{cities}。",
+      "surfaceCitiesPass": "地面段 / open-jaw 端點沒有重複。",
+      "surfaceCitiesFail": "以下地面段 / open-jaw 端點重複過多：{cities}。",
+      "carrierCombinationPass": "路線使用 {count} 家合格航司，符合多航司規則。",
+      "carrierCombinationFail": "路線只使用 {count} 家航司；此產品至少需要 {required} 家。",
+      "oceanCrossingsPass": "路線已跨越必要海洋：{oceans}。",
+      "oceanCrossingsFail": "路線缺少必要跨洋：{missing}。",
+      "prohibitedOceanCombinationPass": "路線沒有同時跨越太平洋與大西洋。",
+      "prohibitedOceanCombinationFail": "此產品不允許同時跨越太平洋與大西洋的行程。",
+      "directionPass": "路線方向為 {direction}。",
+      "directionMixed": "路線同時有向東與向西移動；此產品需要同一個連續環球方向。",
+      "directionUnknown": "無法判斷路線方向。",
+      "startEndUnknown": "路線為空或包含未知機場，無法檢查起訖限制。",
+      "startEndSameCityPass": "路線起點與終點在同一城市 / 機場。",
+      "startEndSameCityFail": "路線從 {start} 開始、在 {end} 結束；此產品要求同城市起訖。",
+      "startEndSameCountryPass": "路線起點與終點在同一國家。",
+      "startEndSameCountryFail": "路線從 {start} 開始、在 {end} 結束；此產品要求同國家起訖。"
+    }
   },
   "glossary": {
     "pqm": "菁英資格哩數（Status / Premier Qualifying Miles）— 累積到一定數量可升上金卡、白金卡等會籍等級。跟酬賓里數不同。",

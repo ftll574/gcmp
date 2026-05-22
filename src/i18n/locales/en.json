@@ -1,7 +1,7 @@
 {
   "brand": {
     "name": "gcmp",
-    "tagline": "routing calculator"
+    "tagline": "RTW route planner"
   },
   "lang": {
     "english": "English",
@@ -20,7 +20,7 @@
     "modePro": "Pro",
     "modeHint": "Beginner mode adds explanations. Switch any time."
   },
-  "loading": "Loading airports + earning rules…",
+  "loading": "Loading airports + RTW rules…",
   "errors": {
     "loadFailed": "Failed to load data: {message}",
     "loadFailedHelp": "Refresh the page. If the problem persists, file an issue."
@@ -36,8 +36,8 @@
     "clearAll": "Clear"
   },
   "hero": {
-    "tagline": "Find the best frequent-flyer program for any flight.",
-    "subtagline": "Pick airports, pick a cabin, see who credits more — across 18 programs and 4 alliances."
+    "tagline": "Plan and validate round-the-world routings.",
+    "subtagline": "Build a route, mark stopovers and surface sectors, then check RTW fare and award rules."
   },
   "samples": {
     "sfoNrtBkk": {
@@ -67,7 +67,7 @@
     "removeGroup": "Remove routing {n}",
     "groupN": "Routing {n}",
     "grandTotal": "Across all routings",
-    "compareHint": "Compare multiple routings on one map. The PQM totals below sum across all routings."
+    "compareHint": "Compare multiple routings on one map. RTW validation uses the active routing."
   },
   "tier": {
     "label": "Elite tier",
@@ -148,11 +148,11 @@
   "footer": {
     "openSource": "gcmp — open source on GitHub",
     "browseByAirline": "Browse by airline",
-    "disclaimer": "Earning numbers are chart-verified against published partner charts. Verify against your statement."
+    "disclaimer": "RTW validation checks structural rules only. Award availability and ticketing must be verified with the airline."
   },
   "map": {
     "fallbackHeading": "Map failed to render.",
-    "fallbackHint": "The earning calculations still work. Retry the map render below.",
+    "fallbackHint": "The RTW rule checks still work. Retry the map render below.",
     "retry": "Retry",
     "ariaLabelEmpty": "World map",
     "ariaLabel": "Map showing route via {chain}"
@@ -229,6 +229,154 @@
     "star": "Star Alliance",
     "skyteam": "SkyTeam",
     "none": "No alliance"
+  },
+  "rtw": {
+    "noProducts": "No RTW products loaded.",
+    "planningEyebrow": "Planning context",
+    "planningTitle": "{market}-first RTW route",
+    "validationEyebrow": "Taiwan-first RTW planner",
+    "validationTitle": "Route rule check",
+    "product": "RTW product",
+    "productShort": "Product",
+    "alliance": "Alliance",
+    "type": "Type",
+    "carrierSeed": "Carrier seed",
+    "empty": "Add at least one flight segment to start validating RTW rules.",
+    "mileageEstimate": "Mileage estimate",
+    "market": {
+      "TW": "Taiwan"
+    },
+    "productKind": {
+      "cash": "Cash RTW fare",
+      "award": "RTW award",
+      "multiCarrier": "Multi-carrier award"
+    },
+    "startEnd": {
+      "label": "Start/end",
+      "sameCity": "same city",
+      "sameCountry": "same country",
+      "open": "open jaw allowed"
+    },
+    "limits": {
+      "maxFlights": "max {count} flights",
+      "maxStopovers": "max {count} stopovers",
+      "distanceCap": "{count} mi cap",
+      "rulesLoaded": "rules loaded",
+      "crossOceans": "cross {oceans}"
+    },
+    "ocean": {
+      "pacific": "Pacific",
+      "atlantic": "Atlantic"
+    },
+    "status": {
+      "valid": "Valid so far",
+      "invalid": "Needs fixes",
+      "empty": "Add route"
+    },
+    "summary": {
+      "segments": "Segments",
+      "miles": "Miles",
+      "carrierIssues": "Carrier issues",
+      "stopovers": "Stopovers",
+      "surface": "Surface",
+      "transfers": "Transfers",
+      "oceans": "Oceans",
+      "direction": "Direction",
+      "cityRepeats": "City repeats",
+      "tripDays": "Trip days"
+    },
+    "direction": {
+      "eastbound": "eastbound",
+      "westbound": "westbound",
+      "mixed": "mixed",
+      "unknown": "unknown"
+    },
+    "award": {
+      "estimate": "Award estimate",
+      "miles": "{count} miles",
+      "milesBand": "miles band",
+      "sources": "Sources and notes",
+      "confidence": {
+        "officialFixed": "official fixed",
+        "publishedChart": "published chart",
+        "recheck": "recheck"
+      },
+      "cabin": {
+        "economy": "economy",
+        "business": "business",
+        "first": "first"
+      }
+    },
+    "tripDates": {
+      "eyebrow": "RTW trip duration",
+      "title": "Travel dates",
+      "start": "Start",
+      "end": "End"
+    },
+    "legTable": {
+      "eyebrow": "RTW itinerary details",
+      "title": "Flight, stopover, surface sectors",
+      "leg": "Leg",
+      "operating": "Operating",
+      "timing": "Timing",
+      "surface": "Surface",
+      "operatingLabel": "Operating carrier for {from} to {to}",
+      "timingLabel": "Stopover timing for {from} to {to}",
+      "surfaceLabel": "Surface sector for {from} to {to}"
+    },
+    "legChip": {
+      "stopoverLabel": "Stopover status for leg {n}",
+      "stopoverTitle": "RTW timing: transfer is under 24h, stopover is 24h+",
+      "surfaceTitle": "Surface/open-jaw sector: no flight is taken for this segment"
+    },
+    "timing": {
+      "unknownShort": "Timing?",
+      "unknown": "Unknown",
+      "transfer": "Transfer",
+      "transferLong": "Transfer (<24h)",
+      "stopover": "Stopover",
+      "stopoverLong": "Stopover (24h+)",
+      "surface": "Surface"
+    },
+    "findings": {
+      "productStatusNote": "{note}",
+      "productStatus": "{label} is {status}.",
+      "airlineEligibilityPass": "All operating carriers match this product eligibility rule.",
+      "airlineEligibilityFail": "One or more operating carriers are not eligible for this product.",
+      "flightSegmentsPass": "Route has {count} flight segments within the allowed range.",
+      "flightSegmentsFail": "Route has {count} flight segments; allowed range is {min}-{max}.",
+      "maxDistancePass": "Route is {miles} miles within the {max} mile cap.",
+      "maxDistanceFail": "Route is {miles} miles; maximum is {max} miles.",
+      "tripDurationUnknown": "Trip duration cannot be checked until start and end dates are set.",
+      "tripDurationPass": "Trip is {days} days, within the allowed duration.",
+      "tripDurationFail": "Trip is {days} days; allowed range is {min}-{max} days.",
+      "stopoversUnknown": "{count} stopovers marked, {unknown} segment(s) unknown. Mark stopover/transfer to complete this rule.",
+      "stopoversPass": "Route has {count} stopovers within the allowed range.",
+      "stopoversFail": "Route has {count} stopovers; allowed range is {min}-{max}.",
+      "transfersUnknown": "{count} transfers marked, {unknown} segment(s) unknown. Mark stopover/transfer to complete this rule.",
+      "transfersPass": "Route has {count} transfers within the {max} transfer cap.",
+      "transfersFail": "Route has {count} transfers; maximum is {max}.",
+      "surfaceSectorsPass": "Route has {count} surface sectors within the {max} sector cap.",
+      "surfaceSectorsFail": "Route has {count} surface sectors; maximum is {max}.",
+      "stopoversPerCityPass": "No city exceeds the {max} stopover-per-city cap.",
+      "stopoversPerCityFail": "Stopover repeated too many times in: {cities}.",
+      "surfaceCitiesPass": "Surface/open-jaw endpoints are not repeated.",
+      "surfaceCitiesFail": "Surface/open-jaw endpoint repeated too many times in: {cities}.",
+      "carrierCombinationPass": "Route uses {count} eligible carrier(s), satisfying this multi-carrier rule.",
+      "carrierCombinationFail": "Route uses {count} carrier(s); this product requires at least {required}.",
+      "oceanCrossingsPass": "Route crosses required ocean(s): {oceans}.",
+      "oceanCrossingsFail": "Route is missing required ocean crossing(s): {missing}.",
+      "prohibitedOceanCombinationPass": "Route does not cross both the Pacific and Atlantic.",
+      "prohibitedOceanCombinationFail": "This product does not allow itineraries crossing both the Pacific and Atlantic.",
+      "directionPass": "Route is {direction}.",
+      "directionMixed": "Route mixes eastbound and westbound movement; this product requires one continuous global direction.",
+      "directionUnknown": "Route direction could not be determined.",
+      "startEndUnknown": "Start/end airport could not be validated because the route is empty or contains unknown airports.",
+      "startEndSameCityPass": "Route starts and ends in the same city/airport.",
+      "startEndSameCityFail": "Route starts at {start} and ends at {end}; this product requires the same city.",
+      "startEndSameCountryPass": "Route starts and ends in the same country.",
+      "startEndSameCountryFail": "Route starts in {start} and ends in {end}; this product requires the same country."
+    }
   },
   "glossary": {
     "pqm": "Premier Qualifying Miles — counts toward elite status (Gold, Platinum, etc.). Not the same as redeemable miles.",

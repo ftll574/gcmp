@@ -10,7 +10,11 @@
  */
 
 import { useEffect, useState } from 'react';
+import { AwardPricingCatalogSchema, type AwardPricingCatalog } from '../lib/schemas/award-pricing.ts';
+import { AllianceCatalogSchema, type AllianceCatalog } from '../lib/schemas/alliance.ts';
+import { MarketProfileSchema, type MarketProfile } from '../lib/schemas/market.ts';
 import { ProgramSchema, type Program } from '../lib/schemas/program.ts';
+import { RtwRuleCatalogSchema, type RtwRuleCatalog } from '../lib/schemas/rtw-rule.ts';
 import { ValuationsSchema, type Valuations } from '../lib/schemas/valuations.ts';
 import {
   PROGRAM_REGISTRY,
@@ -23,6 +27,10 @@ export interface LoadedData {
   airports: ReadonlyArray<Airport>;
   airlines: ReadonlyArray<Airline>;
   programs: ReadonlyMap<ProgramId, Program>;
+  allianceCatalog: AllianceCatalog;
+  rtwRuleCatalog: RtwRuleCatalog;
+  awardPricingCatalog: AwardPricingCatalog;
+  marketProfile: MarketProfile;
   /** Per-program ¢/mile redemption-value chip. Null if file unavailable. */
   valuations: Valuations | null;
 }
@@ -61,10 +69,23 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
     async function load(): Promise<void> {
       try {
         const programDirs = PROGRAM_REGISTRY.map((p) => p.shortCode.toLowerCase());
-        const [airportsRaw, airlinesRaw, valuationsRaw, ...programRaws] = await Promise.all([
+        const [
+          airportsRaw,
+          airlinesRaw,
+          valuationsRaw,
+          allianceRaw,
+          rtwRulesRaw,
+          awardPricingRaw,
+          marketRaw,
+          ...programRaws
+        ] = await Promise.all([
           fetchJsonStrict(`${baseUrl}/data/airports.json`),
           fetchJsonStrict(`${baseUrl}/data/airlines.json`),
           fetchJsonOptional(`${baseUrl}/data/valuations/current.json`),
+          fetchJsonStrict(`${baseUrl}/data/alliances/current.json`),
+          fetchJsonStrict(`${baseUrl}/data/rtw-products/current.json`),
+          fetchJsonStrict(`${baseUrl}/data/award-pricing/current.json`),
+          fetchJsonStrict(`${baseUrl}/data/markets/tw/current.json`),
           ...programDirs.map((dir) =>
             fetchJsonOptional(`${baseUrl}/data/programs/${dir}/current.json`),
           ),
@@ -82,6 +103,10 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
 
         if (!Array.isArray(airportsRaw)) throw new Error('airports.json malformed');
         if (!Array.isArray(airlinesRaw)) throw new Error('airlines.json malformed');
+        const allianceCatalog = AllianceCatalogSchema.parse(allianceRaw);
+        const rtwRuleCatalog = RtwRuleCatalogSchema.parse(rtwRulesRaw);
+        const awardPricingCatalog = AwardPricingCatalogSchema.parse(awardPricingRaw);
+        const marketProfile = MarketProfileSchema.parse(marketRaw);
 
         const programs = new Map<ProgramId, Program>();
         PROGRAM_REGISTRY.forEach((entry, i) => {
@@ -108,6 +133,10 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
             airports: airportsRaw as Airport[],
             airlines: airlinesRaw as Airline[],
             programs,
+            allianceCatalog,
+            rtwRuleCatalog,
+            awardPricingCatalog,
+            marketProfile,
             valuations,
           },
         });

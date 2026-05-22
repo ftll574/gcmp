@@ -378,6 +378,102 @@
   flex-wrap: wrap;
 }
 
+/* ── RTW planning context ── */
+.rtw-planning-context {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-card);
+  background: var(--secondary-grouped-background);
+}
+.rtw-planning-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.rtw-planning-head h2 {
+  margin: 0;
+  font-size: var(--type-title-3);
+}
+.rtw-product-relevance {
+  white-space: nowrap;
+  border-radius: var(--radius-pill);
+  padding: 4px 9px;
+  font-size: var(--type-caption);
+  font-weight: 700;
+  color: var(--semantic-green);
+  background: color-mix(in srgb, var(--semantic-green) 12%, transparent);
+}
+.rtw-product-relevance.secondary,
+.rtw-product-relevance.watch {
+  color: var(--semantic-orange);
+  background: color-mix(in srgb, var(--semantic-orange) 14%, transparent);
+}
+.rtw-product-relevance.limited,
+.rtw-product-relevance.negative {
+  color: var(--secondary-label);
+  background: var(--tertiary-fill);
+}
+.rtw-planning-product {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--type-footnote);
+  color: var(--secondary-label);
+}
+.rtw-planning-product span {
+  font-size: var(--type-caption);
+  color: var(--tertiary-label);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.rtw-planning-product select {
+  width: 100%;
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-control);
+  padding: 8px 10px;
+  color: var(--label);
+  background: var(--grouped-background);
+  font: inherit;
+}
+.rtw-planning-facts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+.rtw-planning-facts div {
+  min-width: 0;
+  padding: var(--space-2);
+  border-radius: var(--radius-control);
+  background: var(--grouped-background);
+}
+.rtw-planning-facts span {
+  display: block;
+  color: var(--tertiary-label);
+  font-size: var(--type-caption);
+}
+.rtw-planning-facts strong {
+  display: block;
+  margin-top: 2px;
+  color: var(--label);
+  font-size: var(--type-footnote);
+  text-transform: uppercase;
+}
+.rtw-planning-summary,
+.rtw-planning-note {
+  margin: 0;
+  color: var(--secondary-label);
+  font-size: var(--type-footnote);
+  line-height: 1.45;
+}
+.rtw-planning-summary {
+  color: var(--label);
+  font-weight: 600;
+}
+
 /* ── Body ── */
 .app-body {
   display: grid;
@@ -1087,6 +1183,159 @@
   background: var(--tint-fill-soft);
   border-color: var(--tint);
   color: var(--tint);
+}
+.leg-chip-stopover {
+  background: transparent;
+  border: 1px solid var(--separator);
+  border-radius: 6px;
+  padding: 2px var(--space-2);
+  font-size: var(--type-caption);
+  color: var(--tertiary-label);
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 4px;
+}
+.leg-chip-stopover:hover {
+  border-color: var(--tint);
+  color: var(--label);
+}
+.leg-chip-stopover.is-set {
+  border-color: var(--semantic-green);
+  color: var(--semantic-green);
+  background: color-mix(in srgb, var(--semantic-green) 10%, transparent);
+}
+.leg-chip-surface {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid var(--separator);
+  border-radius: 6px;
+  padding: 2px var(--space-2);
+  margin-left: 4px;
+  color: var(--tertiary-label);
+  font-size: var(--type-caption);
+  font-weight: 600;
+  cursor: pointer;
+}
+.leg-chip-surface input {
+  width: 12px;
+  height: 12px;
+  margin: 0;
+}
+.leg-chip-surface.is-surface {
+  border-color: var(--semantic-orange);
+  color: var(--semantic-orange);
+  background: color-mix(in srgb, var(--semantic-orange) 12%, transparent);
+}
+
+/* ── RTW leg editor ── */
+.rtw-leg-table-wrap {
+  width: 100%;
+  margin-top: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-card);
+  background: var(--secondary-grouped-background);
+}
+.rtw-leg-table-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-3);
+}
+.rtw-leg-table-heading h2 {
+  margin: 0;
+  font-size: var(--type-title-3);
+}
+.rtw-leg-table-scroll {
+  overflow-x: auto;
+}
+.rtw-leg-table {
+  width: 100%;
+  min-width: 620px;
+  border-collapse: collapse;
+  font-size: var(--type-footnote);
+}
+.rtw-leg-table th {
+  text-align: left;
+  padding: 0 var(--space-2) var(--space-2);
+  color: var(--tertiary-label);
+  font-size: var(--type-caption);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.rtw-leg-table td {
+  padding: var(--space-2);
+  border-top: 1px solid var(--separator);
+  vertical-align: middle;
+}
+.rtw-leg-route {
+  display: block;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--label);
+}
+.rtw-leg-city {
+  display: block;
+  color: var(--secondary-label);
+  font-size: var(--type-caption);
+}
+.rtw-leg-table select {
+  max-width: 180px;
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-control);
+  padding: 6px 8px;
+  color: var(--label);
+  background: var(--grouped-background);
+  font: inherit;
+}
+.rtw-leg-table select:disabled {
+  color: var(--tertiary-label);
+  cursor: not-allowed;
+}
+.rtw-leg-surface-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-weight: 600;
+  color: var(--secondary-label);
+}
+.rtw-leg-surface-toggle input {
+  margin: 0;
+}
+
+/* ── RTW trip dates ── */
+.rtw-trip-dates {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-card);
+  background: var(--secondary-grouped-background);
+}
+.rtw-trip-dates h2 {
+  margin: 0;
+  font-size: var(--type-title-3);
+}
+.rtw-trip-dates label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--type-caption);
+  color: var(--tertiary-label);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.rtw-trip-dates input {
+  min-width: 150px;
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-control);
+  padding: 7px 9px;
+  color: var(--label);
+  background: var(--grouped-background);
+  font: inherit;
 }
 
 /* ── Tier selector (iOS segmented control, v1.9) ── */
@@ -1927,6 +2176,236 @@
   color: var(--warning);
   margin-left: 2px;
   cursor: help;
+}
+
+/* ── RTW validation ── */
+.rtw-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: var(--secondary-grouped-background);
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-card);
+}
+.rtw-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.rtw-eyebrow {
+  margin: 0 0 2px;
+  font-size: var(--type-caption);
+  color: var(--tertiary-label);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.rtw-panel h2 {
+  margin: 0;
+  font-size: var(--type-title-3);
+}
+.rtw-status {
+  white-space: nowrap;
+  border-radius: var(--radius-pill);
+  padding: 4px 10px;
+  font-size: var(--type-caption);
+  font-weight: 700;
+  color: var(--label);
+  background: var(--tertiary-fill);
+}
+.rtw-status.valid {
+  color: var(--semantic-green);
+  background: color-mix(in srgb, var(--semantic-green) 12%, transparent);
+}
+.rtw-status.invalid {
+  color: var(--semantic-orange);
+  background: color-mix(in srgb, var(--semantic-orange) 14%, transparent);
+}
+.rtw-product-picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--type-footnote);
+  color: var(--secondary-label);
+}
+.rtw-product-picker select {
+  width: 100%;
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-control);
+  padding: 8px 10px;
+  color: var(--label);
+  background: var(--grouped-background);
+  font: inherit;
+}
+.rtw-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+.rtw-summary-grid div {
+  min-width: 0;
+  padding: var(--space-2);
+  border-radius: var(--radius-control);
+  background: var(--grouped-background);
+}
+.rtw-summary-grid span {
+  display: block;
+  font-size: var(--type-caption);
+  color: var(--tertiary-label);
+}
+.rtw-summary-grid strong {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-mono);
+  font-size: var(--type-callout);
+}
+.rtw-award-price {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-3);
+  border-radius: var(--radius-control);
+  background: color-mix(in srgb, var(--semantic-green) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--semantic-green) 24%, transparent);
+}
+.rtw-award-price-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+.rtw-award-price span {
+  color: var(--tertiary-label);
+  font-size: var(--type-caption);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.rtw-award-confidence {
+  border-radius: var(--radius-pill);
+  padding: 2px 7px;
+  font-style: normal;
+  font-size: var(--type-caption);
+  font-weight: 700;
+  color: var(--semantic-green);
+  background: color-mix(in srgb, var(--semantic-green) 16%, transparent);
+}
+.rtw-award-confidence.reference-recheck {
+  color: var(--semantic-orange);
+  background: color-mix(in srgb, var(--semantic-orange) 16%, transparent);
+}
+.rtw-award-price strong {
+  color: var(--semantic-green);
+  font-family: var(--font-mono);
+  font-size: var(--type-title-3);
+}
+.rtw-award-price small {
+  color: var(--secondary-label);
+  font-size: var(--type-caption);
+}
+.rtw-award-sources {
+  margin-top: var(--space-1);
+  color: var(--secondary-label);
+  font-size: var(--type-caption);
+}
+.rtw-award-sources summary {
+  width: fit-content;
+  cursor: pointer;
+  color: var(--label);
+  font-weight: 700;
+}
+.rtw-award-source-list,
+.rtw-award-note-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: var(--space-2) 0 0;
+  padding-left: var(--space-4);
+}
+.rtw-award-source-list a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.rtw-award-source-list a:hover {
+  text-decoration: underline;
+}
+.rtw-findings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.rtw-finding {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: var(--space-2);
+  align-items: start;
+  font-size: var(--type-footnote);
+}
+.rtw-finding-severity {
+  width: fit-content;
+  border-radius: var(--radius-pill);
+  padding: 2px 7px;
+  font-size: var(--type-caption);
+  font-weight: 700;
+  text-transform: uppercase;
+  background: var(--tertiary-fill);
+}
+.rtw-finding.pass .rtw-finding-severity {
+  color: var(--semantic-green);
+}
+.rtw-finding.fail .rtw-finding-severity {
+  color: var(--semantic-red);
+}
+.rtw-finding.warning .rtw-finding-severity,
+.rtw-finding.unknown .rtw-finding-severity {
+  color: var(--semantic-orange);
+}
+.rtw-empty {
+  margin: 0;
+  color: var(--secondary-label);
+  font-size: var(--type-footnote);
+}
+
+/* ── Mileage estimate (secondary) ── */
+.mileage-estimate {
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-card);
+  background: var(--secondary-grouped-background);
+  overflow: hidden;
+}
+.mileage-estimate-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  border: none;
+  background: transparent;
+  color: var(--label);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--type-callout);
+  font-weight: 700;
+  cursor: pointer;
+}
+.mileage-estimate-toggle:hover {
+  background: var(--tertiary-fill);
+}
+.mileage-estimate-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: 0 var(--space-4) var(--space-4);
+}
+.mileage-estimate-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--separator);
 }
 
 /* ── Saved routings ── */

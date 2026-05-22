@@ -22,12 +22,17 @@ import { MobileBanner } from './components/MobileBanner.tsx';
 import { ModeToggle } from './components/ModeToggle.tsx';
 import { ProgramPicker } from './components/ProgramPicker.tsx';
 import { ProjectionPicker } from './components/ProjectionPicker.tsx';
+import { RtwLegTable } from './components/RtwLegTable.tsx';
+import { RtwPlanningContext } from './components/RtwPlanningContext.tsx';
+import { RtwTripDates } from './components/RtwTripDates.tsx';
+import { RtwValidationPanel } from './components/RtwValidationPanel.tsx';
 import { SampleRoutings } from './components/SampleRoutings.tsx';
 import { SavedRoutings } from './components/SavedRoutings.tsx';
 import { useLocale } from './i18n/use-locale.ts';
 import { buildAirportIndex } from './lib/airport-index.ts';
 import { computeRouting } from './lib/calc/index.ts';
 import { DEFAULT_PROJECTION, type ProjectionId } from './lib/calc/projections.ts';
+import { preferredCarrierForProduct, sortRtwProductsForMarket } from './lib/rtw/products.ts';
 import { downloadBlob, svgToPngBlob, svgToSvgBlob } from './lib/svg-to-png.ts';
 import { parseShareUrl } from './lib/url-schema.ts';
 import {
@@ -149,6 +154,11 @@ function Ready({
   const [activeGroupIndex, setActiveGroupIndex] = useState(0);
   const [showBearings, setShowBearings] = useState(false);
   const [showDistances, setShowDistances] = useState(false);
+  const [showMileageEstimate, setShowMileageEstimate] = useState(false);
+  const rtwProducts = useMemo(
+    () => sortRtwProductsForMarket(data.rtwRuleCatalog.products, data.marketProfile),
+    [data.rtwRuleCatalog.products, data.marketProfile],
+  );
   const svgRef = useRef<SVGSVGElement | null>(null);
 
   // Per-group pending first airport. A leg requires 2+ airports, so the very
@@ -161,6 +171,15 @@ function Ready({
   );
 
   const airportIndex = useMemo(() => buildAirportIndex(data.airports), [data.airports]);
+  const selectedRtwProductId = routing.rtwProductId ?? rtwProducts[0]?.id ?? '';
+  const selectedRtwProduct = useMemo(
+    () => rtwProducts.find((product) => product.id === selectedRtwProductId) ?? rtwProducts[0],
+    [rtwProducts, selectedRtwProductId],
+  );
+
+  function changeRtwProduct(productId: string): void {
+    setRouting({ ...routing, rtwProductId: productId });
+  }
 
   // Clamp active group when groups change.
   const safeActiveIndex = Math.min(activeGroupIndex, Math.max(0, routing.groups.length - 1));
@@ -236,7 +255,13 @@ function Ready({
         return;
       }
       updateActiveGroup(() => ({
-        legs: [{ from: pendingAirport.iata, to: a.iata, operatingCarrier: 'AA' }],
+        legs: [
+          {
+            from: pendingAirport.iata,
+            to: a.iata,
+            operatingCarrier: preferredCarrierForProduct(selectedRtwProduct, data.marketProfile),
+          },
+        ],
       }));
       setPendingFor(safeActiveIndex, undefined);
       return;
@@ -245,7 +270,11 @@ function Ready({
     updateActiveGroup((group) => {
       const codes = activeChainAirports.map((x) => x.iata);
       const nextCodes = [...codes, a.iata];
-      const nextLegs = buildLegs(nextCodes, group.legs, defaultCarrier(group.legs));
+      const nextLegs = buildLegs(
+        nextCodes,
+        group.legs,
+        defaultCarrier(group.legs, selectedRtwProduct, data.marketProfile),
+      );
       return { legs: nextLegs };
     });
   }
@@ -268,7 +297,11 @@ function Ready({
         }
         return { legs: [] };
       }
-      const nextLegs = buildLegs(nextCodes, group.legs, defaultCarrier(group.legs));
+      const nextLegs = buildLegs(
+        nextCodes,
+        group.legs,
+        defaultCarrier(group.legs, selectedRtwProduct, data.marketProfile),
+      );
       return { legs: nextLegs };
     });
   }
@@ -276,7 +309,11 @@ function Ready({
   function reorder(nextCodes: ReadonlyArray<Iata>): void {
     updateActiveGroup((group) => {
       if (nextCodes.length < 2) return { legs: [] };
-      const nextLegs = buildLegs(nextCodes, group.legs, defaultCarrier(group.legs));
+      const nextLegs = buildLegs(
+        nextCodes,
+        group.legs,
+        defaultCarrier(group.legs, selectedRtwProduct, data.marketProfile),
+      );
       return { legs: nextLegs };
     });
   }
@@ -293,9 +330,51 @@ function Ready({
         if (i !== legIndex) return leg;
         if (fareClass === undefined) {
           // Strip the field rather than store undefined — keeps URL clean.
-          return { from: leg.from, to: leg.to, operatingCarrier: leg.operatingCarrier };
+          return {
+            from: leg.from,
+            to: leg.to,
+            operatingCarrier: leg.operatingCarrier,
+            ...(leg.stopover !== undefined ? { stopover: leg.stopover } : {}),
+            ...(leg.surface !== undefined ? { surface: leg.surface } : {}),
+          };
         }
         return { ...leg, fareClass };
+      }),
+    }));
+  }
+
+  function changeStopover(legIndex: number, stopover: boolean | undefined): void {
+    updateActiveGroup((group) => ({
+      legs: group.legs.map((leg, i) => {
+        if (i !== legIndex) return leg;
+        if (stopover === undefined) {
+          return {
+            from: leg.from,
+            to: leg.to,
+            operatingCarrier: leg.operatingCarrier,
+            ...(leg.fareClass !== undefined ? { fareClass: leg.fareClass } : {}),
+            ...(leg.surface !== undefined ? { surface: leg.surface } : {}),
+          };
+        }
+        return { ...leg, stopover };
+      }),
+    }));
+  }
+
+  function changeSurface(legIndex: number, surface: boolean): void {
+    updateActiveGroup((group) => ({
+      legs: group.legs.map((leg, i) => {
+        if (i !== legIndex) return leg;
+        if (!surface) {
+          return {
+            from: leg.from,
+            to: leg.to,
+            operatingCarrier: leg.operatingCarrier,
+            ...(leg.fareClass !== undefined ? { fareClass: leg.fareClass } : {}),
+            ...(leg.stopover !== undefined ? { stopover: leg.stopover } : {}),
+          };
+        }
+        return { ...leg, surface: true };
       }),
     }));
   }
@@ -317,11 +396,29 @@ function Ready({
         programs: routing.programs,
         ...(routing.rulesVersion !== undefined ? { rulesVersion: routing.rulesVersion } : {}),
         ...(routing.projection !== undefined ? { projection: routing.projection } : {}),
+        ...(routing.startDate !== undefined ? { startDate: routing.startDate } : {}),
+        ...(routing.endDate !== undefined ? { endDate: routing.endDate } : {}),
+        ...(routing.rtwProductId !== undefined ? { rtwProductId: routing.rtwProductId } : {}),
       };
       setRouting(next);
     } else {
       setRouting({ ...routing, tier });
     }
+  }
+
+  function changeTripDates(dates: { startDate?: string; endDate?: string }): void {
+    const next: RoutingRequest = {
+      ...routing,
+      ...(dates.startDate !== undefined ? { startDate: dates.startDate } : {}),
+      ...(dates.endDate !== undefined ? { endDate: dates.endDate } : {}),
+    };
+    if (dates.startDate === undefined) {
+      delete (next as { startDate?: string }).startDate;
+    }
+    if (dates.endDate === undefined) {
+      delete (next as { endDate?: string }).endDate;
+    }
+    setRouting(next);
   }
 
   function toggleProgram(programId: ProgramId): void {
@@ -335,10 +432,24 @@ function Ready({
   function loadSaved(url: string): void {
     const parsed = parseShareUrl(url);
     if (parsed.ok) {
-      setRouting(parsed.request);
+      const preservedRtwProductId = parsed.request.rtwProductId ?? routing.rtwProductId;
+      setRouting({
+        ...parsed.request,
+        ...(preservedRtwProductId !== undefined ? { rtwProductId: preservedRtwProductId } : {}),
+      });
       setActiveGroupIndex(0);
       setPendingByGroup(new Map());
     }
+  }
+
+  function loadExternalRouting(next: RoutingRequest): void {
+    const preservedRtwProductId = next.rtwProductId ?? routing.rtwProductId;
+    setRouting({
+      ...next,
+      ...(preservedRtwProductId !== undefined ? { rtwProductId: preservedRtwProductId } : {}),
+    });
+    setActiveGroupIndex(0);
+    setPendingByGroup(new Map());
   }
 
   function clearAll(): void {
@@ -444,6 +555,12 @@ function Ready({
         </div>
       )}
       <section className="app-input" aria-label="Routing input">
+        <RtwPlanningContext
+          products={rtwProducts}
+          selectedProductId={selectedRtwProductId}
+          marketProfile={data.marketProfile}
+          onProductChange={changeRtwProduct}
+        />
         {!isMobile && (
           <AirportAutocomplete index={airportIndex} onCommit={addAirport} mode={mode} />
         )}
@@ -458,34 +575,35 @@ function Ready({
           airports={activeChainAirports}
           operatingCarriers={activeGroup.legs.map((leg) => leg.operatingCarrier)}
           fareClasses={activeGroup.legs.map((leg) => leg.fareClass)}
+          stopovers={activeGroup.legs.map((leg) => leg.stopover)}
+          surfaces={activeGroup.legs.map((leg) => leg.surface)}
           airlines={data.airlines}
           onReorder={reorder}
           onRemove={removeAirport}
           onCarrierChange={changeCarrier}
           onFareClassChange={changeFareClass}
+          onStopoverChange={changeStopover}
+          onSurfaceChange={changeSurface}
+        />
+        {hasAnyLegs && (
+          <RtwTripDates
+            startDate={routing.startDate}
+            endDate={routing.endDate}
+            onChange={changeTripDates}
+          />
+        )}
+        <RtwLegTable
+          airports={activeChainAirports}
+          operatingCarriers={activeGroup.legs.map((leg) => leg.operatingCarrier)}
+          stopovers={activeGroup.legs.map((leg) => leg.stopover)}
+          surfaces={activeGroup.legs.map((leg) => leg.surface)}
+          airlines={data.airlines}
+          onCarrierChange={changeCarrier}
+          onStopoverChange={changeStopover}
+          onSurfaceChange={changeSurface}
         />
         {hasAnyLegs && (
           <div className="app-controls">
-            <div className="app-controls-group">
-              <span className="app-controls-label">
-                <Glossary term="cabin" mode={mode}>
-                  {t('cabin.label')}
-                </Glossary>
-              </span>
-              <CabinSelector value={routing.cabin} onChange={changeCabin} mode={mode} />
-            </div>
-            <div className="app-controls-group">
-              <span className="app-controls-label">
-                <Glossary term="credit" mode={mode}>
-                  {t('panel.pqmLong')} / {t('panel.rdmLong')}
-                </Glossary>
-              </span>
-              <ProgramPicker active={routing.programs} onToggle={toggleProgram} />
-            </div>
-            <div className="app-controls-group">
-              <span className="app-controls-label">{t('tier.label')}</span>
-              <TierSelector value={routing.tier ?? 'none'} onChange={changeTier} />
-            </div>
             <button type="button" className="app-clear" onClick={clearAll}>
               {t('input.clearAll')}
             </button>
@@ -544,23 +662,70 @@ function Ready({
         <aside className="app-panel" aria-label="Earning panel">
           {showSamples && (
             <>
-              <SampleRoutings onSelect={(r) => { setRouting(r); setActiveGroupIndex(0); }} />
-              <ImportFromGcmap onImport={(r) => { setRouting(r); setActiveGroupIndex(0); }} />
+              <SampleRoutings onSelect={loadExternalRouting} />
+              <ImportFromGcmap onImport={loadExternalRouting} />
             </>
           )}
-          <EarningPanel
-            result={result}
-            programOrder={routing.programs}
-            mode={mode}
-            cabin={routing.cabin}
-            valuations={data.valuations}
-            allProgramsResult={allProgramsResult}
-            onAddProgram={(id) => {
-              if (!routing.programs.includes(id)) {
-                setRouting({ ...routing, programs: [...routing.programs, id] });
-              }
-            }}
+          <RtwValidationPanel
+            routing={routing}
+            airports={airportIndex.byIata}
+            allianceCatalog={data.allianceCatalog}
+            rtwRuleCatalog={data.rtwRuleCatalog}
+            awardPricingCatalog={data.awardPricingCatalog}
+            marketProfile={data.marketProfile}
+            selectedProductId={selectedRtwProductId}
+            onProductChange={changeRtwProduct}
           />
+          <section className="mileage-estimate">
+            <button
+              type="button"
+              className="mileage-estimate-toggle"
+              aria-expanded={showMileageEstimate}
+              onClick={() => setShowMileageEstimate((value) => !value)}
+            >
+              <span>{t('rtw.mileageEstimate')}</span>
+              <span aria-hidden="true">{showMileageEstimate ? '−' : '+'}</span>
+            </button>
+            {showMileageEstimate && (
+              <div className="mileage-estimate-body">
+                <div className="mileage-estimate-controls">
+                  <div className="app-controls-group">
+                    <span className="app-controls-label">
+                      <Glossary term="cabin" mode={mode}>
+                        {t('cabin.label')}
+                      </Glossary>
+                    </span>
+                    <CabinSelector value={routing.cabin} onChange={changeCabin} mode={mode} />
+                  </div>
+                  <div className="app-controls-group">
+                    <span className="app-controls-label">
+                      <Glossary term="credit" mode={mode}>
+                        {t('panel.pqmLong')} / {t('panel.rdmLong')}
+                      </Glossary>
+                    </span>
+                    <ProgramPicker active={routing.programs} onToggle={toggleProgram} />
+                  </div>
+                  <div className="app-controls-group">
+                    <span className="app-controls-label">{t('tier.label')}</span>
+                    <TierSelector value={routing.tier ?? 'none'} onChange={changeTier} />
+                  </div>
+                </div>
+                <EarningPanel
+                  result={result}
+                  programOrder={routing.programs}
+                  mode={mode}
+                  cabin={routing.cabin}
+                  valuations={data.valuations}
+                  allProgramsResult={allProgramsResult}
+                  onAddProgram={(id) => {
+                    if (!routing.programs.includes(id)) {
+                      setRouting({ ...routing, programs: [...routing.programs, id] });
+                    }
+                  }}
+                />
+              </div>
+            )}
+          </section>
           <SavedRoutings saved={saved} onLoad={loadSaved} onDelete={remove} />
         </aside>
       </main>
@@ -679,8 +844,12 @@ function DownloadMenu({
   );
 }
 
-function defaultCarrier(legs: ReadonlyArray<Leg>): AirlineIata {
-  return legs[0]?.operatingCarrier ?? 'AA';
+function defaultCarrier(
+  legs: ReadonlyArray<Leg>,
+  selectedProduct: ReadyProps['data']['rtwRuleCatalog']['products'][number] | undefined,
+  marketProfile: ReadyProps['data']['marketProfile'],
+): AirlineIata {
+  return legs[0]?.operatingCarrier ?? preferredCarrierForProduct(selectedProduct, marketProfile);
 }
 
 function buildLegs(
@@ -694,10 +863,11 @@ function buildLegs(
     const to = codes[i + 1];
     if (!from || !to) continue;
     const prev = existing[i];
-    const carrier = prev && prev.from === from && prev.to === to
-      ? prev.operatingCarrier
-      : defaultOp;
-    legs.push({ from, to, operatingCarrier: carrier });
+    if (prev && prev.from === from && prev.to === to) {
+      legs.push(prev);
+    } else {
+      legs.push({ from, to, operatingCarrier: defaultOp });
+    }
   }
   return legs;
 }

@@ -183,6 +183,16 @@ function computeGroup(
     const programNotes: string[] = [];
 
     for (const ld of byLeg) {
+      if (ld.leg.surface === true) {
+        perLeg.push(
+          emptyLegEarning(
+            ld.distanceNm,
+            'Surface/open-jaw sector — no flight earning is computed for this segment.',
+          ),
+        );
+        confidences.push(null);
+        continue;
+      }
       const op = ld.leg.operatingCarrier;
       const carrier = program.carriers[op];
       if (!carrier) {

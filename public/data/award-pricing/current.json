@@ -1,0 +1,62 @@
+{
+  "version": "2026.2",
+  "lastVerified": "2026-05-23",
+  "products": [
+    {
+      "productId": "br-infinity-star-alliance-world-travel-award",
+      "label": "EVA Infinity MileageLands Star Alliance World Travel Award",
+      "pricingModel": "fixed-rtw",
+      "confidence": "official-fixed",
+      "currency": "miles",
+      "sourceUrls": [
+        "https://www.evaair.com/en-us/infinity-mileagelands/mileage-award-program/mileage-redemption/award-ticket/star-alliance/"
+      ],
+      "notes": [
+        "EVA publishes fixed Star Alliance World Travel Award pricing: Economy 180,000, Business 325,000, First 480,000 miles.",
+        "Premium Economy is not priced as a Star Alliance World Travel Award cabin in this catalog."
+      ],
+      "bands": [
+        {
+          "minMiles": 0,
+          "maxMiles": null,
+          "prices": {
+            "economy": 180000,
+            "business": 325000,
+            "first": 480000
+          }
+        }
+      ]
+    },
+    {
+      "productId": "cx-asia-miles-oneworld-multi-carrier-award",
+      "label": "Cathay Asia Miles oneworld Multi-carrier Award",
+      "pricingModel": "distance-band",
+      "confidence": "reference-recheck",
+      "currency": "miles",
+      "sourceUrls": [
+        "https://www.cathaypacific.com/content/dam/focal-point/cx/membership/programme-update/Cathay-membership-programme-terms-and-conditions-2026-EN.pdf",
+        "https://www.nerdwallet.com/article/travel/around-the-world-ticket"
+      ],
+      "notes": [
+        "Cathay 2026 terms state oneworld Multi-carrier Award pricing is based on total sector distance and highest class booked.",
+        "Cathay 2026 terms state Premium Economy is not offered for oneworld Multi-carrier Awards.",
+        "Distance-band prices are seeded from publicly available award-chart references and should be rechecked against Cathay at booking time."
+      ],
+      "bands": [
+        { "minMiles": 0, "maxMiles": 1000, "prices": { "economy": 30000, "business": 55000, "first": 70000 } },
+        { "minMiles": 1001, "maxMiles": 1500, "prices": { "economy": 30000, "business": 60000, "first": 80000 } },
+        { "minMiles": 1501, "maxMiles": 2000, "prices": { "economy": 35000, "business": 65000, "first": 90000 } },
+        { "minMiles": 2001, "maxMiles": 4000, "prices": { "economy": 35000, "business": 70000, "first": 95000 } },
+        { "minMiles": 4001, "maxMiles": 7500, "prices": { "economy": 60000, "business": 90000, "first": 140000 } },
+        { "minMiles": 7501, "maxMiles": 9000, "prices": { "economy": 65000, "business": 100000, "first": 150000 } },
+        { "minMiles": 9001, "maxMiles": 10000, "prices": { "economy": 70000, "business": 110000, "first": 160000 } },
+        { "minMiles": 10001, "maxMiles": 14000, "prices": { "economy": 90000, "business": 135000, "first": 220000 } },
+        { "minMiles": 14001, "maxMiles": 18000, "prices": { "economy": 100000, "business": 155000, "first": 250000 } },
+        { "minMiles": 18001, "maxMiles": 20000, "prices": { "economy": 110000, "business": 165000, "first": 260000 } },
+        { "minMiles": 20001, "maxMiles": 25000, "prices": { "economy": 120000, "business": 175000, "first": 270000 } },
+        { "minMiles": 25001, "maxMiles": 35000, "prices": { "economy": 135000, "business": 210000, "first": 300000 } },
+        { "minMiles": 35001, "maxMiles": 50000, "prices": { "economy": 150000, "business": 240000, "first": 345000 } }
+      ]
+    }
+  ]
+}

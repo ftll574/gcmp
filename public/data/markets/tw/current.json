@@ -1,0 +1,246 @@
+{
+  "market": "TW",
+  "label": "Taiwan",
+  "defaultLocale": "zh-TW",
+  "version": "2026.2",
+  "lastVerified": "2026-05-23",
+  "primaryAirports": ["TPE", "TSA", "KHH", "RMQ"],
+  "priorityAirlines": [
+    {
+      "airline": "BR",
+      "airlineName": "EVA Air",
+      "alliance": "star",
+      "roles": ["home-airline", "partner-award"],
+      "rtwRelevance": "primary",
+      "notes": [
+        "Taiwan home carrier and Star Alliance member.",
+        "EVA publishes Star Alliance award ticket rules and states Star Alliance World Travel Award Ticket service is handled by reservation/ticketing offices."
+      ],
+      "sourceUrls": [
+        "https://www.evaair.com/zh-tw/plan-and-book/where-we-fly/star-alliance-networks/",
+        "https://www.evaair.com/en-us/infinity-mileagelands/mileage-award-program/mileage-redemption/award-ticket/star-alliance/"
+      ]
+    },
+    {
+      "airline": "CI",
+      "airlineName": "China Airlines",
+      "alliance": "skyteam",
+      "roles": ["home-airline", "partner-award"],
+      "rtwRelevance": "limited",
+      "notes": [
+        "Taiwan home carrier and SkyTeam member.",
+        "China Airlines SkyTeam award rules explicitly reject itineraries crossing both the Pacific and Atlantic, so this is important for general award planning but not a true RTW award candidate."
+      ],
+      "sourceUrls": [
+        "https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/reward-tickets-skyteam",
+        "https://www.skyteam.com/en/about/china-airlines"
+      ]
+    },
+    {
+      "airline": "JX",
+      "airlineName": "STARLUX Airlines",
+      "roles": ["home-airline", "watchlist"],
+      "rtwRelevance": "limited",
+      "notes": [
+        "Taiwan home carrier, not currently a global alliance member.",
+        "COSMILE airline partner redemption is currently centered on Alaska Airlines, so it matters for Taiwan users but is not an RTW backbone yet."
+      ],
+      "sourceUrls": [
+        "https://www.starlux-airlines.com/en-TW/cosmile/cosmile-plan/redeem-award-ticket-Asia/Airline-Alliance"
+      ]
+    },
+    {
+      "airline": "CX",
+      "airlineName": "Cathay Pacific",
+      "alliance": "oneworld",
+      "roles": ["nearby-hub", "partner-award"],
+      "rtwRelevance": "primary",
+      "notes": [
+        "Hong Kong is a nearby hub for Taiwan users and Cathay/Asia Miles is a key oneworld path."
+      ],
+      "sourceUrls": [
+        "https://www.cathaypacific.com/cx/en_TW/rewards-and-partnerships/oneworld/frequent-flyer-benefits.html"
+      ]
+    },
+    {
+      "airline": "JL",
+      "airlineName": "Japan Airlines",
+      "alliance": "oneworld",
+      "roles": ["nearby-hub", "partner-award"],
+      "rtwRelevance": "secondary",
+      "notes": [
+        "Japan is a practical nearby connection point for Taiwan users planning oneworld awards."
+      ],
+      "sourceUrls": [
+        "https://www.jal.co.jp/tw/zhtw/jalmile/use/partner_air/oneworld/index.html"
+      ]
+    },
+    {
+      "airline": "SQ",
+      "airlineName": "Singapore Airlines",
+      "alliance": "star",
+      "roles": ["nearby-hub", "partner-award"],
+      "rtwRelevance": "secondary",
+      "notes": [
+        "Singapore is a practical nearby Star Alliance hub for Taiwan-origin routings."
+      ],
+      "sourceUrls": [
+        "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+      ]
+    }
+  ],
+  "priorityPrograms": [
+    {
+      "id": "br-infinity-star-alliance-world-travel-award",
+      "label": "EVA Infinity MileageLands Star Alliance World Travel Award",
+      "airline": "BR",
+      "alliance": "star",
+      "roles": ["home-airline", "rtw-award"],
+      "rtwRelevance": "primary",
+      "notes": [
+        "Taiwan-first Star Alliance RTW award product. EVA publishes explicit Star Alliance World Travel Award rules and requires booking via reservation offices."
+      ],
+      "sourceUrls": [
+        "https://www.evaair.com/zh-hk/infinity-mileagelands/mileage-award-program/mileage-redemption/award-ticket/star-alliance/"
+      ]
+    },
+    {
+      "id": "cx-asia-miles-oneworld-multi-carrier-award",
+      "label": "Cathay Asia Miles oneworld Multi-carrier Award",
+      "airline": "CX",
+      "alliance": "oneworld",
+      "roles": ["nearby-hub", "rtw-award"],
+      "rtwRelevance": "primary",
+      "notes": [
+        "High-priority Taiwan-adjacent oneworld multi-carrier award path with explicit Cathay 2026 terms."
+      ],
+      "sourceUrls": [
+        "https://www.cathaypacific.com/content/dam/focal-point/cx/membership/programme-update/Cathay-membership-programme-terms-and-conditions-2026-EN.pdf"
+      ]
+    },
+    {
+      "id": "br-infinity",
+      "label": "EVA Air Infinity MileageLands",
+      "airline": "BR",
+      "alliance": "star",
+      "roles": ["home-airline", "partner-award"],
+      "rtwRelevance": "primary",
+      "notes": [
+        "Taiwan-first Star Alliance program. Must model normal Star Alliance awards and EVA's Star Alliance World Travel Award handling."
+      ],
+      "sourceUrls": [
+        "https://www.evaair.com/en-us/infinity-mileagelands/mileage-award-program/mileage-redemption/award-ticket/star-alliance/"
+      ]
+    },
+    {
+      "id": "ci-dynasty-flyer",
+      "label": "China Airlines Dynasty Flyer",
+      "airline": "CI",
+      "alliance": "skyteam",
+      "roles": ["home-airline", "partner-award"],
+      "rtwRelevance": "negative",
+      "notes": [
+        "Important for Taiwan users, but current SkyTeam partner award rules say itineraries crossing both Pacific and Atlantic are not accepted."
+      ],
+      "sourceUrls": [
+        "https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/reward-tickets-skyteam"
+      ]
+    },
+    {
+      "id": "oneworld-explorer",
+      "label": "oneworld Explorer",
+      "alliance": "oneworld",
+      "roles": ["alliance-rtw-fare"],
+      "rtwRelevance": "primary",
+      "notes": [
+        "Cash RTW fare, useful as a Taiwan-origin baseline when routing through nearby oneworld hubs such as HKG or NRT."
+      ],
+      "sourceUrls": [
+        "https://www.oneworld.com/round-the-world"
+      ]
+    },
+    {
+      "id": "star-alliance-rtw-fare",
+      "label": "Star Alliance Round the World Fare",
+      "alliance": "star",
+      "roles": ["alliance-rtw-fare"],
+      "rtwRelevance": "primary",
+      "notes": [
+        "Cash RTW fare and a strong Taiwan-origin baseline because EVA is a Taiwan home carrier and Star Alliance member."
+      ],
+      "sourceUrls": [
+        "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+      ]
+    },
+    {
+      "id": "jx-cosmile",
+      "label": "STARLUX COSMILE",
+      "airline": "JX",
+      "roles": ["home-airline", "watchlist"],
+      "rtwRelevance": "limited",
+      "notes": [
+        "Important Taiwan program, but currently not a global-alliance RTW product. Track Alaska partner redemption and future alliance changes."
+      ],
+      "sourceUrls": [
+        "https://www.starlux-airlines.com/en-TW/cosmile/cosmile-plan/redeem-award-ticket-Asia/Airline-Alliance"
+      ]
+    },
+    {
+      "id": "cx-asia-miles",
+      "label": "Cathay Asia Miles",
+      "airline": "CX",
+      "alliance": "oneworld",
+      "roles": ["nearby-hub", "rtw-award"],
+      "rtwRelevance": "primary",
+      "notes": [
+        "High-priority Taiwan-adjacent oneworld multi-carrier award path."
+      ],
+      "sourceUrls": [
+        "https://www.cathaypacific.com/cx/en_TW/rewards-and-partnerships/oneworld/frequent-flyer-benefits.html",
+        "https://www.cathaypacific.com/content/dam/focal-point/cx/membership/programme-update/Cathay-membership-programme-terms-and-conditions-2026-enTW.pdf"
+      ]
+    },
+    {
+      "id": "jl-mileage-bank",
+      "label": "JAL Mileage Bank",
+      "airline": "JL",
+      "alliance": "oneworld",
+      "roles": ["nearby-hub", "partner-award"],
+      "rtwRelevance": "secondary",
+      "notes": [
+        "Useful for Taiwan users with Japan routing flexibility and oneworld award planning."
+      ],
+      "sourceUrls": [
+        "https://www.jal.co.jp/tw/zhtw/jalmile/use/partner_air/oneworld/index.html"
+      ]
+    },
+    {
+      "id": "nh-mileage-club",
+      "label": "ANA Mileage Club",
+      "airline": "NH",
+      "alliance": "star",
+      "roles": ["nearby-hub", "rtw-award"],
+      "rtwRelevance": "watch",
+      "notes": [
+        "Historically important for Star Alliance RTW awards, but new Star Alliance RTW award ticket issuance ended on 2025-06-23."
+      ],
+      "sourceUrls": [
+        "https://www.ana.co.jp/zh/tw/amc/partner-flight-awards/around-the-world/"
+      ]
+    },
+    {
+      "id": "sq-krisflyer",
+      "label": "Singapore KrisFlyer",
+      "airline": "SQ",
+      "alliance": "star",
+      "roles": ["nearby-hub", "partner-award"],
+      "rtwRelevance": "secondary",
+      "notes": [
+        "Secondary Star Alliance path for Taiwan-origin users routing through Singapore."
+      ],
+      "sourceUrls": [
+        "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
+      ]
+    }
+  ]
+}
