@@ -106,10 +106,18 @@ export function project(
 }
 
 /**
- * Default projection is the orthographic 3D globe — this matches what most
- * users expect a modern flight-routing map to look like (and what makes
- * gcmap's signature "Azimuthal Equidistant" mode discoverable as a sibling
- * projection on the toolbar). Users with an explicit `?proj=` in their URL
- * see that projection instead.
+ * Default projection is Mercator — familiar 2D map, and the only projection
+ * in this app that supports infinite horizontal wraparound (pan past 180°
+ * and the world continues seamlessly from -180°). v1.0 default; the v1.1
+ * 3D-globe default was reverted in v1.2 in favor of wrapping 2D.
  */
-export const DEFAULT_PROJECTION: ProjectionId = 'orthographic';
+export const DEFAULT_PROJECTION: ProjectionId = 'mercator';
+
+/**
+ * Whether the projection tiles horizontally (Google-Maps-style wraparound).
+ * Cylindrical projections (Mercator + Equirectangular) tile. Azimuthal /
+ * orthographic don't make sense to tile (radial / hemisphere views).
+ */
+export function isWrappingProjection(p: ProjectionId): boolean {
+  return p === 'mercator' || p === 'equirectangular';
+}
