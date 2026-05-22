@@ -30,3 +30,6 @@ dist-ssr
 coverage/
 test-results/
 playwright-report/
+
+# Build-time generated static SEO pages — regenerated from program JSONs
+public/airline/

@@ -134,6 +134,7 @@
   },
   "footer": {
     "openSource": "gcmp — GitHub 开源项目",
+    "browseByAirline": "按航空公司浏览",
     "disclaimer": "里程数依照官方公布的合作伙伴表计算，请以实际入账为准。"
   },
   "map": {
@@ -190,6 +191,12 @@
   "seats": {
     "findAwards": "搜奖励机票",
     "tip": "用同一条航线 + 舱位打开 seats.aero。"
+  },
+  "whereToCredit": {
+    "toggle": "该挂哪家？— 显示全部 18 家常旅客计划排行",
+    "hint": "按价值排序（里程 × 每里价值）。点 + 加入你的选择。",
+    "empty": "目前还没有这些航空的累积规则。",
+    "addLabel": "把 {program} 加入选择"
   },
   "programPicker": {
     "label": "累积里程的常旅客计划",

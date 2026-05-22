@@ -134,6 +134,7 @@
   },
   "footer": {
     "openSource": "gcmp — GitHub 開源專案",
+    "browseByAirline": "依航空公司瀏覽",
     "disclaimer": "哩程數依官方公布的合作夥伴累積表計算，請以實際入帳為準。"
   },
   "map": {
@@ -190,6 +191,12 @@
   "seats": {
     "findAwards": "搜獎勵機票",
     "tip": "用同一條航線 + 艙等開 seats.aero。"
+  },
+  "whereToCredit": {
+    "toggle": "該掛哪家？— 顯示全部 18 家常客計畫排行",
+    "hint": "依價值排序（哩程 × 每哩價值）。點 + 加入你的選擇。",
+    "empty": "目前還沒有這些航空的累積規則。",
+    "addLabel": "把 {program} 加入選擇"
   },
   "programPicker": {
     "label": "累積哩程的常客計畫",

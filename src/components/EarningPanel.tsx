@@ -24,6 +24,15 @@ interface Props {
   cabin: CabinId;
   /** Per-program ¢/mile valuations (null if file unavailable). */
   valuations?: Valuations | null;
+  /**
+   * Pre-computed result against ALL programs in PROGRAM_REGISTRY — drives
+   * the "Where to credit?" inverse view that ranks every program for the
+   * current routing, not just the user-selected subset. (wheretocredit.com
+   * pattern.) Optional; when omitted the inverse panel is hidden.
+   */
+  allProgramsResult?: RoutingResult | null;
+  /** Add a program to the user's selection (clicked from inverse view). */
+  onAddProgram?: (programId: ProgramId) => void;
 }
 
 function formatNm(value: number): string {
@@ -47,9 +56,12 @@ export function EarningPanel({
   mode = 'beginner',
   cabin,
   valuations,
+  allProgramsResult,
+  onAddProgram,
 }: Props): React.ReactElement {
   const { t } = useLocale();
   const [expanded, setExpanded] = useState(false);
+  const [showWhereToCredit, setShowWhereToCredit] = useState(false);
 
   if (!result || result.groups.every((g) => g.byLeg.length === 0)) {
     return (
@@ -136,6 +148,26 @@ export function EarningPanel({
           </ul>
         )}
       </section>
+      {allProgramsResult && (
+        <section className="earning-where-to-credit-section">
+          <button
+            type="button"
+            className="earning-toggle"
+            onClick={() => setShowWhereToCredit((x) => !x)}
+            aria-expanded={showWhereToCredit}
+          >
+            {showWhereToCredit ? '▾' : '▸'} {t('whereToCredit.toggle')}
+          </button>
+          {showWhereToCredit && (
+            <WhereToCredit
+              result={allProgramsResult}
+              selectedIds={new Set(programOrder)}
+              valuations={valuations ?? null}
+              onAddProgram={onAddProgram}
+            />
+          )}
+        </section>
+      )}
       <section className="earning-per-leg-section">
         <button
           type="button"
@@ -147,6 +179,94 @@ export function EarningPanel({
         </button>
         {expanded && <PerLegTables result={result} programOrder={sortedPrograms} />}
       </section>
+    </div>
+  );
+}
+
+interface WhereToCreditProps {
+  result: RoutingResult;
+  selectedIds: ReadonlySet<ProgramId>;
+  valuations: Valuations | null;
+  onAddProgram?: ((programId: ProgramId) => void) | undefined;
+}
+
+/**
+ * Inverse-view ranked table of every program in the registry for the
+ * current routing. Inspired by wheretocredit.com's killer feature.
+ * Sorted by miles × ¢/mile (value-weighted) when valuations are
+ * available; raw RDM otherwise.
+ */
+function WhereToCredit({
+  result,
+  selectedIds,
+  valuations,
+  onAddProgram,
+}: WhereToCreditProps): React.ReactElement {
+  const { t } = useLocale();
+  const rows = Object.keys(result.grandTotals)
+    .map((id) => {
+      const total = result.grandTotals[id];
+      const rdm = total?.rdm ?? 0;
+      const cpm = valuations?.valuations[id];
+      const usd = cpm !== undefined ? (rdm * cpm) / 100 : null;
+      return {
+        id,
+        label: PROGRAM_LABELS[id] ?? id,
+        rdm,
+        pqm: total?.pqm ?? 0,
+        cpm,
+        usd,
+        sortKey: cpm !== undefined ? rdm * cpm : rdm,
+      };
+    })
+    .filter((r) => r.rdm > 0)
+    .sort((a, b) => b.sortKey - a.sortKey);
+
+  if (rows.length === 0) {
+    return (
+      <p className="where-to-credit-empty">{t('whereToCredit.empty')}</p>
+    );
+  }
+
+  return (
+    <div className="where-to-credit">
+      <p className="where-to-credit-hint">{t('whereToCredit.hint')}</p>
+      <ol className="where-to-credit-list">
+        {rows.map((row, i) => {
+          const selected = selectedIds.has(row.id);
+          const canAdd = !selected && onAddProgram !== undefined;
+          return (
+            <li
+              key={row.id}
+              className={`where-to-credit-row${selected ? ' selected' : ''}`}
+            >
+              <span className="where-to-credit-rank">{i + 1}</span>
+              <span className="where-to-credit-program">{row.label}</span>
+              <span className="where-to-credit-miles">{row.rdm.toLocaleString()}</span>
+              {row.usd !== null && (
+                <span className="where-to-credit-cash">
+                  ${row.usd < 1000 ? Math.round(row.usd) : Math.round(row.usd).toLocaleString()}
+                </span>
+              )}
+              {canAdd && (
+                <button
+                  type="button"
+                  className="where-to-credit-add"
+                  onClick={() => onAddProgram?.(row.id)}
+                  aria-label={t('whereToCredit.addLabel', { program: row.label })}
+                >
+                  +
+                </button>
+              )}
+              {selected && (
+                <span className="where-to-credit-selected-tick" aria-label="Selected">
+                  ✓
+                </span>
+              )}
+            </li>
+          );
+        })}
+      </ol>
     </div>
   );
 }
