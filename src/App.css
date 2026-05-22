@@ -474,12 +474,58 @@
   color: #ffffff;
 }
 
-/* ── Bearing label on map ── */
-.map-bearing-label {
-  font-family: var(--font-mono);
+/* Download menu (v1.8) — PNG/SVG with transparent toggles */
+.download-menu {
+  position: relative;
+  display: inline-block;
+}
+.download-menu-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+  background: var(--material-thick);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-popover);
+  padding: 4px;
+  animation: popoverIn var(--motion-base) var(--ease-spring);
+  transform-origin: top left;
+}
+.download-menu-popover button {
+  background: transparent;
+  border: none;
+  text-align: left;
+  padding: 8px 12px;
+  font-size: var(--type-footnote);
   font-weight: 500;
+  color: var(--label);
+  border-radius: var(--radius-button);
+  cursor: pointer;
+  transition: background var(--motion-fast) var(--ease-standard);
+}
+.download-menu-popover button:hover {
+  background: var(--tint-fill-soft);
+  color: var(--tint);
+}
+
+/* ── Bearing + distance labels on map ── */
+.map-bearing-label,
+.map-distance-label {
+  font-family: var(--font-mono);
+  font-weight: 600;
   pointer-events: none;
-  text-shadow: 0 0 3px var(--bg-page);
+  text-shadow:
+    0 0 3px var(--system-background),
+    0 0 6px var(--system-background);
+}
+.map-distance-label {
+  font-weight: 700;
 }
 
 /* ── Import from gcmap ── */

@@ -28,7 +28,7 @@ import { useLocale } from './i18n/use-locale.ts';
 import { buildAirportIndex } from './lib/airport-index.ts';
 import { computeRouting } from './lib/calc/index.ts';
 import { DEFAULT_PROJECTION, type ProjectionId } from './lib/calc/projections.ts';
-import { downloadBlob, svgToPngBlob } from './lib/svg-to-png.ts';
+import { downloadBlob, svgToPngBlob, svgToSvgBlob } from './lib/svg-to-png.ts';
 import { parseShareUrl } from './lib/url-schema.ts';
 import {
   PROGRAM_REGISTRY,
@@ -147,6 +147,7 @@ function Ready({
   const { t } = useLocale();
   const [activeGroupIndex, setActiveGroupIndex] = useState(0);
   const [showBearings, setShowBearings] = useState(false);
+  const [showDistances, setShowDistances] = useState(false);
   const svgRef = useRef<SVGSVGElement | null>(null);
 
   // Per-group pending first airport. A leg requires 2+ airports, so the very
@@ -329,19 +330,42 @@ function Ready({
     setPendingByGroup(new Map());
   }
 
-  async function downloadPng(): Promise<void> {
+  function routingChain(): string {
+    return routing.groups
+      .map((g) => g.legs.map((l) => l.from).concat([g.legs[g.legs.length - 1]?.to ?? '']).filter(Boolean).join('-'))
+      .filter(Boolean)
+      .join('_');
+  }
+
+  async function downloadPng(transparent = false): Promise<void> {
     const svg = svgRef.current;
     if (!svg) return;
     try {
-      const blob = await svgToPngBlob(svg, 2);
-      const chain = routing.groups
-        .map((g) => g.legs.map((l) => l.from).concat([g.legs[g.legs.length - 1]?.to ?? '']).filter(Boolean).join('-'))
-        .filter(Boolean)
-        .join('_');
-      const filename = chain ? `${t('download.filename')}-${chain}.png` : `${t('download.filename')}.png`;
+      const blob = await svgToPngBlob(svg, { pixelRatio: 2, transparent });
+      const chain = routingChain();
+      const suffix = transparent ? '-transparent' : '';
+      const filename = chain
+        ? `${t('download.filename')}-${chain}${suffix}.png`
+        : `${t('download.filename')}${suffix}.png`;
       downloadBlob(blob, filename);
     } catch (e) {
       console.error('PNG export failed:', e);
+    }
+  }
+
+  function downloadSvg(transparent = false): void {
+    const svg = svgRef.current;
+    if (!svg) return;
+    try {
+      const blob = svgToSvgBlob(svg, { transparent });
+      const chain = routingChain();
+      const suffix = transparent ? '-transparent' : '';
+      const filename = chain
+        ? `${t('download.filename')}-${chain}${suffix}.svg`
+        : `${t('download.filename')}${suffix}.svg`;
+      downloadBlob(blob, filename);
+    } catch (e) {
+      console.error('SVG export failed:', e);
     }
   }
 
@@ -462,10 +486,21 @@ function Ready({
               />
               {t('bearings.show')}
             </label>
+            <label className="bearings-toggle">
+              <input
+                type="checkbox"
+                checked={showDistances}
+                onChange={(e) => setShowDistances(e.target.checked)}
+              />
+              {t('distances.show')}
+            </label>
             {hasAnyLegs && (
-              <button type="button" className="map-download" onClick={() => { void downloadPng(); }}>
-                {t('download.png')}
-              </button>
+              <DownloadMenu
+                onPng={() => { void downloadPng(false); }}
+                onPngTransparent={() => { void downloadPng(true); }}
+                onSvg={() => { downloadSvg(false); }}
+                onSvgTransparent={() => { downloadSvg(true); }}
+              />
             )}
           </div>
           <MapErrorBoundary groups={routing.groups}>
@@ -478,6 +513,7 @@ function Ready({
               height={mapSize.height}
               projection={routing.projection ?? DEFAULT_PROJECTION}
               showBearings={showBearings}
+              showDistances={showDistances}
               onSvgReady={(el) => {
                 svgRef.current = el;
               }}
@@ -516,6 +552,77 @@ function Ready({
         </span>
         <span className="app-footer-note">{t('footer.disclaimer')}</span>
       </footer>
+    </div>
+  );
+}
+
+interface DownloadMenuProps {
+  onPng: () => void;
+  onPngTransparent: () => void;
+  onSvg: () => void;
+  onSvgTransparent: () => void;
+}
+
+function DownloadMenu({
+  onPng,
+  onPngTransparent,
+  onSvg,
+  onSvgTransparent,
+}: DownloadMenuProps): React.ReactElement {
+  const { t } = useLocale();
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function onDown(e: MouseEvent): void {
+      if (rootRef.current && e.target instanceof Node && !rootRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    }
+    function onKey(e: KeyboardEvent): void {
+      if (e.key === 'Escape') setOpen(false);
+    }
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
+  function pick(fn: () => void): void {
+    fn();
+    setOpen(false);
+  }
+
+  return (
+    <div className="download-menu" ref={rootRef}>
+      <button
+        type="button"
+        className="map-download"
+        aria-expanded={open}
+        aria-haspopup="menu"
+        onClick={() => setOpen((x) => !x)}
+      >
+        {t('download.button')} {open ? '▴' : '▾'}
+      </button>
+      {open && (
+        <div className="download-menu-popover" role="menu">
+          <button type="button" role="menuitem" onClick={() => pick(onPng)}>
+            {t('download.png')}
+          </button>
+          <button type="button" role="menuitem" onClick={() => pick(onPngTransparent)}>
+            {t('download.pngTransparent')}
+          </button>
+          <button type="button" role="menuitem" onClick={() => pick(onSvg)}>
+            {t('download.svg')}
+          </button>
+          <button type="button" role="menuitem" onClick={() => pick(onSvgTransparent)}>
+            {t('download.svgTransparent')}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
