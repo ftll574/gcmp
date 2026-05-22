@@ -1,7 +1,7 @@
 {
   "brand": {
     "name": "gcmp",
-    "tagline": "查票计算器"
+    "tagline": "里程查票计算器"
   },
   "lang": {
     "english": "English",
@@ -13,6 +13,8 @@
   "header": {
     "save": "保存",
     "shareUrl": "分享链接",
+    "copyText": "复制文字版",
+    "copyTextTitle": "纯文字航段表 — 可贴到飞客茶馆 / PTT / FlyerTalk",
     "copied": "已复制 ✓",
     "modeBeginner": "新手",
     "modePro": "老手",
@@ -81,7 +83,10 @@
   "leg": {
     "remove": "移除 {iata}",
     "carrierLabel": "第 {n} 段航司",
-    "ariaLabel": "第 {n} / {total} 段：{from} 到 {to}"
+    "ariaLabel": "第 {n} / {total} 段：{from} 到 {to}",
+    "fareClassLabel": "第 {n} 段订位舱等",
+    "fareClassTitle": "票面上的单字母订位舱等代码 — 里程累积率取决于舱位代码而不仅是舱等。",
+    "fareClassAuto": "—"
   },
   "panel": {
     "emptyHint": "添加 2 个以上机场，看你能拿多少里程。",
@@ -94,10 +99,10 @@
     "warningsLabel": "提醒",
     "pqmShort": "PQM",
     "rdmShort": "RDM",
-    "pqmLong": "升级里程",
-    "rdmLong": "兑换里程",
-    "summaryBeginner": "在 {carrier} 飞 {cabin}，你能赚：",
-    "comparisonBeginner": "并列比较 — 同一张票，挂到不同航空的常旅客计划拿到的里程不一样。",
+    "pqmLong": "精英资格里程",
+    "rdmLong": "酬宾里数",
+    "summaryBeginner": "搭 {carrier} 的 {cabin}，这条航线可以累积：",
+    "comparisonBeginner": "并列比较 — 同一张票，挂到不同常旅客计划累积到的里程不一样。",
     "confidenceChart": "官方表",
     "confidenceCorrected": "已修正",
     "confidenceMixed": "混合",
@@ -128,7 +133,7 @@
     "delete": "删除 {name}"
   },
   "footer": {
-    "openSource": "gcmp v0 — 开源于 GitHub",
+    "openSource": "gcmp — GitHub 开源项目",
     "disclaimer": "里程数依照官方公布的合作伙伴表计算，请以实际入账为准。"
   },
   "map": {
@@ -148,7 +153,7 @@
     "flat": "平面",
     "flatTip": "等距方格投影，渲染最快。",
     "azimuthal": "方位",
-    "azimuthalTip": "以中心点出发的大圆变成放射状直线（gcmap 招牌）。",
+    "azimuthalTip": "以中心点出发的大圆航线变成放射状直线（gcmap 招牌）。",
     "globe": "地球仪",
     "globeTip": "真正的 3D 地球仪。拖拉旋转、滚轮缩放。"
   },
@@ -175,11 +180,11 @@
   },
   "provenance": {
     "line": "规则 {version} · 校对于 {date}",
-    "source": "来源表"
+    "source": "查官方表"
   },
   "programPicker": {
     "label": "累积里程的常旅客计划",
-    "hint": "选择这条航线要累积到哪些常旅客计划；每个都会单独计算可累积的里程。",
+    "hint": "选择这条航线要挂到哪些常旅客计划；每个都会单独计算可累积的里程。",
     "tooMany": "已选 {count} 个常旅客计划 — 里程面板可能会挤。",
     "none": "未选"
   },
@@ -190,13 +195,13 @@
     "none": "无联盟"
   },
   "glossary": {
-    "pqm": "升级里程（Premier Qualifying Miles）— 累积到一定数量可升上金卡、白金卡等会员等级。跟兑换里程不同。",
-    "rdm": "兑换里程（Redeemable Miles）— 可以拿来换奖励机票的点数。",
-    "cabin": "舱位：经济舱（Y）、豪华经济（W）、商务舱（J）、头等舱（F）。",
-    "fareClass": "票价代码（单字母如 J、C、D、Y、B、K…），同一舱位有多个票价，赚的里程也不同。",
-    "operatingCarrier": "实际飞这段航线的航空公司。里程通常算这家，即使是联程航班（codeshare）。",
-    "alliance": "星空联盟、寰宇一家、天合联盟 — 航空公司互相承认里程的群体。",
-    "credit": "选哪家常旅客计划累积你的里程。同一张票，挂到不同的常旅客计划可能拿到不一样的里程。",
-    "mileageRunner": "为了拿里程而搭飞机（而不是为了去某地）的旅客。"
+    "pqm": "精英资格里程（Status / Premier Qualifying Miles）— 累积到一定数量可升上金卡、白金卡等会籍等级。跟酬宾里数不同。",
+    "rdm": "酬宾里数（Redeemable Miles）— 可以拿来换奖励机票的点数。",
+    "cabin": "舱位：经济舱（Y）、超级经济（W）、商务舱（J）、头等舱（F）。",
+    "fareClass": "订位舱等代码（单字母如 J、C、D、Y、B、K…），同一舱位有多个订位舱等，累积的里程也不同。",
+    "operatingCarrier": "实际执飞这段航线的航空公司。里程通常挂这家，即使是联程航班（codeshare）也一样。",
+    "alliance": "星空联盟、寰宇一家、天合联盟 — 合作伙伴航空互相承认里程的群体。",
+    "credit": "选哪家常旅客计划累积你的里程。同一张票挂到不同常旅客计划，能拿到的里程可能差很多。",
+    "mileageRunner": "为了累积里程而搭飞机（而不是为了去某地）的旅客。"
   }
 }

@@ -991,6 +991,34 @@
 .leg-chip-carrier:hover {
   border-color: var(--tint);
 }
+/* Fare-class picker. When unset (showing "—"), looks like a subtle hint
+   that nudges users to set it; when set, lights up tint to signal an
+   explicit override. */
+.leg-chip-fareclass {
+  background: transparent;
+  border: 1px solid var(--separator);
+  border-radius: 6px;
+  padding: 2px var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  color: var(--tertiary-label);
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 4px;
+  transition:
+    border-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard),
+    background var(--motion-fast) var(--ease-standard);
+}
+.leg-chip-fareclass:hover {
+  border-color: var(--tint);
+  color: var(--label);
+}
+.leg-chip-fareclass.has-override {
+  background: var(--tint-fill-soft);
+  border-color: var(--tint);
+  color: var(--tint);
+}
 
 /* ── Cabin selector (iOS segmented control) ── */
 .cabin-selector {

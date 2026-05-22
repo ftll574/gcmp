@@ -49,16 +49,34 @@ const CABIN_FALLBACK_ORDER: Record<CabinId, ReadonlyArray<string>> = {
 function resolveBucket(
   carrier: { fareBuckets: Record<string, FareBucket>; defaultLetterByCabin: Record<string, string> },
   cabin: CabinId,
-): { bucket: FareBucket; letter: string } | null {
+  /**
+   * Optional explicit fare-class override (e.g. "I", "D", "K"). When this
+   * is set AND the carrier has a bucket for that exact letter, we use it
+   * regardless of cabin. This is how Asian partner-credit math works
+   * (CX I=25% vs J=150% in the same J cabin, etc.).
+   *
+   * When the explicit letter doesn't exist on this carrier, we fall back
+   * to the cabin default — better than zero, with a warning surfaced
+   * upstream.
+   */
+  fareClassOverride?: string,
+): { bucket: FareBucket; letter: string; overrideMissing: boolean } | null {
+  if (fareClassOverride) {
+    const letter = fareClassOverride.toUpperCase();
+    const bucket = carrier.fareBuckets[letter];
+    if (bucket) return { bucket, letter, overrideMissing: false };
+    // fall through to cabin default but flag the miss
+  }
+  const overrideMissing = fareClassOverride !== undefined && fareClassOverride !== '';
   const preferredLetter = carrier.defaultLetterByCabin[cabin];
   if (preferredLetter) {
     const bucket = carrier.fareBuckets[preferredLetter];
-    if (bucket) return { bucket, letter: preferredLetter };
+    if (bucket) return { bucket, letter: preferredLetter, overrideMissing };
   }
   for (const letter of CABIN_FALLBACK_ORDER[cabin]) {
     const bucket = carrier.fareBuckets[letter];
     if (bucket && bucket.cabin === cabin) {
-      return { bucket, letter };
+      return { bucket, letter, overrideMissing };
     }
   }
   return null;
@@ -156,7 +174,7 @@ function computeGroup(
         confidences.push(null);
         continue;
       }
-      const resolved = resolveBucket(carrier, cabin);
+      const resolved = resolveBucket(carrier, cabin, ld.leg.fareClass);
       if (!resolved) {
         perLeg.push(
           emptyLegEarning(
@@ -167,7 +185,7 @@ function computeGroup(
         confidences.push(carrier.confidence);
         continue;
       }
-      const { bucket } = resolved;
+      const { bucket, letter, overrideMissing } = resolved;
       const min = bucket.minPerSegment ?? 0;
       const raw = ld.distanceNm;
       const effective = Math.max(raw, min);
@@ -177,6 +195,11 @@ function computeGroup(
       totalRdm += rdm;
       const legNotes: string[] = [];
       if (raw < min) legNotes.push(`Minimum ${min} mi/segment applied.`);
+      if (overrideMissing && ld.leg.fareClass) {
+        legNotes.push(
+          `${program.label} has no rule for ${op} fare class ${ld.leg.fareClass.toUpperCase()}; used ${letter} (cabin default).`,
+        );
+      }
       if (bucket.notes) legNotes.push(...bucket.notes);
       if (carrier.notes) legNotes.push(...carrier.notes);
       perLeg.push({ pqm, rdm, distanceNm: raw, notes: legNotes, missingRule: false });

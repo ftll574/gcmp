@@ -1,38 +1,58 @@
 /**
  * Leg chain: draggable chips showing each airport in the routing, with a
- * per-leg operating-carrier dropdown.
+ * per-leg operating-carrier dropdown and per-leg fare-class chip.
  *
- *   [SFO ✈ AA] [NRT ✈ JL] [BKK ✈ CX] [HKG]
+ *   [SFO ✈ AA J] [NRT ✈ JL D] [BKK ✈ CX I] [HKG]
  *               ↑drag handle    ↑× removes the airport
  *
- * The carrier badge appears on EVERY chip except the last one (since the
- * last airport has no outgoing leg). Click the badge to open a small
- * carrier dropdown.
+ * The carrier + fare-class badges appear on EVERY chip except the last
+ * one. Fare-class is a single letter A-Z; when set, the engine looks up
+ * the carrier's exact bucket (CX I=25%, CX J=150%, etc.). When unset
+ * (default), the engine falls back to the carrier's
+ * defaultLetterByCabin[cabin] — i.e., v1.5+ behavior is opt-in.
  */
 
 import { useState } from 'react';
 import { useLocale } from '../i18n/use-locale.ts';
 import type { Airline, AirlineIata, Airport, Iata } from '../lib/types.ts';
 
+/**
+ * Fare-class letters offered in the picker. Grouped by likely cabin in
+ * the rendered <optgroup>. A-Z is a superset of what any one carrier has;
+ * the engine handles missing buckets with a "no rule for {OP} {X}" note.
+ */
+const FARE_CLASS_GROUPS: ReadonlyArray<{ label: string; letters: ReadonlyArray<string> }> = [
+  { label: 'First', letters: ['F', 'A', 'P', 'R'] },
+  { label: 'Business', letters: ['J', 'C', 'D', 'I', 'Z'] },
+  { label: 'Premium Economy', letters: ['W', 'E', 'T', 'O'] },
+  { label: 'Economy', letters: ['Y', 'B', 'M', 'H', 'K', 'L', 'Q', 'V', 'S', 'N', 'G', 'X'] },
+];
+
 interface Props {
   /** Airports in the chain, in order. */
   airports: ReadonlyArray<Airport>;
   /** Operating carriers per leg. Length = airports.length - 1. */
   operatingCarriers: ReadonlyArray<AirlineIata>;
+  /** Per-leg explicit fare-class override. undefined = use cabin default. */
+  fareClasses: ReadonlyArray<string | undefined>;
   /** Pool of carriers for the badge dropdown. */
   airlines: ReadonlyArray<Airline>;
   onReorder: (newOrder: ReadonlyArray<Iata>) => void;
   onRemove: (iata: Iata, index: number) => void;
   onCarrierChange: (legIndex: number, carrier: AirlineIata) => void;
+  /** Set undefined to clear the override (let cabin default apply). */
+  onFareClassChange: (legIndex: number, fareClass: string | undefined) => void;
 }
 
 export function LegChain({
   airports,
   operatingCarriers,
+  fareClasses,
   airlines,
   onReorder,
   onRemove,
   onCarrierChange,
+  onFareClassChange,
 }: Props): React.ReactElement {
   const { t } = useLocale();
   const [dragIndex, setDragIndex] = useState<number | null>(null);
@@ -117,6 +137,27 @@ export function LegChain({
                     <option key={al.iata} value={al.iata}>
                       {al.iata}
                     </option>
+                  ))}
+                </select>
+                <select
+                  className={`leg-chip-fareclass${fareClasses[legIndex] ? ' has-override' : ''}`}
+                  value={fareClasses[legIndex] ?? ''}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    onFareClassChange(legIndex, v === '' ? undefined : v);
+                  }}
+                  aria-label={t('leg.fareClassLabel', { n: legIndex + 1 })}
+                  title={t('leg.fareClassTitle')}
+                >
+                  <option value="">{t('leg.fareClassAuto')}</option>
+                  {FARE_CLASS_GROUPS.map((g) => (
+                    <optgroup key={g.label} label={g.label}>
+                      {g.letters.map((letter) => (
+                        <option key={letter} value={letter}>
+                          {letter}
+                        </option>
+                      ))}
+                    </optgroup>
                   ))}
                 </select>
               </span>
