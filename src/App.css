@@ -23,7 +23,7 @@
   color: var(--text-primary);
 }
 
-/* ── Header (Apple-style sticky vibrancy) ── */
+/* ── Header (Apple-style sticky vibrancy, responsive wrap) ── */
 .app-header {
   position: sticky;
   top: 0;
@@ -37,6 +37,22 @@
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
   border-bottom: 1px solid var(--separator);
+  flex-wrap: wrap;
+}
+/* On narrow viewports, drop the brand to its own line and let the
+   header controls take the full width on row 2 (mobile + tablet). */
+@media (max-width: 720px) {
+  .app-header {
+    padding: var(--space-3) var(--space-4);
+    gap: var(--space-2);
+  }
+  .app-header-controls {
+    flex-grow: 1;
+    justify-content: flex-end;
+  }
+  .app-brand-tagline {
+    display: none;
+  }
 }
 
 .app-brand {
@@ -1450,6 +1466,58 @@
   text-transform: uppercase;
   letter-spacing: 0.06em;
   margin-left: auto;
+}
+
+/* Cash-equivalent chip (v1.6) — TPG ¢/mile × RDM */
+.earning-cash-equivalent {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 4px;
+  padding: 4px 10px;
+  background: var(--quaternary-fill);
+  border-radius: var(--radius-pill);
+  width: fit-content;
+  cursor: help;
+}
+.earning-cash-value {
+  font-family: var(--font-mono);
+  font-feature-settings: 'tnum';
+  font-weight: 600;
+  font-size: var(--type-footnote);
+  color: var(--semantic-green);
+}
+.earning-cash-rate {
+  font-size: var(--type-caption);
+  color: var(--tertiary-label);
+}
+
+/* seats.aero outbound link (v1.6) */
+.earning-program-actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+.earning-program-seats-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: transparent;
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-pill);
+  color: var(--tint);
+  font-size: var(--type-caption);
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    background var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard);
+}
+.earning-program-seats-link:hover {
+  background: var(--tint-fill-soft);
+  border-color: var(--tint);
+  text-decoration: none;
 }
 
 .earning-program-provenance {

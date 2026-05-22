@@ -37,7 +37,7 @@
   },
   "hero": {
     "tagline": "找出每段航班最划算的常旅客计划。",
-    "subtagline": "选机场、选舱位，立即比较 12 个常旅客计划、4 大联盟谁给最多里程。"
+    "subtagline": "选机场、选舱位，立即比较 18 个常旅客计划、4 大联盟谁给最多里程。"
   },
   "samples": {
     "sfoNrtBkk": {
@@ -176,11 +176,20 @@
     "label": "这条航线最划算的常旅客计划",
     "creditTo": "建议挂 {program}",
     "delta": "比第二名多 {count} 里程（{pct}%）",
+    "cashEquivalent": "≈ {value} 现金价值",
     "pill": "最佳"
+  },
+  "cashEq": {
+    "atRate": "≈ {rate}¢/里",
+    "tip": "依 {source} 公布的标价估算的现金等值。实际兑换价值依航线、舱位、奖励机票供应情况而异。"
   },
   "provenance": {
     "line": "规则 {version} · 校对于 {date}",
     "source": "查官方表"
+  },
+  "seats": {
+    "findAwards": "搜奖励机票",
+    "tip": "用同一条航线 + 舱位打开 seats.aero。"
   },
   "programPicker": {
     "label": "累积里程的常旅客计划",

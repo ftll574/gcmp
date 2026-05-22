@@ -11,6 +11,7 @@
 
 import { useEffect, useState } from 'react';
 import { ProgramSchema, type Program } from '../lib/schemas/program.ts';
+import { ValuationsSchema, type Valuations } from '../lib/schemas/valuations.ts';
 import {
   PROGRAM_REGISTRY,
   type Airline,
@@ -22,6 +23,8 @@ export interface LoadedData {
   airports: ReadonlyArray<Airport>;
   airlines: ReadonlyArray<Airline>;
   programs: ReadonlyMap<ProgramId, Program>;
+  /** Per-program ¢/mile redemption-value chip. Null if file unavailable. */
+  valuations: Valuations | null;
 }
 
 export type LoadState =
@@ -58,14 +61,24 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
     async function load(): Promise<void> {
       try {
         const programDirs = PROGRAM_REGISTRY.map((p) => p.shortCode.toLowerCase());
-        const [airportsRaw, airlinesRaw, ...programRaws] = await Promise.all([
+        const [airportsRaw, airlinesRaw, valuationsRaw, ...programRaws] = await Promise.all([
           fetchJsonStrict(`${baseUrl}/data/airports.json`),
           fetchJsonStrict(`${baseUrl}/data/airlines.json`),
+          fetchJsonOptional(`${baseUrl}/data/valuations/current.json`),
           ...programDirs.map((dir) =>
             fetchJsonOptional(`${baseUrl}/data/programs/${dir}/current.json`),
           ),
         ]);
         if (cancelled) return;
+
+        let valuations: Valuations | null = null;
+        if (valuationsRaw !== null && valuationsRaw !== undefined) {
+          try {
+            valuations = ValuationsSchema.parse(valuationsRaw);
+          } catch (e) {
+            console.warn('Valuations schema parse failed; redemption-value chip will be hidden:', e);
+          }
+        }
 
         if (!Array.isArray(airportsRaw)) throw new Error('airports.json malformed');
         if (!Array.isArray(airlinesRaw)) throw new Error('airlines.json malformed');
@@ -95,6 +108,7 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
             airports: airportsRaw as Airport[],
             airlines: airlinesRaw as Airline[],
             programs,
+            valuations,
           },
         });
       } catch (e) {

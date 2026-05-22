@@ -1,0 +1,31 @@
+{
+  "source": "The Points Guy monthly valuations",
+  "sourceUrl": "https://thepointsguy.com/guide/monthly-valuations/",
+  "version": "2026.2",
+  "lastVerified": "2026-05-22",
+  "valuations": {
+    "aa-aadvantage": 1.6,
+    "ba-executive-club": 1.4,
+    "cx-asia-miles": 1.3,
+    "jl-mileage-bank": 1.3,
+    "mh-enrich": 1.0,
+    "ua-mileageplus": 1.35,
+    "ac-aeroplan": 1.4,
+    "sq-krisflyer": 1.3,
+    "nh-mileage-club": 1.4,
+    "br-infinity": 1.5,
+    "tg-royal-orchid": 1.0,
+    "dl-skymiles": 1.2,
+    "af-flying-blue": 1.3,
+    "ci-dynasty-flyer": 1.0,
+    "mu-eastern-miles": 0.8,
+    "ke-skypass": 1.3,
+    "as-mileage-plan": 1.4,
+    "ek-skywards": 1.2
+  },
+  "notes": [
+    "Values are in US cents per mile. Source: TPG May 2026 monthly valuations + community estimates for programs TPG doesn't formally value (BR, JL JMB, MH, TG, CI, MU).",
+    "TPG explicitly notes: 'Value varies from point to point and person to person.' These are sticker prices for comparison, not personalized estimates.",
+    "Refresh quarterly when bumping rules version."
+  ]
+}

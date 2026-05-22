@@ -37,7 +37,7 @@
   },
   "hero": {
     "tagline": "どのマイレージプログラムが一番お得か、ひと目で。",
-    "subtagline": "空港とクラスを選ぶだけで、12 のプログラム・4 つのアライアンスを比較。"
+    "subtagline": "空港とクラスを選ぶだけで、18 のプログラム・4 つのアライアンスを比較。"
   },
   "samples": {
     "sfoNrtBkk": {
@@ -176,11 +176,20 @@
     "label": "この経路にベストなプログラム",
     "creditTo": "{program} に積算",
     "delta": "2位より {count} マイル多い（{pct}%）",
+    "cashEquivalent": "≈ 現金換算 {value}",
     "pill": "ベスト"
+  },
+  "cashEq": {
+    "atRate": "≈ {rate}¢/マイル",
+    "tip": "{source} の参考価値による現金換算の目安。実際の特典価値は路線・クラス・空席状況で大きく変動します。"
   },
   "provenance": {
     "line": "ルール {version} · {date} 確認済み",
     "source": "ソースチャート"
+  },
+  "seats": {
+    "findAwards": "特典航空券を検索",
+    "tip": "同じ経路 + クラスで seats.aero を開きます。"
   },
   "programPicker": {
     "label": "マイルを貯めるプログラム",

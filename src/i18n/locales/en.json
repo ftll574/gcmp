@@ -37,7 +37,7 @@
   },
   "hero": {
     "tagline": "Find the best frequent-flyer program for any flight.",
-    "subtagline": "Pick airports, pick a cabin, see who credits more — across 12 programs and 4 alliances."
+    "subtagline": "Pick airports, pick a cabin, see who credits more — across 18 programs and 4 alliances."
   },
   "samples": {
     "sfoNrtBkk": {
@@ -176,11 +176,20 @@
     "label": "Best program for this routing",
     "creditTo": "Credit to {program}",
     "delta": "{count} more Award Miles ({pct}% over runner-up)",
+    "cashEquivalent": "≈ {value} cash value",
     "pill": "Best"
+  },
+  "cashEq": {
+    "atRate": "≈ {rate}¢/mi",
+    "tip": "Cash-equivalent estimate at {source} sticker valuation. Actual redemption value varies by route, cabin, and award availability."
   },
   "provenance": {
     "line": "Rules {version} · verified {date}",
     "source": "Source chart"
+  },
+  "seats": {
+    "findAwards": "Find award seats",
+    "tip": "Open seats.aero with this route + cabin pre-filled."
   },
   "programPicker": {
     "label": "Crediting programs",

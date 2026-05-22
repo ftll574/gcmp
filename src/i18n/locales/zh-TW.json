@@ -37,7 +37,7 @@
   },
   "hero": {
     "tagline": "找出每段航班最划算的常客計畫。",
-    "subtagline": "選機場、選艙等，馬上比 12 家常客計畫、4 大聯盟誰給最多哩程。"
+    "subtagline": "選機場、選艙等，馬上比 18 家常客計畫、4 大聯盟誰給最多哩程。"
   },
   "samples": {
     "sfoNrtBkk": {
@@ -176,11 +176,20 @@
     "label": "這條航線最划算的常客計畫",
     "creditTo": "建議掛 {program}",
     "delta": "比第二名多 {count} 哩（{pct}%）",
+    "cashEquivalent": "≈ {value} 現金價值",
     "pill": "最佳"
+  },
+  "cashEq": {
+    "atRate": "≈ {rate}¢/哩",
+    "tip": "依 {source} 公布的標價估算的現金等值。實際兌換價值依航線、艙等、獎勵機票供應情況而異。"
   },
   "provenance": {
     "line": "規則 {version} · 校對於 {date}",
     "source": "查官方表"
+  },
+  "seats": {
+    "findAwards": "搜獎勵機票",
+    "tip": "用同一條航線 + 艙等開 seats.aero。"
   },
   "programPicker": {
     "label": "累積哩程的常客計畫",
