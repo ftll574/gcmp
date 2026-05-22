@@ -271,6 +271,19 @@ function Ready({
     }));
   }
 
+  function changeFareClass(legIndex: number, fareClass: string | undefined): void {
+    updateActiveGroup((group) => ({
+      legs: group.legs.map((leg, i) => {
+        if (i !== legIndex) return leg;
+        if (fareClass === undefined) {
+          // Strip the field rather than store undefined — keeps URL clean.
+          return { from: leg.from, to: leg.to, operatingCarrier: leg.operatingCarrier };
+        }
+        return { ...leg, fareClass };
+      }),
+    }));
+  }
+
   function changeCabin(cabin: CabinId): void {
     setRouting({ ...routing, cabin });
   }
@@ -387,10 +400,12 @@ function Ready({
         <LegChain
           airports={activeChainAirports}
           operatingCarriers={activeGroup.legs.map((leg) => leg.operatingCarrier)}
+          fareClasses={activeGroup.legs.map((leg) => leg.fareClass)}
           airlines={data.airlines}
           onReorder={reorder}
           onRemove={removeAirport}
           onCarrierChange={changeCarrier}
+          onFareClassChange={changeFareClass}
         />
         {hasAnyLegs && (
           <div className="app-controls">

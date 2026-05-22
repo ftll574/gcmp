@@ -81,7 +81,10 @@
   "leg": {
     "remove": "移除 {iata}",
     "carrierLabel": "第 {n} 段航司",
-    "ariaLabel": "第 {n} / {total} 段：{from} 到 {to}"
+    "ariaLabel": "第 {n} / {total} 段：{from} 到 {to}",
+    "fareClassLabel": "第 {n} 段订位舱等",
+    "fareClassTitle": "票面上的单字母订位舱等代码 — 里程累积率取决于舱位代码而不仅是舱等。",
+    "fareClassAuto": "—"
   },
   "panel": {
     "emptyHint": "添加 2 个以上机场，看你能拿多少里程。",

@@ -81,7 +81,10 @@
   "leg": {
     "remove": "Remove {iata}",
     "carrierLabel": "Operating carrier for leg {n}",
-    "ariaLabel": "Leg {n} of {total}: {from} to {to}"
+    "ariaLabel": "Leg {n} of {total}: {from} to {to}",
+    "fareClassLabel": "Fare class for leg {n}",
+    "fareClassTitle": "Single-letter booking code from your ticket — partner credit varies by letter, not just cabin.",
+    "fareClassAuto": "—"
   },
   "panel": {
     "emptyHint": "Add 2+ airports to see how much you earn.",

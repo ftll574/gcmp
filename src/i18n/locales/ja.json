@@ -81,7 +81,10 @@
   "leg": {
     "remove": "{iata} を削除",
     "carrierLabel": "第 {n} 区間の運航キャリア",
-    "ariaLabel": "第 {n} / {total} 区間：{from} から {to}"
+    "ariaLabel": "第 {n} / {total} 区間：{from} から {to}",
+    "fareClassLabel": "第 {n} 区間の予約クラス",
+    "fareClassTitle": "航空券の1文字予約クラスコード — マイル積算率はキャビンではなくクラスコードで決まります。",
+    "fareClassAuto": "—"
   },
   "panel": {
     "emptyHint": "2 つ以上の空港を追加すると、獲得マイルが表示されます。",
