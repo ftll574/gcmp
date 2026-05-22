@@ -2,16 +2,20 @@
  * Interactive SVG world map.
  *
  *   - 4 projections (Mercator, Equirectangular, Azimuthal Equidistant, Orthographic)
- *   - **Orthographic mode** is a true rotatable globe:
- *       drag  → rotate the projection (degrees per pixel, sensitivity scales with zoom)
- *       wheel → zoom (the projection's scale, NOT an SVG transform)
- *       Arcs on the back hemisphere are correctly clipped; rotate to bring them into view.
- *   - Flat projections (Mercator / Equirectangular / Azimuthal Equidistant):
- *       drag  → pan the SVG transform
- *       wheel → zoom the SVG transform (toward cursor)
  *
- * The globe path keeps everything in projected coordinates so the world
- * outline + arcs + airports all rotate together as one cohesive sphere.
+ *   - **Wrapping 2D mode** (Mercator + Equirectangular):
+ *       drag  → pan SVG transform (unbounded; tx normalized modulo worldWidth)
+ *       wheel → zoom SVG transform toward cursor
+ *       The world is rendered 3 times horizontally (-worldWidth, 0, +worldWidth)
+ *       so a leg that crosses the antimeridian appears continuous on both
+ *       sides of the seam — and panning past one edge wraps seamlessly into
+ *       the other side, Google-Maps-style.
+ *
+ *   - **Globe mode** (Orthographic):
+ *       drag  → rotate the projection (degrees per pixel, scales with zoom)
+ *       wheel → zoom the projection scale (stays a clean sphere)
+ *
+ *   - **Azimuthal Equidistant**: same as flat — pan SVG, zoom SVG.
  */
 
 import { useCallback, useMemo, useRef, useState } from 'react';
@@ -19,7 +23,11 @@ import { geoGraticule, geoPath, type GeoPath, type GeoProjection } from 'd3-geo'
 import { groupColor } from '../lib/group-colors.ts';
 import { bearingDeg } from '../lib/calc/haversine.ts';
 import { greatCircleSvgPathProjected } from '../lib/calc/svg-arc.ts';
-import { buildProjection, type ProjectionId } from '../lib/calc/projections.ts';
+import {
+  buildProjection,
+  isWrappingProjection,
+  type ProjectionId,
+} from '../lib/calc/projections.ts';
 import type { Airport, RoutingGroup } from '../lib/types.ts';
 import { useWorldMap } from '../state/use-world-map.ts';
 
@@ -34,7 +42,7 @@ interface Props {
   onSvgReady?: (svg: SVGSVGElement | null) => void;
 }
 
-/** Pan/zoom state for FLAT projections — applied as an SVG transform. */
+/** Pan/zoom state for flat projections — applied as an SVG transform. */
 interface PanZoomState {
   scale: number;
   tx: number;
@@ -43,20 +51,24 @@ interface PanZoomState {
 
 const PAN_IDENTITY: PanZoomState = { scale: 1, tx: 0, ty: 0 };
 
-/** Globe state for ORTHOGRAPHIC projection — applied to the d3 projection. */
+/** Globe state for orthographic — applied to the d3 projection. */
 interface GlobeState {
-  /** Longitude to center on. */
   rotateLon: number;
-  /** Latitude to center on. */
   rotateLat: number;
-  /** Projection scale multiplier (1 = auto-fit world to viewport). */
   scale: number;
 }
 
 const GLOBE_IDENTITY: GlobeState = { rotateLon: 0, rotateLat: 0, scale: 1 };
 
-function isGlobeProjection(p: ProjectionId): boolean {
-  return p === 'orthographic';
+/**
+ * Normalize a horizontal translate into [-period/2, +period/2] so the user
+ * can pan unboundedly without tx growing forever. The 3-copy render below
+ * makes this wrap invisible: every (tx + N×period) produces the same image.
+ */
+function normalizeTx(tx: number, period: number): number {
+  if (period <= 0) return tx;
+  const halved = ((tx + period / 2) % period + period) % period;
+  return halved - period / 2;
 }
 
 export function MapView({
@@ -71,7 +83,15 @@ export function MapView({
 }: Props): React.ReactElement {
   const { features, error: worldError } = useWorldMap();
 
-  // Center on first airport in the active chain (initial default).
+  const isGlobe = projection === 'orthographic';
+  const wrapping = isWrappingProjection(projection);
+
+  // For wrapping projections, the world width in projected pixels equals the
+  // viewport width after fitSize. For globe, irrelevant.
+  const worldWidth = width;
+
+  // Center on first airport in the active chain (initial default for non-globe;
+  // initial rotation for globe).
   const initialCenter = useMemo<{ lat: number; lon: number }>(() => {
     const activeGroup = groups[activeIndex] ?? groups[0];
     const firstLeg = activeGroup?.legs[0];
@@ -81,7 +101,6 @@ export function MapView({
     return { lat: first.lat, lon: first.lon };
   }, [groups, activeIndex, airportLookup]);
 
-  // Two interaction states. Only the one matching the current projection is live.
   const [pz, setPz] = useState<PanZoomState>(PAN_IDENTITY);
   const [globe, setGlobe] = useState<GlobeState>({
     ...GLOBE_IDENTITY,
@@ -104,9 +123,6 @@ export function MapView({
     [onSvgReady],
   );
 
-  const isGlobe = isGlobeProjection(projection);
-
-  // Build the live projection — for globe, fold rotation + scale in; otherwise center on initial.
   const proj = useMemo<GeoProjection>(() => {
     if (isGlobe) {
       return buildProjection(projection, {
@@ -123,7 +139,17 @@ export function MapView({
       centerLat: initialCenter.lat,
       centerLon: initialCenter.lon,
     });
-  }, [projection, isGlobe, width, height, globe.rotateLat, globe.rotateLon, globe.scale, initialCenter.lat, initialCenter.lon]);
+  }, [
+    projection,
+    isGlobe,
+    width,
+    height,
+    globe.rotateLat,
+    globe.rotateLon,
+    globe.scale,
+    initialCenter.lat,
+    initialCenter.lon,
+  ]);
 
   const pathBuilder = useMemo<GeoPath>(() => geoPath(proj), [proj]);
 
@@ -133,7 +159,7 @@ export function MapView({
   );
 
   const graticulePath = useMemo<string>(
-    () => geoGraticule().step([30, 30])() && (pathBuilder(geoGraticule().step([30, 30])()) ?? ''),
+    () => pathBuilder(geoGraticule().step([30, 30])()) ?? '',
     [pathBuilder],
   );
 
@@ -197,7 +223,7 @@ export function MapView({
     });
   }, [allAirports, proj]);
 
-  // ── Interaction handlers ──
+  // ── Interaction ──
 
   function onPointerDown(e: React.PointerEvent<SVGSVGElement>): void {
     if (e.button !== 0) return;
@@ -217,21 +243,20 @@ export function MapView({
     const dx = e.clientX - d.startX;
     const dy = e.clientY - d.startY;
     if (isGlobe) {
-      // Rotate the globe. Sensitivity scales inversely with zoom — when you've
-      // zoomed in 4×, a pixel covers less of the surface, so each pixel-drag
-      // should rotate less.
       const sensitivity = 0.5 / d.originGlobe.scale;
       const nextLon = d.originGlobe.rotateLon + dx * sensitivity;
-      // Clamp latitude rotation so the globe doesn't flip past the poles.
       const nextLat = Math.max(
         -90,
         Math.min(90, d.originGlobe.rotateLat - dy * sensitivity),
       );
       setGlobe({ ...d.originGlobe, rotateLon: nextLon, rotateLat: nextLat });
     } else {
+      const nextTxRaw = d.originPz.tx + dx;
+      const period = wrapping ? worldWidth * d.originPz.scale : Infinity;
+      const nextTx = wrapping ? normalizeTx(nextTxRaw, period) : nextTxRaw;
       setPz({
         scale: d.originPz.scale,
-        tx: d.originPz.tx + dx,
+        tx: nextTx,
         ty: d.originPz.ty + dy,
       });
     }
@@ -248,27 +273,27 @@ export function MapView({
     if (isGlobe) {
       setGlobe((prev) => {
         const factor = Math.exp(-e.deltaY * 0.001);
-        const next = Math.max(0.5, Math.min(6, prev.scale * factor));
-        return { ...prev, scale: next };
+        return { ...prev, scale: Math.max(0.5, Math.min(6, prev.scale * factor)) };
       });
-    } else {
-      const svg = svgRef.current;
-      if (!svg) return;
-      const rect = svg.getBoundingClientRect();
-      const px = e.clientX - rect.left;
-      const py = e.clientY - rect.top;
-      setPz((prev) => {
-        const factor = Math.exp(-e.deltaY * 0.001);
-        const nextScale = Math.max(0.4, Math.min(8, prev.scale * factor));
-        const worldX = (px - prev.tx) / prev.scale;
-        const worldY = (py - prev.ty) / prev.scale;
-        return {
-          scale: nextScale,
-          tx: px - worldX * nextScale,
-          ty: py - worldY * nextScale,
-        };
-      });
+      return;
     }
+    const svg = svgRef.current;
+    if (!svg) return;
+    const rect = svg.getBoundingClientRect();
+    const px = e.clientX - rect.left;
+    const py = e.clientY - rect.top;
+    setPz((prev) => {
+      const factor = Math.exp(-e.deltaY * 0.001);
+      const nextScale = Math.max(0.4, Math.min(8, prev.scale * factor));
+      const worldX = (px - prev.tx) / prev.scale;
+      const worldY = (py - prev.ty) / prev.scale;
+      let nextTx = px - worldX * nextScale;
+      const nextTy = py - worldY * nextScale;
+      if (wrapping) {
+        nextTx = normalizeTx(nextTx, worldWidth * nextScale);
+      }
+      return { scale: nextScale, tx: nextTx, ty: nextTy };
+    });
   }
 
   function resetView(): void {
@@ -279,10 +304,7 @@ export function MapView({
     }
   }
 
-  // For flat projections we apply a CSS transform on the inner <g>. For globe we don't —
-  // interaction has already been folded into the projection.
   const transform = isGlobe ? '' : `translate(${pz.tx}, ${pz.ty}) scale(${pz.scale})`;
-  // Inverse-scale factor for labels/dots: only applies in flat mode (pz.scale).
   const labelInvScale = isGlobe ? Math.max(globe.scale, 1) : Math.max(pz.scale, 1);
 
   const isTransformed = isGlobe
@@ -291,10 +313,14 @@ export function MapView({
       globe.scale !== 1
     : pz.scale !== 1 || pz.tx !== 0 || pz.ty !== 0;
 
+  // For wrapping projections render world / graticule / arcs / airports at
+  // 3 horizontal offsets so the seam at ±180° is never visible.
+  const wrapOffsets = wrapping ? [-worldWidth, 0, worldWidth] : [0];
+
   return (
     <svg
       ref={svgRefCallback}
-      className={`map-view${isGlobe ? ' map-view-globe' : ''}`}
+      className={`map-view${isGlobe ? ' map-view-globe' : ''}${wrapping ? ' map-view-wrapping' : ''}`}
       viewBox={`0 0 ${width} ${height}`}
       width={width}
       height={height}
@@ -326,74 +352,75 @@ export function MapView({
       <g clipPath="url(#map-clip)">
         <rect x={0} y={0} width={width} height={height} className="map-sea" />
         <g transform={transform}>
-          {/* Sphere disk under everything (only meaningful for globe). */}
-          {spherePath && isGlobe && (
-            <path d={spherePath} className="map-sphere" fill="var(--bg-map-sea)" />
-          )}
-          {worldPath && <path d={worldPath} className="map-land" fill="var(--bg-map-land)" />}
-          {graticulePath && <path d={graticulePath} className="map-grid" fill="none" />}
-          {/* Soft 3D shading on top of the globe surface. */}
-          {spherePath && isGlobe && (
-            <path d={spherePath} fill="url(#globe-shading)" style={{ pointerEvents: 'none' }} />
-          )}
-          {/* Sphere rim outline. */}
-          {spherePath && isGlobe && (
-            <path
-              d={spherePath}
-              className="map-sphere-rim"
-              fill="none"
-              style={{ pointerEvents: 'none' }}
-            />
-          )}
-          {arcsByGroup.map((arcs, gi) =>
-            arcs.map(
-              (arc) =>
-                arc && (
-                  <path
-                    key={arc.key}
-                    d={arc.d}
-                    className={`map-arc${gi === activeIndex ? ' map-arc-active' : ''}`}
-                    style={{ stroke: arc.color, opacity: gi === activeIndex ? 1 : 0.7 }}
-                    fill="none"
-                  />
+          {wrapOffsets.map((offsetX) => (
+            <g key={`world-${offsetX}`} transform={`translate(${offsetX}, 0)`}>
+              {spherePath && isGlobe && (
+                <path d={spherePath} className="map-sphere" fill="var(--bg-map-sea)" />
+              )}
+              {worldPath && <path d={worldPath} className="map-land" fill="var(--bg-map-land)" />}
+              {graticulePath && <path d={graticulePath} className="map-grid" fill="none" />}
+              {spherePath && isGlobe && (
+                <path d={spherePath} fill="url(#globe-shading)" style={{ pointerEvents: 'none' }} />
+              )}
+              {spherePath && isGlobe && (
+                <path
+                  d={spherePath}
+                  className="map-sphere-rim"
+                  fill="none"
+                  style={{ pointerEvents: 'none' }}
+                />
+              )}
+              {arcsByGroup.map((arcs, gi) =>
+                arcs.map(
+                  (arc) =>
+                    arc && (
+                      <path
+                        key={`${arc.key}-${offsetX}`}
+                        d={arc.d}
+                        className={`map-arc${gi === activeIndex ? ' map-arc-active' : ''}`}
+                        style={{ stroke: arc.color, opacity: gi === activeIndex ? 1 : 0.7 }}
+                        fill="none"
+                      />
+                    ),
                 ),
-            ),
-          )}
-          {showBearings &&
-            arcsByGroup.map((arcs) =>
-              arcs.map((arc) =>
-                arc && arc.mid ? (
-                  <text
-                    key={`bearing-${arc.key}`}
-                    x={arc.mid.x}
-                    y={arc.mid.y}
-                    className="map-bearing-label"
-                    style={{
-                      fontSize: `${10 / labelInvScale}px`,
-                      fill: arc.color,
-                    }}
-                  >
-                    {arc.bearing}°
-                  </text>
-                ) : null,
-              ),
-            )}
-          {projectedAirports.map(({ airport, x, y }) => {
-            if (x === null || y === null) return null;
-            return (
-              <g key={airport.iata} className="map-airport">
-                <circle cx={x} cy={y} r={5 / labelInvScale} className="map-airport-dot" />
-                <text
-                  x={x + 8 / labelInvScale}
-                  y={y - 6 / labelInvScale}
-                  className="map-airport-label"
-                  style={{ fontSize: `${12 / labelInvScale}px` }}
-                >
-                  {airport.iata}
-                </text>
-              </g>
-            );
-          })}
+              )}
+              {showBearings &&
+                arcsByGroup.map((arcs) =>
+                  arcs.map((arc) =>
+                    arc && arc.mid ? (
+                      <text
+                        key={`bearing-${arc.key}-${offsetX}`}
+                        x={arc.mid.x}
+                        y={arc.mid.y}
+                        className="map-bearing-label"
+                        style={{
+                          fontSize: `${10 / labelInvScale}px`,
+                          fill: arc.color,
+                        }}
+                      >
+                        {arc.bearing}°
+                      </text>
+                    ) : null,
+                  ),
+                )}
+              {projectedAirports.map(({ airport, x, y }) => {
+                if (x === null || y === null) return null;
+                return (
+                  <g key={`${airport.iata}-${offsetX}`} className="map-airport">
+                    <circle cx={x} cy={y} r={5 / labelInvScale} className="map-airport-dot" />
+                    <text
+                      x={x + 8 / labelInvScale}
+                      y={y - 6 / labelInvScale}
+                      className="map-airport-label"
+                      style={{ fontSize: `${12 / labelInvScale}px` }}
+                    >
+                      {airport.iata}
+                    </text>
+                  </g>
+                );
+              })}
+            </g>
+          ))}
         </g>
         {isTransformed && (
           <g className="map-reset-btn-group" onClick={resetView} style={{ cursor: 'pointer' }}>

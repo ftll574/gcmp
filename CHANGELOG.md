@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow `MAJOR.MINOR.PATCH.MICRO`.
 
+## [1.2.0.0] - 2026-05-22
+
+### Changed — 2D wrapping world map (default Mercator, Google-Maps-style horizontal wrap)
+
+Per user feedback "don't use the globe, use a 2D world map that loops":
+
+- **Default projection reverted to Mercator** (was orthographic globe in v1.1)
+- **Horizontal wraparound**: world outline, graticule, arcs, airports, and bearing labels render at 3 horizontal offsets (`-worldWidth, 0, +worldWidth`). Panning past one edge wraps seamlessly into the other side. Same trick that makes Google Maps feel infinite.
+- **Pan normalized modulo world width** — `tx` stays bounded to `[-worldWidth × scale / 2, +worldWidth × scale / 2]` so internal state doesn't grow forever. Visual is identical because the 3 copies cover every visible pan position.
+- **Wrapping** applies to Mercator + Equirectangular (cylindrical projections). Azimuthal Equidistant and Orthographic (globe) keep their existing behavior — they're radial / spherical and don't tile.
+- **Antimeridian seam disappears**: a leg crossing ±180° is no longer two disjoint pieces — the +W copy of the right segment glues to the 0 copy of the left segment.
+
+### Added
+
+- `isWrappingProjection(p)` helper in `projections.ts`
+- `normalizeTx(tx, period)` helper in `MapView.tsx`
+
+### Notes
+
+- Bundle: 115.26 → **115.39 KB gzipped** (essentially flat; 3-copy renders are SVG-cheap)
+- Backwards-compat preserved: every URL from v0.x → v1.1 still loads identically
+- The globe (`?proj=o`) is still available, just no longer default
+
 ## [1.1.0.0] - 2026-05-22
 
 ### Fixed — globe view is now a real 3D globe
