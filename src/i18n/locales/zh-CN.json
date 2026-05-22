@@ -162,6 +162,18 @@
   "bearings": {
     "show": "显示方位角"
   },
+  "programPicker": {
+    "label": "累积里程的常旅客计划",
+    "hint": "选择这条航线要累积到哪些常旅客计划；每个都会单独计算可累积的里程。",
+    "tooMany": "已选 {count} 个常旅客计划 — 里程面板可能会挤。",
+    "none": "未选"
+  },
+  "alliance": {
+    "oneworld": "寰宇一家",
+    "star": "星空联盟",
+    "skyteam": "天合联盟",
+    "none": "无联盟"
+  },
   "glossary": {
     "pqm": "升级里程（Premier Qualifying Miles）— 累积到一定数量可升上金卡、白金卡等会员等级。跟兑换里程不同。",
     "rdm": "兑换里程（Redeemable Miles）— 可以拿来换奖励机票的点数。",

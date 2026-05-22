@@ -1,0 +1,109 @@
+{
+  "program": "dl-skymiles",
+  "label": "Delta SkyMiles",
+  "alliance": "skyteam",
+  "version": "2026.4",
+  "sourceUrl": "https://www.delta.com/us/en/skymiles/how-to-earn-miles/airline-partners",
+  "lastVerified": "2026-05-22",
+  "carriers": {
+    "DL": {
+      "label": "Delta Air Lines (own metal)",
+      "earningModel": "revenue-based",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "F": { "cabin": "first", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "J": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "C": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "B": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": { "first": "F", "business": "J", "economy": "Y" },
+      "notes": ["Delta own-metal revenue tickets earn by dollar spend; distance shown here is for partner-chart simulation."]
+    },
+    "AF": {
+      "label": "Air France (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 500 },
+        "C": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 500 },
+        "D": { "cabin": "business", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 },
+        "W": { "cabin": "premium-economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 },
+        "B": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 }
+      },
+      "defaultLetterByCabin": { "business": "J", "premium-economy": "W", "economy": "Y" }
+    },
+    "KL": {
+      "label": "KLM (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 500 },
+        "C": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 500 },
+        "W": { "cabin": "premium-economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 }
+      },
+      "defaultLetterByCabin": { "business": "J", "premium-economy": "W", "economy": "Y" }
+    },
+    "KE": {
+      "label": "Korean Air (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "F": { "cabin": "first", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 500 },
+        "J": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 500 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 }
+      },
+      "defaultLetterByCabin": { "first": "F", "business": "J", "economy": "Y" }
+    },
+    "VS": {
+      "label": "Virgin Atlantic (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 500 },
+        "C": { "cabin": "business", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 },
+        "W": { "cabin": "premium-economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 }
+      },
+      "defaultLetterByCabin": { "business": "J", "premium-economy": "W", "economy": "Y" }
+    },
+    "CI": {
+      "label": "China Airlines (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 500 },
+        "C": { "cabin": "business", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 }
+      },
+      "defaultLetterByCabin": { "business": "J", "economy": "Y" }
+    },
+    "MU": {
+      "label": "China Eastern (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 500 },
+        "C": { "cabin": "business", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 }
+      },
+      "defaultLetterByCabin": { "business": "J", "economy": "Y" }
+    },
+    "AM": {
+      "label": "Aeroméxico (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 500 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 }
+      },
+      "defaultLetterByCabin": { "business": "J", "economy": "Y" }
+    }
+  },
+  "globalNotes": [
+    "Delta moved to revenue-based earning in 2015 — distance-based figures here apply to partner flights only.",
+    "v1 entries are chart-verified; verify against your actual statement."
+  ]
+}

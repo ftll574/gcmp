@@ -855,6 +855,119 @@
   color: var(--bg-page);
 }
 
+/* ── Program picker (popover, replaces toggle in v1.3) ── */
+.program-picker {
+  position: relative;
+  display: inline-block;
+}
+.program-picker-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--border-radius-button);
+  background: var(--bg-page);
+  color: var(--text-primary);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--type-chip);
+  font-family: var(--font-mono);
+  cursor: pointer;
+  min-width: 120px;
+}
+.program-picker-trigger:hover,
+.program-picker-trigger:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+}
+.program-picker-summary {
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+.program-picker-caret {
+  color: var(--text-secondary);
+  font-size: 10px;
+}
+.program-picker-popover {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  right: 0;
+  z-index: 50;
+  min-width: 260px;
+  max-width: min(320px, calc(100vw - var(--space-6)));
+  max-height: 60vh;
+  overflow-y: auto;
+  background: var(--bg-page);
+  border: 1px solid var(--rule);
+  border-radius: var(--border-radius-button);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  padding: var(--space-3);
+}
+.program-picker-hint {
+  margin: 0 0 var(--space-2);
+  font-size: var(--type-detail);
+  color: var(--text-secondary);
+}
+.program-picker-warn {
+  margin: 0 0 var(--space-2);
+  padding: var(--space-2);
+  font-size: var(--type-detail);
+  color: var(--text-primary);
+  background: var(--warn-bg, rgba(255, 200, 0, 0.12));
+  border-radius: var(--border-radius-button);
+}
+.program-picker-group {
+  margin-top: var(--space-2);
+}
+.program-picker-group:first-of-type {
+  margin-top: 0;
+}
+.program-picker-alliance {
+  margin: 0 0 var(--space-1);
+  font-size: var(--type-detail);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+}
+.program-picker-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.program-picker-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  cursor: pointer;
+  border-radius: var(--border-radius-button);
+  font-size: var(--type-chip);
+}
+.program-picker-row:hover {
+  background: var(--bg-muted, rgba(0, 0, 0, 0.04));
+}
+.program-picker-row.active {
+  color: var(--text-primary);
+}
+.program-picker-row.locked {
+  cursor: default;
+  opacity: 0.85;
+}
+.program-picker-row input[type='checkbox'] {
+  margin: 0;
+  cursor: inherit;
+}
+.program-picker-short {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  min-width: 28px;
+  color: var(--accent);
+}
+.program-picker-name {
+  color: var(--text-primary);
+}
+
 /* ── Action row ── */
 .action-row {
   display: inline-flex;

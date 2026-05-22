@@ -162,6 +162,18 @@
   "bearings": {
     "show": "顯示方位角"
   },
+  "programPicker": {
+    "label": "累積哩程的常客計畫",
+    "hint": "選擇這條航線要累積到哪些常客計畫；每個都會單獨計算可累積的哩程。",
+    "tooMany": "已選 {count} 個常客計畫 — 哩程面板可能會擠。",
+    "none": "未選"
+  },
+  "alliance": {
+    "oneworld": "寰宇一家",
+    "star": "星空聯盟",
+    "skyteam": "天合聯盟",
+    "none": "無聯盟"
+  },
   "glossary": {
     "pqm": "升等哩程（Premier Qualifying Miles）— 累積到一定數量可升上金卡、白金卡等會員等級。跟兌換哩程不同。",
     "rdm": "兌換哩程（Redeemable Miles）— 可以拿來換獎勵機票的點數。",

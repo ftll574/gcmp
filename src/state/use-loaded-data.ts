@@ -1,15 +1,22 @@
 /**
- * Loads the static datasets at app startup: airports, airlines, and both
- * loyalty programs (AA + AS). All fetched in parallel from /data/*.json.
+ * Loads the static datasets at app startup: airports, airlines, and every
+ * loyalty program in PROGRAM_REGISTRY. All fetched in parallel from
+ * `/data/*.json`.
  *
  *   Returns { status: 'loading' | 'ready' | 'error', data?, error? }
  *
- * Programs are validated via zod inside loadProgram (program-loader.ts).
+ * Programs are validated via zod (ProgramSchema). A program whose JSON is
+ * missing or malformed is logged and skipped — the rest still load.
  */
 
 import { useEffect, useState } from 'react';
 import { ProgramSchema, type Program } from '../lib/schemas/program.ts';
-import type { Airline, Airport, ProgramId } from '../lib/types.ts';
+import {
+  PROGRAM_REGISTRY,
+  type Airline,
+  type Airport,
+  type ProgramId,
+} from '../lib/types.ts';
 
 export interface LoadedData {
   airports: ReadonlyArray<Airport>;
@@ -30,21 +37,33 @@ async function fetchJsonStrict(url: string): Promise<unknown> {
   return (await res.json()) as unknown;
 }
 
+async function fetchJsonOptional(url: string): Promise<unknown | null> {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    return (await res.json()) as unknown;
+  } catch {
+    return null;
+  }
+}
+
 export function useLoadedData(baseUrlOverride?: string): LoadState {
   const [state, setState] = useState<LoadState>({ status: 'loading' });
 
   useEffect(() => {
     let cancelled = false;
-    // Vite injects BASE_URL — '/' on local dev + Cloudflare; '/gcmp/' on GitHub Pages.
     const rawBase = baseUrlOverride ?? import.meta.env.BASE_URL ?? '/';
-    const baseUrl = rawBase.replace(/\/$/, ''); // strip trailing slash; '' for root.
+    const baseUrl = rawBase.replace(/\/$/, '');
+
     async function load(): Promise<void> {
       try {
-        const [airportsRaw, airlinesRaw, aaRaw, asRaw] = await Promise.all([
+        const programDirs = PROGRAM_REGISTRY.map((p) => p.shortCode.toLowerCase());
+        const [airportsRaw, airlinesRaw, ...programRaws] = await Promise.all([
           fetchJsonStrict(`${baseUrl}/data/airports.json`),
           fetchJsonStrict(`${baseUrl}/data/airlines.json`),
-          fetchJsonStrict(`${baseUrl}/data/programs/aa/current.json`),
-          fetchJsonStrict(`${baseUrl}/data/programs/as/current.json`),
+          ...programDirs.map((dir) =>
+            fetchJsonOptional(`${baseUrl}/data/programs/${dir}/current.json`),
+          ),
         ]);
         if (cancelled) return;
 
@@ -52,8 +71,23 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
         if (!Array.isArray(airlinesRaw)) throw new Error('airlines.json malformed');
 
         const programs = new Map<ProgramId, Program>();
-        programs.set('aa-aadvantage', ProgramSchema.parse(aaRaw));
-        programs.set('as-mileage-plan', ProgramSchema.parse(asRaw));
+        PROGRAM_REGISTRY.forEach((entry, i) => {
+          const raw = programRaws[i];
+          if (raw === null || raw === undefined) {
+            console.warn(`Program data missing for ${entry.id} — skipping`);
+            return;
+          }
+          try {
+            const parsed = ProgramSchema.parse(raw);
+            programs.set(entry.id, parsed);
+          } catch (e) {
+            console.error(`Program ${entry.id} schema parse failed:`, e);
+          }
+        });
+
+        if (programs.size === 0) {
+          throw new Error('No loyalty programs loaded successfully.');
+        }
 
         setState({
           status: 'ready',

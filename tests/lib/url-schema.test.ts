@@ -123,6 +123,27 @@ describe('parseShareUrl (single-group)', () => {
     }
   });
 
+  test('parses all v1.3 program short codes (UA, DL, AC, BA, AF, SQ, NH, BR, CX, EK)', () => {
+    const codes = ['UA', 'DL', 'AC', 'BA', 'AF', 'SQ', 'NH', 'BR', 'CX', 'EK'];
+    const expectedIds = [
+      'ua-mileageplus',
+      'dl-skymiles',
+      'ac-aeroplan',
+      'ba-executive-club',
+      'af-flying-blue',
+      'sq-krisflyer',
+      'nh-mileage-club',
+      'br-infinity',
+      'cx-asia-miles',
+      'ek-skywards',
+    ];
+    const parsed = parseShareUrl(`/r/v1/SFO-NRT?op=AA&p=${codes.join(',')}&c=J`);
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.request.programs).toEqual(expectedIds);
+    }
+  });
+
   test('rejects unknown cabin', () => {
     const parsed = parseShareUrl('/r/v1/SFO-NRT?op=AA&p=AA&c=Z');
     expect(parsed.ok).toBe(false);
