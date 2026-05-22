@@ -12,6 +12,7 @@ import type {
   ProgramId,
   RoutingResult,
 } from '../lib/types.ts';
+import type { Valuations } from '../lib/schemas/valuations.ts';
 import { Glossary } from './Glossary.tsx';
 import { groupColor } from '../lib/group-colors.ts';
 import { PROGRAM_LABELS } from '../lib/types.ts';
@@ -21,13 +22,32 @@ interface Props {
   programOrder: ReadonlyArray<ProgramId>;
   mode?: 'beginner' | 'pro';
   cabin: CabinId;
+  /** Per-program ¢/mile valuations (null if file unavailable). */
+  valuations?: Valuations | null;
 }
 
 function formatNm(value: number): string {
   return Math.round(value).toLocaleString();
 }
 
-export function EarningPanel({ result, programOrder, mode = 'beginner', cabin }: Props): React.ReactElement {
+/**
+ * Cash equivalent in USD, formatted as $X or $X,XXX.
+ * cents-per-mile × miles ÷ 100 = dollars.
+ */
+function cashEquivalent(miles: number, centsPerMile: number): string {
+  const usd = (miles * centsPerMile) / 100;
+  if (usd >= 1000) return `$${Math.round(usd).toLocaleString()}`;
+  if (usd >= 100) return `$${Math.round(usd)}`;
+  return `$${usd.toFixed(0)}`;
+}
+
+export function EarningPanel({
+  result,
+  programOrder,
+  mode = 'beginner',
+  cabin,
+  valuations,
+}: Props): React.ReactElement {
   const { t } = useLocale();
   const [expanded, setExpanded] = useState(false);
 
@@ -43,47 +63,60 @@ export function EarningPanel({ result, programOrder, mode = 'beginner', cabin }:
 
   const multiGroup = result.groups.length > 1;
 
-  // Sort programs by Award Miles (RDM) descending — this drives the
-  // "best for this routing" recommendation. Programs with no grand total
-  // (loading errors, missing carrier rules) sink to the bottom.
-  const sortedPrograms = [...programOrder].sort((a, b) => {
-    const ar = result.grandTotals[a]?.rdm ?? -1;
-    const br = result.grandTotals[b]?.rdm ?? -1;
-    return br - ar;
-  });
+  // Sort programs by **value-weighted miles** when valuations are loaded:
+  //   sortKey = rdm × ¢/mile = cash-equivalent in cents
+  // This is the Marcus-persona unlock: 8K AA at 1.6¢ ($128) beats
+  // 12K DL at 1.2¢ ($144 — only marginally; sometimes it flips).
+  // Falls back to raw RDM when no valuation exists for a program.
+  const sortKey = (id: ProgramId): number => {
+    const rdm = result.grandTotals[id]?.rdm ?? -1;
+    if (rdm < 0) return -1;
+    const cpm = valuations?.valuations[id];
+    return cpm !== undefined ? rdm * cpm : rdm;
+  };
+  const sortedPrograms = [...programOrder].sort((a, b) => sortKey(b) - sortKey(a));
   const topProgramId = sortedPrograms.find((id) => (result.grandTotals[id]?.rdm ?? 0) > 0);
   const topRdm = topProgramId ? result.grandTotals[topProgramId]?.rdm ?? 0 : 0;
 
   return (
     <div className="earning-panel">
-      {topProgramId && topRdm > 0 && programOrder.length > 1 && (
-        <BestRecommendation
-          programId={topProgramId}
-          rdm={topRdm}
-          runnerUpRdm={
-            sortedPrograms
-              .filter((id) => id !== topProgramId)
-              .map((id) => result.grandTotals[id]?.rdm ?? 0)
-              .find((r) => r > 0) ?? 0
-          }
-        />
-      )}
+      {topProgramId && topRdm > 0 && programOrder.length > 1 && (() => {
+        const topCpm = valuations?.valuations[topProgramId];
+        return (
+          <BestRecommendation
+            programId={topProgramId}
+            rdm={topRdm}
+            runnerUpRdm={
+              sortedPrograms
+                .filter((id) => id !== topProgramId)
+                .map((id) => result.grandTotals[id]?.rdm ?? 0)
+                .find((r) => r > 0) ?? 0
+            }
+            {...(topCpm !== undefined ? { valuationCpm: topCpm } : {})}
+          />
+        );
+      })()}
       {mode === 'beginner' && (
         <p className="earning-panel-comparison">
           {multiGroup ? t('groups.compareHint') : t('panel.comparisonBeginner')}
         </p>
       )}
-      {sortedPrograms.map((programId) => (
-        <GrandTotalSection
-          key={programId}
-          programId={programId}
-          result={result}
-          cabin={cabin}
-          mode={mode}
-          showGroupBreakdown={multiGroup}
-          isTop={programId === topProgramId && programOrder.length > 1}
-        />
-      ))}
+      {sortedPrograms.map((programId) => {
+        const cpm = valuations?.valuations[programId];
+        return (
+          <GrandTotalSection
+            key={programId}
+            programId={programId}
+            result={result}
+            cabin={cabin}
+            mode={mode}
+            showGroupBreakdown={multiGroup}
+            isTop={programId === topProgramId && programOrder.length > 1}
+            {...(cpm !== undefined ? { valuationCpm: cpm } : {})}
+            {...(valuations ? { valuationsSource: valuations } : {})}
+          />
+        );
+      })}
       <section className="earning-totals" aria-label={t('panel.totalDistance')}>
         <div className="earning-totals-row">
           <span className="earning-totals-label">{t('panel.totalDistance')}</span>
@@ -122,9 +155,10 @@ interface BestRecommendationProps {
   programId: ProgramId;
   rdm: number;
   runnerUpRdm: number;
+  valuationCpm?: number;
 }
 
-function BestRecommendation({ programId, rdm, runnerUpRdm }: BestRecommendationProps): React.ReactElement {
+function BestRecommendation({ programId, rdm, runnerUpRdm, valuationCpm }: BestRecommendationProps): React.ReactElement {
   const { t } = useLocale();
   const label = PROGRAM_LABELS[programId] ?? programId;
   const delta = rdm - runnerUpRdm;
@@ -137,6 +171,12 @@ function BestRecommendation({ programId, rdm, runnerUpRdm }: BestRecommendationP
       {showDelta && (
         <div className="earning-best-delta">
           {t('best.delta', { count: delta.toLocaleString(), pct: String(pct) })}
+          {valuationCpm !== undefined && (
+            <>
+              {' · '}
+              {t('best.cashEquivalent', { value: cashEquivalent(rdm, valuationCpm) })}
+            </>
+          )}
         </div>
       )}
     </section>
@@ -150,6 +190,10 @@ interface GrandTotalProps {
   mode: 'beginner' | 'pro';
   showGroupBreakdown: boolean;
   isTop?: boolean;
+  /** ¢/mile valuation for this program. Undefined → chip hidden. */
+  valuationCpm?: number;
+  /** Same Valuations object for source attribution. */
+  valuationsSource?: Valuations | null;
 }
 
 function GrandTotalSection({
@@ -159,6 +203,8 @@ function GrandTotalSection({
   mode,
   showGroupBreakdown,
   isTop = false,
+  valuationCpm,
+  valuationsSource,
 }: GrandTotalProps): React.ReactElement {
   const { t } = useLocale();
   const grand = result.grandTotals[programId];
@@ -219,6 +265,14 @@ function GrandTotalSection({
             {mode === 'beginner' ? <Glossary term="rdm">{rdmLabel}</Glossary> : rdmLabel}
           </span>
         </div>
+        {valuationCpm !== undefined && (
+          <div className="earning-cash-equivalent" title={t('cashEq.tip', { source: valuationsSource?.source ?? 'TPG' })}>
+            <span className="earning-cash-value">{cashEquivalent(grand.rdm, valuationCpm)}</span>
+            <span className="earning-cash-rate">
+              {t('cashEq.atRate', { rate: valuationCpm.toFixed(2) })}
+            </span>
+          </div>
+        )}
       </div>
       {showGroupBreakdown && (
         <table className="earning-group-breakdown">
@@ -250,6 +304,38 @@ function GrandTotalSection({
           </tbody>
         </table>
       )}
+      <div className="earning-program-actions">
+        {(() => {
+          // Build seats.aero deeplink. The site accepts /search?origin=XXX&destination=YYY&cabin=BUSINESS
+          // We use the first leg as the search anchor; multi-leg trips are typically searched as
+          // separate segments on award sites.
+          const firstGroup = result.groups[0];
+          const firstLeg = firstGroup?.byLeg[0];
+          if (!firstGroup || !firstLeg) return null;
+          const lastLegInGroup = firstGroup.byLeg[firstGroup.byLeg.length - 1];
+          const origin = firstLeg.leg.from;
+          const destination = lastLegInGroup?.leg.to ?? firstLeg.leg.to;
+          const cabinParam = cabin === 'first'
+            ? 'FIRST'
+            : cabin === 'business'
+              ? 'BUSINESS'
+              : cabin === 'premium-economy'
+                ? 'PREMIUM'
+                : 'ECONOMY';
+          const href = `https://seats.aero/search?origin=${origin}&destination=${destination}&cabin=${cabinParam}`;
+          return (
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="earning-program-seats-link"
+              title={t('seats.tip')}
+            >
+              {t('seats.findAwards')} ↗
+            </a>
+          );
+        })()}
+      </div>
       {provenance && (
         <footer className="earning-program-provenance">
           {t('provenance.line', {

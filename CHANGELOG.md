@@ -2,6 +2,58 @@
 
 All notable changes to this project will be documented in this file. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow `MAJOR.MINOR.PATCH.MICRO`.
 
+## [1.6.0.0] - 2026-05-23
+
+### Added — 6 Asian programs + redemption-side bridge + header polish
+
+Follow-up to v1.5 research. Asia agent flagged that 12 programs weren't enough; redemption-bridge agent flagged that earning numbers alone don't help Marcus-class users; visual feedback flagged the header wrap.
+
+#### Phase 1 — 6 new programs (12 → 18 total)
+
+- **JL** JAL Mileage Bank (oneworld) — JL/AA/BA/CX/QR/AY/IB/MH partners
+- **CI** China Airlines Dynasty Flyer (SkyTeam) — DL/AF/KL/KE/MU/VN partners
+- **MU** China Eastern Eastern Miles (SkyTeam) — DL/AF/KL/KE/CI partners
+- **KE** Korean Air SkyPass (SkyTeam) — DL/AF/KL/CI/MU/VN partners
+- **TG** Thai Royal Orchid Plus (Star) — UA/NH/SQ/AC/LH/BR partners
+- **MH** Malaysia Enrich (oneworld) — AA/BA/CX/JL/QR/AY partners
+
+Each ships `v2026.4.json` + `current.json` with 7–8 partner carriers and full fare-class buckets. `PROGRAM_REGISTRY` expanded; picker UI auto-groups them by alliance.
+
+#### Phase 2 — TPG ¢/mile + cash-equivalent chip
+
+- `data/valuations/v2026.2.json` — TPG May 2026 valuations for all 18 programs (community-estimated for BR/MH/TG/CI/MU which TPG doesn't publish)
+- `src/lib/schemas/valuations.ts` — zod schema parallel to ProgramSchema
+- `useLoadedData` fetches + validates the file; null on failure (chip just hides — soft-degrade)
+- **Each program card now shows a `$157 ≈ 1.60¢/mi` chip** under PQM/RDM (mono, semantic-green pill). Hover for source attribution.
+- **Programs now sort by `miles × ¢/mile`** when valuations are loaded — Marcus's killer insight: 8K AA at 1.6¢ ($128) often beats 12K DL at 1.2¢ ($144). When valuations missing, falls back to raw RDM (v1.5 behavior).
+- **Recommendation hero card adds cash value**: *"Credit to AA AAdvantage · 1,110 more Award Miles (13% over runner-up) · ≈ $157 cash value"*
+
+#### Phase 3 — seats.aero deeplink
+
+- Each program card gets a **`Find award seats ↗`** outbound pill linking to `https://seats.aero/search?origin=…&destination=…&cabin=…` with the route + cabin pre-filled
+- Removes the "now what?" cliff for award-redemption-curious users without us building an award search engine ourselves (redemption agent's #2)
+
+#### Phase 4 — Header responsive
+
+- `flex-wrap: wrap` on `.app-header` — header rows split gracefully at narrow widths
+- `@media (max-width: 720px)` hides the brand tagline + lets controls take the full width on row 2
+
+### Notes
+
+- Bundle: 6.84 → **6.99 KB gzipped CSS** (+0.15) · 119.91 → **121.41 KB gzipped JS** (+1.5 KB)
+- 92/92 tests still pass
+- All 18 programs validated against zod ProgramSchema at load
+- Valuations file is optional — missing file → soft degrade to v1.5 behavior
+
+### Known follow-ups (Tier 2+ still pending)
+
+- "Where to credit?" inverse query view — v1.7
+- Browse-by-airline matrix pages — v1.7
+- Map polish (distance-on-arc, SVG, transparent PNG, polar dots) — v1.8
+- UA-correct PQP/PQF math — v1.9
+- Status tier selector — v1.9
+- Sweet-spot snippets per program — future
+
 ## [1.5.0.0] - 2026-05-23
 
 ### Added — fare class, copy-as-text, native Asian glossary

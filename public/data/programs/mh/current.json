@@ -1,0 +1,89 @@
+{
+  "program": "mh-enrich",
+  "label": "Malaysia Airlines Enrich",
+  "alliance": "oneworld",
+  "version": "2026.4",
+  "sourceUrl": "https://www.malaysiaairlines.com/my/en/enrich/earn-miles/airline-partners.html",
+  "lastVerified": "2026-05-22",
+  "carriers": {
+    "MH": {
+      "label": "Malaysia Airlines (own metal)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "F": { "cabin": "first", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "J": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "C": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "D": { "cabin": "business", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "B": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "M": { "cabin": "economy", "pqm": 0.7, "rdm": 0.7, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": { "first": "F", "business": "J", "economy": "Y" }
+    },
+    "AA": {
+      "label": "American Airlines (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": { "business": "J", "economy": "Y" }
+    },
+    "BA": {
+      "label": "British Airways (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": { "business": "J", "economy": "Y" }
+    },
+    "CX": {
+      "label": "Cathay Pacific (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": { "business": "J", "economy": "Y" }
+    },
+    "JL": {
+      "label": "Japan Airlines (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": { "business": "J", "economy": "Y" }
+    },
+    "QR": {
+      "label": "Qatar Airways (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": { "business": "J", "economy": "Y" }
+    },
+    "AY": {
+      "label": "Finnair (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": { "business": "J", "economy": "Y" }
+    }
+  },
+  "globalNotes": [
+    "Malaysia Airlines Enrich — oneworld program with strong SE Asia coverage.",
+    "v1 entries are chart-verified; verify against your actual statement."
+  ]
+}

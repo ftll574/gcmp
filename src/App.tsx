@@ -482,6 +482,7 @@ function Ready({
             programOrder={routing.programs}
             mode={mode}
             cabin={routing.cabin}
+            valuations={data.valuations}
           />
           <SavedRoutings saved={saved} onLoad={loadSaved} onDelete={remove} />
         </aside>

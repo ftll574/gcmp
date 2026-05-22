@@ -56,15 +56,21 @@ export const PROGRAM_REGISTRY: ReadonlyArray<ProgramRegistryEntry> = [
   { id: 'aa-aadvantage', shortCode: 'AA', label: 'AA AAdvantage', alliance: 'oneworld' },
   { id: 'ba-executive-club', shortCode: 'BA', label: 'BA Executive Club', alliance: 'oneworld' },
   { id: 'cx-asia-miles', shortCode: 'CX', label: 'Cathay Asia Miles', alliance: 'oneworld' },
+  { id: 'jl-mileage-bank', shortCode: 'JL', label: 'JAL Mileage Bank', alliance: 'oneworld' },
+  { id: 'mh-enrich', shortCode: 'MH', label: 'Malaysia Enrich', alliance: 'oneworld' },
   // Star Alliance
   { id: 'ua-mileageplus', shortCode: 'UA', label: 'United MileagePlus', alliance: 'star' },
   { id: 'ac-aeroplan', shortCode: 'AC', label: 'Air Canada Aeroplan', alliance: 'star' },
   { id: 'sq-krisflyer', shortCode: 'SQ', label: 'Singapore KrisFlyer', alliance: 'star' },
   { id: 'nh-mileage-club', shortCode: 'NH', label: 'ANA Mileage Club', alliance: 'star' },
   { id: 'br-infinity', shortCode: 'BR', label: 'EVA Infinity', alliance: 'star' },
+  { id: 'tg-royal-orchid', shortCode: 'TG', label: 'Thai Royal Orchid Plus', alliance: 'star' },
   // SkyTeam
   { id: 'dl-skymiles', shortCode: 'DL', label: 'Delta SkyMiles', alliance: 'skyteam' },
   { id: 'af-flying-blue', shortCode: 'AF', label: 'AF/KL Flying Blue', alliance: 'skyteam' },
+  { id: 'ci-dynasty-flyer', shortCode: 'CI', label: 'CI Dynasty Flyer', alliance: 'skyteam' },
+  { id: 'mu-eastern-miles', shortCode: 'MU', label: 'MU Eastern Miles', alliance: 'skyteam' },
+  { id: 'ke-skypass', shortCode: 'KE', label: 'KE SkyPass', alliance: 'skyteam' },
   // No alliance
   { id: 'as-mileage-plan', shortCode: 'AS', label: 'Alaska Mileage Plan', alliance: 'none' },
   { id: 'ek-skywards', shortCode: 'EK', label: 'Emirates Skywards', alliance: 'none' },
