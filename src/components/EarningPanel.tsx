@@ -365,6 +365,13 @@ function GrandTotalSection({
       <h3 className="earning-program-label">
         {label}
         <ConfidenceChip confidence={confidence} />
+        {grand && (
+          result.groups.some((g) => g.programs[programId]?.revenueBased) && (
+            <span className="revenue-based-chip" title={t('revenueBased.tip')}>
+              {t('revenueBased.chip')}
+            </span>
+          )
+        )}
         {isTop && <span className="earning-program-best-pill">{t('best.pill')}</span>}
       </h3>
       {mode === 'beginner' && (
@@ -385,6 +392,27 @@ function GrandTotalSection({
             {mode === 'beginner' ? <Glossary term="rdm">{rdmLabel}</Glossary> : rdmLabel}
           </span>
         </div>
+        {(() => {
+          // Pull tier bonus from any group's program entry (same across groups).
+          const tierBonus = result.groups
+            .map((g) => g.programs[programId]?.tierBonus ?? 0)
+            .find((b) => b > 0);
+          if (!tierBonus || !grand) return null;
+          const rdmBaseTotal = result.groups.reduce(
+            (sum, g) => sum + (g.programs[programId]?.rdmBase ?? 0),
+            0,
+          );
+          const bonusMiles = grand.rdm - rdmBaseTotal;
+          if (bonusMiles <= 0) return null;
+          return (
+            <div className="earning-tier-bonus" title={t('tier.tip')}>
+              {t('tier.bonusLine', {
+                count: bonusMiles.toLocaleString(),
+                pct: String(Math.round(tierBonus * 100)),
+              })}
+            </div>
+          );
+        })()}
         {valuationCpm !== undefined && (
           <div className="earning-cash-equivalent" title={t('cashEq.tip', { source: valuationsSource?.source ?? 'TPG' })}>
             <span className="earning-cash-value">{cashEquivalent(grand.rdm, valuationCpm)}</span>

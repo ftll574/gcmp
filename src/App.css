@@ -1089,6 +1089,76 @@
   color: var(--tint);
 }
 
+/* ── Tier selector (iOS segmented control, v1.9) ── */
+.tier-selector {
+  display: inline-flex;
+  background: var(--secondary-fill);
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 2px;
+  gap: 0;
+}
+.tier-tab {
+  background: transparent;
+  border: none;
+  padding: 5px var(--space-3);
+  color: var(--secondary-label);
+  cursor: pointer;
+  border-radius: var(--radius-pill);
+  font-size: var(--type-footnote);
+  font-weight: 500;
+  transition:
+    background var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard);
+}
+.tier-tab:hover:not(.selected) {
+  color: var(--label);
+}
+.tier-tab.selected {
+  background: var(--system-background);
+  color: var(--label);
+  font-weight: 600;
+  box-shadow: var(--shadow-1);
+}
+@media (prefers-color-scheme: dark) {
+  .tier-tab.selected {
+    background: var(--tertiary-system-background);
+  }
+}
+
+/* Revenue-based "estimate" chip (v1.9) */
+.revenue-based-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 149, 0, 0.16);
+  color: var(--semantic-orange);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: help;
+}
+
+/* Tier bonus line on each program card (v1.9) */
+.earning-tier-bonus {
+  margin-top: 6px;
+  padding: 4px 10px;
+  background: rgba(0, 122, 255, 0.08);
+  border-radius: var(--radius-pill);
+  width: fit-content;
+  font-size: var(--type-footnote);
+  color: var(--tint);
+  font-weight: 500;
+  cursor: help;
+}
+@media (prefers-color-scheme: dark) {
+  .earning-tier-bonus {
+    background: rgba(10, 132, 255, 0.16);
+  }
+}
+
 /* ── Cabin selector (iOS segmented control) ── */
 .cabin-selector {
   display: inline-flex;

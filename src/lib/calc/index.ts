@@ -19,9 +19,11 @@
  */
 
 import {
+  ELITE_TIER_BONUS,
   PROGRAM_LABELS,
   type Airport,
   type CabinId,
+  type EliteTier,
   type GroupResult,
   type LegDistance,
   type LegEarning,
@@ -31,6 +33,21 @@ import {
   type RoutingRequest,
   type RoutingResult,
 } from '../types.ts';
+
+/**
+ * Programs that actually use revenue-based earning (PQP / Loyalty Points
+ * / MQDs) in production. Our distance-multiplier numbers are cabin-bucket
+ * approximations — flagged as "estimate" in the UI.
+ *
+ * UA killed distance-based PQM in 2020 → PQP = $1 spent on fare + carrier
+ *   surcharges. AA Loyalty Points launched 2022. DL switched to MQDs in
+ *   2020.
+ */
+const REVENUE_BASED_PROGRAMS = new Set<ProgramId>([
+  'ua-mileageplus',
+  'aa-aadvantage',
+  'dl-skymiles',
+]);
 import type { Program, FareBucket } from '../schemas/program.ts';
 import { crossesPolar, distanceNm } from './haversine.ts';
 
@@ -107,6 +124,7 @@ function reconcileConfidence(
 function computeGroup(
   group: RoutingGroup,
   cabin: CabinId,
+  tier: EliteTier,
   requestedPrograms: ReadonlyArray<ProgramId>,
   airports: ReadonlyMap<string, Airport>,
   programs: ReadonlyMap<ProgramId, Program>,
@@ -144,6 +162,8 @@ function computeGroup(
         confidence: 'chart-verified',
         pqm: 0,
         rdm: 0,
+        rdmBase: 0,
+        tierBonus: 0,
         byLeg: byLeg.map((ld) =>
           emptyLegEarning(ld.distanceNm, `Program "${programId}" rules not loaded`),
         ),
@@ -151,6 +171,7 @@ function computeGroup(
         rulesVersion: '',
         lastVerified: '',
         sourceUrl: '',
+        revenueBased: REVENUE_BASED_PROGRAMS.has(programId),
       };
       continue;
     }
@@ -208,18 +229,27 @@ function computeGroup(
 
     if (program.globalNotes) programNotes.push(...program.globalNotes);
 
+    // Apply elite-tier bonus to RDM only. PQM (Status Miles) is never
+    // bonused — it's the qualifying metric for the tier you ARE.
+    const bonus = ELITE_TIER_BONUS[tier];
+    const rdmBase = totalRdm;
+    const rdmWithBonus = bonus > 0 ? Math.round(rdmBase * (1 + bonus)) : rdmBase;
+
     programResults[programId] = {
       programId,
       label: program.label,
       ...(program.alliance !== undefined ? { alliance: program.alliance } : {}),
       confidence: reconcileConfidence(confidences),
       pqm: totalPqm,
-      rdm: totalRdm,
+      rdm: rdmWithBonus,
+      rdmBase,
+      tierBonus: bonus,
       byLeg: perLeg,
       notes: programNotes,
       rulesVersion: program.version,
       lastVerified: program.lastVerified,
       sourceUrl: program.sourceUrl,
+      revenueBased: REVENUE_BASED_PROGRAMS.has(programId),
     };
   }
 
@@ -235,8 +265,9 @@ export function computeRouting(
   request: RoutingRequest,
   inputs: EngineInputs,
 ): RoutingResult {
+  const tier: EliteTier = request.tier ?? 'none';
   const groups = request.groups.map((g) =>
-    computeGroup(g, request.cabin, request.programs, inputs.airports, inputs.programs),
+    computeGroup(g, request.cabin, tier, request.programs, inputs.airports, inputs.programs),
   );
 
   const grandTotals: Partial<Record<ProgramId, { pqm: number; rdm: number }>> = {};

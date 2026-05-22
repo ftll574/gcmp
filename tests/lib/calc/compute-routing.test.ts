@@ -207,3 +207,47 @@ describe('computeRouting (multi-group)', () => {
     expect(r.groups[1]?.warnings.some((w) => w.includes('polar'))).toBe(false);
   });
 });
+
+describe('elite tier bonus (v1.9)', () => {
+  const baseReq: RoutingRequest = {
+    groups: [{ legs: [{ from: 'SFO', to: 'NRT', operatingCarrier: 'AA' }] }],
+    cabin: 'business',
+    programs: ['aa-aadvantage'],
+  };
+
+  test('no tier → rdm equals rdmBase, tierBonus = 0', () => {
+    const r = computeRouting(baseReq, { airports: airportMap, programs: programMap });
+    const e = r.groups[0]?.programs['aa-aadvantage'];
+    expect(e?.tierBonus).toBe(0);
+    expect(e?.rdm).toBe(e?.rdmBase);
+  });
+
+  test('top tier → +100% on RDM, PQM unchanged', () => {
+    const baseRes = computeRouting(baseReq, { airports: airportMap, programs: programMap });
+    const topRes = computeRouting({ ...baseReq, tier: 'top' }, { airports: airportMap, programs: programMap });
+    const baseE = baseRes.groups[0]?.programs['aa-aadvantage'];
+    const topE = topRes.groups[0]?.programs['aa-aadvantage'];
+    expect(topE?.tierBonus).toBe(1.0);
+    expect(topE?.pqm).toBe(baseE?.pqm);
+    expect(topE?.rdm).toBeCloseTo((baseE?.rdm ?? 0) * 2, 0);
+  });
+
+  test('mid tier → +25%', () => {
+    const r = computeRouting(
+      { ...baseReq, tier: 'mid' },
+      { airports: airportMap, programs: programMap },
+    );
+    const e = r.groups[0]?.programs['aa-aadvantage'];
+    expect(e?.tierBonus).toBe(0.25);
+    expect(e?.rdm).toBeCloseTo((e?.rdmBase ?? 0) * 1.25, 0);
+  });
+
+  test('AA is flagged revenue-based; AS is not', () => {
+    const r = computeRouting(
+      { ...baseReq, programs: ['aa-aadvantage', 'as-mileage-plan'] },
+      { airports: airportMap, programs: programMap },
+    );
+    expect(r.groups[0]?.programs['aa-aadvantage']?.revenueBased).toBe(true);
+    expect(r.groups[0]?.programs['as-mileage-plan']?.revenueBased).toBe(false);
+  });
+});

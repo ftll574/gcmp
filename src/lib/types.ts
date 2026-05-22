@@ -26,6 +26,29 @@ export interface Airline {
 export type CabinId = 'economy' | 'premium-economy' | 'business' | 'first';
 
 /**
+ * Generalized elite tier. Each program names its tiers differently (UA
+ * Silver/Gold/Plat/1K, AA Gold/Plat/Plat Pro/Exec Plat, BA Bronze/Silver/
+ * Gold, etc.). Mapping every variant to a global enum keeps the UI
+ * compact; the trade-off is that the bonus % is an approximation.
+ *
+ *   none → 0% bonus on RDM
+ *   mid  → +25%  (Silver-ish across most programs)
+ *   high → +50%  (Gold-ish)
+ *   top  → +100% (Platinum / 1K / Diamond)
+ *
+ * Status Miles (PQM) are NEVER bonused — defeats the purpose of status
+ * progression math, and no program actually bonuses qualifying miles.
+ */
+export type EliteTier = 'none' | 'mid' | 'high' | 'top';
+
+export const ELITE_TIER_BONUS: Record<EliteTier, number> = {
+  none: 0,
+  mid: 0.25,
+  high: 0.5,
+  top: 1.0,
+};
+
+/**
  * Loyalty-program identifier. String-typed (not a literal union) so adding
  * a new program is a JSON file drop, not a type-system rewrite. The runtime
  * source of truth is `PROGRAM_REGISTRY` below — its keys are the canonical
@@ -132,6 +155,11 @@ export interface RoutingRequest {
   readonly rulesVersion?: string;
   /** Map projection preference. Undefined → default (mercator). */
   readonly projection?: import('./calc/projections.ts').ProjectionId;
+  /**
+   * Elite tier for RDM bonusing. Undefined → 'none'. Applies a single
+   * generalized bonus % across all selected programs.
+   */
+  readonly tier?: EliteTier;
 }
 
 export interface LegDistance {
@@ -153,8 +181,14 @@ export interface ProgramEarning {
   readonly label: string;
   readonly alliance?: string;
   readonly confidence: 'chart-verified' | 'community-corrected' | 'mixed';
+  /** Status Miles total. NEVER bonused by elite tier. */
   readonly pqm: number;
+  /** Award Miles total. INCLUDES elite-tier bonus if applicable. */
   readonly rdm: number;
+  /** Award Miles WITHOUT the elite-tier bonus, for split rendering. */
+  readonly rdmBase: number;
+  /** Elite-tier bonus applied (e.g. 0.5 for high tier). Zero when none. */
+  readonly tierBonus: number;
   readonly byLeg: ReadonlyArray<LegEarning>;
   readonly notes: ReadonlyArray<string>;
   /** Rules version used to compute this earning (e.g. "2026.4"). */
@@ -163,6 +197,12 @@ export interface ProgramEarning {
   readonly lastVerified: string;
   /** Source URL for audit — typically the airline's partner-earning chart. */
   readonly sourceUrl: string;
+  /**
+   * True when this program actually uses revenue-based earning (UA PQP,
+   * AA Loyalty Points, DL MQDs). Our distance-multiplier number is a
+   * cabin-bucket approximation — shown as "estimate" in the UI.
+   */
+  readonly revenueBased: boolean;
 }
 
 /** Per-group computed result. */

@@ -394,3 +394,41 @@ describe('per-leg fare class (v1.5)', () => {
     }
   });
 });
+
+describe('status tier (v1.9)', () => {
+  test('encode omits st when tier is none or undefined', () => {
+    expect(encodeShareUrl(SINGLE_GROUP)).not.toContain('st=');
+    const noneReq: RoutingRequest = { ...SINGLE_GROUP, tier: 'none' };
+    expect(encodeShareUrl(noneReq)).not.toContain('st=');
+  });
+
+  test('encode includes st=t for top tier', () => {
+    const req: RoutingRequest = { ...SINGLE_GROUP, tier: 'top' };
+    expect(encodeShareUrl(req)).toContain('st=t');
+  });
+
+  test('parse round-trips tier=high', () => {
+    const req: RoutingRequest = { ...SINGLE_GROUP, tier: 'high' };
+    const parsed = parseShareUrl(encodeShareUrl(req));
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.request.tier).toBe('high');
+    }
+  });
+
+  test('parse rejects invalid tier letter', () => {
+    const parsed = parseShareUrl('/r/v1/SFO-NRT?op=AA&p=AA&c=J&st=z');
+    expect(parsed.ok).toBe(false);
+    if (!parsed.ok) {
+      expect(parsed.kind).toBe('malformed-path');
+    }
+  });
+
+  test('every v0-v1.8 URL without st still parses identically', () => {
+    const parsed = parseShareUrl('/r/v1/SFO-NRT-BKK?op=AA,JL&p=AA,AS&c=J');
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.request.tier).toBeUndefined();
+    }
+  });
+});
