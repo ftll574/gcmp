@@ -166,11 +166,18 @@
     "hint": "範例：SFO-NRT-BKK · SFO-NRT,LAX-HKG · http://www.gcmap.com/mapui?P=SFO-NRT-BKK"
   },
   "download": {
-    "png": "下載 PNG",
+    "button": "下載",
+    "png": "PNG",
+    "pngTransparent": "PNG · 透明背景",
+    "svg": "SVG",
+    "svgTransparent": "SVG · 透明背景",
     "filename": "gcmp-航線"
   },
   "bearings": {
-    "show": "顯示方位角"
+    "show": "方位角"
+  },
+  "distances": {
+    "show": "距離"
   },
   "best": {
     "badge": "推薦",

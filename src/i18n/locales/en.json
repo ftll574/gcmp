@@ -166,11 +166,18 @@
     "hint": "Examples: SFO-NRT-BKK · SFO-NRT,LAX-HKG · http://www.gcmap.com/mapui?P=SFO-NRT-BKK"
   },
   "download": {
-    "png": "Download PNG",
+    "button": "Download",
+    "png": "PNG",
+    "pngTransparent": "PNG · transparent bg",
+    "svg": "SVG",
+    "svgTransparent": "SVG · transparent bg",
     "filename": "gcmp-routing"
   },
   "bearings": {
-    "show": "Show bearings"
+    "show": "Bearings"
+  },
+  "distances": {
+    "show": "Distances"
   },
   "best": {
     "badge": "Recommended",

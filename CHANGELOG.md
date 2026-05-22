@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow `MAJOR.MINOR.PATCH.MICRO`.
 
+## [1.8.0.0] - 2026-05-23
+
+### Added — map polish (Kenji bucket)
+
+Tier-3 items from the v1.5 visualization-tools research land here.
+
+#### SVG export + transparent background
+
+- New `svgToSvgBlob()` — serializes the in-DOM SVG with computed styles baked in, ready for Affinity / Figma / Keynote. Kenji's #1 ask.
+- New optional `transparent` flag on both PNG and SVG export — when true, the background rect is omitted entirely. Lets users drop the map straight onto a Twitter card / blog post backdrop.
+- "Download PNG" button replaced with a **Download** dropdown menu with 4 options: PNG · PNG transparent · SVG · SVG transparent. iOS material popover.
+
+#### Distance labels on each arc
+
+- New `showDistances` prop on MapView — when on, draws "4,442 nm" labels at each arc midpoint in the carrier color, with text-shadow for readability over the map.
+- Toggle ("Distances") sits next to the "Bearings" toggle in the map toolbar.
+- Distances stack below bearings when both are on (12px offset).
+- gcmap forces this into a sidebar table; gcmp now shows it on the line itself, matching how mileage-runner-FlyerTalk posts annotate routings.
+
+#### svg-to-png.ts API
+
+- Backwards-compat: old `svgToPngBlob(svg, pixelRatio: number)` calls still work
+- New shape: `svgToPngBlob(svg, { pixelRatio?, transparent? })`
+- Shared `buildSerializedSvg()` between PNG and SVG export paths
+
+### Notes
+
+- Bundle: 7.25 → ~7.3 KB gzip CSS · 122.34 → ~123 KB gzip JS
+- 92/92 tests pass
+
 ## [1.7.0.0] - 2026-05-23
 
 ### Added — "Where to credit?" inverse view + browse-by-airline SEO pages

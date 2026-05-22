@@ -21,7 +21,7 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { geoGraticule, geoPath, type GeoPath, type GeoProjection } from 'd3-geo';
 import { groupColor } from '../lib/group-colors.ts';
-import { bearingDeg } from '../lib/calc/haversine.ts';
+import { bearingDeg, distanceNm } from '../lib/calc/haversine.ts';
 import { greatCircleSvgPathProjected } from '../lib/calc/svg-arc.ts';
 import {
   buildProjection,
@@ -39,6 +39,12 @@ interface Props {
   height: number;
   projection: ProjectionId;
   showBearings?: boolean;
+  /**
+   * Show "N nm" distance labels at each arc midpoint. v1.8 — gcmap forces
+   * mileage runners into a sidebar table to see distances; this puts them
+   * on the line itself.
+   */
+  showDistances?: boolean;
   onSvgReady?: (svg: SVGSVGElement | null) => void;
 }
 
@@ -79,6 +85,7 @@ export function MapView({
   height,
   projection,
   showBearings = false,
+  showDistances = false,
   onSvgReady,
 }: Props): React.ReactElement {
   const { features, error: worldError } = useWorldMap();
@@ -180,6 +187,7 @@ export function MapView({
         const midLon = (from.lon + to.lon) / 2;
         const midProj = proj([midLon, midLat]);
         const bearing = Math.round(bearingDeg(from, to));
+        const distNm = Math.round(distanceNm(from, to));
         return {
           d,
           key: `${gi}-${leg.from}-${leg.to}-${i}`,
@@ -190,6 +198,7 @@ export function MapView({
               ? { x: midProj[0], y: midProj[1] }
               : null,
           bearing,
+          distanceNm: distNm,
         };
       });
     });
@@ -399,6 +408,25 @@ export function MapView({
                         }}
                       >
                         {arc.bearing}°
+                      </text>
+                    ) : null,
+                  ),
+                )}
+              {showDistances &&
+                arcsByGroup.map((arcs) =>
+                  arcs.map((arc) =>
+                    arc && arc.mid ? (
+                      <text
+                        key={`dist-${arc.key}-${offsetX}`}
+                        x={arc.mid.x}
+                        y={arc.mid.y + (showBearings ? 12 / labelInvScale : 0)}
+                        className="map-distance-label"
+                        style={{
+                          fontSize: `${11 / labelInvScale}px`,
+                          fill: arc.color,
+                        }}
+                      >
+                        {arc.distanceNm.toLocaleString()} nm
                       </text>
                     ) : null,
                   ),

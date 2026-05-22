@@ -167,10 +167,17 @@
   },
   "download": {
     "png": "下载 PNG",
-    "filename": "gcmp-航线"
+    "filename": "gcmp-航线",
+    "button": "下载",
+    "pngTransparent": "PNG · 透明背景",
+    "svg": "SVG",
+    "svgTransparent": "SVG · 透明背景"
   },
   "bearings": {
-    "show": "显示方位角"
+    "show": "方位角"
+  },
+  "distances": {
+    "show": "距离"
   },
   "best": {
     "badge": "推荐",

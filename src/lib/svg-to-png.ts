@@ -34,20 +34,23 @@ function inlineStyles(node: Element): void {
   }
 }
 
+export interface ExportOptions {
+  /** PNG pixel ratio (default 2 for retina). Ignored by SVG export. */
+  pixelRatio?: number;
+  /** Transparent background instead of the page color (Kenji request). */
+  transparent?: boolean;
+}
+
 /**
- * Capture the given SVG element as a PNG Blob.
- *
- * @param svg the in-DOM `<svg>` to capture
- * @param pixelRatio render scale (default 2 for retina quality)
- * @returns Blob ready for `URL.createObjectURL` / download
+ * Build a styles-baked clone of the SVG suitable for serialization.
+ * Shared by both PNG and SVG export.
  */
-export async function svgToPngBlob(
-  svg: SVGSVGElement,
-  pixelRatio: number = 2,
-): Promise<Blob> {
-  // Clone so we don't mutate the live SVG.
+function buildSerializedSvg(svg: SVGSVGElement, opts: ExportOptions): {
+  serialized: string;
+  width: number;
+  height: number;
+} {
   const cloned = svg.cloneNode(true) as SVGSVGElement;
-  // Bake styles in.
   inlineStyles(svg);
   inlineStyles(cloned);
 
@@ -58,7 +61,43 @@ export async function svgToPngBlob(
   cloned.setAttribute('height', String(height));
   cloned.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
 
+  // If not transparent, paint a background rect into the SVG itself —
+  // this way the SVG file (when used in Affinity / Keynote) has the right
+  // backdrop even without external CSS.
+  if (!opts.transparent) {
+    const bg = getCssVar('--system-background') || '#ffffff';
+    const rectEl = cloned.ownerDocument.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'rect',
+    );
+    rectEl.setAttribute('width', '100%');
+    rectEl.setAttribute('height', '100%');
+    rectEl.setAttribute('fill', bg);
+    cloned.insertBefore(rectEl, cloned.firstChild);
+  }
+
   const serialized = new XMLSerializer().serializeToString(cloned);
+  return { serialized, width, height };
+}
+
+/**
+ * Capture the given SVG element as a PNG Blob.
+ *
+ * @param svg the in-DOM `<svg>` to capture
+ * @param opts options (default: pixelRatio 2, transparent false)
+ * @returns Blob ready for `URL.createObjectURL` / download
+ */
+export async function svgToPngBlob(
+  svg: SVGSVGElement,
+  opts: ExportOptions | number = {},
+): Promise<Blob> {
+  // Backwards-compat: previous signature was (svg, pixelRatio: number).
+  const options: ExportOptions =
+    typeof opts === 'number' ? { pixelRatio: opts } : opts;
+  const pixelRatio = options.pixelRatio ?? 2;
+  const transparent = options.transparent ?? false;
+  const { serialized, width, height } = buildSerializedSvg(svg, { transparent });
+
   const svgBlob = new Blob([serialized], { type: 'image/svg+xml;charset=utf-8' });
   const url = URL.createObjectURL(svgBlob);
 
@@ -70,9 +109,10 @@ export async function svgToPngBlob(
     const ctx = canvas.getContext('2d');
     if (!ctx) throw new Error('Could not get 2D canvas context');
     ctx.scale(pixelRatio, pixelRatio);
-    // Fill with page background so transparent areas don't show through.
-    ctx.fillStyle = getCssVar('--bg-page') || '#F4EFE6';
-    ctx.fillRect(0, 0, width, height);
+    if (!transparent) {
+      ctx.fillStyle = getCssVar('--system-background') || '#ffffff';
+      ctx.fillRect(0, 0, width, height);
+    }
     ctx.drawImage(img, 0, 0, width, height);
     return await new Promise<Blob>((resolve, reject) => {
       canvas.toBlob((blob) => {
@@ -83,6 +123,19 @@ export async function svgToPngBlob(
   } finally {
     URL.revokeObjectURL(url);
   }
+}
+
+/**
+ * Capture the given SVG element as a standalone SVG Blob — preserves
+ * vectors for clean re-styling in Affinity / Figma / Keynote. Kenji's #1.
+ */
+export function svgToSvgBlob(
+  svg: SVGSVGElement,
+  opts: ExportOptions = {},
+): Blob {
+  const transparent = opts.transparent ?? false;
+  const { serialized } = buildSerializedSvg(svg, { transparent });
+  return new Blob([serialized], { type: 'image/svg+xml;charset=utf-8' });
 }
 
 function loadImage(src: string): Promise<HTMLImageElement> {
