@@ -20,6 +20,7 @@ import { ImportFromGcmap } from './components/ImportFromGcmap.tsx';
 import { MapView } from './components/MapView.tsx';
 import { MobileBanner } from './components/MobileBanner.tsx';
 import { ModeToggle } from './components/ModeToggle.tsx';
+import { ProgramPicker } from './components/ProgramPicker.tsx';
 import { ProjectionPicker } from './components/ProjectionPicker.tsx';
 import { SampleRoutings } from './components/SampleRoutings.tsx';
 import { SavedRoutings } from './components/SavedRoutings.tsx';
@@ -30,7 +31,6 @@ import { DEFAULT_PROJECTION, type ProjectionId } from './lib/calc/projections.ts
 import { downloadBlob, svgToPngBlob } from './lib/svg-to-png.ts';
 import { parseShareUrl } from './lib/url-schema.ts';
 import {
-  PROGRAM_LABELS,
   type AirlineIata,
   type Airport,
   type CabinId,
@@ -343,11 +343,7 @@ function Ready({
                   {t('panel.pqmLong')} / {t('panel.rdmLong')}
                 </Glossary>
               </span>
-              <ProgramToggle
-                programs={['aa-aadvantage', 'as-mileage-plan']}
-                active={routing.programs}
-                onToggle={toggleProgram}
-              />
+              <ProgramPicker active={routing.programs} onToggle={toggleProgram} />
             </div>
             <button type="button" className="app-clear" onClick={clearAll}>
               {t('input.clearAll')}
@@ -412,33 +408,6 @@ function Ready({
         <span>{t('footer.openSource')}</span>
         <span className="app-footer-note">{t('footer.disclaimer')}</span>
       </footer>
-    </div>
-  );
-}
-
-interface ProgramToggleProps {
-  programs: ReadonlyArray<ProgramId>;
-  active: ReadonlyArray<ProgramId>;
-  onToggle: (id: ProgramId) => void;
-}
-
-function ProgramToggle({ programs, active, onToggle }: ProgramToggleProps): React.ReactElement {
-  return (
-    <div className="program-toggle" aria-label="Loyalty programs">
-      {programs.map((id) => {
-        const on = active.includes(id);
-        return (
-          <button
-            key={id}
-            type="button"
-            className={`program-toggle-button${on ? ' active' : ''}`}
-            aria-pressed={on}
-            onClick={() => onToggle(id)}
-          >
-            {PROGRAM_LABELS[id]}
-          </button>
-        );
-      })}
     </div>
   );
 }

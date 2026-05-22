@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow `MAJOR.MINOR.PATCH.MICRO`.
 
+## [1.3.0.0] - 2026-05-22
+
+### Added — global loyalty programs (12 total) + extensible picker
+
+Per user feedback "I want all the global mileage systems included":
+
+- **10 new loyalty programs** added on top of AA + AS:
+  - **Oneworld:** BA Executive Club, Cathay Asia Miles
+  - **Star Alliance:** United MileagePlus, Air Canada Aeroplan, Singapore KrisFlyer, ANA Mileage Club, EVA Infinity
+  - **SkyTeam:** Delta SkyMiles, AF/KL Flying Blue
+  - **No alliance:** Emirates Skywards
+- Each program ships a `v2026.4.json` + `current.json` alias with 5–9 chart-verified partner carriers, accurate `pqm`/`rdm` multipliers and `minPerSegment` floors where applicable
+- **Alliance-grouped popover picker** replaces the v1.2 hardcoded 2-button toggle. Trigger shows active short codes ("AA · AS  ▾"); clicking opens a dialog with checkboxes grouped by alliance. Esc / click-outside closes
+- **Drop-in extensibility**: adding a new program is now (1) one entry in `PROGRAM_REGISTRY`, (2) one JSON file. No code changes. Missing JSON files are skipped with a `console.warn` rather than blocking the app
+- 4 locales translated: Oneworld / Star Alliance / SkyTeam / No alliance + picker labels for en, zh-TW, zh-CN, ja
+
+### Changed
+
+- `ProgramId` widened from literal union (`'aa-aadvantage' | 'as-mileage-plan'`) to `string`. Runtime SoT is `PROGRAM_REGISTRY` in `src/lib/types.ts`
+- `useLoadedData` now iterates `PROGRAM_REGISTRY` in parallel; programs whose JSON 404s are skipped with warning instead of crashing the loader (graceful degradation)
+- URL short codes auto-derived from registry — every program code (e.g. `?p=UA,DL,BA`) parses + round-trips correctly
+
+### Notes
+
+- Bundle: 115.39 → **116.94 KB gzipped** (+1.5 KB for picker UI; program JSONs load on init fetch, not in JS bundle)
+- 71/71 tests pass; new test covers all 10 added short codes round-tripping through the URL parser
+- Backwards-compat: every URL from v0.x → v1.2 still loads identically (default `programs: ['aa-aadvantage', 'as-mileage-plan']` unchanged)
+
 ## [1.2.0.0] - 2026-05-22
 
 ### Changed — 2D wrapping world map (default Mercator, Google-Maps-style horizontal wrap)

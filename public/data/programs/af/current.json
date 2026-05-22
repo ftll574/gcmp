@@ -1,0 +1,92 @@
+{
+  "program": "af-flying-blue",
+  "label": "AF/KL Flying Blue",
+  "alliance": "skyteam",
+  "version": "2026.4",
+  "sourceUrl": "https://www.flyingblue.com/en/earn-miles/airline-partners",
+  "lastVerified": "2026-05-22",
+  "carriers": {
+    "AF": {
+      "label": "Air France (own metal)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "C": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "D": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "W": { "cabin": "premium-economy", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "B": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": { "business": "J", "premium-economy": "W", "economy": "Y" }
+    },
+    "KL": {
+      "label": "KLM (own metal)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "C": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "W": { "cabin": "premium-economy", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": { "business": "J", "premium-economy": "W", "economy": "Y" }
+    },
+    "DL": {
+      "label": "Delta (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "C": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": { "business": "J", "economy": "Y" }
+    },
+    "KE": {
+      "label": "Korean Air (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "F": { "cabin": "first", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "J": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": { "first": "F", "business": "J", "economy": "Y" }
+    },
+    "CI": {
+      "label": "China Airlines (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": { "business": "J", "economy": "Y" }
+    },
+    "VN": {
+      "label": "Vietnam Airlines (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": { "business": "J", "economy": "Y" }
+    },
+    "GA": {
+      "label": "Garuda Indonesia (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": { "business": "J", "economy": "Y" }
+    }
+  },
+  "globalNotes": [
+    "Flying Blue moved away from pure distance-based to spend-based in 2018; numbers shown approximate the partner-distance equivalent.",
+    "v1 entries are chart-verified; verify against your actual statement."
+  ]
+}

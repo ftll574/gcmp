@@ -1,0 +1,112 @@
+{
+  "program": "ba-executive-club",
+  "label": "BA Executive Club",
+  "alliance": "oneworld",
+  "version": "2026.4",
+  "sourceUrl": "https://www.britishairways.com/en-gb/executive-club/collecting-avios/our-partners/airline-partners",
+  "lastVerified": "2026-05-22",
+  "carriers": {
+    "BA": {
+      "label": "British Airways (own metal)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "F": { "cabin": "first", "pqm": 3.0, "rdm": 3.0, "minPerSegment": 0 },
+        "A": { "cabin": "first", "pqm": 2.0, "rdm": 2.0, "minPerSegment": 0 },
+        "J": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "C": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "D": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "W": { "cabin": "premium-economy", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "B": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "H": { "cabin": "economy", "pqm": 0.5, "rdm": 0.5, "minPerSegment": 0 },
+        "K": { "cabin": "economy", "pqm": 0.5, "rdm": 0.5, "minPerSegment": 0 },
+        "Q": { "cabin": "economy", "pqm": 0.25, "rdm": 0.25, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": { "first": "F", "business": "J", "premium-economy": "W", "economy": "Y" }
+    },
+    "AA": {
+      "label": "American Airlines (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "F": { "cabin": "first", "pqm": 2.0, "rdm": 2.0, "minPerSegment": 0 },
+        "J": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "C": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "D": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": { "first": "F", "business": "J", "economy": "Y" }
+    },
+    "IB": {
+      "label": "Iberia (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "C": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": { "business": "J", "economy": "Y" }
+    },
+    "JL": {
+      "label": "Japan Airlines (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "F": { "cabin": "first", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "J": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": { "first": "F", "business": "J", "economy": "Y" }
+    },
+    "CX": {
+      "label": "Cathay Pacific (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "F": { "cabin": "first", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "J": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": { "first": "F", "business": "J", "economy": "Y" }
+    },
+    "QR": {
+      "label": "Qatar Airways (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "C": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": { "business": "J", "economy": "Y" }
+    },
+    "QF": {
+      "label": "Qantas (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "F": { "cabin": "first", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "J": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": { "first": "F", "business": "J", "economy": "Y" }
+    },
+    "AY": {
+      "label": "Finnair (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "C": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": { "business": "J", "economy": "Y" }
+    }
+  },
+  "globalNotes": [
+    "BA awards Avios via tier-points-and-revenue tracking; numbers shown here approximate distance-based Avios earning for partner flights.",
+    "v1 entries are chart-verified; verify against your actual statement."
+  ]
+}

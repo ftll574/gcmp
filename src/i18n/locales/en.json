@@ -162,6 +162,18 @@
   "bearings": {
     "show": "Show bearings"
   },
+  "programPicker": {
+    "label": "Crediting programs",
+    "hint": "Pick which loyalty programs this routing credits to. Each one shows its own earning total.",
+    "tooMany": "{count} programs selected — earning panel may get crowded.",
+    "none": "No programs"
+  },
+  "alliance": {
+    "oneworld": "Oneworld",
+    "star": "Star Alliance",
+    "skyteam": "SkyTeam",
+    "none": "No alliance"
+  },
   "glossary": {
     "pqm": "Premier Qualifying Miles — counts toward elite status (Gold, Platinum, etc.). Not the same as redeemable miles.",
     "rdm": "Redeemable Miles — what you spend to book award flights.",

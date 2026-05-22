@@ -1,0 +1,121 @@
+{
+  "program": "ua-mileageplus",
+  "label": "United MileagePlus",
+  "alliance": "star",
+  "version": "2026.4",
+  "sourceUrl": "https://www.united.com/ual/en/us/fly/mileageplus/earn-miles/airline-partners.html",
+  "lastVerified": "2026-05-22",
+  "carriers": {
+    "UA": {
+      "label": "United Airlines (own metal)",
+      "earningModel": "revenue-based",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "F": { "cabin": "first", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "J": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "C": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "D": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 0 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "B": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 },
+        "M": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 0 }
+      },
+      "defaultLetterByCabin": { "first": "F", "business": "J", "economy": "Y" },
+      "notes": ["UA own metal revenue tickets earn by dollar spend in the post-2015 system; distance shown here is partner-chart simulation."]
+    },
+    "LH": {
+      "label": "Lufthansa (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "F": { "cabin": "first", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 500 },
+        "J": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 500 },
+        "C": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 500 },
+        "D": { "cabin": "business", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 },
+        "B": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 }
+      },
+      "defaultLetterByCabin": { "first": "F", "business": "J", "economy": "Y" }
+    },
+    "NH": {
+      "label": "ANA (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "F": { "cabin": "first", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 500 },
+        "J": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 500 },
+        "C": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 500 },
+        "D": { "cabin": "business", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 },
+        "W": { "cabin": "premium-economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 },
+        "B": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 }
+      },
+      "defaultLetterByCabin": { "first": "F", "business": "J", "premium-economy": "W", "economy": "Y" }
+    },
+    "BR": {
+      "label": "EVA Air (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 500 },
+        "C": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 500 },
+        "D": { "cabin": "business", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 },
+        "W": { "cabin": "premium-economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 },
+        "B": { "cabin": "economy", "pqm": 0.5, "rdm": 0.5, "minPerSegment": 500 }
+      },
+      "defaultLetterByCabin": { "business": "J", "premium-economy": "W", "economy": "Y" }
+    },
+    "AC": {
+      "label": "Air Canada (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 500 },
+        "C": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 500 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 },
+        "B": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 }
+      },
+      "defaultLetterByCabin": { "business": "J", "economy": "Y" }
+    },
+    "SQ": {
+      "label": "Singapore Airlines (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "F": { "cabin": "first", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 500 },
+        "J": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 500 },
+        "C": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 500 },
+        "W": { "cabin": "premium-economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 }
+      },
+      "defaultLetterByCabin": { "first": "F", "business": "J", "premium-economy": "W", "economy": "Y" }
+    },
+    "TG": {
+      "label": "Thai Airways (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "F": { "cabin": "first", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 500 },
+        "J": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 500 },
+        "C": { "cabin": "business", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 }
+      },
+      "defaultLetterByCabin": { "first": "F", "business": "J", "economy": "Y" }
+    },
+    "TK": {
+      "label": "Turkish Airlines (partner)",
+      "earningModel": "distance-multiplier",
+      "confidence": "chart-verified",
+      "fareBuckets": {
+        "J": { "cabin": "business", "pqm": 1.5, "rdm": 1.5, "minPerSegment": 500 },
+        "C": { "cabin": "business", "pqm": 1.25, "rdm": 1.25, "minPerSegment": 500 },
+        "Y": { "cabin": "economy", "pqm": 1.0, "rdm": 1.0, "minPerSegment": 500 }
+      },
+      "defaultLetterByCabin": { "business": "J", "economy": "Y" }
+    }
+  },
+  "globalNotes": [
+    "United switched to revenue-based earning in 2015 — distance-based figures here apply to partner flights, not UA own-metal revenue tickets.",
+    "v1 entries are chart-verified; verify against your actual statement."
+  ]
+}
