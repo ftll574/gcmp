@@ -43,14 +43,37 @@ export function EarningPanel({ result, programOrder, mode = 'beginner', cabin }:
 
   const multiGroup = result.groups.length > 1;
 
+  // Sort programs by Award Miles (RDM) descending — this drives the
+  // "best for this routing" recommendation. Programs with no grand total
+  // (loading errors, missing carrier rules) sink to the bottom.
+  const sortedPrograms = [...programOrder].sort((a, b) => {
+    const ar = result.grandTotals[a]?.rdm ?? -1;
+    const br = result.grandTotals[b]?.rdm ?? -1;
+    return br - ar;
+  });
+  const topProgramId = sortedPrograms.find((id) => (result.grandTotals[id]?.rdm ?? 0) > 0);
+  const topRdm = topProgramId ? result.grandTotals[topProgramId]?.rdm ?? 0 : 0;
+
   return (
     <div className="earning-panel">
+      {topProgramId && topRdm > 0 && programOrder.length > 1 && (
+        <BestRecommendation
+          programId={topProgramId}
+          rdm={topRdm}
+          runnerUpRdm={
+            sortedPrograms
+              .filter((id) => id !== topProgramId)
+              .map((id) => result.grandTotals[id]?.rdm ?? 0)
+              .find((r) => r > 0) ?? 0
+          }
+        />
+      )}
       {mode === 'beginner' && (
         <p className="earning-panel-comparison">
           {multiGroup ? t('groups.compareHint') : t('panel.comparisonBeginner')}
         </p>
       )}
-      {programOrder.map((programId) => (
+      {sortedPrograms.map((programId) => (
         <GrandTotalSection
           key={programId}
           programId={programId}
@@ -58,6 +81,7 @@ export function EarningPanel({ result, programOrder, mode = 'beginner', cabin }:
           cabin={cabin}
           mode={mode}
           showGroupBreakdown={multiGroup}
+          isTop={programId === topProgramId && programOrder.length > 1}
         />
       ))}
       <section className="earning-totals" aria-label={t('panel.totalDistance')}>
@@ -88,9 +112,34 @@ export function EarningPanel({ result, programOrder, mode = 'beginner', cabin }:
         >
           {expanded ? '▾' : '▸'} {t('panel.perLegToggle')}
         </button>
-        {expanded && <PerLegTables result={result} programOrder={programOrder} />}
+        {expanded && <PerLegTables result={result} programOrder={sortedPrograms} />}
       </section>
     </div>
+  );
+}
+
+interface BestRecommendationProps {
+  programId: ProgramId;
+  rdm: number;
+  runnerUpRdm: number;
+}
+
+function BestRecommendation({ programId, rdm, runnerUpRdm }: BestRecommendationProps): React.ReactElement {
+  const { t } = useLocale();
+  const label = PROGRAM_LABELS[programId] ?? programId;
+  const delta = rdm - runnerUpRdm;
+  const showDelta = runnerUpRdm > 0 && delta > 0;
+  const pct = showDelta ? Math.round((delta / runnerUpRdm) * 100) : 0;
+  return (
+    <section className="earning-best" aria-label={t('best.label')}>
+      <div className="earning-best-badge">{t('best.badge')}</div>
+      <div className="earning-best-program">{t('best.creditTo', { program: label })}</div>
+      {showDelta && (
+        <div className="earning-best-delta">
+          {t('best.delta', { count: delta.toLocaleString(), pct: String(pct) })}
+        </div>
+      )}
+    </section>
   );
 }
 
@@ -100,9 +149,17 @@ interface GrandTotalProps {
   cabin: CabinId;
   mode: 'beginner' | 'pro';
   showGroupBreakdown: boolean;
+  isTop?: boolean;
 }
 
-function GrandTotalSection({ programId, result, cabin, mode, showGroupBreakdown }: GrandTotalProps): React.ReactElement {
+function GrandTotalSection({
+  programId,
+  result,
+  cabin,
+  mode,
+  showGroupBreakdown,
+  isTop = false,
+}: GrandTotalProps): React.ReactElement {
   const { t } = useLocale();
   const grand = result.grandTotals[programId];
   const label = PROGRAM_LABELS[programId] ?? programId;
@@ -119,16 +176,30 @@ function GrandTotalSection({ programId, result, cabin, mode, showGroupBreakdown 
       ? 'mixed'
       : (confidences[0] ?? 'chart-verified');
 
+  // Pull provenance from any group's earning entry — they share the same
+  // rules version/source within a single computation.
+  const firstWithProvenance = result.groups
+    .map((g) => g.programs[programId])
+    .find((e): e is ProgramEarning => e !== undefined && e.sourceUrl !== '');
+  const provenance = firstWithProvenance
+    ? {
+        version: firstWithProvenance.rulesVersion,
+        lastVerified: firstWithProvenance.lastVerified,
+        sourceUrl: firstWithProvenance.sourceUrl,
+      }
+    : null;
+
   if (!grand) return <></> as React.ReactElement;
 
   const pqmLabel = mode === 'beginner' ? t('panel.pqmLong') : t('panel.pqmShort');
   const rdmLabel = mode === 'beginner' ? t('panel.rdmLong') : t('panel.rdmShort');
 
   return (
-    <section className="earning-program">
+    <section className={`earning-program${isTop ? ' earning-program-top' : ''}`}>
       <h3 className="earning-program-label">
         {label}
         <ConfidenceChip confidence={confidence} />
+        {isTop && <span className="earning-program-best-pill">{t('best.pill')}</span>}
       </h3>
       {mode === 'beginner' && (
         <p className="earning-program-summary">
@@ -178,6 +249,23 @@ function GrandTotalSection({ programId, result, cabin, mode, showGroupBreakdown 
             })}
           </tbody>
         </table>
+      )}
+      {provenance && (
+        <footer className="earning-program-provenance">
+          {t('provenance.line', {
+            version: provenance.version,
+            date: provenance.lastVerified,
+          })}
+          {' · '}
+          <a
+            href={provenance.sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="earning-program-source-link"
+          >
+            {t('provenance.source')}
+          </a>
+        </footer>
       )}
     </section>
   );

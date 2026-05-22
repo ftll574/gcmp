@@ -33,6 +33,10 @@
     "exampleHint": "点下面的范例航线看看怎么用",
     "clearAll": "清除"
   },
+  "hero": {
+    "tagline": "找出每段航班最划算的常旅客计划。",
+    "subtagline": "选机场、选舱位，立即比较 12 个常旅客计划、4 大联盟谁给最多里程。"
+  },
   "samples": {
     "sfoNrtBkk": {
       "title": "旧金山 → 东京 → 曼谷",
@@ -161,6 +165,17 @@
   },
   "bearings": {
     "show": "显示方位角"
+  },
+  "best": {
+    "badge": "推荐",
+    "label": "这条航线最划算的常旅客计划",
+    "creditTo": "建议挂 {program}",
+    "delta": "比第二名多 {count} 里程（{pct}%）",
+    "pill": "最佳"
+  },
+  "provenance": {
+    "line": "规则 {version} · 校对于 {date}",
+    "source": "来源表"
   },
   "programPicker": {
     "label": "累积里程的常旅客计划",

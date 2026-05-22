@@ -130,6 +130,9 @@ function computeGroup(
           emptyLegEarning(ld.distanceNm, `Program "${programId}" rules not loaded`),
         ),
         notes: [`Program "${programId}" rules not loaded`],
+        rulesVersion: '',
+        lastVerified: '',
+        sourceUrl: '',
       };
       continue;
     }
@@ -191,6 +194,9 @@ function computeGroup(
       rdm: totalRdm,
       byLeg: perLeg,
       notes: programNotes,
+      rulesVersion: program.version,
+      lastVerified: program.lastVerified,
+      sourceUrl: program.sourceUrl,
     };
   }
 
