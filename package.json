@@ -1,6 +1,6 @@
 {
   "name": "gcmp",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "Mileage runner routing calculator — replaces the FlyerTalk-thread habit. Drag airports, see PQM/RDM for multiple loyalty programs side by side.",
   "license": "MIT",
   "repository": {

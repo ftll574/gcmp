@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow `MAJOR.MINOR.PATCH.MICRO`.
 
+## [1.3.1.0] - 2026-05-22
+
+### Fixed — adding a single airport now shows it as a pending chip
+
+**Long-standing bug** (since v0.4 multi-group refactor): typing an airport into the autocomplete and committing it produced no visible change when the routing was empty. Root cause was that `RoutingGroup.legs[]` is the data model and "airports" were derived from legs — but a leg requires 2+ airports, so a single airport never had a place to live and was silently dropped.
+
+Fix:
+
+- Per-group **pending first airport** buffered in `App.tsx` React state. When the user adds the first airport to an empty group, it shows as a single chip. When they add the second, both are promoted into the first `Leg`. Removing the only airport of a 2-airport routing demotes the survivor back to pending instead of clearing everything.
+- Map of `groupIndex → Airport` is kept in sync on group removal (re-indexes later groups) and cleared on `clearAll` / `loadSaved`.
+- Pending state is **not serialized to URL** — a single airport is not a shareable routing — so backwards-compat with all prior shared URLs is preserved.
+
+Users who only ever clicked the sample-routing cards (which load 2+ airports at once) never hit this; users who tried to type airports from scratch hit it every time.
+
+### Notes
+
+- No new dependencies; no new public APIs
+- 71/71 tests still pass (the bug lived in App.tsx event handlers; engine + url-schema unaffected)
+- Bundle size unchanged
+
 ## [1.3.0.0] - 2026-05-22
 
 ### Added — global loyalty programs (12 total) + extensible picker

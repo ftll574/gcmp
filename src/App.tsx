@@ -148,6 +148,15 @@ function Ready({
   const [showBearings, setShowBearings] = useState(false);
   const svgRef = useRef<SVGSVGElement | null>(null);
 
+  // Per-group pending first airport. A leg requires 2+ airports, so the very
+  // first airport added to an empty group lives in this in-memory buffer
+  // until the user adds a second one — at that point we promote both to a
+  // real `Leg`. Not serialized to URL (a single airport is not a shareable
+  // routing). Keyed by group array index; kept in sync on group removal.
+  const [pendingByGroup, setPendingByGroup] = useState<ReadonlyMap<number, Airport>>(
+    () => new Map(),
+  );
+
   const airportIndex = useMemo(() => buildAirportIndex(data.airports), [data.airports]);
 
   // Clamp active group when groups change.
@@ -158,16 +167,22 @@ function Ready({
     [routing.groups, safeActiveIndex],
   );
 
-  // Active group's airport chain (resolved).
+  const pendingAirport = pendingByGroup.get(safeActiveIndex);
+
+  // Active group's airport chain (resolved). When legs are empty but a pending
+  // first airport is buffered, show it as a single chip so the user can see
+  // their progress before adding the second airport that creates the first leg.
   const activeChainAirports = useMemo<Airport[]>(() => {
-    if (activeGroup.legs.length === 0) return [];
+    if (activeGroup.legs.length === 0) {
+      return pendingAirport ? [pendingAirport] : [];
+    }
     const first = activeGroup.legs[0]?.from;
     if (!first) return [];
     const codes: Iata[] = [first, ...activeGroup.legs.map((leg) => leg.to)];
     return codes
       .map((code) => airportIndex.lookup(code))
       .filter((a): a is Airport => a !== undefined);
-  }, [activeGroup, airportIndex]);
+  }, [activeGroup, airportIndex, pendingAirport]);
 
   const result = useMemo(() => {
     if (routing.groups.every((g) => g.legs.length === 0)) return null;
@@ -184,7 +199,33 @@ function Ready({
     setRouting({ ...routing, groups: nextGroups });
   }
 
+  function setPendingFor(groupIndex: number, value: Airport | undefined): void {
+    setPendingByGroup((prev) => {
+      const next = new Map(prev);
+      if (value === undefined) next.delete(groupIndex);
+      else next.set(groupIndex, value);
+      return next;
+    });
+  }
+
   function addAirport(a: Airport): void {
+    // Empty group: buffer the first airport, or promote pending + new → leg.
+    if (activeGroup.legs.length === 0) {
+      if (!pendingAirport) {
+        setPendingFor(safeActiveIndex, a);
+        return;
+      }
+      if (pendingAirport.iata === a.iata) {
+        // Same airport twice would be a zero-distance leg; ignore.
+        return;
+      }
+      updateActiveGroup(() => ({
+        legs: [{ from: pendingAirport.iata, to: a.iata, operatingCarrier: 'AA' }],
+      }));
+      setPendingFor(safeActiveIndex, undefined);
+      return;
+    }
+    // Has legs: append to the end as usual.
     updateActiveGroup((group) => {
       const codes = activeChainAirports.map((x) => x.iata);
       const nextCodes = [...codes, a.iata];
@@ -194,10 +235,23 @@ function Ready({
   }
 
   function removeAirport(_iata: Iata, index: number): void {
+    // Removing the only chip (pending state) just clears pending.
+    if (activeGroup.legs.length === 0 && pendingAirport) {
+      setPendingFor(safeActiveIndex, undefined);
+      return;
+    }
     updateActiveGroup((group) => {
       const codes = activeChainAirports.map((x) => x.iata);
       const nextCodes = codes.filter((_, i) => i !== index);
-      if (nextCodes.length < 2) return { legs: [] };
+      if (nextCodes.length < 2) {
+        // Going from 2 → 1: demote the survivor back to pending.
+        const remaining = nextCodes[0];
+        if (remaining) {
+          const air = airportIndex.lookup(remaining);
+          if (air) setPendingFor(safeActiveIndex, air);
+        }
+        return { legs: [] };
+      }
       const nextLegs = buildLegs(nextCodes, group.legs, defaultCarrier(group.legs));
       return { legs: nextLegs };
     });
@@ -238,12 +292,14 @@ function Ready({
     if (parsed.ok) {
       setRouting(parsed.request);
       setActiveGroupIndex(0);
+      setPendingByGroup(new Map());
     }
   }
 
   function clearAll(): void {
     setRouting({ ...routing, groups: [{ legs: [] }] });
     setActiveGroupIndex(0);
+    setPendingByGroup(new Map());
   }
 
   async function downloadPng(): Promise<void> {
@@ -273,6 +329,15 @@ function Ready({
     const nextGroups = routing.groups.filter((_, i) => i !== index);
     setRouting({ ...routing, groups: nextGroups });
     setActiveGroupIndex(Math.min(safeActiveIndex, nextGroups.length - 1));
+    // Re-key pending map: drop the deleted slot, shift later groups down by 1.
+    setPendingByGroup((prev) => {
+      const next = new Map<number, Airport>();
+      for (const [k, v] of prev) {
+        if (k < index) next.set(k, v);
+        else if (k > index) next.set(k - 1, v);
+      }
+      return next;
+    });
   }
 
   const hasAnyLegs = routing.groups.some((g) => g.legs.length > 0);
