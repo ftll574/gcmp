@@ -243,6 +243,10 @@
     "carrierSeed": "預設航司",
     "empty": "加入至少一段飛行航段後，就能開始檢查環球票規則。",
     "mileageEstimate": "哩程估算",
+    "routeLegDetails": "航段明細",
+    "inspectorRules": "規則",
+    "inspectorTools": "工具",
+    "inspectorSaved": "已存",
     "market": {
       "TW": "台灣"
     },

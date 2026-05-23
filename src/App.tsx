@@ -56,6 +56,7 @@ import { useViewportWidth } from './state/use-viewport.ts';
 import './App.css';
 
 const MOBILE_BREAKPOINT = 768;
+type InspectorPanel = 'rules' | 'tools' | 'miles' | 'saved';
 
 export function App(): React.ReactElement {
   const { t } = useLocale();
@@ -154,7 +155,7 @@ function Ready({
   const [activeGroupIndex, setActiveGroupIndex] = useState(0);
   const [showBearings, setShowBearings] = useState(false);
   const [showDistances, setShowDistances] = useState(false);
-  const [showMileageEstimate, setShowMileageEstimate] = useState(false);
+  const [activeInspector, setActiveInspector] = useState<InspectorPanel>('rules');
   const rtwProducts = useMemo(
     () => sortRtwProductsForMarket(data.rtwRuleCatalog.products, data.marketProfile),
     [data.rtwRuleCatalog.products, data.marketProfile],
@@ -554,63 +555,73 @@ function Ready({
           ⚠ {saveError}
         </div>
       )}
-      <section className="app-input" aria-label="Routing input">
-        <RtwPlanningContext
-          products={rtwProducts}
-          selectedProductId={selectedRtwProductId}
-          marketProfile={data.marketProfile}
-          onProductChange={changeRtwProduct}
-        />
-        {!isMobile && (
-          <AirportAutocomplete index={airportIndex} onCommit={addAirport} mode={mode} />
-        )}
-        <GroupTabs
-          groups={routing.groups}
-          activeIndex={safeActiveIndex}
-          onActivate={setActiveGroupIndex}
-          onAdd={addGroup}
-          onRemove={removeGroup}
-        />
-        <LegChain
-          airports={activeChainAirports}
-          operatingCarriers={activeGroup.legs.map((leg) => leg.operatingCarrier)}
-          fareClasses={activeGroup.legs.map((leg) => leg.fareClass)}
-          stopovers={activeGroup.legs.map((leg) => leg.stopover)}
-          surfaces={activeGroup.legs.map((leg) => leg.surface)}
-          airlines={data.airlines}
-          onReorder={reorder}
-          onRemove={removeAirport}
-          onCarrierChange={changeCarrier}
-          onFareClassChange={changeFareClass}
-          onStopoverChange={changeStopover}
-          onSurfaceChange={changeSurface}
-        />
-        {hasAnyLegs && (
-          <RtwTripDates
-            startDate={routing.startDate}
-            endDate={routing.endDate}
-            onChange={changeTripDates}
-          />
-        )}
-        <RtwLegTable
-          airports={activeChainAirports}
-          operatingCarriers={activeGroup.legs.map((leg) => leg.operatingCarrier)}
-          stopovers={activeGroup.legs.map((leg) => leg.stopover)}
-          surfaces={activeGroup.legs.map((leg) => leg.surface)}
-          airlines={data.airlines}
-          onCarrierChange={changeCarrier}
-          onStopoverChange={changeStopover}
-          onSurfaceChange={changeSurface}
-        />
-        {hasAnyLegs && (
-          <div className="app-controls">
-            <button type="button" className="app-clear" onClick={clearAll}>
-              {t('input.clearAll')}
-            </button>
+      <main className="app-workbench">
+        <section className="route-editor" aria-label="Routing input">
+          <div className="route-editor-scroll">
+            <details className="route-editor-details">
+              <summary>{t('rtw.planningEyebrow')}</summary>
+              <RtwPlanningContext
+                products={rtwProducts}
+                selectedProductId={selectedRtwProductId}
+                marketProfile={data.marketProfile}
+                onProductChange={changeRtwProduct}
+              />
+            </details>
+            {!isMobile && (
+              <AirportAutocomplete index={airportIndex} onCommit={addAirport} mode={mode} />
+            )}
+            <GroupTabs
+              groups={routing.groups}
+              activeIndex={safeActiveIndex}
+              onActivate={setActiveGroupIndex}
+              onAdd={addGroup}
+              onRemove={removeGroup}
+            />
+            <LegChain
+              airports={activeChainAirports}
+              operatingCarriers={activeGroup.legs.map((leg) => leg.operatingCarrier)}
+              fareClasses={activeGroup.legs.map((leg) => leg.fareClass)}
+              stopovers={activeGroup.legs.map((leg) => leg.stopover)}
+              surfaces={activeGroup.legs.map((leg) => leg.surface)}
+              airlines={data.airlines}
+              onReorder={reorder}
+              onRemove={removeAirport}
+              onCarrierChange={changeCarrier}
+              onFareClassChange={changeFareClass}
+              onStopoverChange={changeStopover}
+              onSurfaceChange={changeSurface}
+            />
+            <div className="route-editor-secondary">
+              {hasAnyLegs && (
+                <RtwTripDates
+                  startDate={routing.startDate}
+                  endDate={routing.endDate}
+                  onChange={changeTripDates}
+                />
+              )}
+              <details className="route-editor-details">
+                <summary>{t('rtw.routeLegDetails')}</summary>
+                <RtwLegTable
+                  airports={activeChainAirports}
+                  operatingCarriers={activeGroup.legs.map((leg) => leg.operatingCarrier)}
+                  stopovers={activeGroup.legs.map((leg) => leg.stopover)}
+                  surfaces={activeGroup.legs.map((leg) => leg.surface)}
+                  airlines={data.airlines}
+                  onCarrierChange={changeCarrier}
+                  onStopoverChange={changeStopover}
+                  onSurfaceChange={changeSurface}
+                />
+              </details>
+            </div>
           </div>
-        )}
-      </section>
-      <main className="app-body">
+          {hasAnyLegs && (
+            <div className="route-editor-footer">
+              <button type="button" className="app-clear" onClick={clearAll}>
+                {t('input.clearAll')}
+              </button>
+            </div>
+          )}
+        </section>
         <div ref={mapRef} className="app-map-wrap">
           <div className="app-map-toolbar">
             <ProjectionPicker
@@ -659,74 +670,91 @@ function Ready({
             />
           </MapErrorBoundary>
         </div>
-        <aside className="app-panel" aria-label="Earning panel">
-          {showSamples && (
-            <>
-              <SampleRoutings onSelect={loadExternalRouting} />
-              <ImportFromGcmap onImport={loadExternalRouting} />
-            </>
-          )}
-          <RtwValidationPanel
-            routing={routing}
-            airports={airportIndex.byIata}
-            allianceCatalog={data.allianceCatalog}
-            rtwRuleCatalog={data.rtwRuleCatalog}
-            awardPricingCatalog={data.awardPricingCatalog}
-            marketProfile={data.marketProfile}
-            selectedProductId={selectedRtwProductId}
-            onProductChange={changeRtwProduct}
-          />
-          <section className="mileage-estimate">
-            <button
-              type="button"
-              className="mileage-estimate-toggle"
-              aria-expanded={showMileageEstimate}
-              onClick={() => setShowMileageEstimate((value) => !value)}
-            >
-              <span>{t('rtw.mileageEstimate')}</span>
-              <span aria-hidden="true">{showMileageEstimate ? '−' : '+'}</span>
-            </button>
-            {showMileageEstimate && (
-              <div className="mileage-estimate-body">
-                <div className="mileage-estimate-controls">
-                  <div className="app-controls-group">
-                    <span className="app-controls-label">
-                      <Glossary term="cabin" mode={mode}>
-                        {t('cabin.label')}
-                      </Glossary>
-                    </span>
-                    <CabinSelector value={routing.cabin} onChange={changeCabin} mode={mode} />
-                  </div>
-                  <div className="app-controls-group">
-                    <span className="app-controls-label">
-                      <Glossary term="credit" mode={mode}>
-                        {t('panel.pqmLong')} / {t('panel.rdmLong')}
-                      </Glossary>
-                    </span>
-                    <ProgramPicker active={routing.programs} onToggle={toggleProgram} />
-                  </div>
-                  <div className="app-controls-group">
-                    <span className="app-controls-label">{t('tier.label')}</span>
-                    <TierSelector value={routing.tier ?? 'none'} onChange={changeTier} />
-                  </div>
-                </div>
-                <EarningPanel
-                  result={result}
-                  programOrder={routing.programs}
-                  mode={mode}
-                  cabin={routing.cabin}
-                  valuations={data.valuations}
-                  allProgramsResult={allProgramsResult}
-                  onAddProgram={(id) => {
-                    if (!routing.programs.includes(id)) {
-                      setRouting({ ...routing, programs: [...routing.programs, id] });
-                    }
-                  }}
-                />
+        <aside className="app-panel" aria-label="Route inspector">
+          <nav className="inspector-tabs" aria-label="Route inspector sections">
+            {([
+              ['rules', '✓', t('rtw.inspectorRules')],
+              ['tools', '＋', t('rtw.inspectorTools')],
+              ['miles', '◌', t('rtw.mileageEstimate')],
+              ['saved', '□', t('rtw.inspectorSaved')],
+            ] as const).map(([id, icon, label]) => (
+              <button
+                key={id}
+                type="button"
+                className={`inspector-tab${activeInspector === id ? ' active' : ''}`}
+                aria-pressed={activeInspector === id}
+                title={label}
+                onClick={() => setActiveInspector(id)}
+              >
+                <span aria-hidden="true">{icon}</span>
+                <span>{label}</span>
+              </button>
+            ))}
+          </nav>
+          <div className="inspector-content">
+            {activeInspector === 'rules' && (
+              <RtwValidationPanel
+                routing={routing}
+                airports={airportIndex.byIata}
+                allianceCatalog={data.allianceCatalog}
+                rtwRuleCatalog={data.rtwRuleCatalog}
+                awardPricingCatalog={data.awardPricingCatalog}
+                marketProfile={data.marketProfile}
+                selectedProductId={selectedRtwProductId}
+                onProductChange={changeRtwProduct}
+              />
+            )}
+            {activeInspector === 'tools' && (
+              <div className="inspector-stack">
+                {showSamples && <SampleRoutings onSelect={loadExternalRouting} />}
+                <ImportFromGcmap onImport={loadExternalRouting} />
               </div>
             )}
-          </section>
-          <SavedRoutings saved={saved} onLoad={loadSaved} onDelete={remove} />
+            {activeInspector === 'miles' && (
+              <section className="mileage-estimate">
+                <div className="mileage-estimate-body visible">
+                  <div className="mileage-estimate-controls">
+                    <div className="app-controls-group">
+                      <span className="app-controls-label">
+                        <Glossary term="cabin" mode={mode}>
+                          {t('cabin.label')}
+                        </Glossary>
+                      </span>
+                      <CabinSelector value={routing.cabin} onChange={changeCabin} mode={mode} />
+                    </div>
+                    <div className="app-controls-group">
+                      <span className="app-controls-label">
+                        <Glossary term="credit" mode={mode}>
+                          {t('panel.pqmLong')} / {t('panel.rdmLong')}
+                        </Glossary>
+                      </span>
+                      <ProgramPicker active={routing.programs} onToggle={toggleProgram} />
+                    </div>
+                    <div className="app-controls-group">
+                      <span className="app-controls-label">{t('tier.label')}</span>
+                      <TierSelector value={routing.tier ?? 'none'} onChange={changeTier} />
+                    </div>
+                  </div>
+                  <EarningPanel
+                    result={result}
+                    programOrder={routing.programs}
+                    mode={mode}
+                    cabin={routing.cabin}
+                    valuations={data.valuations}
+                    allProgramsResult={allProgramsResult}
+                    onAddProgram={(id) => {
+                      if (!routing.programs.includes(id)) {
+                        setRouting({ ...routing, programs: [...routing.programs, id] });
+                      }
+                    }}
+                  />
+                </div>
+              </section>
+            )}
+            {activeInspector === 'saved' && (
+              <SavedRoutings saved={saved} onLoad={loadSaved} onDelete={remove} />
+            )}
+          </div>
         </aside>
       </main>
       <footer className="app-footer">
