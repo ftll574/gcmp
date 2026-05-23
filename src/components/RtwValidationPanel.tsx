@@ -89,6 +89,11 @@ export function RtwValidationPanel({
       routing.cabin,
     );
   }, [awardPricingCatalog, selectedProduct, result, routing.cabin]);
+  const visibleFindings = useMemo(() => {
+    if (!result) return [];
+    const needsAttention = result.findings.filter((finding) => finding.severity !== 'pass');
+    return needsAttention.length > 0 ? needsAttention : result.findings.slice(0, 2);
+  }, [result]);
 
   if (!selectedProduct) return <section className="rtw-panel">{t('rtw.noProducts')}</section>;
 
@@ -131,23 +136,11 @@ export function RtwValidationPanel({
               <strong>{result.summary.totalDistanceMiles.toLocaleString()}</strong>
             </div>
             <div>
-              <span>{t('rtw.summary.carrierIssues')}</span>
-              <strong>{result.summary.ineligibleLegIndexes.length}</strong>
-            </div>
-            <div>
               <span>{t('rtw.summary.stopovers')}</span>
               <strong>
                 {result.summary.knownStopovers}
                 {result.summary.unknownStopovers > 0 ? `+${result.summary.unknownStopovers}?` : ''}
               </strong>
-            </div>
-            <div>
-              <span>{t('rtw.summary.surface')}</span>
-              <strong>{result.summary.surfaceSectors}</strong>
-            </div>
-            <div>
-              <span>{t('rtw.summary.transfers')}</span>
-              <strong>{result.summary.knownTransfers}</strong>
             </div>
             <div>
               <span>{t('rtw.summary.oceans')}</span>
@@ -158,12 +151,6 @@ export function RtwValidationPanel({
             <div>
               <span>{t('rtw.summary.direction')}</span>
               <strong>{t(`rtw.direction.${result.summary.direction}`)}</strong>
-            </div>
-            <div>
-              <span>{t('rtw.summary.cityRepeats')}</span>
-              <strong>
-                {result.summary.repeatedStopoverCities.length + result.summary.repeatedSurfaceCities.length}
-              </strong>
             </div>
             <div>
               <span>{t('rtw.summary.tripDays')}</span>
@@ -213,7 +200,7 @@ export function RtwValidationPanel({
             </div>
           )}
           <ul className="rtw-findings">
-            {result.findings.map((finding) => (
+            {visibleFindings.map((finding) => (
               <li key={finding.ruleId} className={`rtw-finding ${finding.severity}`}>
                 <span className="rtw-finding-severity">{finding.severity}</span>
                 <span>{findingMessage(finding, t)}</span>
