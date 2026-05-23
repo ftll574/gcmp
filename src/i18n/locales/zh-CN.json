@@ -243,6 +243,10 @@
     "carrierSeed": "Carrier seed",
     "empty": "Add at least one flight segment to start validating RTW rules.",
     "mileageEstimate": "Mileage estimate",
+    "routeLegDetails": "Flight details",
+    "inspectorRules": "Rules",
+    "inspectorTools": "Tools",
+    "inspectorSaved": "Saved",
     "market": {
       "TW": "Taiwan"
     },

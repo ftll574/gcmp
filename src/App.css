@@ -3,10 +3,12 @@
    ─────────────────────────────────────────────────────────────────── */
 
 .app {
-  display: grid;
-  grid-template-rows: auto auto 1fr auto;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
   min-height: 100vh;
   max-width: 100vw;
+  overflow: hidden;
 }
 
 .app-loading,
@@ -361,14 +363,80 @@
   border-bottom: 1px solid var(--separator);
 }
 
-/* ── Input area ── */
-.app-input {
-  padding: var(--space-4) var(--space-6);
-  border-bottom: 1px solid var(--separator);
+/* ── Editor workbench ── */
+.app-workbench {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: minmax(320px, 410px) minmax(420px, 1fr) minmax(320px, 380px);
+  min-height: 0;
+  background: var(--grouped-background);
+}
+
+.route-editor {
+  min-height: 0;
+  border-right: 1px solid var(--separator);
+  background: var(--system-background);
+  display: flex;
+  flex-direction: column;
+}
+
+.route-editor-scroll {
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-4);
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
+}
+
+.route-editor-footer {
+  border-top: 1px solid var(--separator);
+  padding: var(--space-2) var(--space-4);
+  background: var(--material-regular);
+}
+
+.route-editor-secondary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.route-editor-details {
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-control);
   background: var(--system-background);
+  overflow: hidden;
+}
+
+.route-editor-details > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: var(--space-3);
+  font-size: var(--type-footnote);
+  font-weight: 700;
+  color: var(--label);
+  background: var(--secondary-grouped-background);
+}
+
+.route-editor-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.route-editor-details > summary::after {
+  content: '+';
+  float: right;
+  color: var(--tertiary-label);
+}
+
+.route-editor-details[open] > summary::after {
+  content: '−';
+}
+
+.route-editor-details .rtw-planning-context,
+.route-editor-details .rtw-leg-table-wrap {
+  border: none;
+  border-top: 1px solid var(--separator);
+  border-radius: 0;
 }
 
 .app-controls {
@@ -474,17 +542,9 @@
   font-weight: 600;
 }
 
-/* ── Body ── */
-.app-body {
-  display: grid;
-  grid-template-columns: 1fr 380px;
-  min-height: 0;
-  background: var(--grouped-background);
-}
-
 .app-map-wrap {
   position: relative;
-  min-height: 400px;
+  min-height: 0;
   overflow: hidden;
   background: var(--map-sea);
 }
@@ -781,20 +841,84 @@
 .app-panel {
   border-left: 1px solid var(--separator);
   background: var(--system-background);
-  padding: var(--space-5) var(--space-5) var(--space-6);
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
+  min-height: 0;
+}
+
+.inspector-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 2px;
+  padding: var(--space-2);
+  border-bottom: 1px solid var(--separator);
+  background: var(--material-regular);
+}
+
+.inspector-tab {
+  min-width: 0;
+  border: none;
+  border-radius: var(--radius-control);
+  padding: 7px 6px;
+  background: transparent;
+  color: var(--secondary-label);
+  font: inherit;
+  font-size: var(--type-caption);
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.inspector-tab:hover {
+  color: var(--label);
+  background: var(--tertiary-fill);
+}
+
+.inspector-tab.active {
+  color: var(--label);
+  background: var(--system-background);
+  box-shadow: var(--shadow-1);
+}
+
+.inspector-tab span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inspector-content {
+  min-height: 0;
   overflow-y: auto;
+  padding: var(--space-4);
+}
+
+.inspector-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
 }
 
 /* ── Mobile ── */
-.app.mobile .app-body {
+.app.mobile {
+  height: auto;
+  overflow: auto;
+}
+.app.mobile .app-workbench {
   grid-template-columns: 1fr;
 }
 .app.mobile .app-panel {
   border-left: none;
   border-top: 1px solid var(--separator);
+}
+.app.mobile .route-editor {
+  border-right: none;
+  border-bottom: 1px solid var(--separator);
+}
+.app.mobile .app-map-wrap {
+  min-height: 55vh;
 }
 .mobile-banner {
   background: var(--tint-fill-soft);
