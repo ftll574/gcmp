@@ -3,12 +3,12 @@
  * an arbitrary d3-geo projection so the same code handles every
  * projection (Mercator, Equirectangular, Azimuthal Equidistant, Orthographic).
  *
- *   greatCircleSvgPathProjected(from, to, projection, samples?)  → SVG `d` attribute
+ *   greatCircleSvgPathProjected(from, to, projection, samples?, options?)  → SVG `d` attribute
  *
  * Path strategy: sample the great-circle in lat/lon, project each sample,
  * skip samples that fall outside the projection's clip (orthographic back
- * hemisphere), split with `M` (moveTo) when the projected step jumps too
- * far (antimeridian wraparound on Mercator).
+ * hemisphere). Wrapping projections can opt into continuous x-unwrapping so
+ * the map layer can tile the path instead of breaking it at the antimeridian.
  */
 
 import type { GeoProjection } from 'd3-geo';
@@ -18,6 +18,14 @@ import type { LatLon } from './haversine.ts';
 export interface SvgViewport {
   readonly width: number;
   readonly height: number;
+}
+
+export interface GreatCirclePathOptions {
+  /**
+   * Width of one projected world tile. When provided, projected x coordinates
+   * are unwrapped across the antimeridian instead of splitting the SVG path.
+   */
+  readonly wrapWidth?: number;
 }
 
 /**
@@ -40,6 +48,7 @@ export function greatCircleSvgPathProjected(
   to: LatLon,
   projection: GeoProjection,
   samples: number = 96,
+  options: GreatCirclePathOptions = {},
 ): string {
   const path = greatCirclePath(from, to, samples);
   const translate = projection.translate();
@@ -53,7 +62,9 @@ export function greatCircleSvgPathProjected(
 
   let d = '';
   let prev: { x: number; y: number } | null = null;
+  let wrapOffsetX = 0;
   let started = false;
+  const wrapWidth = options.wrapWidth;
 
   for (let i = 0; i < path.length; i++) {
     const point = path[i];
@@ -63,16 +74,28 @@ export function greatCircleSvgPathProjected(
       prev = null;
       continue;
     }
-    const px = proj[0];
+    let px = proj[0] + wrapOffsetX;
     const py = proj[1];
     let cmd: 'M' | 'L';
     if (!started || prev === null) {
       cmd = 'M';
       started = true;
     } else {
-      const dx = Math.abs(px - prev.x);
-      const dy = Math.abs(py - prev.y);
-      cmd = dx > jumpThresholdX || dy > jumpThresholdY ? 'M' : 'L';
+      if (wrapWidth !== undefined && wrapWidth > 0) {
+        const dx = px - prev.x;
+        if (dx > wrapWidth / 2) {
+          wrapOffsetX -= wrapWidth;
+          px = proj[0] + wrapOffsetX;
+        } else if (dx < -wrapWidth / 2) {
+          wrapOffsetX += wrapWidth;
+          px = proj[0] + wrapOffsetX;
+        }
+        cmd = 'L';
+      } else {
+        const dx = Math.abs(px - prev.x);
+        const dy = Math.abs(py - prev.y);
+        cmd = dx > jumpThresholdX || dy > jumpThresholdY ? 'M' : 'L';
+      }
     }
     d += `${cmd}${px.toFixed(2)} ${py.toFixed(2)} `;
     prev = { x: px, y: py };

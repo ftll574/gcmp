@@ -33,6 +33,8 @@ import { useWorldMap } from '../state/use-world-map.ts';
 
 interface Props {
   airportLookup: ReadonlyMap<string, Airport>;
+  airports: ReadonlyArray<Airport>;
+  activeAirports: ReadonlyArray<Airport>;
   groups: ReadonlyArray<RoutingGroup>;
   activeIndex: number;
   width: number;
@@ -45,6 +47,7 @@ interface Props {
    * on the line itself.
    */
   showDistances?: boolean;
+  onAirportCommit?: (airport: Airport) => void;
   onSvgReady?: (svg: SVGSVGElement | null) => void;
 }
 
@@ -79,6 +82,8 @@ function normalizeTx(tx: number, period: number): number {
 
 export function MapView({
   airportLookup,
+  airports,
+  activeAirports,
   groups,
   activeIndex,
   width,
@@ -86,6 +91,7 @@ export function MapView({
   projection,
   showBearings = false,
   showDistances = false,
+  onAirportCommit,
   onSvgReady,
 }: Props): React.ReactElement {
   const { features, error: worldError } = useWorldMap();
@@ -115,6 +121,7 @@ export function MapView({
     rotateLat: initialCenter.lat,
   });
   const [dragging, setDragging] = useState(false);
+  const [selectedAirportCode, setSelectedAirportCode] = useState<string | null>(null);
   const dragRef = useRef<{
     startX: number;
     startY: number;
@@ -182,7 +189,9 @@ export function MapView({
         const from = airportLookup.get(leg.from);
         const to = airportLookup.get(leg.to);
         if (!from || !to) return null;
-        const d = greatCircleSvgPathProjected(from, to, proj);
+        const d = greatCircleSvgPathProjected(from, to, proj, 96, {
+          ...(wrapping ? { wrapWidth: worldWidth } : {}),
+        });
         const midLat = (from.lat + to.lat) / 2;
         const midLon = (from.lon + to.lon) / 2;
         const midProj = proj([midLon, midLat]);
@@ -202,9 +211,9 @@ export function MapView({
         };
       });
     });
-  }, [groups, airportLookup, proj]);
+  }, [groups, airportLookup, proj, wrapping, worldWidth]);
 
-  const allAirports = useMemo(() => {
+  const routeAirports = useMemo(() => {
     const seen = new Set<string>();
     const out: Airport[] = [];
     for (const g of groups) {
@@ -222,20 +231,58 @@ export function MapView({
     return out;
   }, [groups, airportLookup]);
 
+  const activeAirportCodes = useMemo(
+    () => new Set(activeAirports.map((airport) => airport.iata)),
+    [activeAirports],
+  );
+  const routeAirportCodes = useMemo(
+    () => new Set(routeAirports.map((airport) => airport.iata)),
+    [routeAirports],
+  );
+
   const projectedAirports = useMemo(() => {
-    return allAirports.map((a) => {
+    return airports.map((a) => {
       const coords = proj([a.lon, a.lat]);
       if (!coords || !Number.isFinite(coords[0]) || !Number.isFinite(coords[1])) {
         return { airport: a, x: null as number | null, y: null as number | null };
       }
       return { airport: a, x: coords[0], y: coords[1] };
     });
-  }, [allAirports, proj]);
+  }, [airports, proj]);
+
+  const selectedAirport = useMemo(() => {
+    if (!selectedAirportCode) return null;
+    return airports.find((airport) => airport.iata === selectedAirportCode) ?? null;
+  }, [airports, selectedAirportCode]);
+
+  const selectedProjected = useMemo(() => {
+    if (!selectedAirport) return null;
+    const coords = proj([selectedAirport.lon, selectedAirport.lat]);
+    if (!coords || !Number.isFinite(coords[0]) || !Number.isFinite(coords[1])) return null;
+    return { airport: selectedAirport, x: coords[0], y: coords[1] };
+  }, [selectedAirport, proj]);
+
+  const routeEndpoint = activeAirports.at(-1) ?? null;
+  const routeOrigin = activeAirports[0] ?? null;
+
+  function airportActionLabel(airport: Airport): string {
+    if (!routeEndpoint) return `Start route at ${airport.iata}`;
+    if (routeEndpoint.iata === airport.iata) return `${airport.iata} is current endpoint`;
+    if (routeOrigin && airport.iata === routeOrigin.iata && activeAirports.length > 1) {
+      return `Close loop ${routeEndpoint.iata} → ${airport.iata}`;
+    }
+    return `Add leg ${routeEndpoint.iata} → ${airport.iata}`;
+  }
+
+  function airportCanCommit(airport: Airport): boolean {
+    return routeEndpoint?.iata !== airport.iata;
+  }
 
   // ── Interaction ──
 
   function onPointerDown(e: React.PointerEvent<SVGSVGElement>): void {
     if (e.button !== 0) return;
+    setSelectedAirportCode(null);
     (e.target as Element).setPointerCapture?.(e.pointerId);
     dragRef.current = {
       startX: e.clientX,
@@ -433,20 +480,135 @@ export function MapView({
                 )}
               {projectedAirports.map(({ airport, x, y }) => {
                 if (x === null || y === null) return null;
+                const inActiveRoute = activeAirportCodes.has(airport.iata);
+                const inAnyRoute = routeAirportCodes.has(airport.iata);
                 return (
-                  <g key={`${airport.iata}-${offsetX}`} className="map-airport">
-                    <circle cx={x} cy={y} r={5 / labelInvScale} className="map-airport-dot" />
-                    <text
-                      x={x + 8 / labelInvScale}
-                      y={y - 6 / labelInvScale}
-                      className="map-airport-label"
-                      style={{ fontSize: `${12 / labelInvScale}px` }}
-                    >
-                      {airport.iata}
-                    </text>
+                  <g
+                    key={`${airport.iata}-${offsetX}`}
+                    className={`map-airport${inActiveRoute ? ' is-active' : ''}${inAnyRoute && !inActiveRoute ? ' is-in-route' : ''}`}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`${airport.iata} ${airport.city}. ${airportActionLabel(airport)}`}
+                    onPointerDown={(event) => {
+                      event.stopPropagation();
+                    }}
+                    onPointerEnter={() => {
+                      setSelectedAirportCode(airport.iata);
+                    }}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setSelectedAirportCode(airport.iata);
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        setSelectedAirportCode(airport.iata);
+                      }
+                    }}
+                  >
+                    <title>{`${airport.iata} ${airport.city}. ${airportActionLabel(airport)}`}</title>
+                    <circle
+                      cx={x}
+                      cy={y}
+                      r={(inActiveRoute ? 5 : inAnyRoute ? 3.8 : 1.35) / labelInvScale}
+                      className="map-airport-dot"
+                    />
+                    {inAnyRoute && (
+                      <text
+                        x={x + 8 / labelInvScale}
+                        y={y - 6 / labelInvScale}
+                        className="map-airport-label"
+                        style={{ fontSize: `${12 / labelInvScale}px` }}
+                      >
+                        {airport.iata}
+                      </text>
+                    )}
                   </g>
                 );
               })}
+              {selectedProjected && (
+                <g
+                  className="map-airport-popover"
+                  transform={`translate(${selectedProjected.x}, ${selectedProjected.y})`}
+                  onPointerDown={(event) => {
+                    event.stopPropagation();
+                  }}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                  }}
+                >
+                  <rect
+                    x={10 / labelInvScale}
+                    y={-76 / labelInvScale}
+                    width={224 / labelInvScale}
+                    height={68 / labelInvScale}
+                    rx={8 / labelInvScale}
+                    className="map-airport-popover-bg"
+                  />
+                  <text
+                    x={22 / labelInvScale}
+                    y={-52 / labelInvScale}
+                    className="map-airport-popover-title"
+                    style={{ fontSize: `${13 / labelInvScale}px` }}
+                  >
+                    {selectedProjected.airport.iata} · {selectedProjected.airport.city}
+                  </text>
+                  <text
+                    x={22 / labelInvScale}
+                    y={-34 / labelInvScale}
+                    className="map-airport-popover-route"
+                    style={{ fontSize: `${11 / labelInvScale}px` }}
+                  >
+                    {airportActionLabel(selectedProjected.airport)}
+                  </text>
+                  {airportCanCommit(selectedProjected.airport) ? (
+                    <g
+                      className="map-airport-popover-button"
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Add ${selectedProjected.airport.iata} to route`}
+                      onClick={() => {
+                        onAirportCommit?.(selectedProjected.airport);
+                        setSelectedAirportCode(null);
+                      }}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          event.preventDefault();
+                          onAirportCommit?.(selectedProjected.airport);
+                          setSelectedAirportCode(null);
+                        }
+                      }}
+                    >
+                      <rect
+                        x={22 / labelInvScale}
+                        y={-26 / labelInvScale}
+                        width={96 / labelInvScale}
+                        height={18 / labelInvScale}
+                        rx={5 / labelInvScale}
+                        className="map-airport-popover-button-bg"
+                      />
+                      <text
+                        x={70 / labelInvScale}
+                        y={-13 / labelInvScale}
+                        textAnchor="middle"
+                        className="map-airport-popover-button-text"
+                        style={{ fontSize: `${10 / labelInvScale}px` }}
+                      >
+                        Add to route
+                      </text>
+                    </g>
+                  ) : (
+                    <text
+                      x={22 / labelInvScale}
+                      y={-14 / labelInvScale}
+                      className="map-airport-popover-muted"
+                      style={{ fontSize: `${10 / labelInvScale}px` }}
+                    >
+                      Already the current endpoint
+                    </text>
+                  )}
+                </g>
+              )}
             </g>
           ))}
         </g>
