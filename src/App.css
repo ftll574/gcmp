@@ -819,6 +819,70 @@
   font-family: var(--font-mono);
   font-size: 11px;
 }
+.map-airport {
+  cursor: pointer;
+  outline: none;
+}
+.map-airport-dot {
+  fill: color-mix(in srgb, var(--secondary-label) 58%, transparent);
+  stroke: var(--system-background);
+  stroke-width: 1;
+  opacity: 0.34;
+  transition:
+    fill var(--motion-fast) var(--ease-standard),
+    opacity var(--motion-fast) var(--ease-standard),
+    r var(--motion-fast) var(--ease-standard),
+    stroke-width var(--motion-fast) var(--ease-standard);
+}
+.map-airport:hover .map-airport-dot,
+.map-airport:focus-visible .map-airport-dot {
+  fill: var(--label);
+  opacity: 0.9;
+  stroke-width: 1.5;
+}
+.map-airport.is-in-route .map-airport-dot {
+  fill: var(--secondary-label);
+  opacity: 0.8;
+}
+.map-airport.is-active .map-airport-dot {
+  fill: var(--tint);
+  stroke: var(--system-background);
+  stroke-width: 2;
+  opacity: 1;
+}
+.map-airport-popover {
+  filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.26));
+}
+.map-airport-popover-bg {
+  fill: var(--system-background);
+  stroke: var(--separator);
+  stroke-width: 1;
+}
+.map-airport-popover-title {
+  fill: var(--label);
+  font-weight: 700;
+  pointer-events: none;
+}
+.map-airport-popover-route,
+.map-airport-popover-muted {
+  fill: var(--secondary-label);
+  pointer-events: none;
+}
+.map-airport-popover-button {
+  cursor: pointer;
+}
+.map-airport-popover-button-bg {
+  fill: var(--tint);
+}
+.map-airport-popover-button:hover .map-airport-popover-button-bg,
+.map-airport-popover-button:focus-visible .map-airport-popover-button-bg {
+  fill: color-mix(in srgb, var(--tint) 84%, white);
+}
+.map-airport-popover-button-text {
+  fill: #ffffff;
+  font-weight: 700;
+  pointer-events: none;
+}
 
 .app-panel {
   border-left: 1px solid var(--separator);
@@ -1842,11 +1906,6 @@
   fill: none;
   stroke-linecap: round;
   stroke-linejoin: round;
-}
-.map-airport-dot {
-  fill: var(--text-primary);
-  stroke: var(--bg-page);
-  stroke-width: 1.5;
 }
 .map-airport-label {
   font-family: var(--font-mono);

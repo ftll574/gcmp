@@ -756,6 +756,8 @@ function Ready({
             <MapView
               key={routing.projection ?? DEFAULT_PROJECTION}
               airportLookup={airportIndex.byIata}
+              airports={data.airports}
+              activeAirports={activeChainAirports}
               groups={routing.groups}
               activeIndex={safeActiveIndex}
               width={mapSize.width}
@@ -763,6 +765,7 @@ function Ready({
               projection={routing.projection ?? DEFAULT_PROJECTION}
               showBearings={showBearings}
               showDistances={showDistances}
+              onAirportCommit={addAirport}
               onSvgReady={(el) => {
                 svgRef.current = el;
               }}
