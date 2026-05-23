@@ -68,6 +68,12 @@ interface GlobeState {
   scale: number;
 }
 
+interface ProjectedAirport {
+  readonly airport: Airport;
+  readonly x: number | null;
+  readonly y: number | null;
+}
+
 const GLOBE_IDENTITY: GlobeState = { rotateLon: 0, rotateLat: 0, scale: 1 };
 
 /**
@@ -79,6 +85,21 @@ function normalizeTx(tx: number, period: number): number {
   if (period <= 0) return tx;
   const halved = ((tx + period / 2) % period + period) % period;
   return halved - period / 2;
+}
+
+function airportDotPath(
+  airports: ReadonlyArray<ProjectedAirport>,
+  routeCodes: ReadonlySet<string>,
+  radius: number,
+): string {
+  return airports
+    .filter(({ airport, x, y }) => x !== null && y !== null && !routeCodes.has(airport.iata))
+    .map(({ x, y }) => {
+      const cx = x as number;
+      const cy = y as number;
+      return `M${(cx - radius).toFixed(2)} ${cy.toFixed(2)}a${radius} ${radius} 0 1 0 ${(radius * 2).toFixed(2)} 0a${radius} ${radius} 0 1 0 ${(-radius * 2).toFixed(2)} 0`;
+    })
+    .join('');
 }
 
 function SvgMapView({
@@ -123,6 +144,8 @@ function SvgMapView({
   });
   const [dragging, setDragging] = useState(false);
   const [selectedAirportCode, setSelectedAirportCode] = useState<string | null>(null);
+  const hoverFrameRef = useRef<number | null>(null);
+  const lastPointerRef = useRef<{ x: number; y: number } | null>(null);
   const dragRef = useRef<{
     startX: number;
     startY: number;
@@ -250,6 +273,11 @@ function SvgMapView({
       return { airport: a, x: coords[0], y: coords[1] };
     });
   }, [airports, proj]);
+  const labelInvScale = isGlobe ? Math.max(globe.scale, 1) : Math.max(pz.scale, 1);
+  const airportDotsPath = useMemo(
+    () => airportDotPath(projectedAirports, routeAirportCodes, 1.25 / labelInvScale),
+    [projectedAirports, routeAirportCodes, labelInvScale],
+  );
 
   const selectedAirport = useMemo(() => {
     if (!selectedAirportCode) return null;
@@ -279,6 +307,48 @@ function SvgMapView({
     return routeEndpoint?.iata !== airport.iata;
   }
 
+  function findNearestAirportAt(svgX: number, svgY: number): Airport | null {
+    const hitRadiusPx = 9;
+    const hitRadiusSq = hitRadiusPx * hitRadiusPx;
+    let best: { airport: Airport; distSq: number } | null = null;
+    for (const { airport, x, y } of projectedAirports) {
+      if (x === null || y === null) continue;
+      for (const offsetX of wrapOffsets) {
+        const screenX = isGlobe ? x : (x + offsetX) * pz.scale + pz.tx;
+        const screenY = isGlobe ? y : y * pz.scale + pz.ty;
+        const dx = screenX - svgX;
+        const dy = screenY - svgY;
+        const distSq = dx * dx + dy * dy;
+        if (distSq <= hitRadiusSq && (best === null || distSq < best.distSq)) {
+          best = { airport, distSq };
+        }
+      }
+    }
+    return best?.airport ?? null;
+  }
+
+  function updateHoveredAirport(e: React.PointerEvent<SVGSVGElement>): void {
+    if (dragRef.current) return;
+    const svg = svgRef.current;
+    if (!svg) return;
+    const rect = svg.getBoundingClientRect();
+    lastPointerRef.current = {
+      x: ((e.clientX - rect.left) / rect.width) * width,
+      y: ((e.clientY - rect.top) / rect.height) * height,
+    };
+    if (hoverFrameRef.current !== null) return;
+    hoverFrameRef.current = window.requestAnimationFrame(() => {
+      hoverFrameRef.current = null;
+      const last = lastPointerRef.current;
+      if (!last) return;
+      const nearest = findNearestAirportAt(last.x, last.y);
+      setSelectedAirportCode((current) => {
+        const next = nearest?.iata ?? null;
+        return current === next ? current : next;
+      });
+    });
+  }
+
   // ── Interaction ──
 
   function onPointerDown(e: React.PointerEvent<SVGSVGElement>): void {
@@ -296,7 +366,10 @@ function SvgMapView({
 
   function onPointerMove(e: React.PointerEvent<SVGSVGElement>): void {
     const d = dragRef.current;
-    if (!d) return;
+    if (!d) {
+      updateHoveredAirport(e);
+      return;
+    }
     const dx = e.clientX - d.startX;
     const dy = e.clientY - d.startY;
     if (isGlobe) {
@@ -362,7 +435,6 @@ function SvgMapView({
   }
 
   const transform = isGlobe ? '' : `translate(${pz.tx}, ${pz.ty}) scale(${pz.scale})`;
-  const labelInvScale = isGlobe ? Math.max(globe.scale, 1) : Math.max(pz.scale, 1);
 
   const isTransformed = isGlobe
     ? globe.rotateLon !== initialCenter.lon ||
@@ -479,23 +551,22 @@ function SvgMapView({
                     ) : null,
                   ),
                 )}
-              {projectedAirports.map(({ airport, x, y }) => {
-                if (x === null || y === null) return null;
+              {airportDotsPath && (
+                <path d={airportDotsPath} className="map-airport-dots" aria-hidden="true" />
+              )}
+              {routeAirports.map((airport) => {
+                const coords = proj([airport.lon, airport.lat]);
+                const x = coords?.[0];
+                const y = coords?.[1];
+                if (x === undefined || y === undefined || !Number.isFinite(x) || !Number.isFinite(y)) {
+                  return null;
+                }
                 const inActiveRoute = activeAirportCodes.has(airport.iata);
                 const inAnyRoute = routeAirportCodes.has(airport.iata);
                 return (
                   <g
                     key={`${airport.iata}-${offsetX}`}
                     className={`map-airport${inActiveRoute ? ' is-active' : ''}${inAnyRoute && !inActiveRoute ? ' is-in-route' : ''}`}
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`${airport.iata} ${airport.city}. ${airportActionLabel(airport)}`}
-                    onPointerDown={(event) => {
-                      event.stopPropagation();
-                    }}
-                    onPointerEnter={() => {
-                      setSelectedAirportCode(airport.iata);
-                    }}
                     onClick={(event) => {
                       event.stopPropagation();
                       setSelectedAirportCode(airport.iata);
@@ -514,16 +585,14 @@ function SvgMapView({
                       r={(inActiveRoute ? 5 : inAnyRoute ? 3.8 : 1.35) / labelInvScale}
                       className="map-airport-dot"
                     />
-                    {inAnyRoute && (
-                      <text
-                        x={x + 8 / labelInvScale}
-                        y={y - 6 / labelInvScale}
-                        className="map-airport-label"
-                        style={{ fontSize: `${12 / labelInvScale}px` }}
-                      >
-                        {airport.iata}
-                      </text>
-                    )}
+                    <text
+                      x={x + 8 / labelInvScale}
+                      y={y - 6 / labelInvScale}
+                      className="map-airport-label"
+                      style={{ fontSize: `${12 / labelInvScale}px` }}
+                    >
+                      {airport.iata}
+                    </text>
                   </g>
                 );
               })}
