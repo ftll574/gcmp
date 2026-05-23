@@ -153,8 +153,8 @@ function Ready({
   const [showBearings, setShowBearings] = useState(false);
   const [showDistances, setShowDistances] = useState(false);
   const [activeInspector, setActiveInspector] = useState<InspectorPanel>('rules');
-  const [editorWidth, setEditorWidth] = useState(392);
-  const [inspectorWidth, setInspectorWidth] = useState(380);
+  const [editorWidth, setEditorWidth] = useState(460);
+  const [inspectorWidth, setInspectorWidth] = useState(360);
   const [resizing, setResizing] = useState<ResizeHandle | null>(null);
   const rtwProducts = useMemo(
     () => sortMileageRedemptionRtwProductsForMarket(data.rtwRuleCatalog.products, data.marketProfile),
@@ -227,8 +227,8 @@ function Ready({
   useEffect(() => {
     if (resizing === null) return;
     function onMove(event: PointerEvent): void {
-      const minSide = 300;
-      const maxSide = Math.min(520, Math.max(340, window.innerWidth * 0.45));
+      const minSide = 340;
+      const maxSide = Math.min(560, Math.max(380, window.innerWidth * 0.45));
       if (resizing === 'editor') {
         setEditorWidth(Math.min(maxSide, Math.max(minSide, event.clientX)));
       } else {

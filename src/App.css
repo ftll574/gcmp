@@ -314,11 +314,11 @@
   flex: 1 1 auto;
   display: grid;
   grid-template-columns:
-    minmax(300px, var(--editor-width, 392px))
+    minmax(340px, var(--editor-width, 460px))
     6px
     minmax(420px, 1fr)
     6px
-    minmax(300px, var(--inspector-width, 380px));
+    minmax(340px, var(--inspector-width, 360px));
   min-height: 0;
   background: var(--grouped-background);
 }
@@ -1163,23 +1163,29 @@
   letter-spacing: 0.05em;
 }
 
-/* ── Leg chain (Apple pill chips) ── */
+/* ── Leg chain editor ── */
 .leg-chain {
   list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
+  display: grid;
+  gap: 1px;
   margin: 0;
   padding: 0;
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-control);
+  overflow: hidden;
+  background: var(--separator);
 }
 .leg-chip {
-  display: inline-flex;
+  display: grid;
+  grid-template-columns: 16px 48px minmax(72px, 1fr) 24px;
   align-items: center;
-  gap: var(--space-2);
-  padding: 6px var(--space-3);
-  background: var(--secondary-fill);
+  column-gap: var(--space-2);
+  row-gap: 6px;
+  min-width: 0;
+  padding: 8px var(--space-3) 9px;
+  background: var(--system-background);
   border: none;
-  border-radius: var(--radius-pill);
+  border-radius: 0;
   font-size: var(--type-footnote);
   cursor: grab;
   transition:
@@ -1188,7 +1194,7 @@
     transform var(--motion-fast) var(--ease-standard);
 }
 .leg-chip:hover {
-  background: var(--fill);
+  background: var(--secondary-grouped-background);
 }
 .leg-chip.dragging {
   opacity: 0.5;
@@ -1211,7 +1217,7 @@
 .leg-chip-city {
   color: var(--secondary-label);
   font-size: var(--type-caption);
-  max-width: 12ch;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1238,12 +1244,15 @@
   color: #ffffff;
 }
 .leg-chip-carrier-wrap {
-  display: inline-flex;
+  display: grid;
+  grid-column: 2 / -1;
+  grid-template-columns: 16px 54px 58px minmax(70px, 1fr) 76px;
   align-items: center;
-  gap: var(--space-1);
-  margin-left: var(--space-2);
-  padding-left: var(--space-2);
-  border-left: 1px solid var(--separator);
+  gap: 6px;
+  min-width: 0;
+  margin-left: 0;
+  padding-left: 0;
+  border-left: none;
 }
 .leg-chip-arrow {
   font-family: var(--font-mono);
@@ -1251,10 +1260,11 @@
   font-size: var(--type-caption);
 }
 .leg-chip-carrier {
-  background: transparent;
+  width: 100%;
+  background: var(--secondary-grouped-background);
   border: 1px solid var(--separator);
   border-radius: 6px;
-  padding: 2px var(--space-2);
+  padding: 4px 6px;
   font-family: var(--font-mono);
   font-size: var(--type-caption);
   color: var(--tint);
@@ -1269,16 +1279,17 @@
    that nudges users to set it; when set, lights up tint to signal an
    explicit override. */
 .leg-chip-fareclass {
-  background: transparent;
+  width: 100%;
+  background: var(--secondary-grouped-background);
   border: 1px solid var(--separator);
   border-radius: 6px;
-  padding: 2px var(--space-2);
+  padding: 4px 6px;
   font-family: var(--font-mono);
   font-size: var(--type-caption);
   color: var(--tertiary-label);
   font-weight: 600;
   cursor: pointer;
-  margin-left: 4px;
+  margin-left: 0;
   transition:
     border-color var(--motion-fast) var(--ease-standard),
     color var(--motion-fast) var(--ease-standard),
@@ -1294,15 +1305,16 @@
   color: var(--tint);
 }
 .leg-chip-stopover {
-  background: transparent;
+  width: 100%;
+  background: var(--secondary-grouped-background);
   border: 1px solid var(--separator);
   border-radius: 6px;
-  padding: 2px var(--space-2);
+  padding: 4px 6px;
   font-size: var(--type-caption);
   color: var(--tertiary-label);
   font-weight: 600;
   cursor: pointer;
-  margin-left: 4px;
+  margin-left: 0;
 }
 .leg-chip-stopover:hover {
   border-color: var(--tint);
@@ -1314,17 +1326,27 @@
   background: color-mix(in srgb, var(--semantic-green) 10%, transparent);
 }
 .leg-chip-surface {
+  width: 100%;
   display: inline-flex;
   align-items: center;
   gap: 4px;
   border: 1px solid var(--separator);
   border-radius: 6px;
-  padding: 2px var(--space-2);
-  margin-left: 4px;
+  padding: 4px 6px;
+  margin-left: 0;
   color: var(--tertiary-label);
   font-size: var(--type-caption);
   font-weight: 600;
   cursor: pointer;
+}
+
+@media (max-width: 1180px) {
+  .leg-chip {
+    grid-template-columns: 16px 48px minmax(54px, 1fr) 24px;
+  }
+  .leg-chip-carrier-wrap {
+    grid-template-columns: 16px 54px 58px minmax(72px, 1fr) 76px;
+  }
 }
 .leg-chip-surface input {
   width: 12px;
@@ -2291,7 +2313,7 @@
 .rtw-panel {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-3);
   padding: var(--space-4);
   background: var(--secondary-grouped-background);
   border: 1px solid var(--separator);
@@ -2299,7 +2321,7 @@
 }
 .rtw-panel-header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
 }
@@ -2312,7 +2334,7 @@
 }
 .rtw-panel h2 {
   margin: 0;
-  font-size: var(--type-title-3);
+  font-size: var(--type-callout);
 }
 .rtw-status {
   white-space: nowrap;
@@ -2349,13 +2371,17 @@
 }
 .rtw-summary-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-2);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-control);
+  overflow: hidden;
+  background: var(--separator);
+  gap: 1px;
 }
 .rtw-summary-grid div {
   min-width: 0;
-  padding: var(--space-2);
-  border-radius: var(--radius-control);
+  padding: 9px var(--space-3);
+  border-radius: 0;
   background: var(--grouped-background);
 }
 .rtw-summary-grid span {
@@ -2365,9 +2391,10 @@
 }
 .rtw-summary-grid strong {
   display: block;
-  margin-top: 2px;
+  margin-top: 3px;
   font-family: var(--font-mono);
-  font-size: var(--type-callout);
+  font-size: var(--type-body);
+  line-height: 1.15;
 }
 .rtw-award-price {
   display: flex;
@@ -2441,17 +2468,24 @@
 .rtw-findings {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 1px;
   list-style: none;
   margin: 0;
   padding: 0;
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-control);
+  overflow: hidden;
+  background: var(--separator);
 }
 .rtw-finding {
   display: grid;
-  grid-template-columns: 64px minmax(0, 1fr);
-  gap: var(--space-2);
-  align-items: start;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: center;
+  padding: 9px var(--space-3);
+  background: var(--grouped-background);
   font-size: var(--type-footnote);
+  line-height: 1.45;
 }
 .rtw-finding-severity {
   width: fit-content;
