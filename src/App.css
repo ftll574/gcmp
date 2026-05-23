@@ -819,9 +819,91 @@
   font-family: var(--font-mono);
   font-size: 11px;
 }
+.deck-map-view {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-map-sea);
+}
+.deck-map-view canvas {
+  outline: none;
+}
+.deck-map-webgl-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  color: var(--secondary-label);
+  font-size: var(--type-footnote);
+  text-align: center;
+}
+.map-airport-html-popover {
+  position: absolute;
+  z-index: 4;
+  width: 224px;
+  padding: 10px 12px;
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-control);
+  background: var(--system-background);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+  pointer-events: auto;
+}
+.map-airport-html-title {
+  color: var(--label);
+  font-size: var(--type-footnote);
+  font-weight: 700;
+}
+.map-airport-html-route {
+  margin-top: 3px;
+  color: var(--secondary-label);
+  font-size: var(--type-caption);
+}
+.map-airport-html-button {
+  margin-top: 8px;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  background: var(--tint);
+  color: #ffffff;
+  font: inherit;
+  font-size: var(--type-caption);
+  font-weight: 700;
+  cursor: pointer;
+}
+.map-airport-html-button:hover {
+  background: color-mix(in srgb, var(--tint) 84%, white);
+}
+.map-airport-html-muted {
+  margin-top: 8px;
+  color: var(--secondary-label);
+  font-size: var(--type-caption);
+  font-weight: 700;
+}
+.deck-map-projection-note,
+.deck-map-error {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 3;
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-control);
+  padding: 5px 8px;
+  background: color-mix(in srgb, var(--system-background) 88%, transparent);
+  color: var(--secondary-label);
+  font-size: var(--type-caption);
+}
+.deck-map-error {
+  color: var(--semantic-red);
+}
 .map-airport {
   cursor: pointer;
   outline: none;
+}
+.map-airport-dots {
+  fill: color-mix(in srgb, var(--secondary-label) 58%, transparent);
+  opacity: 0.3;
+  pointer-events: none;
 }
 .map-airport-dot {
   fill: color-mix(in srgb, var(--secondary-label) 58%, transparent);
