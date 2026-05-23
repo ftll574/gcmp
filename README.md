@@ -2,14 +2,14 @@
 
 **Live at: https://ftll574.github.io/gcmp/**
 
-Taiwan-first round-the-world route planner. Build an itinerary, mark stopovers and surface sectors, validate it against RTW fares and multi-carrier award rules, and share the URL.
+Taiwan-first round-the-world award route planner. Build an itinerary, mark stopovers and surface sectors, validate it against RTW and multi-carrier mileage-redemption award rules, and share the URL.
 
 ![Status: RTW pivot](https://img.shields.io/badge/status-RTW%20pivot-blue) ![License: MIT](https://img.shields.io/badge/license-MIT-green) ![Tests: 128 passing](https://img.shields.io/badge/tests-128%20passing-green)
 
 ## What It Does
 
 - **Plan multi-leg RTW routings** — add airports by IATA code, city name, or city code.
-- **Validate RTW products** — current seed data includes EVA Star Alliance World Travel Award, Cathay Asia Miles oneworld Multi-carrier Award, oneworld Explorer, Star Alliance RTW fare, Qantas oneworld Classic Flight Reward, ANA archived RTW award, and China Airlines SkyTeam partner award caveats.
+- **Validate mileage-redemption RTW products** — current planning candidates include EVA Star Alliance World Travel Award, Cathay Asia Miles oneworld Multi-carrier Award, Qantas oneworld Classic Flight Reward, ANA archived RTW award, and China Airlines SkyTeam partner award caveats.
 - **Taiwan-first priority** — BR/EVA, CI/China Airlines, JX/STARLUX, CX/Asia Miles, JL/JAL, NH/ANA, and SQ/KrisFlyer are modeled as first-market priorities.
 - **Track RTW-specific metadata** — stopover vs transfer, surface/open-jaw sectors, operating carrier eligibility, segment count, distance caps, same-city/same-country constraints.
 - **Estimate award price** — EVA and Cathay RTW/multi-carrier award products show miles required from pricing bands where data is available.
@@ -23,7 +23,7 @@ Taiwan-based travelers planning complex RTW or multi-carrier award itineraries n
 
 The core questions are:
 
-- Can this route be ticketed under this RTW fare or award product?
+- Can this route be redeemed under this RTW award or multi-carrier award product?
 - Which airline alliance or mileage program can support it?
 - Which leg violates the rule?
 - How many segments, stopovers, surface sectors, and miles have I used?
@@ -37,13 +37,15 @@ The first-market profile lives at `public/data/markets/tw/current.json`.
 
 Current priority:
 
-- **Primary**: EVA Star Alliance World Travel Award, Cathay Asia Miles oneworld Multi-carrier Award, Star Alliance RTW fare, oneworld Explorer
+- **Primary**: EVA Star Alliance World Travel Award, Cathay Asia Miles oneworld Multi-carrier Award
 - **Important but limited**: China Airlines Dynasty Flyer, STARLUX COSMILE
 - **Secondary / watch**: JAL Mileage Bank, ANA Mileage Club, Singapore KrisFlyer
 
 China Airlines is intentionally modeled as Taiwan-important but not a true RTW award candidate because its SkyTeam partner award rules reject itineraries crossing both the Pacific and Atlantic.
 
 ANA Star Alliance RTW award is modeled as discontinued for new ticketing because ANA stopped issuing new Star Alliance RTW award tickets as of 2025-06-23.
+
+Cash RTW fares such as oneworld Explorer and Star Alliance Round the World Fare may remain in reference data, but they are not surfaced in the planner. The product is for travelers redeeming miles, not buying cash RTW tickets.
 
 ## Quick Start
 

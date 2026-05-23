@@ -4,8 +4,10 @@ import rtwProducts from '../../../public/data/rtw-products/current.json' with { 
 import { MarketProfileSchema } from '../../../src/lib/schemas/market.ts';
 import { RtwRuleCatalogSchema } from '../../../src/lib/schemas/rtw-rule.ts';
 import {
+  isMileageRedemptionRtwProduct,
   preferredCarrierForProduct,
   scoreRtwProduct,
+  sortMileageRedemptionRtwProductsForMarket,
   sortRtwProductsForMarket,
 } from '../../../src/lib/rtw/products.ts';
 
@@ -15,10 +17,20 @@ const catalog = RtwRuleCatalogSchema.parse(rtwProducts);
 describe('RTW product market helpers', () => {
   it('prioritizes Taiwan-relevant RTW products above negative programs', () => {
     const sorted = sortRtwProductsForMarket(catalog.products, market);
-    expect(sorted[0]?.id).toBe('oneworld-explorer');
+    expect(sorted[0]?.id).toBe('br-infinity-star-alliance-world-travel-award');
     expect(scoreRtwProduct('china-airlines-skyteam-partner-award', market)).toBeLessThan(
       scoreRtwProduct('br-infinity-star-alliance-world-travel-award', market),
     );
+  });
+
+  it('filters the planning list to mileage-redemption products only', () => {
+    const sorted = sortMileageRedemptionRtwProductsForMarket(catalog.products, market);
+
+    expect(sorted.map((product) => product.kind)).not.toContain('cash-rtw-fare');
+    expect(sorted[0]?.id).toBe('br-infinity-star-alliance-world-travel-award');
+    expect(sorted.some((product) => product.id === 'oneworld-explorer')).toBe(false);
+    expect(sorted.some((product) => product.id === 'star-alliance-rtw-fare')).toBe(false);
+    expect(catalog.products.filter(isMileageRedemptionRtwProduct).length).toBe(sorted.length);
   });
 
   it('chooses the owning airline as the preferred carrier for airline-owned products', () => {

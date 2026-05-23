@@ -38,6 +38,12 @@ describe('MarketProfileSchema', () => {
     );
   });
 
+  test('does not prioritize cash RTW fares in the Taiwan award-planning profile', () => {
+    expect(taiwan.priorityPrograms.map((program) => program.id)).not.toEqual(
+      expect.arrayContaining(['oneworld-explorer', 'star-alliance-rtw-fare']),
+    );
+  });
+
   test('marks China Airlines as important but not a true RTW candidate', () => {
     expect(taiwan.priorityPrograms).toEqual(
       expect.arrayContaining([

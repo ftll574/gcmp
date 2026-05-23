@@ -36,7 +36,7 @@ import {
   firstEligibleCarrierForProduct,
   isCarrierEligibleForProduct,
 } from './lib/rtw/eligible-airlines.ts';
-import { preferredCarrierForProduct, sortRtwProductsForMarket } from './lib/rtw/products.ts';
+import { preferredCarrierForProduct, sortMileageRedemptionRtwProductsForMarket } from './lib/rtw/products.ts';
 import { downloadBlob, svgToPngBlob, svgToSvgBlob } from './lib/svg-to-png.ts';
 import { parseShareUrl } from './lib/url-schema.ts';
 import {
@@ -157,7 +157,7 @@ function Ready({
   const [inspectorWidth, setInspectorWidth] = useState(380);
   const [resizing, setResizing] = useState<ResizeHandle | null>(null);
   const rtwProducts = useMemo(
-    () => sortRtwProductsForMarket(data.rtwRuleCatalog.products, data.marketProfile),
+    () => sortMileageRedemptionRtwProductsForMarket(data.rtwRuleCatalog.products, data.marketProfile),
     [data.rtwRuleCatalog.products, data.marketProfile],
   );
   const svgRef = useRef<SVGSVGElement | null>(null);
@@ -191,6 +191,16 @@ function Ready({
       ),
     [selectedRtwProduct, data.airlines, data.allianceCatalog, data.marketProfile],
   );
+
+  useEffect(() => {
+    if (rtwProducts.length === 0) return;
+    if (routing.rtwProductId !== undefined && rtwProducts.some((product) => product.id === routing.rtwProductId)) {
+      return;
+    }
+    const firstProduct = rtwProducts[0];
+    if (!firstProduct) return;
+    setRouting({ ...routing, rtwProductId: firstProduct.id });
+  }, [routing, rtwProducts, setRouting]);
 
   function changeRtwProduct(productId: string): void {
     const nextProduct = rtwProducts.find((product) => product.id === productId);

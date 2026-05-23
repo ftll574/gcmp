@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { estimateAwardPrice } from '../lib/rtw/award-pricing.ts';
-import { sortRtwProductsForMarket } from '../lib/rtw/products.ts';
+import { sortMileageRedemptionRtwProductsForMarket } from '../lib/rtw/products.ts';
 import { validateRtwRoute } from '../lib/rtw/validate.ts';
 import { useLocale } from '../i18n/use-locale.ts';
 import type { AwardPricingCatalog } from '../lib/schemas/award-pricing.ts';
@@ -70,7 +70,7 @@ export function RtwValidationPanel({
 }: RtwValidationPanelProps): React.ReactElement {
   const { t } = useLocale();
   const products = useMemo(
-    () => sortRtwProductsForMarket(rtwRuleCatalog.products, marketProfile),
+    () => sortMileageRedemptionRtwProductsForMarket(rtwRuleCatalog.products, marketProfile),
     [rtwRuleCatalog.products, marketProfile],
   );
   const selectedProduct = products.find((p) => p.id === selectedProductId) ?? products[0];
