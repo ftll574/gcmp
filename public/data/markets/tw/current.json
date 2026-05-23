@@ -147,32 +147,6 @@
       ]
     },
     {
-      "id": "oneworld-explorer",
-      "label": "oneworld Explorer",
-      "alliance": "oneworld",
-      "roles": ["alliance-rtw-fare"],
-      "rtwRelevance": "primary",
-      "notes": [
-        "Cash RTW fare, useful as a Taiwan-origin baseline when routing through nearby oneworld hubs such as HKG or NRT."
-      ],
-      "sourceUrls": [
-        "https://www.oneworld.com/round-the-world"
-      ]
-    },
-    {
-      "id": "star-alliance-rtw-fare",
-      "label": "Star Alliance Round the World Fare",
-      "alliance": "star",
-      "roles": ["alliance-rtw-fare"],
-      "rtwRelevance": "primary",
-      "notes": [
-        "Cash RTW fare and a strong Taiwan-origin baseline because EVA is a Taiwan home carrier and Star Alliance member."
-      ],
-      "sourceUrls": [
-        "https://roundtheworld.staralliance.com/staralliance/en/round-the-world"
-      ]
-    },
-    {
       "id": "jx-cosmile",
       "label": "STARLUX COSMILE",
       "airline": "JX",

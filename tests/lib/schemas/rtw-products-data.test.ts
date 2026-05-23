@@ -12,7 +12,7 @@ describe('RTW products data', () => {
     expect(catalog.products.length).toBeGreaterThanOrEqual(5);
   });
 
-  test('includes active alliance cash RTW fares', () => {
+  test('keeps cash RTW fares as reference data, not mileage-redemption candidates', () => {
     expect(catalog.products).toEqual(
       expect.arrayContaining([
         expect.objectContaining({

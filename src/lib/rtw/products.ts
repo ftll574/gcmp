@@ -13,8 +13,11 @@ const RELEVANCE_SCORE: Record<MarketRtwRelevance, number> = {
 export function scoreRtwProduct(productId: string, marketProfile: MarketProfile): number {
   const entry = marketProfile.priorityPrograms.find((program) => program.id === productId);
   if (!entry) return 0;
-  const roleBonus = entry.roles.includes('alliance-rtw-fare') ? 10 : 0;
-  return RELEVANCE_SCORE[entry.rtwRelevance] + roleBonus;
+  return RELEVANCE_SCORE[entry.rtwRelevance];
+}
+
+export function isMileageRedemptionRtwProduct(product: RtwRuleSet): boolean {
+  return product.kind === 'award-rtw' || product.kind === 'multi-carrier-award';
 }
 
 export function sortRtwProductsForMarket(
@@ -23,6 +26,16 @@ export function sortRtwProductsForMarket(
 ): RtwRuleSet[] {
   return [...products].sort(
     (a, b) => scoreRtwProduct(b.id, marketProfile) - scoreRtwProduct(a.id, marketProfile),
+  );
+}
+
+export function sortMileageRedemptionRtwProductsForMarket(
+  products: ReadonlyArray<RtwRuleSet>,
+  marketProfile: MarketProfile,
+): RtwRuleSet[] {
+  return sortRtwProductsForMarket(
+    products.filter(isMileageRedemptionRtwProduct),
+    marketProfile,
   );
 }
 
