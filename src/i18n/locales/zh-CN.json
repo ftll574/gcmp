@@ -15,10 +15,7 @@
     "shareUrl": "分享链接",
     "copyText": "复制文字版",
     "copyTextTitle": "纯文字航段表 — 可贴到飞客茶馆 / PTT / FlyerTalk",
-    "copied": "已复制 ✓",
-    "modeBeginner": "新手",
-    "modePro": "老手",
-    "modeHint": "新手模式会附上解释。随时可切换。"
+    "copied": "已复制 ✓"
   },
   "loading": "加载机场数据 + 里程规则中…",
   "errors": {
@@ -103,7 +100,6 @@
   },
   "panel": {
     "emptyHint": "添加 2 个以上机场，看你能拿多少里程。",
-    "emptyHintBeginner": "这里会显示你的航线能赚多少里程。点下面的范例试试，或直接输入机场代码（例如 SFO、东京、曼谷）。",
     "totalDistance": "总距离",
     "milesUnit": "海里",
     "perLegToggle": "每段详情",
@@ -114,8 +110,6 @@
     "rdmShort": "RDM",
     "pqmLong": "精英资格里程",
     "rdmLong": "酬宾里数",
-    "summaryBeginner": "搭 {carrier} 的 {cabin}，这条航线可以累积：",
-    "comparisonBeginner": "并列比较 — 同一张票，挂到不同常旅客计划累积到的里程不一样。",
     "confidenceChart": "官方表",
     "confidenceCorrected": "已修正",
     "confidenceMixed": "混合",
@@ -247,6 +241,8 @@
     "inspectorRules": "Rules",
     "inspectorTools": "Tools",
     "inspectorSaved": "Saved",
+    "resizeEditor": "Resize route editor",
+    "resizeInspector": "Resize route inspector",
     "market": {
       "TW": "Taiwan"
     },

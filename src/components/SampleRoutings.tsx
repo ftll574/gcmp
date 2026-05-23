@@ -1,5 +1,5 @@
 /**
- * Sample-routings carousel — surfaces on first visit and in Beginner mode
+ * Sample-routings carousel — surfaces on first visit
  * when the chain is empty. Click a card → fills the routing immediately.
  *
  * Cards include single-group ("simple") and multi-group ("comparison")

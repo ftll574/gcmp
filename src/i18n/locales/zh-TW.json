@@ -15,10 +15,7 @@
     "shareUrl": "分享連結",
     "copyText": "複製文字版",
     "copyTextTitle": "純文字航段表 — 可貼到 FlyerTalk / 飛客茶館 / PTT",
-    "copied": "已複製 ✓",
-    "modeBeginner": "新手",
-    "modePro": "老手",
-    "modeHint": "新手模式會附上解釋。隨時可切換。"
+    "copied": "已複製 ✓"
   },
   "loading": "載入機場資料 + 環球票規則中…",
   "errors": {
@@ -103,7 +100,6 @@
   },
   "panel": {
     "emptyHint": "加入 2 個以上機場，看你能拿多少哩程。",
-    "emptyHintBeginner": "這裡會顯示你的航線能賺多少哩程。點下面的範例試試，或直接輸入機場代碼（例如 SFO、東京、曼谷）。",
     "totalDistance": "總距離",
     "milesUnit": "海浬",
     "perLegToggle": "每段詳細",
@@ -114,8 +110,6 @@
     "rdmShort": "RDM",
     "pqmLong": "菁英資格哩數",
     "rdmLong": "酬賓里數",
-    "summaryBeginner": "搭 {carrier} 的 {cabin}，這條航線可以累積：",
-    "comparisonBeginner": "並列比較 — 同一張票，掛到不同常客計畫累積到的哩程不一樣。",
     "confidenceChart": "官方表",
     "confidenceCorrected": "已修正",
     "confidenceMixed": "混合",
@@ -247,6 +241,8 @@
     "inspectorRules": "規則",
     "inspectorTools": "工具",
     "inspectorSaved": "已存",
+    "resizeEditor": "調整路線編輯區寬度",
+    "resizeInspector": "調整規則面板寬度",
     "market": {
       "TW": "台灣"
     },

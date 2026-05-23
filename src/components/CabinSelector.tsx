@@ -8,7 +8,6 @@ import type { CabinId } from '../lib/types.ts';
 interface Props {
   value: CabinId;
   onChange: (cabin: CabinId) => void;
-  mode?: 'beginner' | 'pro';
 }
 
 const CABINS: Array<{ id: CabinId; letterKey: string; labelKey: string }> = [
@@ -18,7 +17,7 @@ const CABINS: Array<{ id: CabinId; letterKey: string; labelKey: string }> = [
   { id: 'first', letterKey: 'cabin.firstShort', labelKey: 'cabin.first' },
 ];
 
-export function CabinSelector({ value, onChange, mode = 'beginner' }: Props): React.ReactElement {
+export function CabinSelector({ value, onChange }: Props): React.ReactElement {
   const { t } = useLocale();
   return (
     <div className="cabin-selector" role="tablist" aria-label={t('cabin.label')}>
@@ -34,9 +33,7 @@ export function CabinSelector({ value, onChange, mode = 'beginner' }: Props): Re
             type="button"
           >
             <span className="cabin-tab-letter">{t(cabin.letterKey)}</span>
-            <span className="cabin-tab-label">
-              {mode === 'pro' ? '' : t(cabin.labelKey)}
-            </span>
+            <span className="cabin-tab-label">{t(cabin.labelKey)}</span>
           </button>
         );
       })}

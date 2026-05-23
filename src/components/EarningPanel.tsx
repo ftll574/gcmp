@@ -20,7 +20,6 @@ import { PROGRAM_LABELS } from '../lib/types.ts';
 interface Props {
   result: RoutingResult | null;
   programOrder: ReadonlyArray<ProgramId>;
-  mode?: 'beginner' | 'pro';
   cabin: CabinId;
   /** Per-program ¢/mile valuations (null if file unavailable). */
   valuations?: Valuations | null;
@@ -53,7 +52,6 @@ function cashEquivalent(miles: number, centsPerMile: number): string {
 export function EarningPanel({
   result,
   programOrder,
-  mode = 'beginner',
   cabin,
   valuations,
   allProgramsResult,
@@ -67,7 +65,7 @@ export function EarningPanel({
     return (
       <div className="earning-panel earning-panel-empty">
         <p className="earning-panel-hint">
-          {mode === 'beginner' ? t('panel.emptyHintBeginner') : t('panel.emptyHint')}
+          {t('panel.emptyHint')}
         </p>
       </div>
     );
@@ -108,11 +106,7 @@ export function EarningPanel({
           />
         );
       })()}
-      {mode === 'beginner' && (
-        <p className="earning-panel-comparison">
-          {multiGroup ? t('groups.compareHint') : t('panel.comparisonBeginner')}
-        </p>
-      )}
+      {multiGroup && <p className="earning-panel-comparison">{t('groups.compareHint')}</p>}
       {sortedPrograms.map((programId) => {
         const cpm = valuations?.valuations[programId];
         return (
@@ -121,7 +115,6 @@ export function EarningPanel({
             programId={programId}
             result={result}
             cabin={cabin}
-            mode={mode}
             showGroupBreakdown={multiGroup}
             isTop={programId === topProgramId && programOrder.length > 1}
             {...(cpm !== undefined ? { valuationCpm: cpm } : {})}
@@ -307,7 +300,6 @@ interface GrandTotalProps {
   programId: ProgramId;
   result: RoutingResult;
   cabin: CabinId;
-  mode: 'beginner' | 'pro';
   showGroupBreakdown: boolean;
   isTop?: boolean;
   /** ¢/mile valuation for this program. Undefined → chip hidden. */
@@ -320,7 +312,6 @@ function GrandTotalSection({
   programId,
   result,
   cabin,
-  mode,
   showGroupBreakdown,
   isTop = false,
   valuationCpm,
@@ -329,7 +320,6 @@ function GrandTotalSection({
   const { t } = useLocale();
   const grand = result.grandTotals[programId];
   const label = PROGRAM_LABELS[programId] ?? programId;
-  const cabinName = t(`cabin.${cabin === 'premium-economy' ? 'premiumEconomy' : cabin}`);
   // Confidence: use the first non-mixed across groups; if any are mixed → mixed.
   const confidences = result.groups
     .map((g) => g.programs[programId]?.confidence)
@@ -357,8 +347,8 @@ function GrandTotalSection({
 
   if (!grand) return <></> as React.ReactElement;
 
-  const pqmLabel = mode === 'beginner' ? t('panel.pqmLong') : t('panel.pqmShort');
-  const rdmLabel = mode === 'beginner' ? t('panel.rdmLong') : t('panel.rdmShort');
+  const pqmLabel = t('panel.pqmLong');
+  const rdmLabel = t('panel.rdmLong');
 
   return (
     <section className={`earning-program${isTop ? ' earning-program-top' : ''}`}>
@@ -374,22 +364,17 @@ function GrandTotalSection({
         )}
         {isTop && <span className="earning-program-best-pill">{t('best.pill')}</span>}
       </h3>
-      {mode === 'beginner' && (
-        <p className="earning-program-summary">
-          {t('panel.summaryBeginner', { carrier: label, cabin: cabinName })}
-        </p>
-      )}
       <div className="earning-numbers">
         <div className="earning-number-row">
           <span className="earning-number-value">{grand.pqm.toLocaleString()}</span>
           <span className="earning-number-unit">
-            {mode === 'beginner' ? <Glossary term="pqm">{pqmLabel}</Glossary> : pqmLabel}
+            <Glossary term="pqm">{pqmLabel}</Glossary>
           </span>
         </div>
         <div className="earning-number-row earning-number-secondary">
           <span className="earning-number-value">{grand.rdm.toLocaleString()}</span>
           <span className="earning-number-unit">
-            {mode === 'beginner' ? <Glossary term="rdm">{rdmLabel}</Glossary> : rdmLabel}
+            <Glossary term="rdm">{rdmLabel}</Glossary>
           </span>
         </div>
         {(() => {

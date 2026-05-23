@@ -15,10 +15,7 @@
     "shareUrl": "共有 URL",
     "copyText": "テキスト版コピー",
     "copyTextTitle": "テキスト形式の経路表 — FlyerTalk / 2ch / 個人ブログ向け",
-    "copied": "コピー済み ✓",
-    "modeBeginner": "初心者",
-    "modePro": "上級者",
-    "modeHint": "初心者モードでは解説が表示されます。いつでも切替可能。"
+    "copied": "コピー済み ✓"
   },
   "loading": "空港データ + マイルルールを読み込み中…",
   "errors": {
@@ -103,7 +100,6 @@
   },
   "panel": {
     "emptyHint": "2 つ以上の空港を追加すると、獲得マイルが表示されます。",
-    "emptyHintBeginner": "ここに獲得マイルが表示されます。下のサンプルをクリックするか、空港コード（SFO、東京、バンコクなど）を入力してください。",
     "totalDistance": "合計距離",
     "milesUnit": "海里",
     "perLegToggle": "区間別詳細",
@@ -114,8 +110,6 @@
     "rdmShort": "RDM",
     "pqmLong": "ステータスマイル",
     "rdmLong": "特典マイル",
-    "summaryBeginner": "{carrier} の {cabin} で獲得：",
-    "comparisonBeginner": "プログラム比較 — 同じチケットでも、どのプログラムに付与するかでマイル数が変わります。",
     "confidenceChart": "公式表",
     "confidenceCorrected": "修正済み",
     "confidenceMixed": "混合",
@@ -247,6 +241,8 @@
     "inspectorRules": "Rules",
     "inspectorTools": "Tools",
     "inspectorSaved": "Saved",
+    "resizeEditor": "Resize route editor",
+    "resizeInspector": "Resize route inspector",
     "market": {
       "TW": "Taiwan"
     },
