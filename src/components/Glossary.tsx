@@ -1,11 +1,8 @@
 /**
  * Glossary tooltip — wraps a jargon term with a hover/focus popover that
- * shows the localized definition. Only renders the underline + tooltip
- * affordance when the app is in Beginner mode; in Pro mode it renders the
- * plain term with no decoration.
+ * shows the localized definition.
  *
  *   <Glossary term="pqm">PQM</Glossary>
- *   <Glossary term="pqm" mode="pro">PQM</Glossary>  // plain text
  */
 
 import { useState, useId, type ReactNode } from 'react';
@@ -15,18 +12,12 @@ interface Props {
   /** Glossary key — matches `glossary.<term>` in the locale file. */
   term: string;
   children: ReactNode;
-  /** Force "pro" rendering (no decoration) even when app is in beginner mode. */
-  mode?: 'beginner' | 'pro';
 }
 
-export function Glossary({ term, children, mode = 'beginner' }: Props): React.ReactElement {
+export function Glossary({ term, children }: Props): React.ReactElement {
   const { t } = useLocale();
   const [open, setOpen] = useState(false);
   const id = useId();
-
-  if (mode === 'pro') {
-    return <span className="glossary-pro">{children}</span>;
-  }
 
   const definition = t(`glossary.${term}`);
   return (

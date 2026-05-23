@@ -130,45 +130,6 @@
   outline: none;
 }
 
-/* ── Mode toggle (iOS segmented control) ── */
-.mode-toggle {
-  display: inline-flex;
-  background: var(--secondary-fill);
-  border: none;
-  border-radius: var(--radius-pill);
-  padding: 2px;
-  gap: 0;
-  overflow: hidden;
-}
-.mode-toggle-button {
-  border: none;
-  background: transparent;
-  color: var(--secondary-label);
-  padding: 5px var(--space-3);
-  font-size: var(--type-footnote);
-  font-weight: 500;
-  font-family: var(--font-sans);
-  cursor: pointer;
-  border-radius: var(--radius-pill);
-  transition:
-    background var(--motion-fast) var(--ease-standard),
-    color var(--motion-fast) var(--ease-standard);
-}
-.mode-toggle-button:hover:not(.active) {
-  color: var(--label);
-}
-.mode-toggle-button.active {
-  background: var(--system-background);
-  color: var(--label);
-  font-weight: 600;
-  box-shadow: var(--shadow-1);
-}
-@media (prefers-color-scheme: dark) {
-  .mode-toggle-button.active {
-    background: var(--tertiary-system-background);
-  }
-}
-
 /* ── Glossary tooltip ── */
 .glossary {
   position: relative;
@@ -213,10 +174,6 @@
   border: 5px solid transparent;
   border-top-color: var(--label);
 }
-.glossary-pro {
-  display: inline;
-}
-
 /* ── Sample routings (Apple card components) ── */
 .sample-routings {
   display: flex;
@@ -294,7 +251,7 @@
   color: var(--secondary-label);
 }
 
-/* ── Beginner mode additions ── */
+/* ── Earning helper copy ── */
 .earning-panel-comparison {
   margin: 0 0 var(--space-3);
   padding: var(--space-3) var(--space-4);
@@ -304,17 +261,6 @@
   border-radius: var(--radius-card);
   line-height: 1.5;
 }
-.earning-program-summary {
-  margin: 0 0 var(--space-2);
-  font-size: var(--type-footnote);
-  color: var(--secondary-label);
-}
-.mode-beginner .earning-number-unit {
-  font-family: var(--font-sans);
-  text-transform: none;
-  letter-spacing: 0;
-}
-
 /* ── App controls ── */
 .app-controls-group {
   display: flex;

@@ -15,10 +15,7 @@
     "shareUrl": "Share URL",
     "copyText": "Copy text",
     "copyTextTitle": "Plain-text routing table — paste into FlyerTalk / 飞客茶馆 / PTT",
-    "copied": "Copied ✓",
-    "modeBeginner": "Beginner",
-    "modePro": "Pro",
-    "modeHint": "Beginner mode adds explanations. Switch any time."
+    "copied": "Copied ✓"
   },
   "loading": "Loading airports + RTW rules…",
   "errors": {
@@ -103,7 +100,6 @@
   },
   "panel": {
     "emptyHint": "Add 2+ airports to see how much you earn.",
-    "emptyHintBeginner": "This panel shows how many miles you earn for the routing you build. Try clicking an example below, or type airport codes above (like SFO, NRT, BKK).",
     "totalDistance": "Total distance",
     "milesUnit": "nm",
     "perLegToggle": "Per-leg breakdown",
@@ -114,8 +110,6 @@
     "rdmShort": "RDM",
     "pqmLong": "Status Miles",
     "rdmLong": "Award Miles",
-    "summaryBeginner": "On {carrier} in {cabin}, this routing earns:",
-    "comparisonBeginner": "Compare programs side-by-side — credit the same ticket to whichever program gives you more.",
     "confidenceChart": "chart",
     "confidenceCorrected": "corrected",
     "confidenceMixed": "mixed",

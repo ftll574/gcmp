@@ -25,13 +25,12 @@ import type { Airport } from '../lib/types.ts';
 interface Props {
   index: AirportIndex;
   onCommit: (airport: Airport) => void;
-  mode?: 'beginner' | 'pro';
 }
 
 const DEBOUNCE_MS = 50;
 const RESULT_LIMIT = 8;
 
-export function AirportAutocomplete({ index, onCommit, mode = 'beginner' }: Props): React.ReactElement {
+export function AirportAutocomplete({ index, onCommit }: Props): React.ReactElement {
   const { locale, t } = useLocale();
   const [query, setQuery] = useState('');
   const [debounced, setDebounced] = useState('');
@@ -102,17 +101,13 @@ export function AirportAutocomplete({ index, onCommit, mode = 'beginner' }: Prop
   const ambiguous = results.length > 1 && debounced.trim().length >= 2;
   const showCityCodeHint = cityCodeHit !== null;
 
-  const placeholder = mode === 'beginner'
-    ? t('input.addAirportPlaceholder')
-    : t('input.addAirportPlaceholderPro');
-
   return (
     <div className="autocomplete">
       <input
         ref={inputRef}
         type="text"
         className="autocomplete-input"
-        placeholder={placeholder}
+        placeholder={t('input.addAirportPlaceholderPro')}
         value={query}
         onChange={(e) => {
           setQuery(e.target.value);

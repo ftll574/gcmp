@@ -19,7 +19,6 @@ import { MapErrorBoundary } from './components/MapErrorBoundary.tsx';
 import { ImportFromGcmap } from './components/ImportFromGcmap.tsx';
 import { MapView } from './components/MapView.tsx';
 import { MobileBanner } from './components/MobileBanner.tsx';
-import { ModeToggle } from './components/ModeToggle.tsx';
 import { ProgramPicker } from './components/ProgramPicker.tsx';
 import { ProjectionPicker } from './components/ProjectionPicker.tsx';
 import { RtwLegTable } from './components/RtwLegTable.tsx';
@@ -54,7 +53,6 @@ import {
 } from './lib/types.ts';
 import type { LoadedData } from './state/use-loaded-data.ts';
 import { useLoadedData } from './state/use-loaded-data.ts';
-import { useAppMode } from './state/use-mode.ts';
 import { useRoutingState } from './state/use-routing-state.ts';
 import { useSavedRoutings } from './state/use-saved-routings.ts';
 import { useViewportWidth } from './state/use-viewport.ts';
@@ -69,7 +67,6 @@ export function App(): React.ReactElement {
   const load = useLoadedData();
   const { state: routing, setRouting, shareUrl } = useRoutingState();
   const { saved, save, remove, lastError: saveError } = useSavedRoutings();
-  const { mode, setMode } = useAppMode();
   const viewportW = useViewportWidth();
   const mapRef = useRef<HTMLDivElement>(null);
   const [mapSize, setMapSize] = useState({ width: 1024, height: 600 });
@@ -114,8 +111,6 @@ export function App(): React.ReactElement {
       save={save}
       remove={remove}
       saveError={saveError}
-      mode={mode}
-      setMode={setMode}
       isMobile={viewportW < MOBILE_BREAKPOINT}
       mapRef={mapRef}
       mapSize={mapSize}
@@ -133,8 +128,6 @@ interface ReadyProps {
   save: (name: string, url: string) => void;
   remove: (name: string) => void;
   saveError: string | null;
-  mode: ReturnType<typeof useAppMode>['mode'];
-  setMode: ReturnType<typeof useAppMode>['setMode'];
   isMobile: boolean;
   mapRef: React.RefObject<HTMLDivElement | null>;
   mapSize: { width: number; height: number };
@@ -150,8 +143,6 @@ function Ready({
   save,
   remove,
   saveError,
-  mode,
-  setMode,
   isMobile,
   mapRef,
   mapSize,
@@ -605,10 +596,10 @@ function Ready({
   }
 
   const hasAnyLegs = routing.groups.some((g) => g.legs.length > 0);
-  const showSamples = mode === 'beginner' && !hasAnyLegs;
+  const showSamples = !hasAnyLegs;
 
   return (
-    <div className={`app${isMobile ? ' mobile' : ''} mode-${mode}`}>
+    <div className={`app${isMobile ? ' mobile' : ''}`}>
       <MobileBanner visible={isMobile} />
       <header className="app-header">
         <div className="app-brand">
@@ -616,7 +607,6 @@ function Ready({
           <span className="app-brand-tagline">{t('brand.tagline')}</span>
         </div>
         <div className="app-header-controls">
-          <ModeToggle mode={mode} onChange={setMode} />
           <LanguagePicker />
           <ActionRow
             shareUrl={shareUrl}
@@ -658,7 +648,7 @@ function Ready({
               />
             </details>
             {!isMobile && (
-              <AirportAutocomplete index={airportIndex} onCommit={addAirport} mode={mode} />
+              <AirportAutocomplete index={airportIndex} onCommit={addAirport} />
             )}
             <GroupTabs
               groups={routing.groups}
@@ -824,15 +814,15 @@ function Ready({
                   <div className="mileage-estimate-controls">
                     <div className="app-controls-group">
                       <span className="app-controls-label">
-                        <Glossary term="cabin" mode={mode}>
+                        <Glossary term="cabin">
                           {t('cabin.label')}
                         </Glossary>
                       </span>
-                      <CabinSelector value={routing.cabin} onChange={changeCabin} mode={mode} />
+                      <CabinSelector value={routing.cabin} onChange={changeCabin} />
                     </div>
                     <div className="app-controls-group">
                       <span className="app-controls-label">
-                        <Glossary term="credit" mode={mode}>
+                        <Glossary term="credit">
                           {t('panel.pqmLong')} / {t('panel.rdmLong')}
                         </Glossary>
                       </span>
@@ -846,7 +836,6 @@ function Ready({
                   <EarningPanel
                     result={result}
                     programOrder={routing.programs}
-                    mode={mode}
                     cabin={routing.cabin}
                     valuations={data.valuations}
                     allProgramsResult={allProgramsResult}
