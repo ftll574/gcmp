@@ -247,6 +247,8 @@
     "inspectorRules": "規則",
     "inspectorTools": "工具",
     "inspectorSaved": "已存",
+    "resizeEditor": "調整路線編輯區寬度",
+    "resizeInspector": "調整規則面板寬度",
     "market": {
       "TW": "台灣"
     },

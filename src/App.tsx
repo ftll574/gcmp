@@ -32,6 +32,11 @@ import { useLocale } from './i18n/use-locale.ts';
 import { buildAirportIndex } from './lib/airport-index.ts';
 import { computeRouting } from './lib/calc/index.ts';
 import { DEFAULT_PROJECTION, type ProjectionId } from './lib/calc/projections.ts';
+import {
+  eligibleAirlinesForProduct,
+  firstEligibleCarrierForProduct,
+  isCarrierEligibleForProduct,
+} from './lib/rtw/eligible-airlines.ts';
 import { preferredCarrierForProduct, sortRtwProductsForMarket } from './lib/rtw/products.ts';
 import { downloadBlob, svgToPngBlob, svgToSvgBlob } from './lib/svg-to-png.ts';
 import { parseShareUrl } from './lib/url-schema.ts';
@@ -57,6 +62,7 @@ import './App.css';
 
 const MOBILE_BREAKPOINT = 768;
 type InspectorPanel = 'rules' | 'tools' | 'miles' | 'saved';
+type ResizeHandle = 'editor' | 'inspector';
 
 export function App(): React.ReactElement {
   const { t } = useLocale();
@@ -156,6 +162,9 @@ function Ready({
   const [showBearings, setShowBearings] = useState(false);
   const [showDistances, setShowDistances] = useState(false);
   const [activeInspector, setActiveInspector] = useState<InspectorPanel>('rules');
+  const [editorWidth, setEditorWidth] = useState(392);
+  const [inspectorWidth, setInspectorWidth] = useState(380);
+  const [resizing, setResizing] = useState<ResizeHandle | null>(null);
   const rtwProducts = useMemo(
     () => sortRtwProductsForMarket(data.rtwRuleCatalog.products, data.marketProfile),
     [data.rtwRuleCatalog.products, data.marketProfile],
@@ -177,10 +186,85 @@ function Ready({
     () => rtwProducts.find((product) => product.id === selectedRtwProductId) ?? rtwProducts[0],
     [rtwProducts, selectedRtwProductId],
   );
+  const eligibleAirlines = useMemo(
+    () => eligibleAirlinesForProduct(selectedRtwProduct, data.airlines, data.allianceCatalog),
+    [selectedRtwProduct, data.airlines, data.allianceCatalog],
+  );
+  const preferredEligibleCarrier = useMemo(
+    () =>
+      firstEligibleCarrierForProduct(
+        selectedRtwProduct,
+        data.airlines,
+        data.allianceCatalog,
+        preferredCarrierForProduct(selectedRtwProduct, data.marketProfile),
+      ),
+    [selectedRtwProduct, data.airlines, data.allianceCatalog, data.marketProfile],
+  );
 
   function changeRtwProduct(productId: string): void {
-    setRouting({ ...routing, rtwProductId: productId });
+    const nextProduct = rtwProducts.find((product) => product.id === productId);
+    const replacementCarrier = firstEligibleCarrierForProduct(
+      nextProduct,
+      data.airlines,
+      data.allianceCatalog,
+      preferredCarrierForProduct(nextProduct, data.marketProfile),
+    );
+    setRouting({
+      ...routing,
+      rtwProductId: productId,
+      groups: routing.groups.map((group) => ({
+        legs: group.legs.map((leg) =>
+          leg.surface === true ||
+          isCarrierEligibleForProduct(leg.operatingCarrier, nextProduct, data.allianceCatalog)
+            ? leg
+            : { ...leg, operatingCarrier: replacementCarrier },
+        ),
+      })),
+    });
   }
+
+  useEffect(() => {
+    if (resizing === null) return;
+    function onMove(event: PointerEvent): void {
+      const minSide = 300;
+      const maxSide = Math.min(520, Math.max(340, window.innerWidth * 0.45));
+      if (resizing === 'editor') {
+        setEditorWidth(Math.min(maxSide, Math.max(minSide, event.clientX)));
+      } else {
+        setInspectorWidth(Math.min(maxSide, Math.max(minSide, window.innerWidth - event.clientX)));
+      }
+    }
+    function onUp(): void {
+      setResizing(null);
+    }
+    document.body.classList.add('is-resizing-workbench');
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp, { once: true });
+    return () => {
+      document.body.classList.remove('is-resizing-workbench');
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+    };
+  }, [resizing]);
+
+  useEffect(() => {
+    let changed = false;
+    const nextGroups = routing.groups.map((group) => ({
+      legs: group.legs.map((leg) => {
+        if (
+          leg.surface === true ||
+          isCarrierEligibleForProduct(leg.operatingCarrier, selectedRtwProduct, data.allianceCatalog)
+        ) {
+          return leg;
+        }
+        changed = true;
+        return { ...leg, operatingCarrier: preferredEligibleCarrier };
+      }),
+    }));
+    if (changed) {
+      setRouting({ ...routing, groups: nextGroups });
+    }
+  }, [routing, selectedRtwProduct, data.allianceCatalog, preferredEligibleCarrier, setRouting]);
 
   // Clamp active group when groups change.
   const safeActiveIndex = Math.min(activeGroupIndex, Math.max(0, routing.groups.length - 1));
@@ -260,7 +344,7 @@ function Ready({
           {
             from: pendingAirport.iata,
             to: a.iata,
-            operatingCarrier: preferredCarrierForProduct(selectedRtwProduct, data.marketProfile),
+            operatingCarrier: preferredEligibleCarrier,
           },
         ],
       }));
@@ -274,7 +358,7 @@ function Ready({
       const nextLegs = buildLegs(
         nextCodes,
         group.legs,
-        defaultCarrier(group.legs, selectedRtwProduct, data.marketProfile),
+        defaultCarrier(group.legs, selectedRtwProduct, data, preferredEligibleCarrier),
       );
       return { legs: nextLegs };
     });
@@ -301,7 +385,7 @@ function Ready({
       const nextLegs = buildLegs(
         nextCodes,
         group.legs,
-        defaultCarrier(group.legs, selectedRtwProduct, data.marketProfile),
+        defaultCarrier(group.legs, selectedRtwProduct, data, preferredEligibleCarrier),
       );
       return { legs: nextLegs };
     });
@@ -313,7 +397,7 @@ function Ready({
       const nextLegs = buildLegs(
         nextCodes,
         group.legs,
-        defaultCarrier(group.legs, selectedRtwProduct, data.marketProfile),
+        defaultCarrier(group.legs, selectedRtwProduct, data, preferredEligibleCarrier),
       );
       return { legs: nextLegs };
     });
@@ -555,7 +639,13 @@ function Ready({
           ⚠ {saveError}
         </div>
       )}
-      <main className="app-workbench">
+      <main
+        className="app-workbench"
+        style={{
+          '--editor-width': `${editorWidth}px`,
+          '--inspector-width': `${inspectorWidth}px`,
+        } as React.CSSProperties}
+      >
         <section className="route-editor" aria-label="Routing input">
           <div className="route-editor-scroll">
             <details className="route-editor-details">
@@ -583,7 +673,7 @@ function Ready({
               fareClasses={activeGroup.legs.map((leg) => leg.fareClass)}
               stopovers={activeGroup.legs.map((leg) => leg.stopover)}
               surfaces={activeGroup.legs.map((leg) => leg.surface)}
-              airlines={data.airlines}
+              airlines={eligibleAirlines}
               onReorder={reorder}
               onRemove={removeAirport}
               onCarrierChange={changeCarrier}
@@ -606,7 +696,7 @@ function Ready({
                   operatingCarriers={activeGroup.legs.map((leg) => leg.operatingCarrier)}
                   stopovers={activeGroup.legs.map((leg) => leg.stopover)}
                   surfaces={activeGroup.legs.map((leg) => leg.surface)}
-                  airlines={data.airlines}
+                  airlines={eligibleAirlines}
                   onCarrierChange={changeCarrier}
                   onStopoverChange={changeStopover}
                   onSurfaceChange={changeSurface}
@@ -622,6 +712,15 @@ function Ready({
             </div>
           )}
         </section>
+        <button
+          type="button"
+          className="workbench-resizer editor-resizer"
+          aria-label={t('rtw.resizeEditor')}
+          onPointerDown={(event) => {
+            event.preventDefault();
+            setResizing('editor');
+          }}
+        />
         <div ref={mapRef} className="app-map-wrap">
           <div className="app-map-toolbar">
             <ProjectionPicker
@@ -670,6 +769,15 @@ function Ready({
             />
           </MapErrorBoundary>
         </div>
+        <button
+          type="button"
+          className="workbench-resizer inspector-resizer"
+          aria-label={t('rtw.resizeInspector')}
+          onPointerDown={(event) => {
+            event.preventDefault();
+            setResizing('inspector');
+          }}
+        />
         <aside className="app-panel" aria-label="Route inspector">
           <nav className="inspector-tabs" aria-label="Route inspector sections">
             {([
@@ -875,9 +983,17 @@ function DownloadMenu({
 function defaultCarrier(
   legs: ReadonlyArray<Leg>,
   selectedProduct: ReadyProps['data']['rtwRuleCatalog']['products'][number] | undefined,
-  marketProfile: ReadyProps['data']['marketProfile'],
+  data: ReadyProps['data'],
+  preferredEligibleCarrier: AirlineIata,
 ): AirlineIata {
-  return legs[0]?.operatingCarrier ?? preferredCarrierForProduct(selectedProduct, marketProfile);
+  const firstCarrier = legs[0]?.operatingCarrier;
+  if (
+    firstCarrier !== undefined &&
+    isCarrierEligibleForProduct(firstCarrier, selectedProduct, data.allianceCatalog)
+  ) {
+    return firstCarrier;
+  }
+  return preferredEligibleCarrier;
 }
 
 function buildLegs(

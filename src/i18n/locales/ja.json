@@ -247,6 +247,8 @@
     "inspectorRules": "Rules",
     "inspectorTools": "Tools",
     "inspectorSaved": "Saved",
+    "resizeEditor": "Resize route editor",
+    "resizeInspector": "Resize route inspector",
     "market": {
       "TW": "Taiwan"
     },

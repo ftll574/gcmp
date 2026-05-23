@@ -367,7 +367,12 @@
 .app-workbench {
   flex: 1 1 auto;
   display: grid;
-  grid-template-columns: minmax(320px, 410px) minmax(420px, 1fr) minmax(320px, 380px);
+  grid-template-columns:
+    minmax(300px, var(--editor-width, 392px))
+    6px
+    minmax(420px, 1fr)
+    6px
+    minmax(300px, var(--inspector-width, 380px));
   min-height: 0;
   background: var(--grouped-background);
 }
@@ -547,6 +552,37 @@
   min-height: 0;
   overflow: hidden;
   background: var(--map-sea);
+}
+
+.workbench-resizer {
+  position: relative;
+  z-index: 12;
+  width: 6px;
+  min-width: 6px;
+  border: none;
+  border-inline: 1px solid var(--separator);
+  background: var(--system-background);
+  cursor: col-resize;
+  padding: 0;
+}
+
+.workbench-resizer::before {
+  content: '';
+  position: absolute;
+  inset: 0 2px;
+  background: transparent;
+  transition: background var(--motion-fast) var(--ease-standard);
+}
+
+.workbench-resizer:hover::before,
+.workbench-resizer:focus-visible::before,
+.is-resizing-workbench .workbench-resizer::before {
+  background: var(--accent);
+}
+
+.workbench-resizer:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
 }
 
 .app-map-toolbar {
@@ -908,6 +944,9 @@
 }
 .app.mobile .app-workbench {
   grid-template-columns: 1fr;
+}
+.app.mobile .workbench-resizer {
+  display: none;
 }
 .app.mobile .app-panel {
   border-left: none;
