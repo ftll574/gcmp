@@ -30,7 +30,6 @@ import {
 } from '../lib/calc/projections.ts';
 import type { Airport, RoutingGroup } from '../lib/types.ts';
 import { useWorldMap } from '../state/use-world-map.ts';
-import { DeckGlMapView } from './DeckGlMapView.tsx';
 
 interface Props {
   airportLookup: ReadonlyMap<string, Airport>;
@@ -102,7 +101,7 @@ function airportDotPath(
     .join('');
 }
 
-function SvgMapView({
+export function MapView({
   airportLookup,
   airports,
   activeAirports,
@@ -698,23 +697,4 @@ function SvgMapView({
       </g>
     </svg>
   );
-}
-
-export function MapView(props: Props): React.ReactElement {
-  if (props.projection === 'mercator') {
-    return (
-      <DeckGlMapView
-        airportLookup={props.airportLookup}
-        airports={props.airports}
-        activeAirports={props.activeAirports}
-        groups={props.groups}
-        activeIndex={props.activeIndex}
-        width={props.width}
-        height={props.height}
-        {...(props.onAirportCommit ? { onAirportCommit: props.onAirportCommit } : {})}
-        {...(props.onSvgReady ? { onSvgReady: props.onSvgReady } : {})}
-      />
-    );
-  }
-  return <SvgMapView {...props} />;
 }
