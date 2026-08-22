@@ -1,9 +1,12 @@
 /**
- * gcmp — Mileage Runner Routing Calculator
+ * gcmp — Taiwan-first RTW award route planner
  *
- * v0.4: multi-group routings. Each group has its own legs[]; cabin + programs
- * + projection are global. The map renders all groups color-coded; the leg
- * chain edits the currently-active group.
+ * Workbench app: RTW rule validation is primary — per-leg operating carriers,
+ * stopover-vs-transfer flags, surface/open-jaw sectors, rule findings +
+ * award-price estimation against the selected RTW product. Mileage earning
+ * (PQM/RDM) is a collapsed secondary panel. Multi-group routings on an SVG
+ * d3-geo map with 4 projections; state round-trips through hash share-URLs;
+ * i18n en/zh-TW/zh-CN/ja. No beginner/pro mode.
  */
 
 import { useEffect, useMemo, useRef, useState } from 'react';

@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow `MAJOR.MINOR.PATCH.MICRO`.
 
+## [Unreleased]
+
+Product reset: per `docs/rtw-pivot-plan.md`, gcmp pivoted after v1.9 from a mileage earning calculator to a **Taiwan-first RTW award route planner** — itineraries are validated against RTW / multi-carrier mileage-redemption award rules, with PQM/RDM earning demoted to a secondary panel. Scope details: `docs/taiwan-first-scope.md`.
+
+### Added
+
+- **Taiwan-first RTW route planner core** — multi-leg itinerary editing (per-leg operating carrier, stopover-vs-transfer flag, surface/open-jaw sector), typed rule-validation findings, and award-price estimation from pricing bands; first-market products modeled include EVA Star Alliance World Travel Award, Cathay Asia Miles oneworld Multi-carrier Award, Qantas oneworld Classic Flight Reward, ANA archived RTW award, and China Airlines SkyTeam caveats (`b3a5a9b`)
+- **Editor workbench layout** — single planning workbench replaces the v1.x calculator-first screen flow (`9e61751`)
+- **Map airport route picking** — build the airport chain by picking airports directly on the map (`9cbb5e3`)
+
+### Changed
+
+- **RTW carrier choices filtered by product** — operating-carrier options are limited to airlines eligible under the selected award product (`14c4654`)
+- **Planner focused on award redemptions** — cash RTW fares stay in reference data and are not surfaced in the planner flow (`1c054e2`)
+- Fix: restored non-Mercator projections after the renderer churn (`c85b8ad`)
+- Perf: reduced SVG airport-map node count for faster renders (`074c712`)
+- Fix: clarified RTW workbench layout (`a5ec1bf`)
+
+### Removed
+
+- **Beginner/Pro mode** — the toggle is gone; the app runs as a single workbench mode (`389f8fc`)
+
+### Reverted
+
+- **deck.gl map spike** — briefly rendered the map with deck.gl (`53a0351`), then restored the SVG map renderer (`ee10521`). The SVG d3-geo renderer with 4 projections remains the decision; deck.gl stays out of scope.
+
 ## [1.9.0.0] - 2026-05-23
 
 ### Added — generalized elite tier + revenue-based disclaimer
