@@ -305,6 +305,7 @@
       "estimate": "Award estimate",
       "miles": "{count} miles",
       "milesBand": "miles band",
+      "zoneLabel": "Zone {zone} mi",
       "sources": "Sources and notes",
       "confidence": {
         "officialFixed": "official fixed",

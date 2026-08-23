@@ -302,19 +302,20 @@
       "south-america": "南アメリカ"
     },
     "award": {
-      "estimate": "Award estimate",
-      "miles": "{count} miles",
-      "milesBand": "miles band",
-      "sources": "Sources and notes",
+      "estimate": "特典見積もり",
+      "miles": "{count} マイル",
+      "milesBand": "マイルゾーン",
+      "zoneLabel": "{zone} マイルゾーン",
+      "sources": "出典と備考",
       "confidence": {
-        "officialFixed": "official fixed",
-        "publishedChart": "published chart",
-        "recheck": "recheck"
+        "officialFixed": "公式確定表",
+        "publishedChart": "公開表",
+        "recheck": "要再確認"
       },
       "cabin": {
-        "economy": "economy",
-        "business": "business",
-        "first": "first"
+        "economy": "エコノミー",
+        "business": "ビジネス",
+        "first": "ファースト"
       }
     },
     "tripDates": {

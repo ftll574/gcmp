@@ -305,6 +305,7 @@
       "estimate": "獎勵票估算",
       "miles": "{count} 哩",
       "milesBand": "哩區間",
+      "zoneLabel": "{zone} 哩區間",
       "sources": "來源與備註",
       "confidence": {
         "officialFixed": "官方固定表",

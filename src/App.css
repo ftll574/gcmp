@@ -2503,6 +2503,37 @@
   color: var(--secondary-label);
   font-size: var(--type-caption);
 }
+.rtw-award-zone {
+  margin-top: var(--space-1);
+}
+.rtw-award-zone-range {
+  color: var(--secondary-label);
+  font-size: var(--type-caption);
+}
+.rtw-award-zone-cabins {
+  display: flex;
+  gap: var(--space-3);
+  list-style: none;
+  margin: var(--space-1) 0 0;
+  padding: 0;
+}
+.rtw-award-zone-cabins li {
+  display: flex;
+  flex-direction: column;
+}
+.rtw-award-zone-cabins li small {
+  color: var(--tertiary-label);
+  font-size: var(--type-caption);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.rtw-award-zone-cabins li strong {
+  color: var(--secondary-label);
+  font-family: var(--font-mono);
+}
+.rtw-award-zone-cabins li.active strong {
+  color: var(--semantic-green);
+}
 .rtw-award-sources {
   margin-top: var(--space-1);
   color: var(--secondary-label);

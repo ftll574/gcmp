@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, test } from 'vitest';
-import { estimateAwardPrice, priceRtwItinerary } from '../../../src/lib/rtw/award-pricing.ts';
+import { estimateAwardPrice, priceRtwItinerary, quoteAwardZone } from '../../../src/lib/rtw/award-pricing.ts';
 import { AwardPricingCatalogSchema } from '../../../src/lib/schemas/award-pricing.ts';
 import type { CabinId, Leg } from '../../../src/lib/types.ts';
 
@@ -97,5 +97,53 @@ describe('priceRtwItinerary', () => {
     const estimate = priceRtwItinerary(fixtureCatalog, 'fixture-rtw', 21000, legs, 'economy');
 
     expect(estimate).toBeNull();
+  });
+});
+
+describe('quoteAwardZone', () => {
+  test('quotes every cabin of the EVA fixed RTW award with its band bounds', () => {
+    const quote = quoteAwardZone(catalog, 'br-infinity-star-alliance-world-travel-award', 24000);
+
+    expect(quote?.label).toBe('EVA Infinity MileageLands Star Alliance World Travel Award');
+    expect(quote?.confidence).toBe('official-fixed');
+    // Single open-ended fixed-rtw band in public/data/award-pricing/current.json.
+    expect(quote?.band).toEqual({ minMiles: 0, maxMiles: null });
+    expect(quote?.prices).toEqual({ economy: 180000, business: 325000, first: 480000 });
+  });
+
+  test('quotes the Cathay zone at 19000 miles with live catalog prices', () => {
+    const quote = quoteAwardZone(catalog, 'cx-asia-miles-oneworld-multi-carrier-award', 19000);
+
+    expect(quote?.band).toEqual({ minMiles: 18001, maxMiles: 20000 });
+    expect(quote?.confidence).toBe('reference-recheck');
+    // Values transcribed from the live catalog JSON — asserted so any chart
+    // drift fails loudly here instead of silently in the UI.
+    expect(quote?.prices.economy).toBe(110000);
+    expect(quote?.prices.business).toBe(165000);
+    expect(quote?.prices.first).toBe(260000);
+  });
+
+  test('honest partial chart: ANA archived quote pins business only', () => {
+    const quote = quoteAwardZone(catalog, 'ana-star-alliance-rtw-award', 21000);
+
+    expect(quote?.band).toEqual({ minMiles: 20001, maxMiles: 22000 });
+    // Archived chart is business-only; unpriced cabins are omitted keys,
+    // never explicit undefined placeholders.
+    expect(quote?.prices).toEqual({ business: 125000 });
+    expect(Object.keys(quote?.prices ?? {})).toEqual(['business']);
+    expect(quote?.prices.economy).toBeUndefined();
+    expect(quote?.prices.first).toBeUndefined();
+  });
+
+  test('returns null for an unknown productId', () => {
+    expect(quoteAwardZone(catalog, 'no-such-product', 21000)).toBeNull();
+  });
+
+  test('returns null outside the covered distance range', () => {
+    const cx = 'cx-asia-miles-oneworld-multi-carrier-award';
+    // Lowest CX band starts at minMiles 0 — nothing quotes below it.
+    expect(quoteAwardZone(catalog, cx, -1)).toBeNull();
+    // Highest covered CX band ends at maxMiles 50,000.
+    expect(quoteAwardZone(catalog, cx, 50001)).toBeNull();
   });
 });

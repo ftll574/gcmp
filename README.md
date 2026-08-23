@@ -4,7 +4,7 @@
 
 Taiwan-first round-the-world award route planner. Build an itinerary, mark stopovers and surface sectors, validate it against RTW and multi-carrier mileage-redemption award rules, and share the URL.
 
-![Status: RTW pivot](https://img.shields.io/badge/status-RTW%20pivot-blue) ![License: MIT](https://img.shields.io/badge/license-MIT-green) ![Tests: 309 passing](https://img.shields.io/badge/tests-309%20passing-green)
+![Status: RTW pivot](https://img.shields.io/badge/status-RTW%20pivot-blue) ![License: MIT](https://img.shields.io/badge/license-MIT-green) ![Tests: 319 passing](https://img.shields.io/badge/tests-319%20passing-green)
 
 ## What It Does
 
@@ -118,7 +118,7 @@ npm run build
 
 Current local baseline:
 
-- 309 Vitest tests (incl. the Iron Rule calibration suite)
+- 319 Vitest tests (incl. the Iron Rule calibration suite)
 - strict TypeScript
 - ESLint engine purity rule for `src/lib/calc/**`
 - production build via Vite
@@ -126,7 +126,7 @@ Current local baseline:
 ## Current Limits
 
 - Award availability is not checked. The app validates structural rule eligibility only.
-- Some RTW product rules still need deeper implementation, especially date-based minimum trip duration, ocean-crossing validation, per-city stopover/open-jaw checks, and award-zone pricing display.
+- Some RTW product rules still need deeper implementation, especially date-based minimum trip duration, ocean-crossing validation, and per-city stopover/open-jaw checks.
 - Stopover duration is user-marked; there is no date/time itinerary model yet.
 - Earning/PQM/RDM math remains as a secondary estimate and should not drive RTW validity.
 

@@ -302,19 +302,19 @@
       "south-america": "南美洲"
     },
     "award": {
-      "estimate": "Award estimate",
-      "miles": "{count} miles",
-      "milesBand": "miles band",
-      "sources": "Sources and notes",
+      "estimate": "奖励票估算",
+      "miles": "{count} 英里",
+      "milesBand": "英里区间",
+      "sources": "来源与备注",
       "confidence": {
-        "officialFixed": "official fixed",
-        "publishedChart": "published chart",
-        "recheck": "recheck"
+        "officialFixed": "官方固定表",
+        "publishedChart": "公开表",
+        "recheck": "需复查"
       },
       "cabin": {
-        "economy": "economy",
-        "business": "business",
-        "first": "first"
+        "economy": "经济舱",
+        "business": "商务舱",
+        "first": "头等舱"
       }
     },
     "tripDates": {

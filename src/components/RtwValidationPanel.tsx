@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
-import { estimateAwardPrice } from '../lib/rtw/award-pricing.ts';
+import { estimateAwardPrice, quoteAwardZone } from '../lib/rtw/award-pricing.ts';
 import { sortMileageRedemptionRtwProductsForMarket } from '../lib/rtw/products.ts';
 import { validateRtwRoute } from '../lib/rtw/validate.ts';
 import { useLocale } from '../i18n/use-locale.ts';
+import { AwardZoneBreakdown } from './AwardZoneBreakdown.tsx';
 import {
   CHINA_AIRLINES_SKYTEAM_PRODUCT_ID,
   ChinaAirlinesNotRtwCard,
@@ -128,6 +129,14 @@ export function RtwValidationPanel({
       routing.cabin,
     );
   }, [awardPricingCatalog, selectedProduct, result, routing.cabin]);
+  // Zone breakdown: every cabin the matched band actually prices (honest
+  // gaps for partial archived charts); independent of whether the routing's
+  // own cabin is priced — an economy request on ANA's business-only chart
+  // still shows the zone's business price.
+  const zoneQuote = useMemo(() => {
+    if (!selectedProduct || !result) return null;
+    return quoteAwardZone(awardPricingCatalog, selectedProduct.id, result.summary.totalDistanceMiles);
+  }, [awardPricingCatalog, selectedProduct, result]);
   const visibleFindings = useMemo(() => {
     if (!result) return [];
     const needsAttention = result.findings.filter((finding) => finding.severity !== 'pass');
@@ -213,24 +222,34 @@ export function RtwValidationPanel({
               <strong>{result.summary.tripDays ?? '—'}</strong>
             </div>
           </div>
-          {awardPrice && (
+          {(awardPrice || zoneQuote) && (
             <div className="rtw-award-price">
-              <div className="rtw-award-price-topline">
-                <span>{t('rtw.award.estimate')}</span>
-                <em className={`rtw-award-confidence ${awardPrice.confidence}`}>
-                  {awardPrice.confidence === 'official-fixed'
-                    ? t('rtw.award.confidence.officialFixed')
-                    : awardPrice.confidence === 'published-chart'
-                      ? t('rtw.award.confidence.publishedChart')
-                      : t('rtw.award.confidence.recheck')}
-                </em>
-              </div>
-              <strong>{t('rtw.award.miles', { count: awardPrice.miles.toLocaleString() })}</strong>
-              <small>
-                {t(`rtw.award.cabin.${awardPrice.cabin}`)} · {awardPrice.band.minMiles.toLocaleString()}-
-                {awardPrice.band.maxMiles?.toLocaleString() ?? '∞'} {t('rtw.award.milesBand')}
-              </small>
-              {(awardPrice.sourceUrls.length > 0 || awardPrice.notes.length > 0) && (
+              {awardPrice && (
+                <>
+                  <div className="rtw-award-price-topline">
+                    <span>{t('rtw.award.estimate')}</span>
+                    <em className={`rtw-award-confidence ${awardPrice.confidence}`}>
+                      {awardPrice.confidence === 'official-fixed'
+                        ? t('rtw.award.confidence.officialFixed')
+                        : awardPrice.confidence === 'published-chart'
+                          ? t('rtw.award.confidence.publishedChart')
+                          : t('rtw.award.confidence.recheck')}
+                    </em>
+                  </div>
+                  <strong>{t('rtw.award.miles', { count: awardPrice.miles.toLocaleString() })}</strong>
+                  <small>
+                    {t(`rtw.award.cabin.${awardPrice.cabin}`)} · {awardPrice.band.minMiles.toLocaleString()}-
+                    {awardPrice.band.maxMiles?.toLocaleString() ?? '∞'} {t('rtw.award.milesBand')}
+                  </small>
+                </>
+              )}
+              {zoneQuote && (
+                <AwardZoneBreakdown
+                  {...(awardPrice ? { activeCabin: awardPrice.cabin } : {})}
+                  quote={zoneQuote}
+                />
+              )}
+              {awardPrice && (awardPrice.sourceUrls.length > 0 || awardPrice.notes.length > 0) ? (
                 <details className="rtw-award-sources">
                   <summary>{t('rtw.award.sources')}</summary>
                   {awardPrice.sourceUrls.length > 0 && (
@@ -252,7 +271,7 @@ export function RtwValidationPanel({
                     </ul>
                   )}
                 </details>
-              )}
+              ) : null}
             </div>
           )}
           <ul className="rtw-findings">

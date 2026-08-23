@@ -1,4 +1,8 @@
-import type { AwardPricingCatalog, AwardPricingProduct } from '../schemas/award-pricing.ts';
+import type {
+  AwardPricingBand,
+  AwardPricingCatalog,
+  AwardPricingProduct,
+} from '../schemas/award-pricing.ts';
 import type { CabinId, Leg } from '../types.ts';
 
 export interface AwardPriceEstimate {
@@ -26,6 +30,21 @@ function findProduct(catalog: AwardPricingCatalog, productId: string): AwardPric
   return catalog.products.find((product) => product.productId === productId);
 }
 
+/**
+ * First band whose inclusive [minMiles, maxMiles] range contains the given
+ * distance. maxMiles === null means the band is open-ended above.
+ */
+function findBand(
+  bands: ReadonlyArray<AwardPricingBand>,
+  distanceMiles: number,
+): AwardPricingBand | undefined {
+  return bands.find((candidate) => {
+    const withinMin = distanceMiles >= candidate.minMiles;
+    const withinMax = candidate.maxMiles === null || distanceMiles <= candidate.maxMiles;
+    return withinMin && withinMax;
+  });
+}
+
 export function estimateAwardPrice(
   catalog: AwardPricingCatalog,
   productId: string,
@@ -37,11 +56,7 @@ export function estimateAwardPrice(
   const mappedCabin = pricingCabin(cabin);
   if (!mappedCabin) return null;
 
-  const band = product.bands.find((candidate) => {
-    const withinMin = distanceMiles >= candidate.minMiles;
-    const withinMax = candidate.maxMiles === null || distanceMiles <= candidate.maxMiles;
-    return withinMin && withinMax;
-  });
+  const band = findBand(product.bands, distanceMiles);
   if (!band) return null;
 
   const miles = band.prices[mappedCabin];
@@ -57,6 +72,52 @@ export function estimateAwardPrice(
       minMiles: band.minMiles,
       maxMiles: band.maxMiles,
     },
+    notes: product.notes ?? [],
+    sourceUrls: product.sourceUrls,
+  };
+}
+
+export interface AwardZoneQuote {
+  readonly productId: string;
+  readonly label: string;
+  readonly confidence: 'official-fixed' | 'published-chart' | 'reference-recheck';
+  readonly band: { readonly minMiles: number; readonly maxMiles: number | null };
+  readonly prices: Readonly<Partial<Record<'economy' | 'business' | 'first', number>>>;
+  readonly notes: ReadonlyArray<string>;
+  readonly sourceUrls: ReadonlyArray<string>;
+}
+
+/**
+ * Quote EVERY cabin the catalog actually prices for one distance zone of a
+ * product — lets the UI show which award zone an itinerary falls into plus
+ * all known prices. Charts may be partial (e.g. the archived ANA RTW chart
+ * pins business only): unpriced cabins are omitted from `prices` entirely
+ * rather than filled with guesses or explicit undefineds.
+ */
+export function quoteAwardZone(
+  catalog: AwardPricingCatalog,
+  productId: string,
+  distanceMiles: number,
+): AwardZoneQuote | null {
+  const product = findProduct(catalog, productId);
+  if (!product) return null;
+  const band = findBand(product.bands, distanceMiles);
+  if (!band) return null;
+
+  const prices: Partial<Record<'economy' | 'business' | 'first', number>> = {};
+  if (band.prices.economy !== undefined) prices.economy = band.prices.economy;
+  if (band.prices.business !== undefined) prices.business = band.prices.business;
+  if (band.prices.first !== undefined) prices.first = band.prices.first;
+
+  return {
+    productId,
+    label: product.label,
+    confidence: product.confidence,
+    band: {
+      minMiles: band.minMiles,
+      maxMiles: band.maxMiles,
+    },
+    prices,
     notes: product.notes ?? [],
     sourceUrls: product.sourceUrls,
   };
