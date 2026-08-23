@@ -2494,6 +2494,12 @@
   color: var(--semantic-orange);
   background: color-mix(in srgb, var(--semantic-orange) 16%, transparent);
 }
+/* Fee schedules grade differently from price charts: community-corrected
+ * amounts are weaker evidence, so they share the caution treatment. */
+.rtw-award-confidence.community-corrected {
+  color: var(--semantic-orange);
+  background: color-mix(in srgb, var(--semantic-orange) 16%, transparent);
+}
 .rtw-award-price strong {
   color: var(--semantic-green);
   font-family: var(--font-mono);
@@ -2533,6 +2539,40 @@
 }
 .rtw-award-zone-cabins li.active strong {
   color: var(--semantic-green);
+}
+.rtw-award-fees {
+  margin-top: var(--space-2);
+}
+.rtw-award-fee-list {
+  list-style: none;
+  margin: var(--space-1) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.rtw-award-fee-list li {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+.rtw-award-fee-list li span {
+  min-width: 6.5em;
+  color: var(--secondary-label);
+  font-size: var(--type-caption);
+}
+.rtw-award-fee-list li strong {
+  font-family: var(--font-mono);
+}
+.rtw-award-fee-list li small {
+  color: var(--tertiary-label);
+  font-size: var(--type-caption);
+}
+.rtw-award-fee-asof {
+  display: block;
+  margin-top: var(--space-1);
+  color: var(--tertiary-label);
+  font-size: var(--type-caption);
 }
 .rtw-award-sources {
   margin-top: var(--space-1);

@@ -989,3 +989,113 @@ the JS-only successor (b, negatives).
 - `calib.sta-eligibility.br-gum-network-gap-warns` — data spec in A2(c);
   plus `calib.sta-eligibility.co-terminal-direct-vs-two-sectors` (conflict
   guard, parameterized both ways).
+
+---
+
+### A6 — JL/NH/SQ band-chart product scoping (Phase-7 research pass)
+
+**Question:** for each of JAL Mileage Bank (JL), ANA Mileage Club (NH), and
+KrisFlyer (SQ): does a distance-band RTW or RTW-adjacent award product exist
+that `public/data/rtw-products/*` should model? Verdict vocabulary per charter:
+`band-chart candidate` | `no compatible product`. Negatives welcome.
+
+**(a) NH verdict: `band-chart candidate` — discontinued/archived; no data change proposed**
+
+- Live capture 2026-08-23T23:25:48Z:
+  https://www.ana.co.jp/en/gb/amc/partner-flight-awards/around-the-world/
+  (HTTP 200, 36,985 bytes; cached `%TEMP%\gcmp-research\nh-atw-live.html`);
+  page is fully server-rendered.
+- Discontinuation notice verbatim: "As of June 23, 2025, the issuance of new
+  Star Alliance Round the World Award Tickets is no longer available. Star
+  Alliance Round the World award tickets issued up to June 23, 2025 can be used
+  as usual until th[e ticket expiration]" — independently re-verifies
+  `rtw-products/current.json` `ana-star-alliance-rtw-award`
+  `status:"discontinued"` + `bookingStatusNote` (date matches exactly).
+- Pricing basis verbatim: "For Round the World itineraries, the required
+  mileage is calculated according to the total basic sector mileage for the
+  entire itinerary. (Calculations exclude ground transportation sectors.)" —
+  band pricing + `surfaceDistancePolicy:"excluded-from-distance"` now
+  confirmed on the LIVE page (until now Case 4 pinned these community-side
+  only).
+- Band table still server-rendered today (row `20,001 to 22,000` present), so
+  an official transcription could be taken from this same URL later if needed.
+  Wayback brackets both sides of the cutoff: captures 20250317080157
+  (pre-cutoff) / 20251117185037 / 20260313014905 (post-cutoff).
+- Verdict rationale: the only distance-band RTW chart among JL/NH/SQ is NH's,
+  and the repo already models it as discontinued. Case 4's archived-mode
+  calibration stands; nothing added to `rtw-products`.
+
+**(b) JL verdict: `no compatible product` (PARTIAL — direct fetch blocked)**
+
+- www.jal.co.jp returned HTTP 403 twice (2026-08-23T23:24:31Z and
+  2026-08-23T23:25:00Z, second attempt with full browser headers) → bot-level
+  block on shell clients; no live artifact obtainable this pass.
+- Wayback CDX probes for BOTH `jal.co.jp/en/jal-members/jmb/*` and
+  `www.jal.co.jp/en/jal-members*` returned zero rows while an ANA control
+  query in the same window returned 5 rows → absence of archive coverage for
+  the current JMB subtree is real, not tooling failure. web_search channel
+  dead session-wide (AnySearch HTTP 402 outage — same degradation as §A3(e));
+  one 503 during tree probing noted.
+- Alliance-level negative context (live capture 2026-08-23T23:35:38Z,
+  https://www.oneworld.com/round-the-world, 64,771 bytes):
+  "We offer three types of Round The World trips" — oneworld Explorer
+  (continent-based), Global Explorer (distance-based), Circle Pacific — all
+  three are revenue fares; the FAQ covers only EARNING miles on them. No
+  alliance-level award-RTW product exists; multi-carrier AWARD products are
+  program-specific, and the repo models exactly AA/QF/CX (none is JL).
+- Structural reasoning (stated as reasoning, not citation): JMB prices
+  international partner/oneworld awards zone-based per segment; no JMB RTW
+  award product appears in any repo source. Confidence MEDIUM. Upgrade path:
+  render JMB award pages in a real browser session and pin the absence
+  against the live navigation.
+
+**(c) SQ verdict: `no compatible product`**
+
+- Discovery chain: guessed legacy path `/en_UK/us/member/kf-partner-airlines/…`
+  soft-redirects to the locale homepage → sitemap index (locale sitemaps only)
+  → KrisFlyer hub nav (`/en_UK/sg/ppsclub-krisflyer/`) → CDX subtree sweep
+  (200 rows cached `%TEMP%\gcmp-research\cdx-sq-kf.txt`) → current redemption
+  landing https://www.singaporeair.com/en_UK/sg/ppsclub-krisflyer/kf-flight-redemption/
+  (live ≈2026-08-23T23:38:00Z ±60s, 129,958 bytes).
+- That landing is today a "KrisFlyer Global Redemption Sale" promo page
+  (title/h1 verbatim) with regional h2 sections and ZERO occurrences of
+  star/alliance/chart/zone strings in raw HTML.
+- Zero `round-the-world` mentions across all fetched SQ artifacts; the only
+  star-alliance subtree pages found historically are earn-side
+  (`earn-miles/earn-when-you-fly/star-alliance/`, 2016–2017 captures).
+- Verdict: KrisFlyer flight redemptions are per-sector zone-based (the chart
+  itself is JS/login-gated; not transcribed this pass); no RTW or
+  distance-band award product exists. Confidence MEDIUM-HIGH on absence of an
+  RTW product; a positive zone-chart transcription remains optional
+  follow-up.
+
+**(d) CX side-probe (raw-HTML closure of the A3(b) question)**
+
+- https://flights.cathaypacific.com/en_HK/redeem-flights/flight-award-chart.html
+  live HTTP 200 at 2026-08-23T23:25:59Z, 17,471 bytes: body carries
+  `<div id="spa-root"></div>` plus clientlib-react bundles → confirmed JS
+  shell. Plain HTML fetches CANNOT recover the live multi-carrier chart; the
+  A3 follow-up "render the successor page in a browser session" is now proven
+  necessary rather than suspected.
+
+**(e) Budget & honesty note**
+
+- All raw artifacts cached under `%TEMP%\gcmp-research\` (nh-atw-live.html,
+  sq-kf-staralliance.html [homepage], cx-live-chart.html, ow-rtw.html,
+  sq-sitemap.html, sq-kf-hub.html, sq-kf-flight-redemption.html, cdx-*.txt).
+- Raw call ledger exceeded the ~6 fetches + 2 CDX box because two channels
+  hard-failed (jal 403; search 402) and discovery required workarounds:
+  origin/live ≈11 calls across 9 URLs / 5 hosts — ana ×3 (attempt 1 lost to a
+  local PS 5.1 parse-prompt bug post-request; attempt 2 lost to a local
+  PS 5.1 `-Encoding utf8NoBOM` save bug AFTER a successful request; attempt 3
+  clean), jal 403 ×2, singaporeair ×4 (homepage redirect, sitemap.xml, kf hub,
+  kf flight-redemption), flights.cathaypacific ×1, oneworld ×1; CDX API 10
+  calls (ana control ×2, both healthy; jl subtree ×3 incl. one 503; sq old
+  member subtree ×2; sq kf subtree ×1; plus the 504'd domain-wide sq probe).
+  Zero Wayback page replays were needed.
+- One capture timestamp (sq-kf-flight-redemption) is approximate (±60s) due to
+  a logging-helper format error; the cached content itself is intact. No
+  quotes above are fabricated; JL/SQ negatives are marked with their evidence
+  grade.
+- No code/data changes; nothing committed. No Iron Rule test activates from
+  A6; existing `calib.*` mechanisms are unaffected.

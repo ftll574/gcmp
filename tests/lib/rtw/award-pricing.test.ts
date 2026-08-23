@@ -1,6 +1,11 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, test } from 'vitest';
-import { estimateAwardPrice, priceRtwItinerary, quoteAwardZone } from '../../../src/lib/rtw/award-pricing.ts';
+import {
+  estimateAwardPrice,
+  getAwardFees,
+  priceRtwItinerary,
+  quoteAwardZone,
+} from '../../../src/lib/rtw/award-pricing.ts';
 import { AwardPricingCatalogSchema } from '../../../src/lib/schemas/award-pricing.ts';
 import type { CabinId, Leg } from '../../../src/lib/types.ts';
 
@@ -97,6 +102,22 @@ describe('priceRtwItinerary', () => {
     const estimate = priceRtwItinerary(fixtureCatalog, 'fixture-rtw', 21000, legs, 'economy');
 
     expect(estimate).toBeNull();
+  });
+});
+
+describe('getAwardFees', () => {
+  test('returns the Cathay fee schedule by object identity', () => {
+    const cathay = catalog.products.find((p) => p.productId === 'cx-asia-miles-oneworld-multi-carrier-award');
+
+    expect(getAwardFees(catalog, 'cx-asia-miles-oneworld-multi-carrier-award')).toBe(cathay?.fees);
+  });
+
+  test('returns undefined for an unknown productId', () => {
+    expect(getAwardFees(catalog, 'no-such-product')).toBeUndefined();
+  });
+
+  test('returns undefined for BR (product carries no fees key)', () => {
+    expect(getAwardFees(catalog, 'br-infinity-star-alliance-world-travel-award')).toBeUndefined();
   });
 });
 

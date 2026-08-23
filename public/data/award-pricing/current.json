@@ -56,7 +56,25 @@
         { "minMiles": 20001, "maxMiles": 25000, "prices": { "economy": 120000, "business": 175000, "first": 270000 } },
         { "minMiles": 25001, "maxMiles": 35000, "prices": { "economy": 135000, "business": 210000, "first": 300000 } },
         { "minMiles": 35001, "maxMiles": 50000, "prices": { "economy": 150000, "business": 240000, "first": 345000 } }
-      ]
+      ],
+      "fees": {
+        "currency": "HKD",
+        "confidence": "community-corrected",
+        "asOf": "2018-05",
+        "sourceUrls": [
+          "https://www.ptt.cc/bbs/points/M.1526375797.A.BBB"
+        ],
+        "entries": [
+          { "type": "date-change", "baseAmount": 40, "perMiles": 4000 },
+          { "type": "reissue", "baseAmount": 100, "perMiles": 10000 },
+          { "type": "refund", "baseAmount": 120, "perMiles": 12000 }
+        ],
+        "notes": [
+          "Per-sector reading: change fee HKD 40 or 4,000 miles per sector (Masumi issued-ticket DP).",
+          "Era-pinned May-2018; fees drift like charts — recheck on rv bump.",
+          "Same ticket issued at 155,000 mi + HKD 2,750 total cash co-pay (taxes+fees combined)."
+        ]
+      }
     },
     {
       "productId": "ana-star-alliance-rtw-award",

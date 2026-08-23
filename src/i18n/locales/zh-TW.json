@@ -316,6 +316,16 @@
         "economy": "經濟艙",
         "business": "商務艙",
         "first": "頭等艙"
+      },
+      "fees": {
+        "title": "改票/重簽/退票費用",
+        "dateChange": "日期變更",
+        "reissue": "重簽",
+        "refund": "退票",
+        "orPerMiles": "或每段 {miles} 哩",
+        "asOf": "{month} 時點費率",
+        "confidenceChartVerified": "圖表核實",
+        "confidenceCommunityCorrected": "社群修正"
       }
     },
     "tripDates": {

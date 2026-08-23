@@ -316,6 +316,16 @@
         "economy": "economy",
         "business": "business",
         "first": "first"
+      },
+      "fees": {
+        "title": "Change / reissue / refund fees",
+        "dateChange": "Date change",
+        "reissue": "Reissue",
+        "refund": "Refund",
+        "orPerMiles": "or {miles} mi per sector",
+        "asOf": "Schedule as of {month}",
+        "confidenceChartVerified": "chart-verified",
+        "confidenceCommunityCorrected": "community-corrected"
       }
     },
     "tripDates": {

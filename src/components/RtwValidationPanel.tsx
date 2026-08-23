@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
-import { estimateAwardPrice, quoteAwardZone } from '../lib/rtw/award-pricing.ts';
+import { estimateAwardPrice, getAwardFees, quoteAwardZone } from '../lib/rtw/award-pricing.ts';
 import { sortMileageRedemptionRtwProductsForMarket } from '../lib/rtw/products.ts';
 import { validateRtwRoute } from '../lib/rtw/validate.ts';
 import { useLocale } from '../i18n/use-locale.ts';
 import { AwardZoneBreakdown } from './AwardZoneBreakdown.tsx';
+import { AwardFeeScheduleCard } from './AwardFeeScheduleCard.tsx';
 import {
   CHINA_AIRLINES_SKYTEAM_PRODUCT_ID,
   ChinaAirlinesNotRtwCard,
@@ -137,6 +138,12 @@ export function RtwValidationPanel({
     if (!selectedProduct || !result) return null;
     return quoteAwardZone(awardPricingCatalog, selectedProduct.id, result.summary.totalDistanceMiles);
   }, [awardPricingCatalog, selectedProduct, result]);
+  // Era-pinned fee schedule (display-only): shown for products whose
+  // catalog entry carries one (CX today); BR/ANA stay silent.
+  const feeSchedule = useMemo(
+    () => (selectedProduct ? getAwardFees(awardPricingCatalog, selectedProduct.id) : undefined),
+    [awardPricingCatalog, selectedProduct],
+  );
   const visibleFindings = useMemo(() => {
     if (!result) return [];
     const needsAttention = result.findings.filter((finding) => finding.severity !== 'pass');
@@ -222,7 +229,7 @@ export function RtwValidationPanel({
               <strong>{result.summary.tripDays ?? '—'}</strong>
             </div>
           </div>
-          {(awardPrice || zoneQuote) && (
+          {(awardPrice || zoneQuote || feeSchedule) && (
             <div className="rtw-award-price">
               {awardPrice && (
                 <>
@@ -249,6 +256,7 @@ export function RtwValidationPanel({
                   quote={zoneQuote}
                 />
               )}
+              {feeSchedule && <AwardFeeScheduleCard schedule={feeSchedule} />}
               {awardPrice && (awardPrice.sourceUrls.length > 0 || awardPrice.notes.length > 0) ? (
                 <details className="rtw-award-sources">
                   <summary>{t('rtw.award.sources')}</summary>

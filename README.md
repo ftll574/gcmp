@@ -4,7 +4,7 @@
 
 Taiwan-first round-the-world award route planner. Build an itinerary, mark stopovers and surface sectors, validate it against RTW and multi-carrier mileage-redemption award rules, and share the URL.
 
-![Status: RTW pivot](https://img.shields.io/badge/status-RTW%20pivot-blue) ![License: MIT](https://img.shields.io/badge/license-MIT-green) ![Tests: 319 passing](https://img.shields.io/badge/tests-319%20passing-green)
+![Status: RTW pivot](https://img.shields.io/badge/status-RTW%20pivot-blue) ![License: MIT](https://img.shields.io/badge/license-MIT-green) ![Tests: 332 passing](https://img.shields.io/badge/tests-332%20passing-green)
 
 ## What It Does
 
@@ -118,16 +118,20 @@ npm run build
 
 Current local baseline:
 
-- 319 Vitest tests (incl. the Iron Rule calibration suite)
+- 332 Vitest tests in 23 files (incl. the Iron Rule calibration suite)
 - strict TypeScript
 - ESLint engine purity rule for `src/lib/calc/**`
 - production build via Vite
 
 ## Current Limits
 
-- Award availability is not checked. The app validates structural rule eligibility only.
-- Some RTW product rules still need deeper implementation, especially date-based minimum trip duration, ocean-crossing validation, and per-city stopover/open-jaw checks.
-- Stopover duration is user-marked; there is no date/time itinerary model yet.
+- **Live award availability is not checked.** The app validates structural rule eligibility only; seat inventory is out of scope.
+- **Pricing covers 3 of 7 catalog products** — EVA (fixed price), Cathay (distance bands), and the ANA archived award (partial: business cabin only); the other four validate rules without a price estimate. Research appendix §A6 (`docs/calibration-set.md`) scoped JL/NH/SQ: no compatible band-chart or RTW award product exists at JAL or Singapore, and ANA's distance-band RTW chart is discontinued for new ticketing (2025-06-23) — already modeled as archived.
+- **Cathay post-2018 chart drift is unresolved.** A Jan-2025 community data point (230,000 miles) matches no known-era band cell; pinning the live chart needs a real-browser render — plain HTML fetch returns an empty JS shell (§A6(d)).
+- **Award fee schedules are display-only.** Era-pinned fees render on the validation panel (CX seed: date-change / reissue / refund, as of 2018-05), but total cost with taxes/fees is not estimated.
+- **Date-based minimum trip duration stays shallow.** Stopover duration is user-marked; there is no date/time itinerary model yet, so day-count minimums cannot be enforced.
+- **Standing cuts:** MPM (maximum permitted mileage), fare-basis input, plus the full list under CLAUDE.md's "NOT in scope".
+- **Locale debt:** a few newer zh-CN/ja panels still show residual English strings.
 - Earning/PQM/RDM math remains as a secondary estimate and should not drive RTW validity.
 
 ## License

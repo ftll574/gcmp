@@ -305,6 +305,7 @@
       "estimate": "奖励票估算",
       "miles": "{count} 英里",
       "milesBand": "英里区间",
+      "zoneLabel": "{zone} 英里区间",
       "sources": "来源与备注",
       "confidence": {
         "officialFixed": "官方固定表",
@@ -315,6 +316,16 @@
         "economy": "经济舱",
         "business": "商务舱",
         "first": "头等舱"
+      },
+      "fees": {
+        "title": "改期/重签/退票费用",
+        "dateChange": "日期变更",
+        "reissue": "重签",
+        "refund": "退票",
+        "orPerMiles": "或每段 {miles} 英里",
+        "asOf": "{month} 时点费率",
+        "confidenceChartVerified": "图表核实",
+        "confidenceCommunityCorrected": "社区修正"
       }
     },
     "tripDates": {

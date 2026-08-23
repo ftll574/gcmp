@@ -316,6 +316,16 @@
         "economy": "エコノミー",
         "business": "ビジネス",
         "first": "ファースト"
+      },
+      "fees": {
+        "title": "変更/再発行/払い戻し手数料",
+        "dateChange": "日付変更",
+        "reissue": "再発行",
+        "refund": "払い戻し",
+        "orPerMiles": "または1区間 {miles} マイル",
+        "asOf": "{month} 時点の料金",
+        "confidenceChartVerified": "チャート確認済み",
+        "confidenceCommunityCorrected": "コミュニティ補正"
       }
     },
     "tripDates": {
