@@ -281,6 +281,7 @@
       "surface": "Surface",
       "transfers": "Transfers",
       "oceans": "Oceans",
+      "continents": "Continents",
       "direction": "Direction",
       "cityRepeats": "City repeats",
       "tripDays": "Trip days"
@@ -290,6 +291,15 @@
       "westbound": "westbound",
       "mixed": "mixed",
       "unknown": "unknown"
+    },
+    "continent": {
+      "africa": "Africa",
+      "antarctica": "Antarctica",
+      "asia": "Asia",
+      "europe": "Europe",
+      "north-america": "North America",
+      "oceania": "Oceania",
+      "south-america": "South America"
     },
     "award": {
       "estimate": "Award estimate",
@@ -376,6 +386,17 @@
       "startEndSameCityFail": "Route starts at {start} and ends at {end}; this product requires the same city.",
       "startEndSameCountryPass": "Route starts and ends in the same country.",
       "startEndSameCountryFail": "Route starts in {start} and ends in {end}; this product requires the same country."
+    }
+  },
+  "carrierNotes": {
+    "ci": {
+      "label": "China Airlines · important, but not a true RTW product",
+      "body": "China Airlines Dynasty Flyer SkyTeam partner awards matter for complex Taiwan award plans, but China Airlines does not accept itineraries crossing both the Pacific and the Atlantic — so they cannot form a classic round-the-world ticket. Plan regional award routings instead.",
+      "ruleTripped": "This route crosses both oceans and trips that rule — see the failed ocean check above."
+    },
+    "jx": {
+      "label": "STARLUX COSMILE · watchlist",
+      "body": "No STARLUX round-the-world award product exists today, and its published airline-partner redemptions center on Alaska Mileage Plan. Revisit when alliance membership or broader partner rules appear."
     }
   },
   "glossary": {

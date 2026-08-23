@@ -12,6 +12,10 @@
 import { useEffect, useState } from 'react';
 import { AwardPricingCatalogSchema, type AwardPricingCatalog } from '../lib/schemas/award-pricing.ts';
 import { AllianceCatalogSchema, type AllianceCatalog } from '../lib/schemas/alliance.ts';
+import {
+  CountryContinentCatalogSchema,
+  type ContinentId,
+} from '../lib/schemas/country-continent.ts';
 import { MarketProfileSchema, type MarketProfile } from '../lib/schemas/market.ts';
 import { ProgramSchema, type Program } from '../lib/schemas/program.ts';
 import { RtwRuleCatalogSchema, type RtwRuleCatalog } from '../lib/schemas/rtw-rule.ts';
@@ -33,6 +37,18 @@ export interface LoadedData {
   marketProfile: MarketProfile;
   /** Per-program ¢/mile redemption-value chip. Null if file unavailable. */
   valuations: Valuations | null;
+  /**
+   * Country→continent base map for `summary.continentsVisited`.
+   * Null if the geo file is unavailable/malformed — the engine then
+   * degrades to an empty continents list (same contract as `valuations`).
+   */
+  countryContinents: ReadonlyMap<string, ContinentId> | null;
+  /**
+   * Airport-level continent overrides (geo `.airportOverrides`, keyed by
+   * IATA). Null alongside `countryContinents` — applied by the engine
+   * before the country row (spec §8 Q5).
+   */
+  airportContinentOverrides: ReadonlyMap<string, ContinentId> | null;
 }
 
 export type LoadState =
@@ -77,6 +93,7 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
           rtwRulesRaw,
           awardPricingRaw,
           marketRaw,
+          geoRaw,
           ...programRaws
         ] = await Promise.all([
           fetchJsonStrict(`${baseUrl}/data/airports.json`),
@@ -86,6 +103,7 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
           fetchJsonStrict(`${baseUrl}/data/rtw-products/current.json`),
           fetchJsonStrict(`${baseUrl}/data/award-pricing/current.json`),
           fetchJsonStrict(`${baseUrl}/data/markets/tw/current.json`),
+          fetchJsonOptional(`${baseUrl}/data/geo/current.json`),
           ...programDirs.map((dir) =>
             fetchJsonOptional(`${baseUrl}/data/programs/${dir}/current.json`),
           ),
@@ -98,6 +116,22 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
             valuations = ValuationsSchema.parse(valuationsRaw);
           } catch (e) {
             console.warn('Valuations schema parse failed; redemption-value chip will be hidden:', e);
+          }
+        }
+
+        let countryContinents: ReadonlyMap<string, ContinentId> | null = null;
+        let airportContinentOverrides: ReadonlyMap<string, ContinentId> | null = null;
+        if (geoRaw !== null && geoRaw !== undefined) {
+          try {
+            const geoCatalog = CountryContinentCatalogSchema.parse(geoRaw);
+            countryContinents = new Map(
+              geoCatalog.mappings.map((row) => [row.country, row.continent] as const),
+            );
+            airportContinentOverrides = new Map(
+              geoCatalog.airportOverrides.map((o) => [o.iata, o.continent] as const),
+            );
+          } catch (e) {
+            console.warn('geo/current.json schema parse failed; continentsVisited will be empty:', e);
           }
         }
 
@@ -138,6 +172,8 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
             awardPricingCatalog,
             marketProfile,
             valuations,
+            countryContinents,
+            airportContinentOverrides,
           },
         });
       } catch (e) {

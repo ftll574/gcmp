@@ -281,6 +281,7 @@
       "surface": "Surface",
       "transfers": "Transfers",
       "oceans": "Oceans",
+      "continents": "大洲",
       "direction": "Direction",
       "cityRepeats": "City repeats",
       "tripDays": "Trip days"
@@ -290,6 +291,15 @@
       "westbound": "westbound",
       "mixed": "mixed",
       "unknown": "unknown"
+    },
+    "continent": {
+      "africa": "非洲",
+      "antarctica": "南极洲",
+      "asia": "亚洲",
+      "europe": "欧洲",
+      "north-america": "北美洲",
+      "oceania": "大洋洲",
+      "south-america": "南美洲"
     },
     "award": {
       "estimate": "Award estimate",
@@ -376,6 +386,17 @@
       "startEndSameCityFail": "Route starts at {start} and ends at {end}; this product requires the same city.",
       "startEndSameCountryPass": "Route starts and ends in the same country.",
       "startEndSameCountryFail": "Route starts in {start} and ends in {end}; this product requires the same country."
+    }
+  },
+  "carrierNotes": {
+    "ci": {
+      "label": "中华航空 · 重要，但并非真正的环球票产品",
+      "body": "中华航空（华夏哩程）的天合联盟合作伙伴奖励对台湾的复杂奖励行程很重要，但华航不接受同时跨越太平洋与大西洋的行程，因此无法组成经典的环球机票。建议改按区域性奖励行程规划。",
+      "ruleTripped": "当前路线同时跨越两个大洋，已触发该规则——请查看上方未通过的跨洋检查项。"
+    },
+    "jx": {
+      "label": "星宇航空 COSMILE · 观察名单",
+      "body": "星宇目前没有环球奖励产品，公布的航司合作伙伴兑换以阿拉斯加航空 Mileage Plan 为主。待其加入联盟或伙伴规则扩大后再关注。"
     }
   },
   "glossary": {

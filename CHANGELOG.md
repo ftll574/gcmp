@@ -15,6 +15,9 @@ Product reset: per `docs/rtw-pivot-plan.md`, gcmp pivoted after v1.9 from a mile
 - **Qantas Classic Flight Reward published limits** — 16-segment cap and QF-trigger carrier-combination minimums (≥2 non-Qantas oneworld carriers; ≥3 total when QF is flown), chart-verified via docs/calibration-set.md
 - **Archived ANA award pricing with partial cabins** — 20,001–22,000 mi band ⇒ 125,000 business miles pinned by two independent community DPs; bands may now price only some cabins — unpriced cabins return no estimate instead of a guess
 - **Mixed-cabin pricing mechanism** — `Leg.cabin` plus `priceRtwItinerary()` prices a whole itinerary at its highest booked cabin ("highest class wins")
+- **China Airlines not-true-RTW explanation card** — informational Rules-inspector note explains why CI SkyTeam partner awards cannot form a classic RTW ticket (itineraries crossing both the Pacific and the Atlantic are rejected); renders when the CI product is selected or a leg is operated by CI, linking the caveat to the finding only when `prohibited-ocean-combination` actually trips
+- **STARLUX COSMILE watchlist card** — standing Rules-inspector note records that no JX round-the-world award product exists today and published airline-partner redemptions center on Alaska Mileage Plan; facts-only, revisit when alliance membership or broader partner rules appear
+- **`continentsVisited` validation summary field** — pure country→continent helpers (`src/lib/rtw/continents.ts`) derive unique continents in first-visit itinerary order; surface sectors count as visited at both endpoints, unknown airports / unmapped countries skip silently. Backed by new continent-mapping data `public/data/geo/current.json` — UN geoscheme collapsed to 7 kebab-case continents at country level, validated by the `CountryContinentCatalogSchema` zod schema (`src/lib/schemas/country-continent.ts`)
 
 ### Changed
 

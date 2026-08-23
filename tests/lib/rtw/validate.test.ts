@@ -2,6 +2,11 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, test } from 'vitest';
 import { AllianceCatalogSchema } from '../../../src/lib/schemas/alliance.ts';
 import { RtwRuleCatalogSchema } from '../../../src/lib/schemas/rtw-rule.ts';
+import {
+  CountryContinentCatalogSchema,
+  type ContinentId,
+} from '../../../src/lib/schemas/country-continent.ts';
+import { continentsVisited } from '../../../src/lib/rtw/continents.ts';
 import { validateRtwRoute } from '../../../src/lib/rtw/validate.ts';
 import type { Airport, Leg } from '../../../src/lib/types.ts';
 
@@ -11,6 +16,14 @@ const allianceCatalog = AllianceCatalogSchema.parse(
 
 const products = RtwRuleCatalogSchema.parse(
   JSON.parse(readFileSync('public/data/rtw-products/current.json', 'utf8')),
+);
+
+const countryContinentsCatalog = CountryContinentCatalogSchema.parse(
+  JSON.parse(readFileSync('public/data/geo/current.json', 'utf8')),
+);
+
+const countryContinents = new Map<string, ContinentId>(
+  countryContinentsCatalog.mappings.map((mapping) => [mapping.country, mapping.continent]),
 );
 
 const airports = new Map<string, Airport>(
@@ -25,6 +38,15 @@ const airports = new Map<string, Airport>(
     { iata: 'SIN', name: 'Changi', city: 'Singapore', country: 'SG', lat: 1.3644, lon: 103.9915 },
     { iata: 'BKK', name: 'Suvarnabhumi', city: 'Bangkok', country: 'TH', lat: 13.69, lon: 100.7501 },
     { iata: 'SYD', name: 'Sydney', city: 'Sydney', country: 'AU', lat: -33.9399, lon: 151.1753 },
+    // Calibration Case 1 chain (docs/calibration-set.md) — continentsVisited fixture
+    { iata: 'ADL', name: 'Adelaide', city: 'Adelaide', country: 'AU', lat: -34.945, lon: 138.5306 },
+    { iata: 'PER', name: 'Perth', city: 'Perth', country: 'AU', lat: -31.9403, lon: 115.9669 },
+    { iata: 'MEL', name: 'Melbourne', city: 'Melbourne', country: 'AU', lat: -37.669, lon: 144.841 },
+    { iata: 'KUL', name: 'Kuala Lumpur', city: 'Kuala Lumpur', country: 'MY', lat: 2.7456, lon: 101.7099 },
+    { iata: 'CDG', name: 'Charles de Gaulle', city: 'Paris', country: 'FR', lat: 49.0097, lon: 2.5479 },
+    { iata: 'MXP', name: 'Malpensa', city: 'Milan', country: 'IT', lat: 45.6301, lon: 8.7255 },
+    { iata: 'HEL', name: 'Helsinki-Vantaa', city: 'Helsinki', country: 'FI', lat: 60.3172, lon: 24.9633 },
+    { iata: 'HND', name: 'Haneda', city: 'Tokyo', country: 'JP', lat: 35.5533, lon: 139.7811 },
   ].map((airport) => [airport.iata, airport]),
 );
 
@@ -384,6 +406,91 @@ describe('validateRtwRoute', () => {
       expect.arrayContaining([
         expect.objectContaining({ ruleId: 'trip-duration', severity: 'pass' }),
       ]),
+    );
+  });
+});
+
+describe('validateRtwRoute · summary.continentsVisited', () => {
+  const worldLegs: Leg[] = [
+    { from: 'TPE', to: 'NRT', operatingCarrier: 'JL' },
+    { from: 'NRT', to: 'LAX', operatingCarrier: 'JL' },
+    { from: 'LAX', to: 'JFK', operatingCarrier: 'AA' },
+    { from: 'JFK', to: 'LHR', operatingCarrier: 'BA' },
+    { from: 'LHR', to: 'HKG', operatingCarrier: 'CX' },
+    { from: 'HKG', to: 'TPE', operatingCarrier: 'CX' },
+  ];
+
+  function validateWithGeo(id: string, legs: ReadonlyArray<Leg>) {
+    return validateRtwRoute(product(id), legs, { airports, allianceCatalog, countryContinents });
+  }
+
+  test('summary carries first-visit-order continents equal to the helper output', () => {
+    const result = validateWithGeo('oneworld-explorer', worldLegs);
+
+    // TPE/NRT/HKG asia → LAX/JFK north-america → LHR europe; closing via HKG/TPE adds nothing.
+    expect(result.summary.continentsVisited).toEqual(['asia', 'north-america', 'europe']);
+    expect(result.summary.continentsVisited).toEqual(
+      continentsVisited(worldLegs, { airports, countryContinents }),
+    );
+
+    // Field order mirrors docs/rtw-pivot-plan.md: continentsVisited precedes oceansCrossed.
+    const keys = Object.keys(result.summary);
+    expect(keys.indexOf('continentsVisited')).toBeLessThan(keys.indexOf('oceansCrossed'));
+  });
+
+  test('absent countryContinents falls back to [] and changes nothing else (backward compat)', () => {
+    const withoutGeo = validateRtwRoute(product('oneworld-explorer'), worldLegs, { airports, allianceCatalog });
+    const withGeo = validateWithGeo('oneworld-explorer', worldLegs);
+
+    expect(withoutGeo.summary.continentsVisited).toEqual([]);
+    const merged = { ...withoutGeo.summary, continentsVisited: withGeo.summary.continentsVisited };
+    expect(merged).toEqual(withGeo.summary);
+    expect(withoutGeo.valid).toBe(withGeo.valid);
+    expect(withoutGeo.findings).toEqual(withGeo.findings);
+  });
+
+  test('surface sector endpoints count as visited while contributing no ocean crossing', () => {
+    const legs: Leg[] = [{ from: 'LHR', to: 'JFK', operatingCarrier: 'BA', surface: true }];
+    const result = validateWithGeo('oneworld-explorer', legs);
+
+    expect(result.summary.continentsVisited).toEqual(['europe', 'north-america']);
+    expect(result.summary.oceansCrossed).toEqual([]);
+  });
+
+  test('airportContinentOverrides flow through validateRtwRoute (spec §8 Q5)', () => {
+    // Overriding JFK to oceania flips north-america without touching data files.
+    const legs: Leg[] = [{ from: 'TPE', to: 'JFK', operatingCarrier: 'BR' }];
+    const result = validateRtwRoute(product('oneworld-explorer'), legs, {
+      airports,
+      allianceCatalog,
+      countryContinents,
+      airportContinentOverrides: new Map<string, ContinentId>([['JFK', 'oceania']]),
+    });
+
+    expect(result.summary.continentsVisited).toEqual(['asia', 'oceania']);
+  });
+
+  test('calibration Case 1 routing yields oceania → asia → europe in first-visit order', () => {
+    // Verbatim chain from tests/calibration/flyertalk-routings.test.ts CASE1_FLOWN
+    // (Point Hacks thread): two open jaws CDG⇢MXP and HND⇢NRT modeled as surface.
+    const case1Legs: Leg[] = [
+      { from: 'ADL', to: 'PER', operatingCarrier: 'QF', stopover: false },
+      { from: 'PER', to: 'KUL', operatingCarrier: 'MH', stopover: false },
+      { from: 'KUL', to: 'CDG', operatingCarrier: 'MH', stopover: false },
+      { from: 'CDG', to: 'MXP', operatingCarrier: 'ZZ', surface: true, stopover: false },
+      { from: 'MXP', to: 'HEL', operatingCarrier: 'AY', stopover: false },
+      { from: 'HEL', to: 'HND', operatingCarrier: 'AY', stopover: false },
+      { from: 'HND', to: 'NRT', operatingCarrier: 'ZZ', surface: true, stopover: false },
+      { from: 'NRT', to: 'HKG', operatingCarrier: 'JL', stopover: false },
+      { from: 'HKG', to: 'KUL', operatingCarrier: 'MH', stopover: false },
+      { from: 'KUL', to: 'PER', operatingCarrier: 'MH', stopover: false },
+      { from: 'PER', to: 'MEL', operatingCarrier: 'QF', stopover: false },
+    ];
+    const result = validateWithGeo('qantas-oneworld-classic-flight-reward', case1Legs);
+
+    expect(result.summary.continentsVisited).toEqual(['oceania', 'asia', 'europe']);
+    expect(result.summary.continentsVisited).toEqual(
+      continentsVisited(case1Legs, { airports, countryContinents }),
     );
   });
 });

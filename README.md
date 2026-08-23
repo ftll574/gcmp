@@ -4,13 +4,14 @@
 
 Taiwan-first round-the-world award route planner. Build an itinerary, mark stopovers and surface sectors, validate it against RTW and multi-carrier mileage-redemption award rules, and share the URL.
 
-![Status: RTW pivot](https://img.shields.io/badge/status-RTW%20pivot-blue) ![License: MIT](https://img.shields.io/badge/license-MIT-green) ![Tests: 174 passing](https://img.shields.io/badge/tests-174%20passing-green)
+![Status: RTW pivot](https://img.shields.io/badge/status-RTW%20pivot-blue) ![License: MIT](https://img.shields.io/badge/license-MIT-green) ![Tests: 258 passing](https://img.shields.io/badge/tests-258%20passing-green)
 
 ## What It Does
 
 - **Plan multi-leg RTW routings** — add airports by IATA code, city name, or city code.
 - **Validate mileage-redemption RTW products** — current planning candidates include EVA Star Alliance World Travel Award, Cathay Asia Miles oneworld Multi-carrier Award, Qantas oneworld Classic Flight Reward, ANA archived RTW award, and China Airlines SkyTeam partner award caveats.
 - **Taiwan-first priority** — BR/EVA, CI/China Airlines, JX/STARLUX, CX/Asia Miles, JL/JAL, NH/ANA, and SQ/KrisFlyer are modeled as first-market priorities.
+- **Taiwan carrier notes** — the Rules inspector explains why China Airlines cannot form a classic RTW ticket (both-ocean crossings rejected) and why STARLUX COSMILE stays on the watchlist (no own RTW award product today).
 - **Track RTW-specific metadata** — stopover vs transfer, surface/open-jaw sectors, operating carrier eligibility, segment count, distance caps, same-city/same-country constraints.
 - **Estimate award price** — EVA and Cathay RTW/multi-carrier award products show miles required from pricing bands where data is available.
 - **Map the route** — great-circle arcs, four projections, pan/zoom, bearings, distance labels, PNG/SVG export.
@@ -114,7 +115,7 @@ npm run build
 
 Current local baseline:
 
-- 174 Vitest tests (incl. the Iron Rule calibration suite)
+- 258 Vitest tests (incl. the Iron Rule calibration suite)
 - strict TypeScript
 - ESLint engine purity rule for `src/lib/calc/**`
 - production build via Vite

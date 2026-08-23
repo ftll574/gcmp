@@ -1,7 +1,9 @@
 import type { Airport, Leg, RoutingRequest } from '../types.ts';
 import type { AllianceCatalog } from '../schemas/alliance.ts';
 import type { RtwRuleSet, RtwSurfaceDistancePolicy } from '../schemas/rtw-rule.ts';
+import type { ContinentId } from '../schemas/country-continent.ts';
 import { distanceNm } from '../calc/haversine.ts';
+import { continentsVisited } from './continents.ts';
 
 /**
  * Statute miles per nautical mile. RTW distance caps and award-pricing
@@ -31,6 +33,13 @@ export interface RtwValidationSummary {
   readonly unknownStopovers: number;
   readonly totalDistanceMiles: number;
   readonly ineligibleLegIndexes: ReadonlyArray<number>;
+  /**
+   * Unique continents in first-visit itinerary order (docs/decisions/
+   * continents-visited.md). Surface sectors count at both endpoints;
+   * unknown airports / unmapped countries are skipped silently.
+   * Falls back to [] when `inputs.countryContinents` is absent.
+   */
+  readonly continentsVisited: ReadonlyArray<ContinentId>;
   readonly oceansCrossed: ReadonlyArray<'pacific' | 'atlantic'>;
   readonly direction: 'eastbound' | 'westbound' | 'mixed' | 'unknown';
   readonly repeatedStopoverCities: ReadonlyArray<string>;
@@ -48,6 +57,20 @@ export interface RtwValidationResult {
 export interface RtwValidationInputs {
   readonly airports: ReadonlyMap<string, Airport>;
   readonly allianceCatalog: AllianceCatalog;
+  /**
+   * Optional country→continent base map built from
+   * `public/data/geo/current.json` (CountryContinentCatalogSchema).
+   * Backward-compatible: when absent, summary.continentsVisited falls
+   * back to [] and every other behavior is unchanged.
+   */
+  readonly countryContinents?: ReadonlyMap<string, ContinentId> | undefined;
+  /**
+   * Optional airport-level continent overrides built from
+   * `public/data/geo/current.json` `.airportOverrides` (keyed by IATA).
+   * Lookup order (spec §8 Q5): override first, then the country row.
+   * Backward-compatible: when absent, only the country rows apply.
+   */
+  readonly airportContinentOverrides?: ReadonlyMap<string, ContinentId> | undefined;
 }
 
 function source(ruleSet: RtwRuleSet): string | undefined {
@@ -275,6 +298,7 @@ export function validateRtwRoute(
   const unknownStops = unknownStopoverCount(legs);
   const miles = totalDistanceMiles(legs, inputs, ruleSet.surfaceDistancePolicy);
   const crossedOceans = oceansCrossed(legs, inputs);
+  const visitedContinents = continentsVisited(legs, inputs);
   const direction = routeDirection(legs, inputs);
 
   if (ruleSet.status !== 'active') {
@@ -645,6 +669,7 @@ export function validateRtwRoute(
       unknownStopovers: unknownStops,
       totalDistanceMiles: miles,
       ineligibleLegIndexes,
+      continentsVisited: visitedContinents,
       oceansCrossed: crossedOceans,
       direction,
       repeatedStopoverCities,

@@ -281,6 +281,7 @@
       "surface": "地面段",
       "transfers": "轉機",
       "oceans": "跨洋",
+      "continents": "行經洲別",
       "direction": "方向",
       "cityRepeats": "城市重複",
       "tripDays": "旅程天數"
@@ -290,6 +291,15 @@
       "westbound": "向西",
       "mixed": "混合",
       "unknown": "未知"
+    },
+    "continent": {
+      "africa": "非洲",
+      "antarctica": "南極洲",
+      "asia": "亞洲",
+      "europe": "歐洲",
+      "north-america": "北美洲",
+      "oceania": "大洋洲",
+      "south-america": "南美洲"
     },
     "award": {
       "estimate": "獎勵票估算",
@@ -376,6 +386,17 @@
       "startEndSameCityFail": "路線從 {start} 開始、在 {end} 結束；此產品要求同城市起訖。",
       "startEndSameCountryPass": "路線起點與終點在同一國家。",
       "startEndSameCountryFail": "路線從 {start} 開始、在 {end} 結束；此產品要求同國家起訖。"
+    }
+  },
+  "carrierNotes": {
+    "ci": {
+      "label": "中華航空 · 重要，但非真正的環球票產品",
+      "body": "中華航空（華夏哩程）的天合聯盟合作夥伴獎勵對台灣的複雜獎勵行程很重要，但華航不接受同時跨越太平洋與大西洋的行程，因此無法組成經典的環球機票。建議改以區域性獎勵行程規劃。",
+      "ruleTripped": "此路線目前同時跨越兩大洋，已觸發該規則——請見上方未通過的跨洋檢查。"
+    },
+    "jx": {
+      "label": "星宇航空 COSMILE · 觀察名單",
+      "body": "星宇目前沒有環球獎勵產品，公布的航空公司合作夥伴兌換以阿拉斯加航空 Mileage Plan 為主。待其加入聯盟或夥伴規則擴大後再關注。"
     }
   },
   "glossary": {

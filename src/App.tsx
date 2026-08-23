@@ -814,6 +814,8 @@ function Ready({
                 rtwRuleCatalog={data.rtwRuleCatalog}
                 awardPricingCatalog={data.awardPricingCatalog}
                 marketProfile={data.marketProfile}
+                countryContinents={data.countryContinents}
+                airportContinentOverrides={data.airportContinentOverrides}
                 selectedProductId={selectedRtwProductId}
                 onProductChange={changeRtwProduct}
               />

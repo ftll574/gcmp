@@ -3,8 +3,14 @@ import { estimateAwardPrice } from '../lib/rtw/award-pricing.ts';
 import { sortMileageRedemptionRtwProductsForMarket } from '../lib/rtw/products.ts';
 import { validateRtwRoute } from '../lib/rtw/validate.ts';
 import { useLocale } from '../i18n/use-locale.ts';
+import {
+  CHINA_AIRLINES_SKYTEAM_PRODUCT_ID,
+  ChinaAirlinesNotRtwCard,
+  StarluxWatchlistCard,
+} from './TaiwanCarrierNotes.tsx';
 import type { AwardPricingCatalog } from '../lib/schemas/award-pricing.ts';
 import type { AllianceCatalog } from '../lib/schemas/alliance.ts';
+import type { ContinentId } from '../lib/schemas/country-continent.ts';
 import type { MarketProfile } from '../lib/schemas/market.ts';
 import type { RtwRuleCatalog } from '../lib/schemas/rtw-rule.ts';
 import type { Airport, RoutingRequest } from '../lib/types.ts';
@@ -16,6 +22,10 @@ interface RtwValidationPanelProps {
   readonly rtwRuleCatalog: RtwRuleCatalog;
   readonly awardPricingCatalog: AwardPricingCatalog;
   readonly marketProfile: MarketProfile;
+  /** Country→continent base map; null ⇒ engine degrades to empty list. */
+  readonly countryContinents: ReadonlyMap<string, ContinentId> | null;
+  /** Airport-level overrides (spec §8 Q5); null ⇒ country rows only. */
+  readonly airportContinentOverrides: ReadonlyMap<string, ContinentId> | null;
   readonly selectedProductId: string;
   readonly onProductChange: (productId: string) => void;
 }
@@ -65,6 +75,8 @@ export function RtwValidationPanel({
   rtwRuleCatalog,
   awardPricingCatalog,
   marketProfile,
+  countryContinents,
+  airportContinentOverrides,
   selectedProductId,
   onProductChange,
 }: RtwValidationPanelProps): React.ReactElement {
@@ -78,8 +90,13 @@ export function RtwValidationPanel({
 
   const result = useMemo(() => {
     if (!selectedProduct || legs.length === 0) return null;
-    return validateRtwRoute(selectedProduct, legs, { airports, allianceCatalog }, routing);
-  }, [selectedProduct, legs, airports, allianceCatalog, routing]);
+    return validateRtwRoute(selectedProduct, legs, {
+      airports,
+      allianceCatalog,
+      countryContinents: countryContinents ?? undefined,
+      airportContinentOverrides: airportContinentOverrides ?? undefined,
+    }, routing);
+  }, [selectedProduct, legs, airports, allianceCatalog, countryContinents, airportContinentOverrides, routing]);
   const awardPrice = useMemo(() => {
     if (!selectedProduct || !result) return null;
     return estimateAwardPrice(
@@ -95,7 +112,18 @@ export function RtwValidationPanel({
     return needsAttention.length > 0 ? needsAttention : result.findings.slice(0, 2);
   }, [result]);
 
+  // Taiwan-first carrier notes (docs/taiwan-first-scope.md): the CI caveat
+  // shows when its product is picked or any leg is flown by CI; the JX
+  // watchlist note always renders. The rule link fires only when the
+  // engine's prohibited-ocean-combination check actually fails.
   if (!selectedProduct) return <section className="rtw-panel">{t('rtw.noProducts')}</section>;
+
+  const ciProductSelected = selectedProduct.id === CHINA_AIRLINES_SKYTEAM_PRODUCT_ID;
+  const ciCarriersIncluded = legs.some((leg) => leg.operatingCarrier === 'CI');
+  const ciOceanRuleTripped =
+    result?.findings.some(
+      (finding) => finding.ruleId === 'prohibited-ocean-combination' && finding.severity === 'fail',
+    ) ?? false;
 
   return (
     <section className="rtw-panel" aria-label="RTW validation">
@@ -146,6 +174,12 @@ export function RtwValidationPanel({
               <span>{t('rtw.summary.oceans')}</span>
               <strong>
                 {result.summary.oceansCrossed.map((ocean) => t(`rtw.ocean.${ocean}`)).join(', ') || '—'}
+              </strong>
+            </div>
+            <div>
+              <span>{t('rtw.summary.continents')}</span>
+              <strong>
+                {result.summary.continentsVisited.map((c) => t(`rtw.continent.${c}`)).join(' → ') || '—'}
               </strong>
             </div>
             <div>
@@ -211,6 +245,13 @@ export function RtwValidationPanel({
       ) : (
         <p className="rtw-empty">{t('rtw.empty')}</p>
       )}
+
+      <ChinaAirlinesNotRtwCard
+        productSelected={ciProductSelected}
+        carriersIncludeCi={ciCarriersIncluded}
+        ruleTripped={ciOceanRuleTripped}
+      />
+      <StarluxWatchlistCard />
     </section>
   );
 }
