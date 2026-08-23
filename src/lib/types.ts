@@ -131,6 +131,14 @@ export interface Leg {
   /** Optional per-leg fare class letter override. */
   readonly fareClass?: FareClass;
   /**
+   * Optional per-leg CABIN actually booked (economy / premium-economy /
+   * business / first). Distinct from `fareClass` (booking-class letter).
+   * Mixed-cabin RTW pricing prices the whole itinerary at the highest
+   * booked cabin ("highest class wins"); undefined falls back to the
+   * routing's global cabin.
+   */
+  readonly cabin?: CabinId;
+  /**
    * RTW planning metadata. Stopovers are stays of 24h+ at the arrival point;
    * transfers are shorter connections. Undefined means "unknown" so the RTW
    * validator can avoid pretending it knows timing before the user enters it.

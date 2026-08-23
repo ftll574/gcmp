@@ -57,6 +57,24 @@
         { "minMiles": 25001, "maxMiles": 35000, "prices": { "economy": 135000, "business": 210000, "first": 300000 } },
         { "minMiles": 35001, "maxMiles": 50000, "prices": { "economy": 150000, "business": 240000, "first": 345000 } }
       ]
+    },
+    {
+      "productId": "ana-star-alliance-rtw-award",
+      "label": "ANA Star Alliance Round the World Award (archived chart)",
+      "pricingModel": "distance-band",
+      "confidence": "reference-recheck",
+      "currency": "miles",
+      "sourceUrls": [
+        "https://www.ptt.cc/bbs/points/M.1582274407.A.E4D.html"
+      ],
+      "notes": [
+        "ANA stopped issuing new Star Alliance Round the World Awards on 2025-06-23; this entry transcribes the ARCHIVED distance-band chart, not sellable pricing.",
+        "Only the 20,001-22,000 mile band is pinned by two independent community data points (21,949 routed miles priced at 125,000 miles per person in business); other bands and cabins are intentionally absent rather than guessed.",
+        "ANA excluded ground-transport sectors from the priced distance (陸地交通區間不列入計算); the matching rtw-products entry sets surfaceDistancePolicy 'excluded-from-distance'."
+      ],
+      "bands": [
+        { "minMiles": 20001, "maxMiles": 22000, "prices": { "business": 125000 } }
+      ]
     }
   ]
 }

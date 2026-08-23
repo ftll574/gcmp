@@ -17,22 +17,26 @@
  *     weakened.
  *
  * Known engine caveats surfaced honestly (see todos):
- *   1. validate.ts totalDistanceMiles() sums ALL legs INCLUDING surface
- *      sectors — correct for QF OWCFR (Case 1 verdict), wrong for ANA RTW
- *      (「陸地交通區間不列入計算」). Needs per-product parameterization.
- *   2. estimateAwardPrice() takes ONE whole-itinerary cabin — mixed-cabin
- *      "highest cabin wins" (CX any-F-sectors-as-F) cannot be expressed.
- *   3. distanceNm() returns NAUTICAL miles; product distance caps and
- *      pricing bands are STATUTE miles. Structural (relative/delta)
- *      assertions are unit-safe; absolute boundary assertions are not
- *      pinned until the unit question is settled.
+ *   1. RESOLVED (Phase 2): per-product surfaceDistancePolicy parameterizes
+ *      totalDistanceMiles() — QF OWCFR counts surface sectors toward the
+ *      priced distance (Case 1 verdict); ANA RTW excludes them
+ *      (「陸地交通區間不列入計算」, product data 'excluded-from-distance').
+ *   2. RESOLVED (Phase 2): priceRtwItinerary() implements "highest cabin
+ *      wins" over per-leg cabins (Leg.cabin) with the routing cabin as
+ *      floor; the CX any-F-sector case stays a todo only because the
+ *      pricing datum lives on a historical chart (rv=2017.Q3), not data.
+ *   3. RESOLVED (Phase 2): distanceNm() returns NAUTICAL miles; product
+ *      distance caps and pricing bands are STATUTE miles. The rtw layer
+ *      now converts once at aggregation (MILES_PER_NAUTICAL_MILE), so
+ *      summary.totalDistanceMiles and every cap/band comparison are
+ *      statute miles; absolute boundary assertions may be pinned.
  */
 
 import { readFileSync } from 'node:fs';
 import { describe, expect, test } from 'vitest';
 import { distanceNm } from '../../src/lib/calc/haversine.ts';
 import { estimateAwardPrice } from '../../src/lib/rtw/award-pricing.ts';
-import { validateRtwRoute } from '../../src/lib/rtw/validate.ts';
+import { validateRtwRoute, MILES_PER_NAUTICAL_MILE } from '../../src/lib/rtw/validate.ts';
 import { AllianceCatalogSchema } from '../../src/lib/schemas/alliance.ts';
 import { AwardPricingCatalogSchema } from '../../src/lib/schemas/award-pricing.ts';
 import { RtwRuleCatalogSchema } from '../../src/lib/schemas/rtw-rule.ts';
@@ -118,13 +122,15 @@ describe('FlyerTalk calibration set — Iron Rule (docs/calibration-set.md)', ()
     expect(full.summary.surfaceSectors).toBe(2);
 
     // Surface great-circle distance IS included in the priced total.
-    // Both totals are rounded sums, so compare against the raw GC delta
-    // with ±1 rounding slack instead of an exact-equality trap.
-    const surfaceNm =
-      distanceNm(airport('CDG'), airport('MXP')) + distanceNm(airport('HND'), airport('NRT'));
+    // The engine aggregates nautical GC miles into statute miles
+    // (MILES_PER_NAUTICAL_MILE); compare the delta of two rounded totals
+    // against the converted raw delta with ±2 rounding slack.
+    const surfaceSm =
+      (distanceNm(airport('CDG'), airport('MXP')) + distanceNm(airport('HND'), airport('NRT'))) *
+      MILES_PER_NAUTICAL_MILE;
     const delta = full.summary.totalDistanceMiles - flownOnly.summary.totalDistanceMiles;
     expect(delta).toBeGreaterThan(0);
-    expect(Math.abs(delta - surfaceNm)).toBeLessThanOrEqual(1);
+    expect(Math.abs(delta - surfaceSm)).toBeLessThanOrEqual(2);
 
     // Everything else stays clean: all-oneworld carriers, well under cap.
     expect(full.findings).toEqual(
@@ -190,17 +196,62 @@ describe('FlyerTalk calibration set — Iron Rule (docs/calibration-set.md)', ()
     expect(result.valid).toBe(true);
   });
 
-  // TODO(calib.qf-owcfr.segment-cap-16-enforced): once
-  // qantas-oneworld-classic-flight-reward.limits gains maxFlights: 16
-  // (doc §Case 2d + Conflicts #1), pin the positive side: a 17th segment
-  // produces a flight-segments FAIL while 16 passes.
+  test('calib.qf-owcfr.segment-cap-16-enforced — a 17th segment trips the published 16-segment cap', () => {
+    // Case 2d resolution now encoded in product data: limits.maxFlights = 16
+    // (OP chart-verified published classification; the agents' "9 segments"
+    // claim was rejected). 16 passes (see segment-cap-16-not-9), 17 fails.
+    const hop: Leg[] = [
+      { from: 'TPE', to: 'HKG', operatingCarrier: 'CX', stopover: false },
+      { from: 'HKG', to: 'KUL', operatingCarrier: 'MH', stopover: false },
+      { from: 'KUL', to: 'SIN', operatingCarrier: 'MH', stopover: false },
+      { from: 'SIN', to: 'HKG', operatingCarrier: 'CX', stopover: false },
+      { from: 'HKG', to: 'TPE', operatingCarrier: 'CX', stopover: false },
+    ];
+    const legs: Leg[] = [...hop, ...hop, ...hop, ...hop.slice(0, 2)];
 
-  // TODO(calib.qf-owcfr.two-non-qantas-carrier-minimum): community verdict
-  // (Case 1c, verbatim): "Reads to me like you only need a minimum of 2
-  // non-Qantas oneworld members." The product JSON has no carrierCombination
-  // entry, so the engine cannot check this yet. Blocked on a data decision
-  // (triggerCarrier QF + minimum carriers), then assert a single-carrier-QF+
-  // -one-other routing fails.
+    expect(legs).toHaveLength(17);
+    const result = validate('qantas-oneworld-classic-flight-reward', legs);
+
+    expect(result.summary.flightSegments).toBe(17);
+    expect(result.findings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ ruleId: 'flight-segments', severity: 'fail' }),
+      ]),
+    );
+    expect(result.valid).toBe(false);
+  });
+
+  test('calib.qf-owcfr.two-non-qantas-carrier-minimum — QF plus only one other carrier fails the combination rule', () => {
+    // Case 1c verdict (verbatim): "Reads to me like you only need a minimum
+    // of 2 non-Qantas oneworld members." Encoded as carrierCombination:
+    // trigger carrier QF requires 3 carriers total (QF + 2 non-QF); routes
+    // without QF still need 2 distinct oneworld carriers.
+    const qfPlusOne: Leg[] = [
+      { from: 'ADL', to: 'MEL', operatingCarrier: 'QF', stopover: false },
+      { from: 'MEL', to: 'SYD', operatingCarrier: 'QF', stopover: true },
+      { from: 'SYD', to: 'PER', operatingCarrier: 'CX', stopover: false },
+    ];
+
+    const failing = validate('qantas-oneworld-classic-flight-reward', qfPlusOne);
+    expect(failing.findings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ ruleId: 'carrier-combination', severity: 'fail' }),
+      ]),
+    );
+    expect(failing.valid).toBe(false);
+
+    // Adding a second non-Qantas oneworld carrier satisfies the rule.
+    const passing = validate('qantas-oneworld-classic-flight-reward', [
+      ...qfPlusOne,
+      { from: 'PER', to: 'ADL', operatingCarrier: 'MH', stopover: false },
+    ]);
+    expect(passing.findings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ ruleId: 'carrier-combination', severity: 'pass' }),
+      ]),
+    );
+    expect(passing.valid).toBe(true);
+  });
 
   test('calib.cx-multicarrier.three-carrier-with-trigger-passes — CX + QR + BA satisfies the trigger rule', () => {
     // Case 3 context: Taiwan users build Asia Miles oneworld multi-carrier
@@ -257,10 +308,10 @@ describe('FlyerTalk calibration set — Iron Rule (docs/calibration-set.md)', ()
   // load-bearing verdict — any First sector prices the WHOLE ticket at the
   // First level (PTT M.1500623520.A.36A, PARTIAL:
   // 「只要其中一段是頭等艙的兌換[…截斷]」; pivot plan: "Mixed-cabin itinerary
-  // prices at the highest class booked"). BLOCKED: estimateAwardPrice()
-  // accepts one whole-itinerary cabin; Leg carries no cabin, and the
-  // pricer has no highest-cabin-wins aggregation. Also blocked on data:
-  // the 115,000-mile J reference is the 2017 chart only (pin under rv=2017.Q3,
+  // prices at the highest class booked"). MECHANISM LANDED (Phase 2):
+  // priceRtwItinerary() + Leg.cabin express highest-cabin-wins (unit-tested
+  // in tests/lib/rtw/award-pricing.test.ts). STILL BLOCKED ON DATA: the
+  // 115,000-mile J reference is the 2017 chart only (pin under rv=2017.Q3,
   // never as current). Availability corollary (QR effectively releases no
   // F space, 「果然死不放票」) additionally needs an availability layer that
   // reports `unknown` instead of pretending.
@@ -296,23 +347,88 @@ describe('FlyerTalk calibration set — Iron Rule (docs/calibration-set.md)', ()
     expect(result.summary.tripDays).toBe(12);
   });
 
-  // TODO(calib.ana-rtw-archived.band-20001-22000-is-125k): Case 4 verdict —
-  // 20,001–22,000 mi band ⇒ 125,000 miles/person (two independent PTT DPs;
-  // 21,949 mi routed DP). BLOCKED on data + units: there is no
-  // ana-star-alliance-rtw-award entry in public/data/award-pricing/current.json,
-  // the chart is historical (discontinued 2025-06-23), quotes are PARTIAL,
-  // and the validator feeds NAUTICAL-mile sums into statute-mile bands —
-  // resolve the unit mismatch before pinting band-boundary chains
-  // (20,001 / 22,001 sides around a ~21.9k mi chain).
+  test('calib.ana-rtw-archived.band-20001-22000-is-125k — archived chart prices the mid-band chain at 125k business', () => {
+    // Case 4 verdict: 20,001–22,000 mi band ⇒ 125,000 miles/person (two
+    // independent PTT DPs; 21,949 routed-mi DP). The catalog pins ONLY that
+    // band and ONLY business — economy/first stay unpriced rather than
+    // guessed from a partial archived chart. Chain ≈20.9k STATUTE miles
+    // westbound (post-unit-fix totals), mid-band with margin on both sides.
+    const legs: Leg[] = [
+      { from: 'TPE', to: 'CGK', operatingCarrier: 'SQ', stopover: true },
+      { from: 'CGK', to: 'BKK', operatingCarrier: 'TG', stopover: true },
+      { from: 'BKK', to: 'LHR', operatingCarrier: 'SQ', stopover: false },
+      { from: 'LHR', to: 'JFK', operatingCarrier: 'UA', stopover: false },
+      { from: 'JFK', to: 'TPE', operatingCarrier: 'BR', stopover: false },
+    ];
 
-  // TODO(calib.ana-rtw-archived.surface-excluded-from-distance): Case 4
-  // verdict — ground transport sectors are EXCLUDED from the priced
-  // distance (「陸地交通區間不列入計算」). CONFIRMED ENGINE GAP:
-  // totalDistanceMiles() in src/lib/rtw/validate.ts sums ALL legs including
-  // surface:true sectors (correct for QF per Case 1, wrong for ANA). Needs
-  // a per-product surface-distance policy ('counts-toward-distance' vs
-  // 'excluded-from-distance'); do not hack the test around it. This pair of
-  // cases (QF counts / ANA excluded) pins both branches once parameterized.
+    const result = validateWithDates(
+      'ana-star-alliance-rtw-award',
+      legs,
+      '2026-09-01',
+      '2026-09-12',
+    );
+
+    // Structural coherence: the validator's statute-mile total must land
+    // inside the archived band estimateAwardPrice selects.
+    expect(result.summary.direction).toBe('westbound');
+    expect(result.valid).toBe(true);
+    const total = result.summary.totalDistanceMiles;
+    expect(total).toBeGreaterThan(20001);
+    expect(total).toBeLessThanOrEqual(22000);
+
+    const estimate = estimateAwardPrice(pricing, 'ana-star-alliance-rtw-award', total, 'business');
+    expect(estimate?.miles).toBe(125000);
+    expect(estimate?.cabin).toBe('business');
+    expect(estimate?.confidence).toBe('reference-recheck');
+    expect(estimate?.band).toEqual({ minMiles: 20001, maxMiles: 22000 });
+
+    // Partial-chart honesty: cabins the archived data does not pin return
+    // null instead of a guessed price.
+    expect(estimateAwardPrice(pricing, 'ana-star-alliance-rtw-award', total, 'economy')).toBeNull();
+    expect(estimateAwardPrice(pricing, 'ana-star-alliance-rtw-award', total, 'first')).toBeNull();
+  });
+
+  test('calib.ana-rtw-archived.surface-excluded-from-distance — ground sectors add zero priced miles', () => {
+    // Case 4 verdict: 「陸地交通區間不列入計算」 — ground transport sectors
+    // are EXCLUDED from the priced distance. Encoded in product data as
+    // surfaceDistancePolicy 'excluded-from-distance'; contrast with QF
+    // Case 1 where surface sectors COUNT toward the priced total.
+    const flown: Leg[] = [
+      { from: 'TPE', to: 'SIN', operatingCarrier: 'SQ', stopover: true },
+      { from: 'KUL', to: 'LHR', operatingCarrier: 'SQ', stopover: false },
+      { from: 'LHR', to: 'JFK', operatingCarrier: 'UA', stopover: false },
+      { from: 'JFK', to: 'TPE', operatingCarrier: 'BR', stopover: false },
+    ];
+    const withGroundSector: Leg[] = [
+      { from: 'TPE', to: 'SIN', operatingCarrier: 'SQ', stopover: true },
+      { from: 'SIN', to: 'KUL', operatingCarrier: 'ZZ', surface: true, stopover: false },
+      ...flown.slice(1),
+    ];
+
+    const flownResult = validateWithDates(
+      'ana-star-alliance-rtw-award',
+      flown,
+      '2026-09-01',
+      '2026-09-12',
+    );
+    const groundResult = validateWithDates(
+      'ana-star-alliance-rtw-award',
+      withGroundSector,
+      '2026-09-01',
+      '2026-09-12',
+    );
+
+    // The surface sector adds ZERO priced miles — totals match exactly.
+    expect(flownResult.valid).toBe(true);
+    expect(groundResult.summary.totalDistanceMiles).toBe(flownResult.summary.totalDistanceMiles);
+    // The ground sector itself stays within limits and validates clean.
+    expect(groundResult.findings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ ruleId: 'surface-sectors', severity: 'pass' }),
+      ]),
+    );
+    expect(groundResult.valid).toBe(true);
+  });
 
   test('calib.sta-eligibility.br67-two-sectors — multi-hop flight numbers model as two sectors', () => {
     // Case 5: BR67 operates TPE–BKK–LHR sold as ONE flight number; engines

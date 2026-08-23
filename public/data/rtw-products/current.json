@@ -146,6 +146,7 @@
         "https://www.qantas.com/ca/en/frequent-flyer/discover-and-join/terms-and-conditions.html"
       ],
       "limits": {
+        "maxFlights": 16,
         "maxStopovers": 5,
         "maxTransfersPerCity": 2,
         "maxStopoversPerCity": 1,
@@ -160,6 +161,11 @@
         "type": "alliance-members",
         "alliance": "oneworld",
         "includeAffiliates": true
+      },
+      "carrierCombination": {
+        "triggerCarrier": "QF",
+        "minCarriersWithoutTrigger": 2,
+        "minCarriersWithTrigger": 3
       }
     },
     {
@@ -189,6 +195,7 @@
         "oceanCrossingCount": "once",
         "pricingBasis": "distance"
       },
+      "surfaceDistancePolicy": "excluded-from-distance",
       "airlineEligibility": {
         "type": "alliance-members",
         "alliance": "star",

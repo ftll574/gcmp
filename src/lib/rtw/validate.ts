@@ -1,7 +1,15 @@
 import type { Airport, Leg, RoutingRequest } from '../types.ts';
 import type { AllianceCatalog } from '../schemas/alliance.ts';
-import type { RtwRuleSet } from '../schemas/rtw-rule.ts';
+import type { RtwRuleSet, RtwSurfaceDistancePolicy } from '../schemas/rtw-rule.ts';
 import { distanceNm } from '../calc/haversine.ts';
+
+/**
+ * Statute miles per nautical mile. RTW distance caps and award-pricing
+ * bands are published in (statute) miles, while the calc layer's
+ * haversine `distanceNm` works in nautical miles; the rtw layer converts
+ * once at aggregation so every cap/band comparison is in statute miles.
+ */
+export const MILES_PER_NAUTICAL_MILE = 1.15078;
 
 export type RtwFindingSeverity = 'pass' | 'warning' | 'fail' | 'unknown';
 
@@ -84,15 +92,20 @@ function sameCountry(a: Airport, b: Airport): boolean {
   return a.country === b.country;
 }
 
-function totalDistanceMiles(legs: ReadonlyArray<Leg>, inputs: RtwValidationInputs): number {
-  let total = 0;
+function totalDistanceMiles(
+  legs: ReadonlyArray<Leg>,
+  inputs: RtwValidationInputs,
+  surfacePolicy: RtwSurfaceDistancePolicy,
+): number {
+  let totalNm = 0;
   for (const leg of legs) {
+    if (surfacePolicy === 'excluded-from-distance' && leg.surface === true) continue;
     const from = airportFor(leg.from, inputs);
     const to = airportFor(leg.to, inputs);
     if (!from || !to) continue;
-    total += distanceNm(from, to);
+    totalNm += distanceNm(from, to);
   }
-  return Math.round(total);
+  return Math.round(totalNm * MILES_PER_NAUTICAL_MILE);
 }
 
 function flightSegmentCount(legs: ReadonlyArray<Leg>): number {
@@ -260,7 +273,7 @@ export function validateRtwRoute(
   const stopoverCount = knownStopoverCount(legs);
   const transferCount = knownTransferCount(legs);
   const unknownStops = unknownStopoverCount(legs);
-  const miles = totalDistanceMiles(legs, inputs);
+  const miles = totalDistanceMiles(legs, inputs, ruleSet.surfaceDistancePolicy);
   const crossedOceans = oceansCrossed(legs, inputs);
   const direction = routeDirection(legs, inputs);
 

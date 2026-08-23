@@ -3,10 +3,25 @@ import { z } from 'zod';
 export const AwardPricingCabinSchema = z.enum(['economy', 'business', 'first']);
 export type AwardPricingCabin = z.infer<typeof AwardPricingCabinSchema>;
 
+/**
+ * Cabin prices may be partially known — archived charts (e.g. the
+ * discontinued ANA RTW award) pin only some bands/cabins. An unpriced
+ * cabin yields estimateAwardPrice() === null instead of a guessed number.
+ */
 export const AwardPricingBandSchema = z.object({
   minMiles: z.number().int().nonnegative(),
   maxMiles: z.number().int().positive().nullable(),
-  prices: z.record(AwardPricingCabinSchema, z.number().int().positive()),
+  prices: z
+    .object({
+      economy: z.number().int().positive().optional(),
+      business: z.number().int().positive().optional(),
+      first: z.number().int().positive().optional(),
+    })
+    .refine(
+      (prices) =>
+        prices.economy !== undefined || prices.business !== undefined || prices.first !== undefined,
+      'at least one cabin must be priced',
+    ),
 });
 export type AwardPricingBand = z.infer<typeof AwardPricingBandSchema>;
 

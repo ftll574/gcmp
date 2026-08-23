@@ -11,6 +11,10 @@ Product reset: per `docs/rtw-pivot-plan.md`, gcmp pivoted after v1.9 from a mile
 - **Taiwan-first RTW route planner core** — multi-leg itinerary editing (per-leg operating carrier, stopover-vs-transfer flag, surface/open-jaw sector), typed rule-validation findings, and award-price estimation from pricing bands; first-market products modeled include EVA Star Alliance World Travel Award, Cathay Asia Miles oneworld Multi-carrier Award, Qantas oneworld Classic Flight Reward, ANA archived RTW award, and China Airlines SkyTeam caveats (`b3a5a9b`)
 - **Editor workbench layout** — single planning workbench replaces the v1.x calculator-first screen flow (`9e61751`)
 - **Map airport route picking** — build the airport chain by picking airports directly on the map (`9cbb5e3`)
+- **Per-product surface-distance policy** — `surfaceDistancePolicy` (`counts-toward-distance` default / `excluded-from-distance`); the ANA archived award excludes ground-transport sectors from the priced distance per community verdict 「陸地交通區間不列入計算」
+- **Qantas Classic Flight Reward published limits** — 16-segment cap and QF-trigger carrier-combination minimums (≥2 non-Qantas oneworld carriers; ≥3 total when QF is flown), chart-verified via docs/calibration-set.md
+- **Archived ANA award pricing with partial cabins** — 20,001–22,000 mi band ⇒ 125,000 business miles pinned by two independent community DPs; bands may now price only some cabins — unpriced cabins return no estimate instead of a guess
+- **Mixed-cabin pricing mechanism** — `Leg.cabin` plus `priceRtwItinerary()` prices a whole itinerary at its highest booked cabin ("highest class wins")
 
 ### Changed
 
@@ -18,6 +22,8 @@ Product reset: per `docs/rtw-pivot-plan.md`, gcmp pivoted after v1.9 from a mile
 - **Planner focused on award redemptions** — cash RTW fares stay in reference data and are not surfaced in the planner flow (`1c054e2`)
 - Fix: restored non-Mercator projections after the renderer churn (`c85b8ad`)
 - Perf: reduced SVG airport-map node count for faster renders (`074c712`)
+- **RTW distances are statute miles end-to-end** — the engine previously summed nautical-mile haversines against statute-mile caps and pricing bands (a 15% overstatement); conversion now happens once at aggregation (`MILES_PER_NAUTICAL_MILE`)
+- **Calibration suite extended to 11 active tests** — QF segment cap + carrier minimum, ANA archived band pricing + surface exclusion now enforced; 2 documented `TODO` gaps remain (CX any-F-sector pricing datum is chart-historical; BR Guam network gap needs route data)
 - Fix: clarified RTW workbench layout (`a5ec1bf`)
 
 ### Removed

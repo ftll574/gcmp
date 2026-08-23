@@ -1,5 +1,5 @@
 import type { AwardPricingCatalog, AwardPricingProduct } from '../schemas/award-pricing.ts';
-import type { CabinId } from '../types.ts';
+import type { CabinId, Leg } from '../types.ts';
 
 export interface AwardPriceEstimate {
   readonly productId: string;
@@ -60,4 +60,35 @@ export function estimateAwardPrice(
     notes: product.notes ?? [],
     sourceUrls: product.sourceUrls,
   };
+}
+
+const RANK_BY_CABIN: Record<CabinId, number> = {
+  economy: 0,
+  'premium-economy': 1,
+  business: 2,
+  first: 3,
+};
+
+/**
+ * Price a mixed-cabin itinerary at its HIGHEST booked cabin — "highest
+ * class wins" (pivot plan; Cathay multi-carrier terms: pricing is based on
+ * the highest class booked). Per-leg cabins raise the routing's fallback
+ * cabin only upward; an unpriced highest cabin (e.g. premium economy)
+ * yields null like any other unpriced request.
+ */
+export function priceRtwItinerary(
+  catalog: AwardPricingCatalog,
+  productId: string,
+  distanceMiles: number,
+  legs: ReadonlyArray<Leg>,
+  fallbackCabin: CabinId,
+): AwardPriceEstimate | null {
+  let highest = fallbackCabin;
+  for (const leg of legs) {
+    const legCabin = leg.cabin;
+    if (legCabin !== undefined && RANK_BY_CABIN[legCabin] > RANK_BY_CABIN[highest]) {
+      highest = legCabin;
+    }
+  }
+  return estimateAwardPrice(catalog, productId, distanceMiles, highest);
 }

@@ -32,12 +32,12 @@ A web app that replaces the FlyerTalk RTW-routing-thread habit for Taiwan-based 
 
 ## Testing
 
-Run command: `npm run test` (Vitest — 167 tests passing, see README badge). No E2E runner: there is no `test:e2e` script and no Playwright dependency; verify site behavior through component tests + CI.
+Run command: `npm run test` (Vitest — 174 tests passing, see README badge). No E2E runner: there is no `test:e2e` script and no Playwright dependency; verify site behavior through component tests + CI.
 
 - 100% coverage is the goal for `src/lib/calc/**` (engine purity makes it cheap)
 - Every new function gets a test; every if/else gets tests for both branches
 - Every fixed bug gets a regression test
-- **Iron Rule:** `tests/calibration/flyertalk-routings.test.ts` pins real FlyerTalk/community RTW routing threads (transcribed in `docs/calibration-set.md`): 7 active structural tests + 6 documented `test.todo` engine gaps. Failing any one of the active tests blocks `/ship`. This operationalizes Success Criterion #2 from the design doc; activated in commit `2af6e2c` (Phase-1 debt payoff).
+- **Iron Rule:** `tests/calibration/flyertalk-routings.test.ts` pins real FlyerTalk/community RTW routing threads (transcribed in `docs/calibration-set.md`): 11 active structural tests + 2 documented `TODO` engine gaps. Failing any one of the active tests blocks `/ship`. This operationalizes Success Criterion #2 from the design doc; activated in commit `2af6e2c` (Phase-1 debt payoff), extended in Phase 2 (QF caps, ANA archived band/surface).
 
 ## Testing strategy minimums (from eng review)
 
