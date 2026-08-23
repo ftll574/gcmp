@@ -12,6 +12,7 @@ import type { AwardPricingCatalog } from '../lib/schemas/award-pricing.ts';
 import type { AllianceCatalog } from '../lib/schemas/alliance.ts';
 import type { ContinentId } from '../lib/schemas/country-continent.ts';
 import type { MarketProfile } from '../lib/schemas/market.ts';
+import type { NetworkGapEntry } from '../lib/schemas/network-gaps.ts';
 import type { RtwRuleCatalog } from '../lib/schemas/rtw-rule.ts';
 import type { Airport, RoutingRequest } from '../lib/types.ts';
 
@@ -26,6 +27,8 @@ interface RtwValidationPanelProps {
   readonly countryContinents: ReadonlyMap<string, ContinentId> | null;
   /** Airport-level overrides (spec §8 Q5); null ⇒ country rows only. */
   readonly airportContinentOverrides: ReadonlyMap<string, ContinentId> | null;
+  /** Network-gap watchlist; null ⇒ engine emits no gap findings. */
+  readonly networkGaps: ReadonlyArray<NetworkGapEntry> | null;
   readonly selectedProductId: string;
   readonly onProductChange: (productId: string) => void;
 }
@@ -77,6 +80,7 @@ export function RtwValidationPanel({
   marketProfile,
   countryContinents,
   airportContinentOverrides,
+  networkGaps,
   selectedProductId,
   onProductChange,
 }: RtwValidationPanelProps): React.ReactElement {
@@ -95,8 +99,9 @@ export function RtwValidationPanel({
       allianceCatalog,
       countryContinents: countryContinents ?? undefined,
       airportContinentOverrides: airportContinentOverrides ?? undefined,
+      networkGaps: networkGaps ?? undefined,
     }, routing);
-  }, [selectedProduct, legs, airports, allianceCatalog, countryContinents, airportContinentOverrides, routing]);
+  }, [selectedProduct, legs, airports, allianceCatalog, countryContinents, airportContinentOverrides, networkGaps, routing]);
   const awardPrice = useMemo(() => {
     if (!selectedProduct || !result) return null;
     return estimateAwardPrice(

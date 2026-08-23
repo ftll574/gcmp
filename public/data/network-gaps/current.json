@@ -1,0 +1,32 @@
+{
+  "version": "2026.2",
+  "lastVerified": "2026-05-23",
+  "gaps": [
+    {
+      "carrier": "BR",
+      "pair": ["TPE", "GUM"],
+      "status": "not-flown",
+      "since": "2017-06",
+      "until": null,
+      "action": "warn",
+      "confidence": "chart-verified",
+      "evidence": [
+        "https://www.flyertalk.com/forum/eva-air-infinity-mileagelands/1838853-eva-end-guam-surabaya.html",
+        "https://www.postguam.com/news/local/eva-air-pulling-out-of-guam/article_7cdd8b00-2a66-11e7-b21c-4bce1748b3e3.html",
+        "https://www.aeroroutes.com/eng/241213-uans25gumtpe"
+      ]
+    },
+    {
+      "carrier": "UA",
+      "pair": ["TPE", "GUM"],
+      "status": "not-flown",
+      "since": "2005",
+      "until": "2025-04",
+      "action": "warn",
+      "confidence": "chart-verified",
+      "evidence": [
+        "https://www.aeroroutes.com/eng/241213-uans25gumtpe"
+      ]
+    }
+  ]
+}

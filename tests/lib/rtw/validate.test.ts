@@ -7,6 +7,7 @@ import {
   type ContinentId,
 } from '../../../src/lib/schemas/country-continent.ts';
 import { continentsVisited } from '../../../src/lib/rtw/continents.ts';
+import { NetworkGapCatalogSchema, type NetworkGapEntry } from '../../../src/lib/schemas/network-gaps.ts';
 import { validateRtwRoute } from '../../../src/lib/rtw/validate.ts';
 import type { Airport, Leg } from '../../../src/lib/types.ts';
 
@@ -24,6 +25,10 @@ const countryContinentsCatalog = CountryContinentCatalogSchema.parse(
 
 const countryContinents = new Map<string, ContinentId>(
   countryContinentsCatalog.mappings.map((mapping) => [mapping.country, mapping.continent]),
+);
+
+const networkGaps = NetworkGapCatalogSchema.parse(
+  JSON.parse(readFileSync('public/data/network-gaps/current.json', 'utf8')),
 );
 
 const airports = new Map<string, Airport>(
@@ -47,6 +52,8 @@ const airports = new Map<string, Airport>(
     { iata: 'MXP', name: 'Malpensa', city: 'Milan', country: 'IT', lat: 45.6301, lon: 8.7255 },
     { iata: 'HEL', name: 'Helsinki-Vantaa', city: 'Helsinki', country: 'FI', lat: 60.3172, lon: 24.9633 },
     { iata: 'HND', name: 'Haneda', city: 'Tokyo', country: 'JP', lat: 35.5533, lon: 139.7811 },
+    // Network-gap watchlist tests (calibration Case 5 root cause)
+    { iata: 'GUM', name: 'Antonio B. Won Pat Intl', city: 'Tamuning', country: 'US', lat: 13.4843, lon: 144.7977 },
   ].map((airport) => [airport.iata, airport]),
 );
 
@@ -363,6 +370,122 @@ describe('validateRtwRoute', () => {
     );
   });
 
+  test('passes Qantas Classic Flight Reward when one city call hits exactly two transfers', () => {
+    // docs/rtw-pivot-plan.md:147 "Only two transfers in any one city" —
+    // boundary: two arrivals into Tokyo inside ONE call (flight + surface)
+    // sit exactly AT the cap and must stay green.
+    const legs: Leg[] = [
+      { from: 'TPE', to: 'NRT', operatingCarrier: 'JL', stopover: false },
+      { from: 'NRT', to: 'HND', operatingCarrier: 'ZZ', surface: true, stopover: false },
+      { from: 'HND', to: 'LAX', operatingCarrier: 'AA', stopover: true },
+      { from: 'LAX', to: 'TPE', operatingCarrier: 'CX', stopover: false },
+    ];
+
+    const result = validate('qantas-oneworld-classic-flight-reward', legs);
+
+    expect(result.summary.repeatedTransferCities).toEqual([]);
+    expect(result.findings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          ruleId: 'transfers-per-city',
+          severity: 'pass',
+          messageParams: { max: 2, cities: '' },
+        }),
+      ]),
+    );
+    expect(result.valid).toBe(true);
+  });
+
+  test('fails Qantas Classic Flight Reward when one city call exceeds two transfers', () => {
+    const legs: Leg[] = [
+      { from: 'TPE', to: 'NRT', operatingCarrier: 'JL', stopover: false },
+      { from: 'NRT', to: 'HND', operatingCarrier: 'ZZ', surface: true, stopover: false },
+      { from: 'HND', to: 'NRT', operatingCarrier: 'ZZ', surface: true, stopover: false },
+      { from: 'NRT', to: 'HKG', operatingCarrier: 'CX', stopover: false },
+      { from: 'HKG', to: 'TPE', operatingCarrier: 'CX', stopover: false },
+    ];
+
+    const result = validate('qantas-oneworld-classic-flight-reward', legs);
+
+    expect(result.summary.repeatedTransferCities).toEqual(['Tokyo, JP']);
+    expect(result.findings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          ruleId: 'transfers-per-city',
+          severity: 'fail',
+          messageKey: 'rtw.findings.transfersPerCityFail',
+        }),
+      ]),
+    );
+    expect(result.valid).toBe(false);
+  });
+
+  test('stopover-marked arrivals do not count toward transfers-per-city', () => {
+    const legs: Leg[] = [
+      { from: 'TPE', to: 'HND', operatingCarrier: 'JL', stopover: true },
+      { from: 'HND', to: 'NRT', operatingCarrier: 'ZZ', surface: true, stopover: false },
+      { from: 'NRT', to: 'HKG', operatingCarrier: 'CX', stopover: false },
+      { from: 'HKG', to: 'TPE', operatingCarrier: 'CX', stopover: false },
+    ];
+
+    const result = validate('qantas-oneworld-classic-flight-reward', legs);
+
+    expect(result.summary.knownStopovers).toBe(1);
+    expect(result.summary.repeatedTransferCities).toEqual([]);
+    expect(result.findings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ ruleId: 'transfers-per-city', severity: 'pass' }),
+      ]),
+    );
+  });
+
+  test('separate city calls restart the transfer count instead of accumulating', () => {
+    // Tokyo sees three unmarked arrivals across TWO calls (NRT+HND, later
+    // NRT alone); per-call semantics keep every call at or below the cap,
+    // whereas whole-itinerary accumulation would wrongly fail at three.
+    const legs: Leg[] = [
+      { from: 'TPE', to: 'NRT', operatingCarrier: 'JL', stopover: false },
+      { from: 'NRT', to: 'HND', operatingCarrier: 'ZZ', surface: true, stopover: false },
+      { from: 'HND', to: 'SIN', operatingCarrier: 'CX', stopover: false },
+      { from: 'SIN', to: 'NRT', operatingCarrier: 'CX', stopover: false },
+      { from: 'NRT', to: 'TPE', operatingCarrier: 'CX', stopover: false },
+    ];
+
+    const result = validate('qantas-oneworld-classic-flight-reward', legs);
+
+    expect(result.summary.repeatedTransferCities).toEqual([]);
+    expect(result.findings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ ruleId: 'transfers-per-city', severity: 'pass' }),
+      ]),
+    );
+    expect(result.valid).toBe(true);
+  });
+
+  test('unmarked arrivals count toward transfers-per-city even on surface sectors', () => {
+    // Consistent with stopover counting: every resolved arrival without
+    // stopover=true is a potential transfer, including surface sectors and
+    // legs whose timing metadata is still unknown.
+    const legs: Leg[] = [
+      { from: 'TPE', to: 'NRT', operatingCarrier: 'JL' },
+      { from: 'NRT', to: 'HND', operatingCarrier: 'ZZ', surface: true },
+      { from: 'HND', to: 'NRT', operatingCarrier: 'ZZ', surface: true },
+      { from: 'NRT', to: 'HKG', operatingCarrier: 'CX' },
+      { from: 'HKG', to: 'TPE', operatingCarrier: 'CX' },
+    ];
+
+    const result = validate('qantas-oneworld-classic-flight-reward', legs);
+
+    expect(result.summary.unknownStopovers).toBe(3); // non-surface legs only
+    expect(result.summary.repeatedTransferCities).toEqual(['Tokyo, JP']);
+    expect(result.findings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ ruleId: 'transfers-per-city', severity: 'fail' }),
+      ]),
+    );
+    expect(result.valid).toBe(false);
+  });
+
   test('fails EVA Star Alliance World Travel Award when trip is shorter than 10 days', () => {
     const legs: Leg[] = [
       { from: 'TPE', to: 'SIN', operatingCarrier: 'SQ', stopover: true },
@@ -492,5 +615,181 @@ describe('validateRtwRoute · summary.continentsVisited', () => {
     expect(result.summary.continentsVisited).toEqual(
       continentsVisited(case1Legs, { airports, countryContinents }),
     );
+  });
+});
+
+describe('validateRtwRoute — network-gap watchlist warnings', () => {
+  // Local fixtures mirroring public/data/network-gaps/current.json shapes;
+  // the real catalog is pinned by the integration anchor at the bottom.
+  const openGap: NetworkGapEntry = {
+    carrier: 'BR',
+    pair: ['TPE', 'GUM'],
+    status: 'not-flown',
+    since: '2017-06',
+    until: null,
+    action: 'warn',
+    confidence: 'chart-verified',
+    evidence: ['https://example.com/br-gum-ceased'],
+  };
+  const closedGap: NetworkGapEntry = { ...openGap, carrier: 'UA', since: '2005', until: '2025-04' };
+
+  function validateWithGaps(
+    legs: ReadonlyArray<Leg>,
+    gaps: ReadonlyArray<NetworkGapEntry>,
+    request?: { startDate?: string; endDate?: string },
+  ) {
+    return validateRtwRoute(
+      product('br-infinity-star-alliance-world-travel-award'),
+      legs,
+      { airports, allianceCatalog, networkGaps: gaps },
+      request?.startDate !== undefined && request?.endDate !== undefined
+        ? { startDate: request.startDate, endDate: request.endDate }
+        : undefined,
+    );
+  }
+
+  function gapFindings(result: ReturnType<typeof validateRtwRoute>) {
+    return result.findings.filter((f) => f.ruleId === 'network-gap');
+  }
+
+  test('open gap warns with evidence and the affected leg index', () => {
+    const result = validateWithGaps(
+      [{ from: 'TPE', to: 'GUM', operatingCarrier: 'BR', stopover: false }],
+      [openGap],
+      { startDate: '2026-09-01', endDate: '2026-09-11' },
+    );
+
+    // NOTE: a bare one-leg fixture trips unrelated BR structural rules
+    // (required ocean crossings / direction) — validity is asserted on the
+    // full compliant loop in the integration anchor below. Here we pin the
+    // network-gap finding itself.
+    const gaps = gapFindings(result);
+    expect(gaps.length).toBe(1);
+    expect(gaps[0]?.severity).toBe('warning');
+    expect(gaps[0]?.messageKey).toBe('rtw.findings.networkGapOpen');
+    expect(gaps[0]?.affectedLegIndexes).toEqual([0]);
+    expect(gaps[0]?.sourceUrl).toBe('https://example.com/br-gum-ceased');
+    expect(gaps[0]?.message).toContain('does not operate TPE-GUM');
+    expect(gaps[0]?.messageParams?.carrier).toBe('BR');
+  });
+
+  test('closed gap is silent once until < trip start (resumption honored)', () => {
+    // UA resumed TPE–GUM in 2025-04; a 2026 trip must not warn.
+    const result = validateWithGaps(
+      [{ from: 'TPE', to: 'GUM', operatingCarrier: 'UA', stopover: false }],
+      [closedGap],
+      { startDate: '2026-09-01', endDate: '2026-09-11' },
+    );
+    expect(gapFindings(result)).toEqual([]);
+  });
+
+  test('closed gap warns inside its window with until params', () => {
+    const result = validateWithGaps(
+      [{ from: 'TPE', to: 'GUM', operatingCarrier: 'UA', stopover: false }],
+      [closedGap],
+      { startDate: '2024-03-01', endDate: '2024-03-10' },
+    );
+
+    const gaps = gapFindings(result);
+    expect(gaps.length).toBe(1);
+    expect(gaps[0]?.messageKey).toBe('rtw.findings.networkGapUntil');
+    expect(gaps[0]?.messageParams?.until).toBe('2025-04');
+    expect(gaps[0]?.message).toContain('between 2005 and 2025-04');
+  });
+
+  test('window edges are inclusive on both ends (YYYY entries normalize to YYYY-MM)', () => {
+    // since='2017-06' → a June 2017 departure warns, May does not.
+    const june = validateWithGaps(
+      [{ from: 'TPE', to: 'GUM', operatingCarrier: 'BR', stopover: false }],
+      [openGap],
+      { startDate: '2017-06-01', endDate: '2017-06-30' },
+    );
+    expect(gapFindings(june).length).toBe(1);
+
+    const may = validateWithGaps(
+      [{ from: 'TPE', to: 'GUM', operatingCarrier: 'BR', stopover: false }],
+      [openGap],
+      { startDate: '2017-05-01', endDate: '2017-05-31' },
+    );
+    expect(gapFindings(may)).toEqual([]);
+  });
+
+  test('trips without dates conservatively see every entry — even closed gaps', () => {
+    const result = validateWithGaps(
+      [{ from: 'TPE', to: 'GUM', operatingCarrier: 'UA', stopover: false }],
+      [closedGap],
+    );
+    const gaps = gapFindings(result);
+    expect(gaps.length).toBe(1);
+    expect(gaps[0]?.messageKey).toBe('rtw.findings.networkGapUntil');
+  });
+
+  test('pair matching is direction-agnostic (declared pair either way)', () => {
+    const result = validateWithGaps(
+      [{ from: 'GUM', to: 'TPE', operatingCarrier: 'BR', stopover: false }],
+      [openGap],
+      { startDate: '2026-09-01', endDate: '2026-09-11' },
+    );
+    expect(gapFindings(result).length).toBe(1);
+  });
+
+  test('other carriers flying the same pair are not flagged', () => {
+    const result = validateWithGaps(
+      [
+        { from: 'TPE', to: 'GUM', operatingCarrier: 'CI', stopover: false },
+        { from: 'GUM', to: 'TPE', operatingCarrier: 'CI', stopover: false },
+      ],
+      [openGap, closedGap],
+      { startDate: '2026-09-01', endDate: '2026-09-11' },
+    );
+    expect(gapFindings(result)).toEqual([]);
+  });
+
+  test('multiple matching legs dedupe into ONE finding listing every leg index', () => {
+    const result = validateWithGaps(
+      [
+        { from: 'TPE', to: 'GUM', operatingCarrier: 'BR', stopover: true },
+        { from: 'GUM', to: 'TPE', operatingCarrier: 'BR', stopover: false },
+      ],
+      [openGap],
+      { startDate: '2026-09-01', endDate: '2026-09-11' },
+    );
+
+    const gaps = gapFindings(result);
+    expect(gaps.length).toBe(1);
+    expect(gaps[0]?.affectedLegIndexes).toEqual([0, 1]);
+  });
+
+  test('surface sectors never match the watchlist', () => {
+    const result = validateWithGaps(
+      [{ from: 'TPE', to: 'GUM', operatingCarrier: 'BR', surface: true, stopover: false }],
+      [openGap],
+      { startDate: '2026-09-01', endDate: '2026-09-11' },
+    );
+    expect(gapFindings(result)).toEqual([]);
+  });
+
+  test('integration anchor: real watchlist flags BR but suppresses resumed UA on a mixed-carrier loop', () => {
+    // Mirrors calibration calib.sta-eligibility.br-gum-network-gap-warns:
+    // UA's JFK-GUM leg does not match UA's TPE-GUM entry at all, and UA's
+    // gap closed 2025-04 anyway; only the BR GUM-TPE sector warns.
+    const legs: Leg[] = [
+      { from: 'TPE', to: 'BKK', operatingCarrier: 'BR', stopover: false },
+      { from: 'BKK', to: 'LHR', operatingCarrier: 'BR', stopover: true },
+      { from: 'LHR', to: 'JFK', operatingCarrier: 'UA', stopover: true },
+      { from: 'JFK', to: 'GUM', operatingCarrier: 'UA', stopover: false },
+      { from: 'GUM', to: 'TPE', operatingCarrier: 'BR', stopover: false },
+    ];
+    const result = validateRtwRoute(
+      product('br-infinity-star-alliance-world-travel-award'),
+      legs,
+      { airports, allianceCatalog, networkGaps: networkGaps.gaps },
+      { startDate: '2026-09-01', endDate: '2026-09-11' },
+    );
+
+    const gaps = gapFindings(result);
+    expect(gaps.length).toBe(1);
+    expect(gaps[0]?.messageKey).toBe('rtw.findings.networkGapOpen');
+    expect(gaps[0]?.affectedLegIndexes).toEqual([4]);
   });
 });

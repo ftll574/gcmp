@@ -18,6 +18,8 @@ Product reset: per `docs/rtw-pivot-plan.md`, gcmp pivoted after v1.9 from a mile
 - **China Airlines not-true-RTW explanation card** — informational Rules-inspector note explains why CI SkyTeam partner awards cannot form a classic RTW ticket (itineraries crossing both the Pacific and the Atlantic are rejected); renders when the CI product is selected or a leg is operated by CI, linking the caveat to the finding only when `prohibited-ocean-combination` actually trips
 - **STARLUX COSMILE watchlist card** — standing Rules-inspector note records that no JX round-the-world award product exists today and published airline-partner redemptions center on Alaska Mileage Plan; facts-only, revisit when alliance membership or broader partner rules appear
 - **`continentsVisited` validation summary field** — pure country→continent helpers (`src/lib/rtw/continents.ts`) derive unique continents in first-visit itinerary order; surface sectors count as visited at both endpoints, unknown airports / unmapped countries skip silently. Backed by new continent-mapping data `public/data/geo/current.json` — UN geoscheme collapsed to 7 kebab-case continents at country level, validated by the `CountryContinentCatalogSchema` zod schema (`src/lib/schemas/country-continent.ts`)
+- **Transfers-per-city rule enforcement** — RTW products may declare `maxTransfersPerCity`; a city whose largest single visit exceeds the cap now trips a `transfers-per-city` fail finding naming the offending cities (Qantas Classic Flight Reward pins it at 2). Consecutive arrivals in one city count as one visit, scored at its largest transfer count
+- **Carrier network-gap warnings** — `public/data/network-gaps/current.json` catalogs carrier pairs known not flown, starting with BR TPE–GUM (EVA ceased Guam service 2017-06) and UA TPE–GUM (2005–2025-04), chart-verified with source links; flying a gap pair warns honestly in all 4 locales instead of silently passing carrier eligibility
 
 ### Changed
 
@@ -26,7 +28,8 @@ Product reset: per `docs/rtw-pivot-plan.md`, gcmp pivoted after v1.9 from a mile
 - Fix: restored non-Mercator projections after the renderer churn (`c85b8ad`)
 - Perf: reduced SVG airport-map node count for faster renders (`074c712`)
 - **RTW distances are statute miles end-to-end** — the engine previously summed nautical-mile haversines against statute-mile caps and pricing bands (a 15% overstatement); conversion now happens once at aggregation (`MILES_PER_NAUTICAL_MILE`)
-- **Calibration suite extended to 11 active tests** — QF segment cap + carrier minimum, ANA archived band pricing + surface exclusion now enforced; 2 documented `TODO` gaps remain (CX any-F-sector pricing datum is chart-historical; BR Guam network gap needs route data)
+- **Calibration suite extended to 17 active tests, zero open engine-gap TODOs** — QF segment cap + carrier minimum and ANA archived band pricing + surface exclusion are joined by CX any-First-sector pricing (whole-ticket-at-First pinned through live bands, boundary repricing 155k→190k across the 14,000-mile edge via a test-local rv=2018.Q2 official-chart fixture transcribed from Wayback capture 20180528013013, premium economy — absent from that chart — pricing as null) and BR TPE–GUM network-gap warnings
+- **`airports.json` loading hardened with a strict zod schema** — replaces the loose `Array.isArray` guard; every row must carry a 3-letter uppercase IATA, an optional 4-character ICAO (digit-bearing codes such as HE36 allowed), name/city strings, and an ISO alpha-2 country — malformed airport data fails loudly instead of slipping into the index
 - Fix: clarified RTW workbench layout (`a5ec1bf`)
 
 ### Removed

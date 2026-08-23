@@ -4,7 +4,7 @@
 
 Taiwan-first round-the-world award route planner. Build an itinerary, mark stopovers and surface sectors, validate it against RTW and multi-carrier mileage-redemption award rules, and share the URL.
 
-![Status: RTW pivot](https://img.shields.io/badge/status-RTW%20pivot-blue) ![License: MIT](https://img.shields.io/badge/license-MIT-green) ![Tests: 258 passing](https://img.shields.io/badge/tests-258%20passing-green)
+![Status: RTW pivot](https://img.shields.io/badge/status-RTW%20pivot-blue) ![License: MIT](https://img.shields.io/badge/license-MIT-green) ![Tests: 300 passing](https://img.shields.io/badge/tests-300%20passing-green)
 
 ## What It Does
 
@@ -85,6 +85,7 @@ RTW planning data is separate from mileage earning data:
 - `public/data/markets/tw/current.json` — Taiwan-first product priorities
 - `public/data/rtw-products/current.json` — RTW fare and award products
 - `public/data/award-pricing/current.json` — award pricing bands for supported products
+- `public/data/network-gaps/current.json` — carrier pairs known not flown, backing honest sector warnings
 - `public/data/programs/**` — secondary mileage earning rules
 
 Schemas live in:
@@ -93,6 +94,8 @@ Schemas live in:
 - `src/lib/schemas/market.ts`
 - `src/lib/schemas/rtw-rule.ts`
 - `src/lib/schemas/program.ts`
+- `src/lib/schemas/airports.ts`
+- `src/lib/schemas/network-gaps.ts`
 
 Pure engines:
 
@@ -115,7 +118,7 @@ npm run build
 
 Current local baseline:
 
-- 258 Vitest tests (incl. the Iron Rule calibration suite)
+- 300 Vitest tests (incl. the Iron Rule calibration suite)
 - strict TypeScript
 - ESLint engine purity rule for `src/lib/calc/**`
 - production build via Vite

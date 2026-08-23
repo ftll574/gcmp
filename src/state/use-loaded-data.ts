@@ -10,6 +10,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { parseAirportCatalog } from '../lib/schemas/airports.ts';
 import { AwardPricingCatalogSchema, type AwardPricingCatalog } from '../lib/schemas/award-pricing.ts';
 import { AllianceCatalogSchema, type AllianceCatalog } from '../lib/schemas/alliance.ts';
 import {
@@ -17,6 +18,10 @@ import {
   type ContinentId,
 } from '../lib/schemas/country-continent.ts';
 import { MarketProfileSchema, type MarketProfile } from '../lib/schemas/market.ts';
+import {
+  parseNetworkGapCatalog,
+  type NetworkGapEntry,
+} from '../lib/schemas/network-gaps.ts';
 import { ProgramSchema, type Program } from '../lib/schemas/program.ts';
 import { RtwRuleCatalogSchema, type RtwRuleCatalog } from '../lib/schemas/rtw-rule.ts';
 import { ValuationsSchema, type Valuations } from '../lib/schemas/valuations.ts';
@@ -49,6 +54,12 @@ export interface LoadedData {
    * before the country row (spec §8 Q5).
    */
   airportContinentOverrides: ReadonlyMap<string, ContinentId> | null;
+  /**
+   * Carrier network-gap watchlist entries (network-gaps/current.json).
+   * Null if the file is unavailable/malformed — the engine then emits no
+   * network-gap warnings (same degrade-to-null contract as `valuations`).
+   */
+  networkGaps: ReadonlyArray<NetworkGapEntry> | null;
 }
 
 export type LoadState =
@@ -94,6 +105,7 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
           awardPricingRaw,
           marketRaw,
           geoRaw,
+          networkGapsRaw,
           ...programRaws
         ] = await Promise.all([
           fetchJsonStrict(`${baseUrl}/data/airports.json`),
@@ -104,6 +116,7 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
           fetchJsonStrict(`${baseUrl}/data/award-pricing/current.json`),
           fetchJsonStrict(`${baseUrl}/data/markets/tw/current.json`),
           fetchJsonOptional(`${baseUrl}/data/geo/current.json`),
+          fetchJsonOptional(`${baseUrl}/data/network-gaps/current.json`),
           ...programDirs.map((dir) =>
             fetchJsonOptional(`${baseUrl}/data/programs/${dir}/current.json`),
           ),
@@ -135,7 +148,18 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
           }
         }
 
-        if (!Array.isArray(airportsRaw)) throw new Error('airports.json malformed');
+        let networkGaps: ReadonlyArray<NetworkGapEntry> | null = null;
+        if (networkGapsRaw !== null && networkGapsRaw !== undefined) {
+          try {
+            networkGaps = parseNetworkGapCatalog(networkGapsRaw).gaps;
+          } catch (e) {
+            console.warn(
+              'network-gaps/current.json schema parse failed; network-gap warnings disabled:',
+              e,
+            );
+          }
+        }
+
         if (!Array.isArray(airlinesRaw)) throw new Error('airlines.json malformed');
         const allianceCatalog = AllianceCatalogSchema.parse(allianceRaw);
         const rtwRuleCatalog = RtwRuleCatalogSchema.parse(rtwRulesRaw);
@@ -164,7 +188,7 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
         setState({
           status: 'ready',
           data: {
-            airports: airportsRaw as Airport[],
+            airports: parseAirportCatalog(airportsRaw),
             airlines: airlinesRaw as Airline[],
             programs,
             allianceCatalog,
@@ -174,6 +198,7 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
             valuations,
             countryContinents,
             airportContinentOverrides,
+            networkGaps,
           },
         });
       } catch (e) {

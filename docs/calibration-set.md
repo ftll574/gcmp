@@ -405,3 +405,461 @@ manual browser transcription:
 `calib.ana-rtw-archived.band-20001-22000-is-125k` +
 `calib.ana-rtw-archived.surface-excluded-from-distance`,
 `calib.sta-eligibility.br-gum-gap-and-br67-two-sectors`.
+
+---
+
+## Addendum — Phase-4 research pass (2026-08): Case-3 pricing pin upgrade + BR network-gap data proposal
+
+This addendum appends evidence gathered in a later research session with working
+outbound HTTP. It (A1) upgrades Cases 3/5 sources from search-index snippets to
+full-text retrieval and pins official wording for the CX any-First pricing rule,
+and (A2) verifies the BR Guam route history and proposes the data mechanism for
+the network-gap warning (`calib.sta-eligibility.br-gum-network-gap-warns`).
+Nothing above this section is modified. Confidence labels follow § Method &
+verification limits; quotes captured verbatim from live pages or Wayback
+captures this pass are marked `fetched-verbatim` (stronger than index excerpts;
+pages only partially extracted stay `PARTIAL`).
+
+### A1 — Case 3 upgrade: the any-First ⇒ whole-ticket-First rule is officially worded; three price DPs pinned
+
+**(a) Sources**
+
+- Official T&C, pre-Oct-2023 wording — Wayback capture 2019-03-06 of the Asia
+  Miles EN site:
+  https://web.archive.org/web/20190306081345/https://www.asiamiles.com/en/terms-and-conditions/service/flight-award-oneworld-multi-carrier-awards.html
+  — `chart-verified` (`fetched-verbatim`)
+- Official T&C, post-Oct-2023 wording, as transcribed into FT 2137901 by
+  percysmith (Oct 9 2023) quoting cathaypacific.com:
+  https://www.flyertalk.com/forum/cathay-pacific-cathay/2137901-big-issue-asiamiles-oneworld-ticket-rules-change-immediate-effect.html
+  — posts #1–#3 `fetched-verbatim`; post #4 tail truncated (`PARTIAL`)
+- PTT Case-3 primary (§Case 3): full text retrieved this pass — status upgrades
+  from `snippet-verified`/`PARTIAL` to `chart-verified`
+- PTT follow-up (May 15 2018): full text retrieved — `chart-verified`
+- FlyerTalk 2184572 (listed above as near-miss lead; now read):
+  https://www.flyertalk.com/forum/cathay-pacific-cathay/2184572-oneworld-multi-carrier-award-open-jaw-counted-miles.html
+  — OP + sole reply `fetched-verbatim`
+
+**(b) Verbatim evidence**
+
+Official rule text, 2019-03-06 capture (rv≈2019.Q1; both PTT threads show no
+chart change reported 2017→2018, so this wording covers the 2017.Q3-era DPs):
+
+> "For multiple-sector Flight Awards, the Mileage Credits required are those of
+> the highest class booked in any single itinerary."
+
+Same clause in the Oct-2023 revision (program currency renamed Mileage Credits →
+Asia Miles):
+
+> "For multiple-sector Flight Awards, the Asia Miles required to redeem such
+> Flight Award are those of the highest class booked in any single itinerary."
+
+Also official, both eras (pin per-rv; 2019 wording shown):
+
+> "A one world Multi-carrier Award is applicable for: two one world alliance
+> airlines, when Cathay Pacific or Cathay Dragon is not one of your selected
+> carriers; or three or more one world alliance airlines, when Cathay Pacific or
+> Cathay Dragon is one of your selected carriers."
+
+> "The maximum distance range is up to 50,000 miles."
+
+> "To redeem a one world Multi-carrier Award, the total Mileage Credits required
+> to determine the award zone is the sum of the sector distance (between the
+> origin airports and destination airports) of all sectors in the itinerary."
+
+> "The Member or Nominee can make a maximum of five stopovers. In addition, two
+> transfers and two open-jaws are permitted."
+
+> "A one world Multi-carrier Award does not offer travelling on Premium Economy
+> Class."
+
+Oct-2023 additionally added the HKG-start anti-backtrack clause: "Stopover/Open-
+jaw is permitted once for one city in the itinerary, and cannot be the same city
+of the point of origin or point of destination."
+
+PTT Jul 21 2017 (koki0331) — rule + band pair as experienced:
+
+> 「一開始設定的目標是獎勵區域08，頭等艙所需里程是155000(商務艙則是115000)，其中要注意的: 1.只要其中一段是頭等艙的兌換機票，就會以較高的標準計算」
+
+> 「可以發現距離約是14329，已經超過14000了，這樣所需里程會瞬間從155000跳到190000，太不划算」
+
+> 「3.旅程中最多可以五次停留+兩次轉機」
+
+Issued itinerary: TSA-HND JL C / HND-LHR JL F / LHR-CDG BA C / ZRH-HKG CX F /
+HKG-TPE CX C — total **155,000 miles + 2,182 HKD tax**.
+
+PTT May 15 2018 (Masumi) — J↔F pairing at the next band up + fee schedule:
+
+> 「但現在我要開的是頭等艙，等於上面的部分會一口氣從140000里程暴增成190000里程」
+
+(business 140,000 ↔ First 190,000 on her longer chain — consistent with
+koki0331's F jump). Issued ticket: HKG-TPE CX C（開口）/ HND-LHR JL F（停）/
+LHR-LIS BA C（開口）/ FRA-HKG CX F = **155,000 mi, 2,750 HKD**. Fee DP:
+「改期：單純更改日期時間…每段收40美金或4000哩」「重簽：改艙等或追加航段時使用…整張收
+100美金或10000哩」「退票：…整張收120美金或12000哩」. QR First availability:
+「本來花時間找了QR的BCN-DOH-HKG或是BCN-DOH-TYO...嗯，果然死不放票XD」.
+
+FT Jan 25 2025 (OP GherkinFT; jagmeets reply) — open-jaw counting + third price DP:
+
+> "JFK-LHR-HKG-TPE-KUL-BKK // SIN-HKG-JFK, which should priced at 230,000 miles
+> with flying distance of 19,442 miles. However, Asia miles agent said the
+> system showed I'm in the 20,000-25,000 range.. It seemed it might have added
+> the open jaw BKK//SIN as flight distance."
+
+> "Seems correct?" (jagmeets — senior CX-forum member endorsing the agent's
+> open-jaw-inclusive zoning)
+
+**(c) What this pins for the engine**
+
+- Mechanism `any-First-sector ⇒ whole-ticket prices as First`: **officially
+  confirmed** by the highest-class-booked clause in both eras — the blocked
+  TODO `calib.cx-multicarrier.any-first-prices-as-first` is unblocked at
+  mechanism level.
+- Band boundary: {F 155,000 / J 115,000} vs next band {F 190,000 / J 140,000}
+  separated at **14,000 mi** (a 14,329-mi plan crossed it upward; both ≤14,000-mi
+  issued tickets priced 155,000).
+- Zone total includes open-jaw/surface great-circle distance: official "sum of
+  the sector distance of all sectors" + the FT agent DP zoning an open-jawed
+  19,442-flying-mi ticket into 20,001–25,000.
+- Third price DP: 19,442 flying mi ⇒ 230,000 miles (cabin NOT stated in OP — do
+  not assume First or Business).
+- Carrier minimums, no-Premium-Economy, 5 stopovers / 2 transfers / 2 open-jaws,
+  50,000-mile ceiling: all official text; the Oct-2023 revision changes wording
+  and adds the HKG-start clause — snapshot per-rv.
+
+**(d) Honesty note — what is still NOT pinned**
+
+The complete per-band Y/J/F table was **not recovered**. The T&C pages carry
+rules but no chart; Wayback CDX over asiamiles.com
+(oneworld/multi-carrier/chart/redeem/flight-award URL patterns) surfaced only
+T&C pages and images; the FT "[Release] oneworld Multicarrier Award Planner"
+(thread 2127654) has zero Wayback captures; general web search was degraded
+during this pass (search-API auth outage; DDG/Bing bot walls). Per the honesty
+rule: **do not fabricate the missing bands.** Recommendation: keep the TODO open
+but narrow it to "transcribe full band table from an archived award-chart page
+(browser pass)", and activate NOW the sub-tests that ARE evidenced:
+highest-class-wins mechanism; the 14,000-mi boundary pair {155k/115k |
+190k/140k} (values `community-corrected`); open-jaw-distance-counts;
+carrier-minimum; no-PE (official clauses `chart-verified`).
+
+### A2 — BR network gap: verified route facts + proposed data mechanism
+
+**(a) Sources** (all `fetched-verbatim` unless noted)
+
+- FT 1838853 (Apr 25 2017):
+  https://www.flyertalk.com/forum/eva-air-infinity-mileageLands/1838853-eva-end-guam-surabaya.html
+- postguam.com (Mar 2017):
+  https://www.postguam.com/news/local/eva-air-pulling-out-of-guam/article_7cdd8b00-2a66-11e7-b21c-4bce1748b3e3.html
+  — search-index excerpt (`snippet-verified`, `PARTIAL`)
+- farebuzz (c. 2017):
+  https://www.farebuzz.com/updates/eva-air-ends-twice-weekly-direct-taipei-guam-flights.aspx
+  — search-index excerpt (`snippet-verified`, `PARTIAL`)
+- Wikipedia `List of EVA Air destinations`, rev 2022-04-09
+  (oldid=1081772131, read via Wayback render): Guam row = "Terminated",
+  citing "EVA Air cancels Guam service from June 2017", Routesonline,
+  25 Apr 2017 (the Routesonline article itself was not retrievable this pass —
+  cite via the Wikipedia reference)
+- AeroRoutes (published 1000GMT 13 Dec 2024):
+  https://www.aeroroutes.com/eng/241213-uans25gumtpe
+- EVA official route-map pages (future snapshot source):
+  https://www.evaair.com/en-us/plan-and-book/where-we-fly/route-maps/long-haul-route-map/
+- PTT threads of §Case 5 — full text retrieved this pass (status upgrade to
+  `chart-verified`)
+
+**(b) Verified timeline**
+
+- Launch: **2011** — farebuzz: "EVA Air had first launched its flights to Guam
+  in 2011."
+- End: effective **10JUN17**, twice-weekly TPE–GUM — FT OP (coolfish1103):
+  "EVA to end services to Guam from 10JUN17. Also, it's ending services to
+  Surabaya from 29OCT17, currently zeroing out services from 02SEP17. CAL
+  continues to service both destinations, with Surabaya having a one-stop at
+  Singapore." postguam: "its last date for the Guam route is June 7" — minor
+  discrepancy (last departure vs schedule end; twice-weekly); Wikipedia/
+  Routesonline say "from June 2017". Record all three; treat 10JUN17 as the
+  schedule-effective date.
+- Community color: hayzel7773: "not surprised at all. The two routes that have
+  constantly been changing freq and aircraft for BR. Total money losers too.";
+  bzcat: "Seems like BR has struggled with a lot of leisure focused intra-Asia
+  routes."
+- Alternatives: CAL continues TPE–GUM ("China Airlines will now be the only
+  Taiwanese carrier to continue serving Guam from Taipei"); UA resumed
+  GUM–TPE **02APR25** twice-weekly 737-800 (UA165 GUM0700–0925TPE, UA166
+  TPE1030–1620GUM / TPE1100–1650GUM), having "last served on regular scheduled
+  basis until 2005 with Continental Micronesia" (AeroRoutes). So 2005→2025 the
+  only Taiwan-link was CI.
+- Adjacent gap DP from §Case 5 pushes: scrazy77 「上海飛關島UA已經停飛了」
+  (UA PVG–GUM also discontinued by Apr 2019).
+
+**(c) Proposed data mechanism (feeds `calib.sta-eligibility.br-gum-network-gap-warns`)**
+
+Option 1 — **Network-gap watchlist (recommended now)**: static, versioned,
+zod-validated file `public/data/network-gaps/{carrier}/v{YYYY.Q}.json`, same
+conventions as program data. Entry shape:
+
+```json
+{
+  "carrier": "BR", "pair": ["TPE", "GUM"], "status": "not-flown",
+  "since": "2017-06", "until": null, "action": "warn",
+  "confidence": "chart-verified",
+  "evidence": [
+    "https://www.flyertalk.com/forum/eva-air-infinity-mileagelands/1838853-eva-end-guam-surabaya.html",
+    "https://www.postguam.com/news/local/eva-air-pulling-out-of-guam/article_7cdd8b00-2a66-11e7-b21c-4bce1748b3e3.html"
+  ]
+}
+```
+
+Engine emits a `warning` finding when an operating-carrier × city-pair matches
+an entry ("BR does not operate TPE–GUM (ceased 2017-06); consider CI or UA").
+Pros: tiny; every entry evidence-linked; honest about scope; reuses existing
+zod + rv-snapshot machinery; directly activates the calibration test. Cons:
+incomplete by construction (only pairs someone actually assumed); needs
+periodic recheck each rv; entries can go stale if a route resumes — hence the
+`until` field (e.g., a UA TPE–GUM entry would carry `since:"2005"`,
+`until:"2025-04"`).
+
+Option 2 — **Full operated-network snapshot (later)**: scrape evaair.com route
+maps into a positive set `data/network/{carrier}/v{YYYY.Q}.json`; warn on any
+requested pair absent from the set. Pros: complete coverage; catches unknown
+gaps generically. Cons: marketing route maps are JS surfaces → fragile scrapes;
+route churn (seasonal cuts, resumptions like UA GUM–TPE 2025-04) produces false
+warnings without careful dating; larger schema/CI burden; attribution questions.
+
+Recommendation: ship Option 1 seeded with BR TPE–GUM (optionally UA PVG–GUM per
+scrazy77, and UA TPE–GUM as a closed-gap entry so tests pin both branches);
+keep the schema forward-compatible so a future Option-2 snapshot can subsume
+the watchlist as override annotations. Emit `warning`, not `fail`: Case 5 shows
+the same city-pair assumption can be structurally valid under other
+constructions, and eligibility depends on the ticketing product's partner rules.
+
+**(d) New conflict to record (do NOT silently resolve) — co-terminal /
+technical-stop flight numbers**
+
+§Case 5(d) says multi-hop flight numbers (BR67 TPE–BKK–LHR) "count as separate
+sectors for segment caps". Full-text evidence adds the ANA zone-arithmetic
+view: howlic 「Co-terminal flight是視同直飛航班 BR61 不能拆開來看」; jimsun
+「中停曼谷如果是直接開tpe-lhr(ams,vie)可以，視為直飛」; lightring demonstrates
+ANA prices BR61-style chains as a 1-stop direct. Both views can hold
+simultaneously: physically two sectors for segment-cap accounting, one
+"direct" for zone-distance arithmetic. Parameterize per rule context; record
+as conflict #4 beside § Conflicts found. Bonus availability DP: kinbon asked
+whether BR67 ever releases business award space — tinystudio:
+「幾乎不沒放，這段票我查了好幾年印象中只看過1,2次」 (structural-valid ≠ bookable,
+again).
+
+### A3 — Band-table archaeology round 2 (follow-up pass)
+
+Follow-up exhausting the two leads left open by A1(d): archived chart-page
+images, and the unswept oneworld.com / cathaypacific.com domains. Outcome:
+**positive** — the complete official band table was recovered from a
+server-rendered Wayback capture; no image OCR was needed.
+
+**(a) Primary source — full official chart, rv=2018.Q2**
+
+Wayback capture **20180528013013** (2018-05-28 01:30:13 UTC, status 200) of
+`https://www.asiamiles.com/en/redeem-awards/flight-awards/flight-award-chart.html`,
+fetched verbatim via shell HTTPS
+(`https://web.archive.org/web/20180528013013id_/https://www.asiamiles.com/en/redeem-awards/flight-awards/flight-award-chart.html`,
+75,650 bytes; local cache `%TEMP%\gcmp-research\am-flight-award-chart-2018.html`).
+The table is server-rendered HTML (values present in raw markup, not
+JS-injected), so every number below carries **`chart-verified`** confidence —
+this is the official published chart itself, not a community reconstruction.
+Product identity proven by the intro directly above the table (verbatim):
+
+> Refer to this chart to check if you are redeeming a round-trip award ticket
+> with an itinerary which covers: Two one world alliance airlines, which Cathay
+> Pacific or Cathay Dragon is not one of your selected carriers; or Three or
+> more one world alliance airlines, which Cathay Pacific or Cathay Dragon is
+> one of your selected carriers. You can choose from all one world alliance
+> airlines in your journey, with a maximum distance of 50,000 miles.
+
+Column headers verbatim: "Award zone / Distance in actual miles / Required
+miles Economy Class / Business Class / First Class".
+
+```
+zone | actual flown miles | Economy | Business | First
+ 01  |        0 -    1,000|  30,000 |   55,000 |  70,000
+ 02  |    1,001 -  1,500  |  30,000 |   60,000 |  80,000
+ 03  |    1,501 -  2,000  |  35,000 |   65,000 |  90,000
+ 04  |    2,001 -  4,000  |  35,000 |   70,000 |  95,000
+ 05  |    4,001 -  7,500  |  60,000 |   80,000 | 105,000
+ 06  |    7,501 -  9,000  |  60,000 |   85,000 | 115,000
+ 07  |    9,001 - 10,000  |  65,000 |   95,000 | 130,000
+ 08  |   10,001 - 14,000  |  85,000 |  115,000 | 155,000
+ 09  |   14,001 - 18,000  |  90,000 |  135,000 | 190,000
+ 10  |   18,001 - 20,000  |  95,000 |  140,000 | 205,000
+ 11  |   20,001 - 25,000  | 110,000 |  160,000 | 235,000
+ 12  |   25,001 - 35,000  | 130,000 |  190,000 | 275,000
+ 13  |   35,001 - 50,000  | 150,000 |  220,000 | 335,000
+```
+
+Same-page general conditions (verbatim): "The awards zone is determined by the
+actual miles flown in all of the sectors of your itinerary. You can make a
+maximum of five stopovers, two transfers and two open-jaws at either origin,
+en-route or turnaround point, subject to airline partners' terms and
+conditions." plus fee thresholds "HKD50 or more" (government/airport) and
+"HKD193 or more" (carrier-imposed) — corroborating A1(b)'s T&C text and the
+50,000-mile ceiling.
+
+rv pinning: capture date 2018-05-28 → snapshot as **rv=2018.Q2**. Zone 08 is
+additionally corroborated by koki0331's Jul-2017 thread (identical
+{E85,000/J115,000/F155,000}), so row 08 is stable across rv=2017.Q3–2018.Q2;
+no evidence of any revision between those dates.
+
+Cross-validation against §A1 DPs (all exact matches):
+
+- koki0331 zone-08 pair {F 155,000 / J 115,000} → row 08 exact.
+- koki0331 boundary jump: 14,329-mi plan ⇒ 「所需里程會瞬間從155000跳到190000」
+  → row 09 First = 190,000 exact.
+- Masumi issued ticket (≈13.2k mi chain, paid 155,000) → row 08 First exact.
+- Masumi merged-chain projection (≈17.5–17.9k mi ⇒ 190,000 all-premium) → row 09
+  First = 190,000 exact.
+
+**(b) Correction the chart forces — record, do NOT silently resolve**
+
+§A1(c) currently states the band boundary pair as {F 155,000 / J 115,000} vs
+next band **{F 190,000 / J 140,000}**. The official chart splits that pairing
+across TWO rows: row 09 = {J 135,000 / F 190,000}, row 10 = {J 140,000 /
+F 205,000}. Masumi's 「一口氣從140000里程暴增成190000里程」 therefore cannot hold
+within a single row of this chart. Two readings: (i) her chain sat in row 09
+(like koki0331's 14,329-mi case) — then J was 135,000 and her "140000" figure
+is imprecise or reflects an earlier chart revision; (ii) her chain sat in row
+10 — then J=140,000 holds but First would be 205,000, not 190,000. koki0331's
+exact F-jump DP anchors row 09 just past 14,000, favoring reading (i), but this
+stays **unresolved** — treat as conflict material beside §A2(d), and prefer
+chart rows over the community-paired {190,000/140,000} couplet when pinning
+engine bands.
+
+**(c) Rules-drift confirmation**
+
+The FT Jan-2025 DP (19,442 flying mi ⇒ agent-zoned into 20,001–25,000, OP
+expected 230,000) matches **no** cell of this 2018 table (nearest: row 10
+First 205,000; row 11 First 235,000 / Business 160,000 / Economy 110,000) ⇒
+the multi-carrier chart was revised after 2018-05, arithmetically consistent
+with the Oct-2023 T&C revision quoted in A1(b). Do NOT reuse rv=2018.Q2 rows
+for late-rv tests. Untranscribed candidate captures of later eras seen in CDX
+of the same URL: 20210615190855, 20240210095453, 20240903150154 — natural
+follow-up target for a late-rv pin (out of this pass's time-box).
+
+**(d) Negative results — leads checked and closed**
+
+- Wayback CDX image sweep over asiamiles.com (`mimetype:image/*` +
+  award/oneworld/chart URL filters, all eras): nav chrome, thumbnails, lifestyle
+  banners only; zero data-table images. `pic_awardchart_oneworld.gif`
+  (2002–2004 captures) is a category icon, not a chart. The saved 2019-03-06 EN
+  T&C snapshot contains no chart img/href either (content JS-injected).
+- oneworld.com CDX sweep (`url=oneworld.com*`,
+  `filter=original:.*multi.?carrier.*`, collapse urlkey): zero matching
+  captures — clean negative.
+- cathaypacific.com CDX sweep (same filter): HTTP 504 Gateway Timeout twice —
+  infrastructure failure, NOT evidence of absence; deliberately unexhausted
+  (low value now that (a) succeeded).
+- Search engines degraded all session (search-API HTTP 402 auth outage; DDG
+  bot-wall; Bing RSS junk) — irrelevant once CDX URL-pattern archaeology
+  located the page directly.
+
+Disposition: the A1(d) honesty-note TODO ("complete per-band Y/J/F table not
+recovered") is hereby **resolved for rv=2018.Q2**; the "Keep TODO (narrowed)"
+bullet in the suggested-test-ids list below predates this pass and is left
+untouched (append-only) — superseded on commit. Bonus leads in the same
+capture (untranscribed): the page also hosts the "Asia Miles awards chart"
+(CX own-flight zones S–F, incl. Premium Economy rows) and an "Airline partners
+awards chart" (single-carrier partner awards incl. non-oneworld partners such
+as BR) — future calibration targets at the same URL/timestamp.
+
+### A4 — Early-rv chart check (follow-up pass 2)
+
+Question: does a **pre-2018-05** Wayback capture exist of
+`https://www.asiamiles.com/en/redeem-awards/flight-awards/flight-award-chart.html`
+(or earlier URL variants)? A 2017-era official table would adjudicate the
+Masumi 「140000」 conflict toward one era; its absence keeps it open.
+
+**(a) Negative result — no pre-2018-05 capture exists**
+
+- Uncollapsed CDX over the exact canonical URL (www and bare host, all
+  captures, no urlkey collapse): the **first-ever capture is 20180528013013**
+  (the §A3 source itself); next is 20180819154942; dense re-crawling only from
+  2020 onward. Nothing earlier exists.
+- Domain-wide CDX pattern `original:.*flight.?award.?chart.*` (collapse
+  urlkey): earliest hit remains 20180528013013; regional variants first appear
+  ≥2019-07 (zh 20190722210600, ja 20190818193429, sc 20191023233801,
+  ko 20210422132949); suffix-junk URLs (%20…, /1000, #…) are all ≥2021.
+- Pattern `original:.*multi.?carrier.*`: T&C pages only (earliest
+  20190306081345 — the §A1(b) snapshot), no chart page.
+- Old-era chart URLs (2005–2012, recorded during the A3 pass) predate the
+  multi-carrier product.
+
+⇒ Task outcome (c): the archive cannot date any band value earlier than
+2018-05-28. Jul-2017 pricing knowledge stays community-only (koki0331's row-08
+pair + F-jump DPs). The Masumi conflict remains honestly unresolved — under
+BOTH recovered official eras no single row pairs {J140k / F190k} (2018-05:
+J140k is row 10, F190k is row 09; 2018-08: neither value appears anywhere).
+
+**(b) Bonus positive within fetch budget — second official snapshot
+(post-revision)**
+
+Capture **20180819154942** (2018-08-19 UTC, status 200, 69,306 bytes, fetched
+verbatim via `…/web/20180819154942id_/…`; cache
+`%TEMP%\gcmp-research\am-flight-award-chart-2018-08.html`). Same page identity:
+section now titled verbatim "one world Multi-Carrier Award Chart" (May era:
+"one world Multi-carrier Awards chart"), identical intro sentence (two-oneworld-
+airlines / three-or-more conditions, 50,000-mile maximum), identical column
+headers. Full server-rendered table, per-cell **`chart-verified`**, pinned
+rv=**2018.Q3**:
+
+```
+zone | actual flown miles | Economy | Business | First
+ 01  |        0 -    1,000|  30,000 |   55,000 |  70,000
+ 02  |    1,001 -  1,500  |  30,000 |   60,000 |  80,000
+ 03  |    1,501 -  2,000  |  35,000 |   65,000 |  90,000
+ 04  |    2,001 -  4,000  |  35,000 |   70,000 |  95,000
+ 05  |    4,001 -  7,500  |  60,000 |   90,000 | 140,000
+ 06  |    7,501 -  9,000  |  65,000 |  100,000 | 150,000
+ 07  |    9,001 - 10,000  |  70,000 |  110,000 | 160,000
+ 08  |   10,001 - 14,000  |  90,000 |  135,000 | 220,000
+ 09  |   14,001 - 18,000  | 100,000 |  155,000 | 250,000
+ 10  |   18,001 - 20,000  | 105,000 |  165,000 | 260,000
+ 11  |   20,001 - 25,000  | 115,000 |  185,000 | 280,000
+ 12  |   25,001 - 35,000  | 130,000 |  210,000 | 300,000
+ 13  |   35,001 - 50,000  | 150,000 |  240,000 | 345,000
+```
+
+Deltas vs the 2018-05-28 table (§A3(a)): rows 01–04 identical; row 05 J +10k /
+F +35k; rows 06–07 J +15k / F +30–35k; row 08 J +20k / **F +65k (155k→220k)**;
+row 09 J +20k / **F +60k (190k→250k)**; row 10 J +25k / F +55k; row 11 J +25k /
+F +45k; row 12 E unchanged / J +20k / F +25k; row 13 E unchanged / J +20k /
+F +10k. The multi-carrier chart therefore has at least two distinct official
+eras — [.., 2018-05-28] and [2018-08-19, ..] values — with the revision
+bracketed strictly inside (2018-05-28, 2018-08-19); neither page states an
+effective date, so only the bracket may be asserted.
+
+Engine notes:
+
+- The t4 rv=2017.Q3 boundary fixture's First-side numbers (F155 @≤14,000;
+  F190 just past 14,000) match the MAY-era table, whose zone-08 row is
+  identical to koki0331's Jul-2017 DP — i.e., May-2018 values are the direct
+  continuation of the Jul-2017 community era. The Aug-2018 table breaks that
+  continuity: any future test touching ≥4,001-mi bands must be rv-scoped
+  (row 09 First is 190,000 pre-revision vs 250,000 post).
+- FT Jan-2025 DP (19,442 mi ⇒ agent-zoned into 20,001–25,000; expected
+  230,000) matches no cell of EITHER recovered era (Aug row 10 = 105/165/260,
+  row 11 = 115/185/280) ⇒ at least one further revision post-Aug-2018;
+  §A3(c)'s late-rv capture candidates (20210615190855, 20240210095453,
+  20240903150154) remain unpinned follow-up targets.
+- Time-box honored: one CDX sweep (four batched queries), one fetch of the two
+  allowed (the Aug capture); the second stayed unused.
+
+### Suggested test ids from this addendum
+
+- Activate now: `calib.cx-multicarrier.any-first-prices-as-first` (mechanism +
+  14,000-mi boundary; band values `chart-verified` via A3's rv=2018.Q2 table —
+  pin fixture rows from the chart, not the §A1(c) community couplet, per
+  A3(b));
+  `calib.cx-multicarrier.open-jaw-distance-counts`;
+  `calib.cx-multicarrier.carrier-minimum-and-no-premium-economy`.
+- RESOLVED (was "Keep TODO narrowed"): full AM band-table transcription done
+  for rv=2018.Q2 via Wayback capture 20180528013013 — see A3(a). Remaining
+  follow-up: late-rv captures (20210615190855 / 20240210095453 / 20240903150154)
+  to pin post-2018 drift; do NOT reuse 2018 rows for late-rv assertions (A3(c)).
+- `calib.sta-eligibility.br-gum-network-gap-warns` — data spec in A2(c);
+  plus `calib.sta-eligibility.co-terminal-direct-vs-two-sectors` (conflict
+  guard, parameterized both ways).

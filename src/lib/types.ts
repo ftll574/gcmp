@@ -8,7 +8,11 @@ export type AirlineIata = string; // 2-3 letter airline code, uppercase
 
 export interface Airport {
   readonly iata: Iata;
-  readonly icao?: string;
+  /**
+   * `| undefined` (vs bare optional) mirrors zod's optional-field inference
+   * so schema-parsed rows stay assignable under exactOptionalPropertyTypes.
+   */
+  readonly icao?: string | undefined;
   readonly name: string;
   readonly city: string;
   readonly country: string;

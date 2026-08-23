@@ -21,10 +21,15 @@
  *      totalDistanceMiles() — QF OWCFR counts surface sectors toward the
  *      priced distance (Case 1 verdict); ANA RTW excludes them
  *      (「陸地交通區間不列入計算」, product data 'excluded-from-distance').
- *   2. RESOLVED (Phase 2): priceRtwItinerary() implements "highest cabin
- *      wins" over per-leg cabins (Leg.cabin) with the routing cabin as
- *      floor; the CX any-F-sector case stays a todo only because the
- *      pricing datum lives on a historical chart (rv=2017.Q3), not data.
+ *   2. RESOLVED (Phase 2; activated t4, completed by research round 2):
+ *      priceRtwItinerary() implements "highest cabin wins" over per-leg
+ *      cabins (Leg.cabin) with the routing cabin as floor. The CX
+ *      any-F-sector case is ACTIVE against BOTH the live catalog and the
+ *      COMPLETE official rv=2018.Q2 chart (Wayback 20180528013013,
+ *      docs/calibration-set.md §A3(a)) via a test-local fixture — never
+ *      merged into the live catalog, whose bands are a different era.
+ *      Still open honestly: late-rv chart pins (§A3(c)) and award
+ *      availability (QR releases no F space, 「果然死不放票」).
  *   3. RESOLVED (Phase 2): distanceNm() returns NAUTICAL miles; product
  *      distance caps and pricing bands are STATUTE miles. The rtw layer
  *      now converts once at aggregation (MILES_PER_NAUTICAL_MILE), so
@@ -35,11 +40,12 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, test } from 'vitest';
 import { distanceNm } from '../../src/lib/calc/haversine.ts';
-import { estimateAwardPrice } from '../../src/lib/rtw/award-pricing.ts';
+import { estimateAwardPrice, priceRtwItinerary } from '../../src/lib/rtw/award-pricing.ts';
 import { validateRtwRoute, MILES_PER_NAUTICAL_MILE } from '../../src/lib/rtw/validate.ts';
 import { AllianceCatalogSchema } from '../../src/lib/schemas/alliance.ts';
 import { AwardPricingCatalogSchema } from '../../src/lib/schemas/award-pricing.ts';
 import { RtwRuleCatalogSchema } from '../../src/lib/schemas/rtw-rule.ts';
+import { NetworkGapCatalogSchema } from '../../src/lib/schemas/network-gaps.ts';
 import type { Airport, Leg } from '../../src/lib/types.ts';
 
 const allianceCatalog = AllianceCatalogSchema.parse(
@@ -53,6 +59,67 @@ const products = RtwRuleCatalogSchema.parse(
 const pricing = AwardPricingCatalogSchema.parse(
   JSON.parse(readFileSync('public/data/award-pricing/current.json', 'utf8')),
 );
+
+const networkGaps = NetworkGapCatalogSchema.parse(
+  JSON.parse(readFileSync('public/data/network-gaps/current.json', 'utf8')),
+);
+
+/** Product id for the official rv=2018.Q2 chart fixture below. */
+const CX_RV18_ID = 'cx-asia-miles-oneworld-multi-carrier-award-rv-2018-q2';
+
+/**
+ * OFFICIAL Asia Miles oneworld Multi-carrier chart, pinned to rv=2018.Q2 —
+ * complete Y/J/F table transcribed from Wayback capture 20180528013013
+ * (2018-05-28 01:30:13 UTC) of asiamiles.com flight-award-chart.html,
+ * server-rendered HTML so every cell is chart-verified
+ * (docs/calibration-set.md §A3(a)). Cross-validated against §A1 DPs:
+ * koki0331's zone-08 pair AND his 14,329-mile F-jump land exactly
+ * (rows 08/09); Masumi's issued ticket hits row 08 First.
+ *
+ * NEVER promote into public/data/award-pricing/current.json: different
+ * rules era — the live catalog's reference-recheck bands differ materially
+ * (10,001–14,000 First is 220k there vs 155k on this chart). Also do NOT
+ * reuse for late-rv pricing: the FT Jan-2025 DP matches no cell here
+ * (§A3(c) drift confirmation).
+ */
+const PRICING_RV_2018Q2 = AwardPricingCatalogSchema.parse({
+  version: '2018.2',
+  lastVerified: '2018-05-28',
+  products: [
+    {
+      productId: CX_RV18_ID,
+      label: 'Asia Miles oneworld Multi-carrier Award (rv=2018.Q2 official chart)',
+      pricingModel: 'distance-band',
+      confidence: 'published-chart',
+      currency: 'miles',
+      sourceUrls: [
+        'https://web.archive.org/web/20180528013013id_/https://www.asiamiles.com/en/redeem-awards/flight-awards/flight-award-chart.html',
+        'https://www.ptt.cc/bbs/points/M.1500623520.A.36A.html',
+      ],
+      notes: [
+        'Official published chart, Wayback capture 20180528013013 (rv=2018.Q2); zone numbers 01-13 as printed on the chart.',
+        'Band envelope semantics: band covers minMiles <= d <= maxMiles.',
+        'A3(b) unresolved conflict: Masumi 「J140k↔F190k」 couplet deliberately NOT encoded — the chart splits it (row 09 J135k/F190k vs row 10 J140k/F205k); chart rows preferred.',
+        'Chart revised after 2018-05 (FT Jan-2025 DP matches no cell, A3(c)) — never merge into the live award-pricing catalog.',
+      ],
+      bands: [
+        { minMiles: 0, maxMiles: 1000, prices: { economy: 30000, business: 55000, first: 70000 } },
+        { minMiles: 1001, maxMiles: 1500, prices: { economy: 30000, business: 60000, first: 80000 } },
+        { minMiles: 1501, maxMiles: 2000, prices: { economy: 35000, business: 65000, first: 90000 } },
+        { minMiles: 2001, maxMiles: 4000, prices: { economy: 35000, business: 70000, first: 95000 } },
+        { minMiles: 4001, maxMiles: 7500, prices: { economy: 60000, business: 80000, first: 105000 } },
+        { minMiles: 7501, maxMiles: 9000, prices: { economy: 60000, business: 85000, first: 115000 } },
+        { minMiles: 9001, maxMiles: 10000, prices: { economy: 65000, business: 95000, first: 130000 } },
+        { minMiles: 10001, maxMiles: 14000, prices: { economy: 85000, business: 115000, first: 155000 } },
+        { minMiles: 14001, maxMiles: 18000, prices: { economy: 90000, business: 135000, first: 190000 } },
+        { minMiles: 18001, maxMiles: 20000, prices: { economy: 95000, business: 140000, first: 205000 } },
+        { minMiles: 20001, maxMiles: 25000, prices: { economy: 110000, business: 160000, first: 235000 } },
+        { minMiles: 25001, maxMiles: 35000, prices: { economy: 130000, business: 190000, first: 275000 } },
+        { minMiles: 35001, maxMiles: 50000, prices: { economy: 150000, business: 220000, first: 335000 } },
+      ],
+    },
+  ],
+});
 
 const AIRPORTS_RAW = JSON.parse(
   readFileSync('public/data/airports.json', 'utf8'),
@@ -304,17 +371,176 @@ describe('FlyerTalk calibration set — Iron Rule (docs/calibration-set.md)', ()
     expect(estimate).toBeNull();
   });
 
-  // TODO(calib.cx-multicarrier.any-first-prices-as-first): Case 3's
-  // load-bearing verdict — any First sector prices the WHOLE ticket at the
-  // First level (PTT M.1500623520.A.36A, PARTIAL:
-  // 「只要其中一段是頭等艙的兌換[…截斷]」; pivot plan: "Mixed-cabin itinerary
-  // prices at the highest class booked"). MECHANISM LANDED (Phase 2):
-  // priceRtwItinerary() + Leg.cabin express highest-cabin-wins (unit-tested
-  // in tests/lib/rtw/award-pricing.test.ts). STILL BLOCKED ON DATA: the
-  // 115,000-mile J reference is the 2017 chart only (pin under rv=2017.Q3,
-  // never as current). Availability corollary (QR effectively releases no
-  // F space, 「果然死不放票」) additionally needs an availability layer that
-  // reports `unknown` instead of pretending.
+  // ACTIVATED (was TODO calib.cx-multicarrier.any-first-prices-as-first):
+  // Case 3's load-bearing verdict — any First sector prices the WHOLE
+  // ticket at the First level. Mechanism landed in Phase 2
+  // (priceRtwItinerary highest-cabin-wins, unit-tested in
+  // tests/lib/rtw/award-pricing.test.ts) and is pinned BOTH against the
+  // live catalog (next test) and the COMPLETE official rv=2018.Q2 chart
+  // fixture above (research round 2 recovered every cell — Wayback
+  // capture 20180528013013, docs/calibration-set.md §A3(a)). Still
+  // honestly open: late-rv chart pins (§A3(c) candidate captures
+  // 20210615190855 / 20240210095453 / 20240903150154) and an availability
+  // layer (QR releases no F space, 「果然死不放票」).
+
+  /**
+   * Case 3 issued-ticket shape (PTT koki0331 M.1500623520.A.36A,
+   * chart-verified): TSA-HND JL C / HND-LHR JL F / LHR-CDG BA C /
+   * ZRH-HKG CX F / HKG-TPE CX C ≈ 13.7k statute mi — under the 14,000-mile
+   * boundary. Carriers {JL, BA, CX} = 3 satisfies the CX-trigger minimum.
+   * Stopover flags stay unmarked: eligibility-only modeling (the engine
+   * has no stopover-duration data), and unmarked legs land in the unknown
+   * bucket which warns but never fails.
+   */
+  const CASE3_FLOWN: Leg[] = [
+    { from: 'TSA', to: 'HND', operatingCarrier: 'JL', cabin: 'business' },
+    { from: 'HND', to: 'LHR', operatingCarrier: 'JL', cabin: 'first' },
+    { from: 'LHR', to: 'CDG', operatingCarrier: 'BA', cabin: 'business' },
+    { from: 'ZRH', to: 'HKG', operatingCarrier: 'CX', cabin: 'first' },
+    { from: 'HKG', to: 'TPE', operatingCarrier: 'CX', cabin: 'business' },
+  ];
+
+  test('calib.cx-multicarrier.any-first-prices-as-first — any First sector prices the whole ticket at First', () => {
+    const result = validate('cx-asia-miles-oneworld-multi-carrier-award', CASE3_FLOWN);
+    expect(result.valid).toBe(true);
+
+    // The validator's own distance total must sit inside the ≤14,000 band
+    // (structural coherence between engine distance and pricing zone).
+    const total = result.summary.totalDistanceMiles;
+    expect(total).toBeGreaterThan(12000);
+    expect(total).toBeLessThanOrEqual(14000);
+
+    // Two First sectors → the ENTIRE itinerary prices at F 155,000…
+    const priced = priceRtwItinerary(
+      PRICING_RV_2018Q2,
+      CX_RV18_ID,
+      total,
+      CASE3_FLOWN,
+      'business',
+    );
+    expect(priced?.cabin).toBe('first');
+    expect(priced?.miles).toBe(155000); // koki0331's issued figure = official row 08 First
+    expect(priced?.confidence).toBe('published-chart'); // official archived chart, not community reconstruction
+
+    // …while the same sectors all-business land at the J 115,000 reference.
+    const control = priceRtwItinerary(
+      PRICING_RV_2018Q2,
+      CX_RV18_ID,
+      total,
+      CASE3_FLOWN.map((leg) => ({ ...leg, cabin: 'business' as const })),
+      'business',
+    );
+    expect(control?.cabin).toBe('business');
+    expect(control?.miles).toBe(115000);
+  });
+
+  test('calib.cx-multicarrier.any-first-mechanism-live-catalog — mixed cabin reprices through the shipped bands too', () => {
+    // Ruling A1: pin the MECHANISM (any-F-sector ⇒ whole ticket at First)
+    // against the EXISTING award-pricing/current.json bands, independent
+    // of the reconstructed rv=2017.Q3 fixture below. The live catalog's
+    // own values are asserted here; the fixture only adds the historical
+    // boundary pair.
+    const result = validate('cx-asia-miles-oneworld-multi-carrier-award', CASE3_FLOWN);
+    expect(result.valid).toBe(true);
+    const total = result.summary.totalDistanceMiles;
+    expect(total).toBeGreaterThan(10000);
+    expect(total).toBeLessThanOrEqual(14000);
+
+    const priced = priceRtwItinerary(
+      pricing,
+      'cx-asia-miles-oneworld-multi-carrier-award',
+      total,
+      CASE3_FLOWN,
+      'business',
+    );
+    expect(priced?.cabin).toBe('first');
+    expect(priced?.miles).toBe(220000); // live 10,001–14,000 F band
+    expect(priced?.confidence).toBe('reference-recheck');
+
+    const allBusiness = priceRtwItinerary(
+      pricing,
+      'cx-asia-miles-oneworld-multi-carrier-award',
+      total,
+      CASE3_FLOWN.map((leg) => ({ ...leg, cabin: 'business' as const })),
+      'business',
+    );
+    expect(allBusiness?.cabin).toBe('business');
+    expect(allBusiness?.miles).toBe(135000); // live 10,001–14,000 J band
+  });
+
+  test('calib.cx-multicarrier.band-boundary-jump — crossing the 14,000-mile boundary reprices 155k→190k', () => {
+    // koki0331's follow-up: adding ~1,300 miles pushed the zone total past
+    // 14,000 and 「所需里程會瞬間從155000跳到190000」 — a one-band cliff,
+    // not a per-sector accumulation. Modeled by inserting CDG-VIE-ZRH
+    // short-hauls into the same ticket shape.
+    const legs: Leg[] = [
+      ...CASE3_FLOWN.slice(0, 3),
+      { from: 'CDG', to: 'VIE', operatingCarrier: 'BA', cabin: 'business' },
+      { from: 'VIE', to: 'ZRH', operatingCarrier: 'BA', cabin: 'business' },
+      ...CASE3_FLOWN.slice(3),
+    ];
+
+    const result = validate('cx-asia-miles-oneworld-multi-carrier-award', legs);
+    expect(result.valid).toBe(true);
+    const total = result.summary.totalDistanceMiles;
+    expect(total).toBeGreaterThan(14000);
+
+    const priced = priceRtwItinerary(
+      PRICING_RV_2018Q2,
+      CX_RV18_ID,
+      total,
+      legs,
+      'business',
+    );
+    expect(priced?.cabin).toBe('first');
+    expect(priced?.miles).toBe(190000);
+    expect(priced?.band.minMiles).toBe(14001);
+
+    // Direct edge zoning against the official rows (ruling amendment #2):
+    // 14,000 sits in row 08 (F155k), 14,001 flips to row 09 (F190k) — the
+    // same cliff koki0331 documented at 14,329 miles.
+    const row08Edge = estimateAwardPrice(PRICING_RV_2018Q2, CX_RV18_ID, 14000, 'first');
+    const row09Edge = estimateAwardPrice(PRICING_RV_2018Q2, CX_RV18_ID, 14001, 'first');
+    expect(row08Edge?.band.maxMiles).toBe(14000);
+    expect(row08Edge?.miles).toBe(155000);
+    expect(row09Edge?.band.minMiles).toBe(14001);
+    expect(row09Edge?.miles).toBe(190000);
+
+    // Second official boundary pair (rows 09↔10): 18,000 still zones row 09
+    // (J135k/F190k), 18,001 flips to row 10 (J140k/F205k). Direct edge
+    // estimates ONLY — a synthetic chain near this boundary would sit in the
+    // GC-sum straddle Masumi's own merged chain hit (~17.5–17.9k, §A3(b)),
+    // so the route-level jump stays pinned at the clean 14,000 cliff above.
+    const row09TopJ = estimateAwardPrice(PRICING_RV_2018Q2, CX_RV18_ID, 18000, 'business');
+    const row09TopF = estimateAwardPrice(PRICING_RV_2018Q2, CX_RV18_ID, 18000, 'first');
+    const row10BaseJ = estimateAwardPrice(PRICING_RV_2018Q2, CX_RV18_ID, 18001, 'business');
+    const row10BaseF = estimateAwardPrice(PRICING_RV_2018Q2, CX_RV18_ID, 18001, 'first');
+    expect(row09TopJ?.band.maxMiles).toBe(18000);
+    expect(row09TopJ?.miles).toBe(135000);
+    expect(row09TopF?.miles).toBe(190000);
+    expect(row10BaseJ?.band.minMiles).toBe(18001);
+    expect(row10BaseJ?.miles).toBe(140000);
+    expect(row10BaseF?.miles).toBe(205000);
+  });
+
+  test('calib.cx-multicarrier.rv2018q2-official-rows — economy prices from the chart; PE stays null', () => {
+    // The research recovery is COMPLETE (every Y/J/F cell of the official
+    // rv=2018.Q2 chart chart-verified, docs §A3(a)), so economy now prices
+    // positively off row 08 instead of being an honesty-null. Premium
+    // Economy remains correctly null — the product never offered it
+    // (official T&C clause; mirrors pe-not-priced on the live catalog).
+    const economy = estimateAwardPrice(PRICING_RV_2018Q2, CX_RV18_ID, 13000, 'economy');
+    expect(economy?.cabin).toBe('economy');
+    expect(economy?.miles).toBe(85000); // row 08 Economy
+
+    const premiumEconomy = estimateAwardPrice(
+      PRICING_RV_2018Q2,
+      CX_RV18_ID,
+      13000,
+      'premium-economy',
+    );
+    expect(premiumEconomy).toBeNull(); // PE not offered on this product at all
+  });
 
   test('calib.ana-rtw-archived.discontinued-mode-validates-with-warning — archived product warns, does not silently pass', () => {
     // Case 4: ANA stopped issuing Star Alliance RTW awards 2025-06-23
@@ -454,11 +680,72 @@ describe('FlyerTalk calibration set — Iron Rule (docs/calibration-set.md)', ()
     expect(result.valid).toBe(true);
   });
 
-  // TODO(calib.sta-eligibility.br-gum-network-gap-warns): Case 5 root cause
-  // — BR ceased Guam service, so TPE→Japan→GUM Star Alliance constructions
-  // became impossible to issue. The engine has NO route-network/
-  // operations-data layer: a TPE-NRT-GUM BR routing passes eligibility
-  // today even though the community verdict says it must produce a
-  // fail/warning finding, not silence. Needs versioned route data before
-  // this can assert anything.
+  // ACTIVATED (was TODO calib.sta-eligibility.br-gum-network-gap-warns):
+  // Case 5 root cause — BR ceased Guam service (effective 2017-06), so
+  // TPE→Japan→GUM Star Alliance constructions became unissuable.
+  // Implemented as a versioned NETWORK-GAP WATCHLIST
+  // (public/data/network-gaps/current.json): evidence-linked,
+  // warn-not-fail, windowed by since/until. A full route-network layer
+  // stays out of scope (docs/calibration-set.md addendum A2 Option 2).
+  test('calib.sta-eligibility.br-gum-network-gap-warns — BR TPE-GUM sector warns with evidence instead of silence', () => {
+    // Structurally perfect EVA Infinity loop (TW start/end, all-westbound
+    // incl. the antimeridian wrap on JFK-GUM, both oceans once, 11 trip
+    // days) — yet the closing GUM-TPE sector has not flown on BR since
+    // 2017-06. The engine must WARN with a citation, not stay silent and
+    // not fail outright (other constructions of the pair remain valid).
+    const legs: Leg[] = [
+      { from: 'TPE', to: 'BKK', operatingCarrier: 'BR', stopover: false },
+      { from: 'BKK', to: 'LHR', operatingCarrier: 'BR', stopover: true },
+      { from: 'LHR', to: 'JFK', operatingCarrier: 'UA', stopover: true },
+      { from: 'JFK', to: 'GUM', operatingCarrier: 'UA', stopover: false },
+      { from: 'GUM', to: 'TPE', operatingCarrier: 'BR', stopover: false },
+    ];
+
+    const result = validateRtwRoute(
+      product('br-infinity-star-alliance-world-travel-award'),
+      legs,
+      { airports, allianceCatalog, networkGaps: networkGaps.gaps },
+      { startDate: '2026-09-01', endDate: '2026-09-11' },
+    );
+
+    expect(result.valid).toBe(true); // warning severity — never blocks validity
+
+    const gapFindings = result.findings.filter((f) => f.ruleId === 'network-gap');
+    expect(gapFindings.length).toBe(1); // UA's JFK-GUM leg does NOT match UA's closed TPE-GUM gap
+    const [gapFinding] = gapFindings;
+    expect(gapFinding?.severity).toBe('warning');
+    expect(gapFinding?.messageKey).toBe('rtw.findings.networkGapOpen');
+    expect(gapFinding?.affectedLegIndexes).toEqual([4]);
+    expect(gapFinding?.sourceUrl?.length).toBeGreaterThan(0); // FT1838853 / postguam / aeroroutes
+    expect(gapFinding?.messageParams?.carrier).toBe('BR');
+  });
+
+  test('calib.sta-eligibility.co-terminal-direct-vs-two-sectors — physical sectors pinned; zone-arithmetic divergence documented', () => {
+    // CONFLICT GUARD (docs/calibration-set.md #4): BR61/BR67-style
+    // co-terminal hops are sold as ONE flight number but operate TWO
+    // sectors, and the community readings genuinely diverge by rule
+    // context:
+    //   • Segment caps / eligibility: TWO physical sectors — what the
+    //     engine pins below (current behavior, no change this phase).
+    //   • ANA zone arithmetic: ONE direct sector for distance/zoning
+    //     (community consensus: howlic/jimsun/lightring). NOT implemented:
+    //     collapsing flown-sum → direct in totalDistanceMiles()/zone logic
+    //     needs its own decision record.
+    const pair: Leg[] = [
+      { from: 'TPE', to: 'BKK', operatingCarrier: 'BR', stopover: false },
+      { from: 'BKK', to: 'LHR', operatingCarrier: 'BR', stopover: false },
+    ];
+    const result = validate('br-infinity-star-alliance-world-travel-award', pair);
+    expect(result.summary.flightSegments).toBe(2); // physical reading: both operated sectors count
+    expect(result.summary.surfaceSectors).toBe(0);
+
+    // Quantify the divergence the ANA-style zone reading would collapse:
+    // flying-short via the co-terminal point adds real miles vs the sold
+    // direct sector. The guard asserts the gap exists so a future
+    // zone-arithmetic mode cannot silently ship without revisiting this.
+    const flownSumNm =
+      distanceNm(airport('TPE'), airport('BKK')) + distanceNm(airport('BKK'), airport('LHR'));
+    const directNm = distanceNm(airport('TPE'), airport('LHR'));
+    expect(flownSumNm).toBeGreaterThan(directNm);
+  });
 });

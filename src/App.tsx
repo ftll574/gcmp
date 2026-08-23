@@ -816,6 +816,7 @@ function Ready({
                 marketProfile={data.marketProfile}
                 countryContinents={data.countryContinents}
                 airportContinentOverrides={data.airportContinentOverrides}
+                networkGaps={data.networkGaps}
                 selectedProductId={selectedRtwProductId}
                 onProductChange={changeRtwProduct}
               />

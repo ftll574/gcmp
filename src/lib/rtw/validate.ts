@@ -1,6 +1,7 @@
 import type { Airport, Leg, RoutingRequest } from '../types.ts';
 import type { AllianceCatalog } from '../schemas/alliance.ts';
 import type { RtwRuleSet, RtwSurfaceDistancePolicy } from '../schemas/rtw-rule.ts';
+import type { NetworkGapEntry } from '../schemas/network-gaps.ts';
 import type { ContinentId } from '../schemas/country-continent.ts';
 import { distanceNm } from '../calc/haversine.ts';
 import { continentsVisited } from './continents.ts';
@@ -44,6 +45,11 @@ export interface RtwValidationSummary {
   readonly direction: 'eastbound' | 'westbound' | 'mixed' | 'unknown';
   readonly repeatedStopoverCities: ReadonlyArray<string>;
   readonly repeatedSurfaceCities: ReadonlyArray<string>;
+  /**
+   * Cities whose single largest visit exceeds limits.maxTransfersPerCity
+   * (see transferCityCounts). Empty when the product declares no cap.
+   */
+  readonly repeatedTransferCities: ReadonlyArray<string>;
   readonly tripDays: number | null;
 }
 
@@ -71,6 +77,15 @@ export interface RtwValidationInputs {
    * Backward-compatible: when absent, only the country rows apply.
    */
   readonly airportContinentOverrides?: ReadonlyMap<string, ContinentId> | undefined;
+  /**
+   * Optional network-gap watchlist built from
+   * `public/data/network-gaps/current.json` (NetworkGapCatalogSchema).
+   * When set, an operating carrier flying a watched pair emits a WARNING
+   * finding (docs/calibration-set.md addendum A2 — e.g. BR ceased TPE–GUM
+   * in 2017-06, so TPE→Japan→GUM constructions became unissuable).
+   * Backward-compatible: when absent, nothing changes.
+   */
+  readonly networkGaps?: ReadonlyArray<NetworkGapEntry> | undefined;
 }
 
 function source(ruleSet: RtwRuleSet): string | undefined {
@@ -242,6 +257,55 @@ function stopoverCityCounts(
   return counts;
 }
 
+/**
+ * Transfers per city, mirroring stopoverCityCounts(): every resolved leg
+ * arriving at a city WITHOUT `stopover === true` is one transfer there —
+ * including surface sectors and legs with unknown timing metadata, exactly
+ * as stopover counting treats every resolved arrival uniformly.
+ *
+ * The Qantas oneworld Classic Flight Reward caps transfers "in any one
+ * city" (docs/rtw-pivot-plan.md), which reads as a cap PER CITY CALL, not
+ * across the whole itinerary: consecutive arrivals into the same city form
+ * one visit (TPE-NRT then NRT⇢HND surface = two arrivals, one Tokyo call),
+ * while a separate later pass through the city starts a fresh visit. Each
+ * city's count is therefore its LARGEST single visit:
+ *
+ *   TPE --NRT--> --surf--> HND ---SIN---> ... --NRT--> ...
+ *         \___ Tokyo visit: 2 __/          new Tokyo visit: restarts at 1
+ *
+ * A marked stopover is never a transfer and closes any open visit. This
+ * keeps legitimate multi-pass routings legal (the Case 2 calibration loop
+ * transits HKG repeatedly, once per pass) while failing absurd funneling
+ * like NRT-HND-NRT-HND through one metropolitan complex.
+ */
+function transferCityCounts(
+  legs: ReadonlyArray<Leg>,
+  inputs: RtwValidationInputs,
+): ReadonlyMap<string, { label: string; count: number }> {
+  const counts = new Map<string, { label: string; count: number }>();
+  let visitKey: string | null = null;
+  let visitCount = 0;
+  for (const { leg, to } of resolvedLegAirports(legs, inputs)) {
+    if (leg.stopover === true) {
+      visitKey = null;
+      visitCount = 0;
+      continue;
+    }
+    const key = cityKey(to);
+    if (key === visitKey) {
+      visitCount += 1;
+    } else {
+      visitKey = key;
+      visitCount = 1;
+    }
+    const prev = counts.get(key);
+    if (visitCount > (prev?.count ?? 0)) {
+      counts.set(key, { label: `${to.city}, ${to.country}`, count: visitCount });
+    }
+  }
+  return counts;
+}
+
 function surfaceCityCounts(
   legs: ReadonlyArray<Leg>,
   inputs: RtwValidationInputs,
@@ -345,6 +409,66 @@ export function validateRtwRoute(
       : 'rtw.findings.airlineEligibilityFail',
   ));
 
+  // Network-gap watchlist warnings (docs/calibration-set.md addendum A2):
+  // a carrier is commonly ASSUMED to serve a pair but no longer flies it
+  // (e.g. BR ceased TPE–GUM in 2017-06, so TPE→Japan→GUM constructions
+  // became unissuable). Warning only — never a fail — because the same
+  // pair can be structurally valid under other constructions.
+  if (inputs.networkGaps !== undefined && inputs.networkGaps.length > 0) {
+    const tripStartYm = request?.startDate?.slice(0, 7);
+    const gapMatches = new Map<string, { gap: NetworkGapEntry; legIndexes: number[] }>();
+    for (const [index, leg] of legs.entries()) {
+      if (leg.surface === true) continue;
+      for (const gap of inputs.networkGaps) {
+        const [a, b] = gap.pair;
+        const matchesPair =
+          (leg.from === a && leg.to === b) || (leg.from === b && leg.to === a);
+        if (!matchesPair || leg.operatingCarrier !== gap.carrier) continue;
+        // Window check against the trip start month (`YYYY` and `YYYY-MM`
+        // both normalize to YYYY-MM, where string comparison is correct).
+        // Trips without dates conservatively see every entry; entries
+        // without an end date are treated as still-current.
+        if (tripStartYm !== undefined) {
+          const sinceYm = gap.since.length === 4 ? `${gap.since}-01` : gap.since;
+          const untilYm =
+            gap.until === null ? null : gap.until.length === 4 ? `${gap.until}-01` : gap.until;
+          if (tripStartYm < sinceYm || (untilYm !== null && tripStartYm > untilYm)) continue;
+        }
+        const key = `${gap.carrier}|${[...gap.pair].sort().join('-')}`;
+        const match = gapMatches.get(key);
+        if (match === undefined) {
+          gapMatches.set(key, { gap, legIndexes: [index] });
+        } else {
+          match.legIndexes.push(index);
+        }
+      }
+    }
+    for (const { gap, legIndexes } of gapMatches.values()) {
+      const [from, to] = gap.pair;
+      const evidence = gap.evidence[0];
+      findings.push(localizedFinding(
+        {
+          ruleId: 'network-gap',
+          severity: 'warning',
+          message:
+            gap.until === null
+              ? `${gap.carrier} does not operate ${from}-${to} (ceased ${gap.since}); verify this sector.`
+              : `${gap.carrier} did not operate ${from}-${to} between ${gap.since} and ${gap.until}.`,
+          ...(legIndexes.length > 0 ? { affectedLegIndexes: legIndexes } : {}),
+          ...(evidence !== undefined ? { sourceUrl: evidence } : {}),
+        },
+        gap.until === null ? 'rtw.findings.networkGapOpen' : 'rtw.findings.networkGapUntil',
+        {
+          carrier: gap.carrier,
+          from,
+          to,
+          since: gap.since,
+          until: gap.until ?? '',
+        },
+      ));
+    }
+  }
+
   const {
     minFlights,
     maxFlights,
@@ -352,17 +476,22 @@ export function validateRtwRoute(
     minStopovers,
     maxStopovers,
     maxTransfers,
+    maxTransfersPerCity,
     maxSurfaceSectors,
     maxStopoversPerCity,
   } = ruleSet.limits;
   const stopoverCountsByCity = stopoverCityCounts(legs, inputs);
   const surfaceCountsByCity = surfaceCityCounts(legs, inputs);
+  const transferCountsByCity = transferCityCounts(legs, inputs);
   const repeatedStopoverCities = maxStopoversPerCity === undefined
     ? []
     : repeatedCities(stopoverCountsByCity, maxStopoversPerCity);
   const repeatedSurfaceCities = maxSurfaceSectors === undefined
     ? []
     : repeatedCities(surfaceCountsByCity, 1);
+  const repeatedTransferCities = maxTransfersPerCity === undefined
+    ? []
+    : repeatedCities(transferCountsByCity, maxTransfersPerCity);
   const days = tripDays(request?.startDate, request?.endDate);
   if (minFlights !== undefined || maxFlights !== undefined) {
     const tooFew = minFlights !== undefined && segmentCount < minFlights;
@@ -509,6 +638,24 @@ export function validateRtwRoute(
         ? 'rtw.findings.stopoversPerCityPass'
         : 'rtw.findings.stopoversPerCityFail',
       { max: maxStopoversPerCity, cities: repeatedStopoverCities.join(', ') },
+    ));
+  }
+
+  if (maxTransfersPerCity !== undefined) {
+    findings.push(localizedFinding(
+      {
+        ruleId: 'transfers-per-city',
+        severity: repeatedTransferCities.length === 0 ? 'pass' : 'fail',
+        message:
+          repeatedTransferCities.length === 0
+            ? `No city exceeds the ${maxTransfersPerCity} transfer-per-city cap.`
+            : `Transfers repeated too many times in: ${repeatedTransferCities.join(', ')}.`,
+        ...(sourceUrl ? { sourceUrl } : {}),
+      },
+      repeatedTransferCities.length === 0
+        ? 'rtw.findings.transfersPerCityPass'
+        : 'rtw.findings.transfersPerCityFail',
+      { max: maxTransfersPerCity, cities: repeatedTransferCities.join(', ') },
     ));
   }
 
@@ -674,6 +821,7 @@ export function validateRtwRoute(
       direction,
       repeatedStopoverCities,
       repeatedSurfaceCities,
+      repeatedTransferCities,
       tripDays: days,
     },
     findings,
