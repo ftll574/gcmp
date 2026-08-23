@@ -86,6 +86,21 @@ export interface RtwValidationInputs {
    * Backward-compatible: when absent, nothing changes.
    */
   readonly networkGaps?: ReadonlyArray<NetworkGapEntry> | undefined;
+  /**
+   * Optional TRUE open-jaw gaps of a multi-group routing, as IATA pairs
+   * derived by the caller from group boundaries (last airport of group k →
+   * first airport of group k+1 — decision record
+   * docs/decisions/open-jaw-distance.md D1/D2). The engine never infers
+   * jaws from leg structure and stays pure: no group parsing here.
+   *
+   * Jaws are DISTANCE-ONLY (D4): they enter `summary.totalDistanceMiles`
+   * solely when the product's `openJawDistancePolicy` counts them, and are
+   * invisible to every other check — segments, stopover/transfer/surface
+   * city counting, ocean crossings, direction, start/end. Unknown airport
+   * codes in a pair skip that jaw silently, consistent with unknown-airport
+   * handling elsewhere. Backward-compatible: when absent, nothing changes.
+   */
+  readonly openJawSectors?: ReadonlyArray<{ from: string; to: string }> | undefined;
 }
 
 function source(ruleSet: RtwRuleSet): string | undefined {
@@ -140,6 +155,33 @@ function totalDistanceMiles(
     if (surfacePolicy === 'excluded-from-distance' && leg.surface === true) continue;
     const from = airportFor(leg.from, inputs);
     const to = airportFor(leg.to, inputs);
+    if (!from || !to) continue;
+    totalNm += distanceNm(from, to);
+  }
+  return Math.round(totalNm * MILES_PER_NAUTICAL_MILE);
+}
+
+/**
+ * True open-jaw gap distance in statute miles (decision record
+ * docs/decisions/open-jaw-distance.md D2/D3): the caller-supplied IATA
+ * pairs are aggregated with the same single rounding as legs — nautical GC
+ * miles summed across all jaws, converted once, rounded once — then added
+ * to the rounded leg total. Rounding the jaw set separately (instead of
+ * folding it into the leg sum) guarantees the delta versus a jaw-free
+ * itinerary is EXACTLY round(jawNm × MILES_PER_NAUTICAL_MILE). Unknown
+ * airport codes skip that jaw silently, mirroring unknown-leg handling.
+ *
+ * D4: this is the ONLY consumer of openJawSectors in the engine.
+ */
+function openJawDistanceMiles(
+  sectors: ReadonlyArray<{ from: string; to: string }> | undefined,
+  inputs: RtwValidationInputs,
+): number {
+  if (!sectors || sectors.length === 0) return 0;
+  let totalNm = 0;
+  for (const sector of sectors) {
+    const from = airportFor(sector.from, inputs);
+    const to = airportFor(sector.to, inputs);
     if (!from || !to) continue;
     totalNm += distanceNm(from, to);
   }
@@ -360,7 +402,18 @@ export function validateRtwRoute(
   const stopoverCount = knownStopoverCount(legs);
   const transferCount = knownTransferCount(legs);
   const unknownStops = unknownStopoverCount(legs);
-  const miles = totalDistanceMiles(legs, inputs, ruleSet.surfaceDistancePolicy);
+  // Open-jaw distance policy (docs/decisions/open-jaw-distance.md D3):
+  // jaws add priced miles ONLY when the product opts into
+  // 'counts-toward-distance' (currently just the CX oneworld Multi-carrier
+  // award, per FT 2184572). D4 — jaws must stay INVISIBLE to every other
+  // check below: flightSegmentCount, stopover/transfer/surface city
+  // counting, oceansCrossed, routeDirection, and start/end all read `legs`
+  // and never `inputs.openJawSectors`. Do not wire jaws anywhere else.
+  const miles =
+    totalDistanceMiles(legs, inputs, ruleSet.surfaceDistancePolicy) +
+    (ruleSet.openJawDistancePolicy === 'counts-toward-distance'
+      ? openJawDistanceMiles(inputs.openJawSectors, inputs)
+      : 0);
   const crossedOceans = oceansCrossed(legs, inputs);
   const visitedContinents = continentsVisited(legs, inputs);
   const direction = routeDirection(legs, inputs);

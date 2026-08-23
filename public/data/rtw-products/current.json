@@ -58,6 +58,7 @@
         "directionPolicy": "flexible",
         "pricingBasis": "distance"
       },
+      "openJawDistancePolicy": "counts-toward-distance",
       "airlineEligibility": {
         "type": "alliance-members",
         "alliance": "oneworld",

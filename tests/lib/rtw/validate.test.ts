@@ -8,7 +8,8 @@ import {
 } from '../../../src/lib/schemas/country-continent.ts';
 import { continentsVisited } from '../../../src/lib/rtw/continents.ts';
 import { NetworkGapCatalogSchema, type NetworkGapEntry } from '../../../src/lib/schemas/network-gaps.ts';
-import { validateRtwRoute } from '../../../src/lib/rtw/validate.ts';
+import { distanceNm } from '../../../src/lib/calc/haversine.ts';
+import { MILES_PER_NAUTICAL_MILE, validateRtwRoute } from '../../../src/lib/rtw/validate.ts';
 import type { Airport, Leg } from '../../../src/lib/types.ts';
 
 const allianceCatalog = AllianceCatalogSchema.parse(
@@ -529,6 +530,163 @@ describe('validateRtwRoute', () => {
       expect.arrayContaining([
         expect.objectContaining({ ruleId: 'trip-duration', severity: 'pass' }),
       ]),
+    );
+  });
+});
+
+describe('validateRtwRoute · open-jaw distance policy', () => {
+  // Decision record docs/decisions/open-jaw-distance.md (Phase 5, D1–D5):
+  // true open jaws are caller-supplied group-boundary gaps; a per-product
+  // openJawDistancePolicy gates whether their GC distance enters the priced
+  // total; jaws stay invisible to every structural check.
+  const cx = product('cx-asia-miles-oneworld-multi-carrier-award');
+
+  function fixtureAirport(code: string): Airport {
+    const found = airports.get(code);
+    if (!found) throw new Error(`Missing fixture airport ${code}`);
+    return found;
+  }
+
+  function jawStatuteMiles(from: string, to: string): number {
+    return Math.round(distanceNm(fixtureAirport(from), fixtureAirport(to)) * MILES_PER_NAUTICAL_MILE);
+  }
+
+  test('product data: only CX multi-carrier opts into counting jaws (D3)', () => {
+    expect(cx.openJawDistancePolicy).toBe('counts-toward-distance');
+    expect(product('qantas-oneworld-classic-flight-reward').openJawDistancePolicy).toBe(
+      'excluded-from-distance',
+    );
+    expect(product('br-infinity-star-alliance-world-travel-award').openJawDistancePolicy).toBe(
+      'excluded-from-distance',
+    );
+    expect(product('oneworld-explorer').openJawDistancePolicy).toBe('excluded-from-distance');
+  });
+
+  test('default policy excludes jaws even when openJawSectors are passed', () => {
+    const legs: Leg[] = [
+      { from: 'TPE', to: 'NRT', operatingCarrier: 'QF' },
+      { from: 'NRT', to: 'HKG', operatingCarrier: 'QF' },
+    ];
+    const base = validateRtwRoute(
+      product('qantas-oneworld-classic-flight-reward'),
+      legs,
+      { airports, allianceCatalog },
+    );
+    const withJaws = validateRtwRoute(
+      product('qantas-oneworld-classic-flight-reward'),
+      legs,
+      { airports, allianceCatalog, openJawSectors: [{ from: 'HND', to: 'LAX' }] },
+    );
+
+    expect(withJaws.summary.totalDistanceMiles).toBe(base.summary.totalDistanceMiles);
+  });
+
+  test('counts-policy adds the exact rounded jaw great-circle delta', () => {
+    // Single-rounding contract: legs round once, the jaw set rounds once,
+    // so the delta is EXACTLY round(jawNm × MILES_PER_NAUTICAL_MILE).
+    const legs: Leg[] = [{ from: 'TPE', to: 'HKG', operatingCarrier: 'CX' }];
+    const base = validateRtwRoute(cx, legs, { airports, allianceCatalog });
+    const withJaw = validateRtwRoute(cx, legs, {
+      airports,
+      allianceCatalog,
+      openJawSectors: [{ from: 'BKK', to: 'SIN' }],
+    });
+
+    expect(withJaw.summary.totalDistanceMiles).toBeGreaterThan(base.summary.totalDistanceMiles);
+    expect(withJaw.summary.totalDistanceMiles - base.summary.totalDistanceMiles).toBe(
+      jawStatuteMiles('BKK', 'SIN'),
+    );
+  });
+
+  test('jaws are invisible to every non-distance check on the FT 2184572 shape (D4)', () => {
+    // Two-group FT 2184572 reconstruction collapsed into one leg array —
+    // the BKK⇢SIN seam exists only because the test supplies it. With the
+    // CX counts policy active, ONLY totalDistanceMiles may move.
+    const legs: Leg[] = [
+      { from: 'JFK', to: 'LHR', operatingCarrier: 'BA' },
+      { from: 'LHR', to: 'HKG', operatingCarrier: 'CX' },
+      { from: 'HKG', to: 'TPE', operatingCarrier: 'CX' },
+      { from: 'SIN', to: 'HKG', operatingCarrier: 'CX' }, // second group starts here
+      { from: 'HKG', to: 'JFK', operatingCarrier: 'CX' },
+    ];
+    const base = validateRtwRoute(cx, legs, { airports, allianceCatalog });
+    const withJaw = validateRtwRoute(cx, legs, {
+      airports,
+      allianceCatalog,
+      openJawSectors: [{ from: 'BKK', to: 'SIN' }],
+    });
+
+    expect(withJaw.summary.flightSegments).toBe(5);
+    expect(withJaw.summary.flightSegments).toBe(base.summary.flightSegments);
+    expect(withJaw.summary.surfaceSectors).toBe(base.summary.surfaceSectors);
+    expect(withJaw.summary.knownStopovers).toBe(base.summary.knownStopovers);
+    expect(withJaw.summary.oceansCrossed).toEqual(base.summary.oceansCrossed);
+    expect(withJaw.summary.direction).toBe(base.summary.direction);
+
+    // Every summary field except the priced distance is identical — and
+    // that one field moved by exactly the jaw's rounded GC delta.
+    const { totalDistanceMiles: jawTotal, ...restWithJaw } = withJaw.summary;
+    const { totalDistanceMiles: baseTotal, ...restBase } = base.summary;
+    expect(restWithJaw).toEqual(restBase);
+    expect(jawTotal - baseTotal).toBe(jawStatuteMiles('BKK', 'SIN'));
+
+    // Findings keep identical ruleId+severity pairs (the max-distance
+    // message legitimately embeds the new total, so full-text equality
+    // is not required by D4).
+    const signature = (result: ReturnType<typeof validateRtwRoute>) =>
+      result.findings.map((f) => `${f.ruleId}:${f.severity}`);
+    expect(signature(withJaw)).toEqual(signature(base));
+    expect(withJaw.valid).toBe(base.valid);
+  });
+
+  test('a pacific-crossing jaw adds no ocean and cannot flip direction (D4)', () => {
+    // Westbound single leg; the TPE⇢LAX jaw would cross the Pacific AND
+    // swing +120° east if the engine ever wired jaws into oceansCrossed or
+    // routeDirection. Neither may budge; distance must.
+    const legs: Leg[] = [{ from: 'HND', to: 'LHR', operatingCarrier: 'CX' }];
+    const base = validateRtwRoute(cx, legs, { airports, allianceCatalog });
+    const withJaw = validateRtwRoute(cx, legs, {
+      airports,
+      allianceCatalog,
+      openJawSectors: [{ from: 'TPE', to: 'LAX' }],
+    });
+
+    expect(base.summary.direction).toBe('westbound');
+    expect(withJaw.summary.direction).toBe('westbound');
+    expect(base.summary.oceansCrossed).toEqual([]);
+    expect(withJaw.summary.oceansCrossed).toEqual([]);
+    expect(withJaw.summary.flightSegments).toBe(1);
+    expect(withJaw.summary.totalDistanceMiles - base.summary.totalDistanceMiles).toBe(
+      jawStatuteMiles('TPE', 'LAX'),
+    );
+  });
+
+  test('unknown airport codes in a jaw pair skip that jaw silently', () => {
+    // Consistent with unknown-airport handling everywhere else in the
+    // engine: an unresolvable endpoint drops the whole jaw, known jaws
+    // around it still count.
+    const legs: Leg[] = [{ from: 'TPE', to: 'HKG', operatingCarrier: 'CX' }];
+    const base = validateRtwRoute(cx, legs, { airports, allianceCatalog });
+    const unknownOnly = validateRtwRoute(cx, legs, {
+      airports,
+      allianceCatalog,
+      openJawSectors: [
+        { from: 'ZZZ', to: 'SIN' }, // unknown endpoint
+        { from: 'BKK', to: 'QQQ' }, // unknown endpoint
+      ],
+    });
+    expect(unknownOnly.summary.totalDistanceMiles).toBe(base.summary.totalDistanceMiles);
+
+    const mixed = validateRtwRoute(cx, legs, {
+      airports,
+      allianceCatalog,
+      openJawSectors: [
+        { from: 'ZZZ', to: 'QQQ' }, // fully unknown — skipped
+        { from: 'BKK', to: 'SIN' }, // known — counted
+      ],
+    });
+    expect(mixed.summary.totalDistanceMiles).toBe(
+      base.summary.totalDistanceMiles + jawStatuteMiles('BKK', 'SIN'),
     );
   });
 });

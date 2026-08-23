@@ -848,6 +848,132 @@ Engine notes:
 - Time-box honored: one CDX sweep (four batched queries), one fetch of the two
   allowed (the Aug capture); the second stayed unused.
 
+### A5 — Late-rv chart check (follow-up pass 3)
+
+Question (consumes the §A3(c)/§A4 unpinned follow-up targets): what do Wayback
+captures 20210615190855, 20240210095453, 20240903150154 of
+`https://www.asiamiles.com/en/redeem-awards/flight-awards/flight-award-chart.html`
+contain, and do they explain FT 2184572's Jan-2025 data point (~230,000 miles,
+agent-zoned into the "20,000-25,000 range", cabin UNSTATED)?
+
+**(a) Target resolution — what the three timestamps actually are**
+
+Uncollapsed CDX sweep over the canonical URL (ONE batched call,
+`fl=timestamp,original,statuscode,mimetype,length`; cache
+`%TEMP%\gcmp-research\cdx-a5-sweep.json`): 102 rows = 53×status 200 +
+47×302 + 1×301 + 1×status `-`. Distinct originals: 98× the exact
+`https://www.…flight-award-chart.html` plus bare-host http variants and two
+`#fragment` URLs. Status timeline: 200s run 20180528013013 → **20230226074714
+(last 200)**; first redirect stub 20220509070442 (bare-host 301, transient);
+permanent-302 era from **20230822012314** through 20251206… (~715-byte `unk`
+records). None of the three §A3(c) timestamps exists as a capture row of this
+URL — at replay time Wayback resolves each to its nearest usable record:
+
+- 20210615190855 → capture **20210615191353** of the same URL (200,
+  text/html, 110,899 bytes raw).
+- 20240210095453 → replay follows the archived **302**: the old URL had become
+  a redirect to
+  `https://flights.cathaypacific.com/en_HK/redeem-flights/flight-award-chart.html`,
+  landing at capture **20231205064759** (200, 13,420 bytes).
+- 20240903150154 → likewise → capture **20241105050705** (200, 14,641 bytes).
+
+I.e. the page migrated to flights.cathaypacific.com inside
+(2023-02-26, 2023-08-22], consistent with FT 2137901's Oct-2023 rules overhaul
+window.
+
+**(b) Per-capture verdicts**
+
+- **20210615190855 (= capture 20210615191353): POSITIVE** — full
+  server-rendered multi-carrier table; same product-intro paragraph and column
+  headers as §A3(a); cache `%TEMP%\gcmp-research\am-chart-2021-06.html`.
+  Pinned **rv=2021.Q2**; full table in (c).
+- **20240210095453 (= cathay capture 20231205064759): NEGATIVE** — JS SPA
+  shell, 13,420 bytes. Exact evidence: visible text is the title "Flight
+  awards charts" only; zero mileage-like numbers (`\d{2,3},\d{3}` matches:
+  none); no `application/json`/`ld+json` script tags; only `window.BOOMR*`
+  analytics assignments and ~25 hreflang alternates. Cache
+  `am-chart-2024-02.html`.
+- **20240903150154 (= cathay capture 20241105050705): NEGATIVE** — same shell
+  shape, 14,641 bytes, same probes empty. Cache `am-chart-2024-09.html`.
+
+**(c) Third official era pinned — chart frozen 2018-08-19 → ≥2023-02-26**
+
+Bonus fetch (final page-fetch slot): capture **20230226074714** (200,
+112,247 bytes; cache `am-chart-2023-02.html`) — the LAST server-rendered
+state of the original URL, pinned **rv=2023.Q1**. Its multi-carrier table and
+the rv=2021.Q2 table above are row-for-row identical to §A4(b)'s rv=2018.Q3
+across all 39 cells (per-cell **`chart-verified`**, complete transcriptions;
+local stripped-text caches `am-chart-2021-06.txt`, `am-chart-2023-02.txt`):
+
+```
+zone | actual flown miles | Economy | Business | First     (rv=2021.Q2 ==
+ 01  |        0 -    1,000|  30,000 |   55,000 |  70,000    rv=2023.Q1 ==
+ 02  |    1,001 -  1,500  |  30,000 |   60,000 |  80,000    rv=2018.Q3)
+ 03  |    1,501 -  2,000  |  35,000 |   65,000 |  90,000
+ 04  |    2,001 -  4,000  |  35,000 |   70,000 |  95,000
+ 05  |    4,001 -  7,500  |  60,000 |   90,000 | 140,000
+ 06  |    7,501 -  9,000  |  65,000 |  100,000 | 150,000
+ 07  |    9,001 - 10,000  |  70,000 |  110,000 | 160,000
+ 08  |   10,001 - 14,000  |  90,000 |  135,000 | 220,000
+ 09  |   14,001 - 18,000  | 100,000 |  155,000 | 250,000
+ 10  |   18,001 - 20,000  | 105,000 |  165,000 | 260,000
+ 11  |   20,001 - 25,000  | 115,000 |  185,000 | 280,000
+ 12  |   25,001 - 35,000  | 130,000 |  210,000 | 300,000
+ 13  |   35,001 - 50,000  | 150,000 |  240,000 | 345,000
+```
+
+⇒ ONE official value-set spans [2018-08-19 .. ≥2023-02-26]
+(rv=2018.Q3 / 2021.Q2 / 2023.Q1 interchangeable for tests). Deltas vs
+rv=2018.Q2 stay exactly §A4(b)'s list; nothing new. The §A3(c) "late-rv
+capture candidates" are hereby CONSUMED: no further server-rendered revision
+exists in the archive of the original URL — any later change lives only on
+the JS-only successor (b, negatives).
+
+**(d) FT Jan-2025 230,000-mile DP — explained to mechanism level; cell stays open**
+
+- Zoning recheck against repo data (`public/data/airports.json`, haversine
+  R=3958.7613 statute mi): JFK-LHR 3,442 / LHR-HKG 5,984 / HKG-TPE 501 /
+  TPE-KUL 2,017 / KUL-BKK 758 // jaw BKK⇢SIN 880 / SIN-HKG 1,594 /
+  HKG-JFK 8,059 ⇒ flown **22,356**; incl-jaw **23,237**. OP's self-stated
+  "flying distance of 19,442 miles" does NOT match the written chain under
+  great-circle math (~2.9k short) — unresolved imprecision (same honesty
+  pattern as Masumi, §A3(b)). BOTH readings fall in **zone 11
+  (20,001–25,000)** of every recovered era, matching the AM agent's
+  "20,000-25,000 range". Because flown-only already exceeds 20,001, this
+  single DP cannot by itself demonstrate open-jaw counting — jaw inclusion
+  rests on the official "sum of the sector distance of all sectors" clause
+  (§A1(b)).
+- **Cell search: 230,000 appears in NO cell of ANY recovered official era**
+  (rv=2018.Q2, 2018.Q3, 2021.Q2, 2023.Q1; nearest zone-11 neighbors:
+  First 235,000 pre-Aug-2018; {E 115,000 / J 185,000 / F 280,000} from
+  2018-08-19 through 2023-02-26).
+- Verdict: the DP pins a **fourth pricing era** effective inside
+  (2023-02-26, 2025-01-25], coincident with the program migration
+  ((a) timeline) — but its zone-11 values are NOT recoverable from Wayback
+  raw HTML because every successor-page capture is a JS shell ((b)). Cabin
+  stays UNSTATED (OP never names the class); 230,000 sits between the
+  last-known J 185,000 and F 280,000 — plausibly revised Business OR rebased
+  First; **do not assume either**. No new Iron Rule test activates from this
+  section; existing `calib.cx-multicarrier.*` mechanisms (highest-class-wins;
+  zone total includes all sectors; carrier minimums; no Premium Economy;
+  50,000-mile ceiling) are unaffected. To close the cell: render the LIVE
+  successor page in a browser session, transcribe the table, and pin it with
+  its own rv label.
+
+**(e) Budget & honesty note**
+
+- Fetch budget exactly consumed: 4/4 page fetches (three target replays +
+  bonus 20230226074714) and 1/1 batched CDX sweep. All raw artifacts cached
+  under `%TEMP%\gcmp-research\`.
+- Secondary PVG–GUM dating pass was NOT started: the primary consumed the
+  full budget, and general web search was unavailable this session
+  (AnySearch HTTP 402 auth outage — same degradation as §A3(d)). A
+  browser-capable round could settle both leftovers in one sitting (render
+  the successor award chart AND date UA PVG–GUM via aeroroutes).
+- Confidence: (c) tables `chart-verified` (complete server-rendered
+  transcriptions); every claim about the fourth era is inference from
+  negatives — no cells fabricated.
+
 ### Suggested test ids from this addendum
 
 - Activate now: `calib.cx-multicarrier.any-first-prices-as-first` (mechanism +

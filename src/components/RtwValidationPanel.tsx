@@ -92,6 +92,22 @@ export function RtwValidationPanel({
   const selectedProduct = products.find((p) => p.id === selectedProductId) ?? products[0];
   const legs = useMemo(() => flattenLegs(routing), [routing]);
 
+  // True open jaws = the unflown gaps between consecutive groups of a
+  // multi-group routing (docs/decisions/open-jaw-distance.md D1): last
+  // airport of group k → first airport of group k+1. The engine treats
+  // them as DISTANCE-ONLY inputs (D4) and skips unknown codes silently.
+  const openJawSectors = useMemo(() => {
+    const jaws: Array<{ from: string; to: string }> = [];
+    for (let k = 1; k < routing.groups.length; k++) {
+      const prevLegs = routing.groups[k - 1]?.legs;
+      const curLegs = routing.groups[k]?.legs;
+      const from = prevLegs?.[prevLegs.length - 1]?.to;
+      const to = curLegs?.[0]?.from;
+      if (from !== undefined && to !== undefined) jaws.push({ from, to });
+    }
+    return jaws;
+  }, [routing]);
+
   const result = useMemo(() => {
     if (!selectedProduct || legs.length === 0) return null;
     return validateRtwRoute(selectedProduct, legs, {
@@ -100,8 +116,9 @@ export function RtwValidationPanel({
       countryContinents: countryContinents ?? undefined,
       airportContinentOverrides: airportContinentOverrides ?? undefined,
       networkGaps: networkGaps ?? undefined,
+      openJawSectors,
     }, routing);
-  }, [selectedProduct, legs, airports, allianceCatalog, countryContinents, airportContinentOverrides, networkGaps, routing]);
+  }, [selectedProduct, legs, airports, allianceCatalog, countryContinents, airportContinentOverrides, networkGaps, openJawSectors, routing]);
   const awardPrice = useMemo(() => {
     if (!selectedProduct || !result) return null;
     return estimateAwardPrice(

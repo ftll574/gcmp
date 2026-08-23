@@ -4,7 +4,7 @@
 
 Taiwan-first round-the-world award route planner. Build an itinerary, mark stopovers and surface sectors, validate it against RTW and multi-carrier mileage-redemption award rules, and share the URL.
 
-![Status: RTW pivot](https://img.shields.io/badge/status-RTW%20pivot-blue) ![License: MIT](https://img.shields.io/badge/license-MIT-green) ![Tests: 300 passing](https://img.shields.io/badge/tests-300%20passing-green)
+![Status: RTW pivot](https://img.shields.io/badge/status-RTW%20pivot-blue) ![License: MIT](https://img.shields.io/badge/license-MIT-green) ![Tests: 309 passing](https://img.shields.io/badge/tests-309%20passing-green)
 
 ## What It Does
 
@@ -118,7 +118,7 @@ npm run build
 
 Current local baseline:
 
-- 300 Vitest tests (incl. the Iron Rule calibration suite)
+- 309 Vitest tests (incl. the Iron Rule calibration suite)
 - strict TypeScript
 - ESLint engine purity rule for `src/lib/calc/**`
 - production build via Vite

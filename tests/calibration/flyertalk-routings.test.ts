@@ -35,6 +35,14 @@
  *      now converts once at aggregation (MILES_PER_NAUTICAL_MILE), so
  *      summary.totalDistanceMiles and every cap/band comparison are
  *      statute miles; absolute boundary assertions may be pinned.
+ *   4. RESOLVED (Phase 5): was OPEN (engine limitation) — "open jaws are
+ *      not legs, so totalDistanceMiles() cannot see them". True open jaws
+ *      between consecutive groups are now caller-supplied via
+ *      inputs.openJawSectors, and a per-product openJawDistancePolicy
+ *      gates whether their great-circle distance enters the priced total
+ *      (the CX multi-carrier product opts in per FT 2184572 agent
+ *      practice). Jaws stay invisible to every structural check (D4) —
+ *      docs/decisions/open-jaw-distance.md (rulings D1–D5).
  */
 
 import { readFileSync } from 'node:fs';
@@ -718,6 +726,111 @@ describe('FlyerTalk calibration set — Iron Rule (docs/calibration-set.md)', ()
     expect(gapFinding?.affectedLegIndexes).toEqual([4]);
     expect(gapFinding?.sourceUrl?.length).toBeGreaterThan(0); // FT1838853 / postguam / aeroroutes
     expect(gapFinding?.messageParams?.carrier).toBe('BR');
+  });
+
+  // ACTIVATED (was suggested-but-unactivated calib.cx-multicarrier.open-jaw-distance-counts,
+  // docs/calibration-set.md §A1(d) / "Suggested test ids"; decision record
+  // docs/decisions/open-jaw-distance.md): the BKK⇢SIN group-boundary gap of
+  // FT 2184572 counts toward the CX zone total under the product's
+  // counts-toward-distance opt-in, and stays invisible everywhere else (D4).
+  test('calib.cx-multicarrier.open-jaw-distance-counts — BKK⇢SIN jaw GC distance counts toward the CX zone total', () => {
+    // FT 2184572 (Jan 2025, OP GherkinFT; jagmeets endorses the agent's
+    // zoning): two-group routing JFK-LHR-HKG-TPE-KUL-BKK // SIN-HKG-JFK —
+    // the BKK⇢SIN gap is neither flown nor a surface sector, yet Asia
+    // Miles zoned the ticket WITH the jaw's great-circle distance
+    // ("It seemed it might have added the open jaw BKK//SIN as flight
+    // distance"). D1/D2 keep that seam caller-supplied: groups are a UI
+    // concept, so the engine sees one flat leg array plus openJawSectors.
+    // Carrier attribution is eligibility-only per file convention (the OP
+    // did not list flights); {BA, CX, JL} satisfies the CX-trigger
+    // three-carrier minimum.
+    const legs: Leg[] = [
+      { from: 'JFK', to: 'LHR', operatingCarrier: 'BA' },
+      { from: 'LHR', to: 'HKG', operatingCarrier: 'BA' },
+      { from: 'HKG', to: 'TPE', operatingCarrier: 'CX' },
+      { from: 'TPE', to: 'KUL', operatingCarrier: 'CX' },
+      { from: 'KUL', to: 'BKK', operatingCarrier: 'CX' },
+      { from: 'SIN', to: 'HKG', operatingCarrier: 'JL' },
+      { from: 'HKG', to: 'JFK', operatingCarrier: 'CX' },
+    ];
+    const withoutJaw = validateRtwRoute(
+      product('cx-asia-miles-oneworld-multi-carrier-award'),
+      legs,
+      { airports, allianceCatalog },
+    );
+    const withJaw = validateRtwRoute(
+      product('cx-asia-miles-oneworld-multi-carrier-award'),
+      legs,
+      { airports, allianceCatalog, openJawSectors: [{ from: 'BKK', to: 'SIN' }] },
+    );
+
+    // EXACT delta: with-jaw total = without-jaw total + rounded jaw GC.
+    const jawSm = Math.round(distanceNm(airport('BKK'), airport('SIN')) * MILES_PER_NAUTICAL_MILE);
+    expect(withJaw.summary.totalDistanceMiles - withoutJaw.summary.totalDistanceMiles).toBe(jawSm);
+
+    // MEASURED, not trusted (public/data/airports.json coords, project
+    // haversine, ×MILES_PER_NAUTICAL_MILE): the seven flown sectors sum to
+    // 19,426.98 nm ⇒ 22,356 statute mi — the OP's quoted "flying distance
+    // of 19,442 miles" is effectively NAUTICAL (Δ≈0.08%). The engine
+    // converts once at aggregation (caveat 3), so BOTH totals sit inside
+    // rv=2018.Q2 row 11 (20,001–25,000): 22,356 without the jaw,
+    // 22,356 + 880 = 23,236 with.
+    expect(withoutJaw.summary.totalDistanceMiles).toBe(22356);
+    expect(withJaw.summary.totalDistanceMiles).toBe(23236);
+
+    // Honest band note: unlike the thread narrative (nautical 19,442 +
+    // ~765 ≈ 20,207 crossing "20,000"), the real chain does NOT straddle a
+    // band edge once everything is statute miles. The cliff a jaw CAN
+    // trigger near an edge is therefore demonstrated DIRECTLY on the
+    // official chart rows 10↔11 (same pattern as band-boundary-jump):
+    // 20,000 zones row 10 (J140k/F205k); one mile more flips to row 11
+    // (J160k/F235k).
+    const rowTop = estimateAwardPrice(PRICING_RV_2018Q2, CX_RV18_ID, 20000, 'business');
+    const rowBase = estimateAwardPrice(PRICING_RV_2018Q2, CX_RV18_ID, 20001, 'business');
+    expect(rowTop?.band.maxMiles).toBe(20000);
+    expect(rowTop?.miles).toBe(140000);
+    expect(rowBase?.band.minMiles).toBe(20001);
+    expect(rowBase?.miles).toBe(160000);
+
+    // Structural coherence: both measured totals zone into row 11.
+    expect(
+      estimateAwardPrice(
+        PRICING_RV_2018Q2,
+        CX_RV18_ID,
+        withoutJaw.summary.totalDistanceMiles,
+        'business',
+      )?.band,
+    ).toEqual({ minMiles: 20001, maxMiles: 25000 });
+    expect(
+      estimateAwardPrice(PRICING_RV_2018Q2, CX_RV18_ID, withJaw.summary.totalDistanceMiles, 'business')
+        ?.band,
+    ).toEqual({ minMiles: 20001, maxMiles: 25000 });
+
+    // Non-opted products ignore jaws entirely (D3 conservative default):
+    // same legs + same openJawSectors under the BR product leave the total
+    // unchanged.
+    const brWithout = validateRtwRoute(
+      product('br-infinity-star-alliance-world-travel-award'),
+      legs,
+      { airports, allianceCatalog },
+    );
+    const brWith = validateRtwRoute(
+      product('br-infinity-star-alliance-world-travel-award'),
+      legs,
+      { airports, allianceCatalog, openJawSectors: [{ from: 'BKK', to: 'SIN' }] },
+    );
+    expect(brWith.summary.totalDistanceMiles).toBe(brWithout.summary.totalDistanceMiles);
+
+    // The CX run stays structurally clean with the jaw counted (D4: only
+    // the priced distance moved; carrier combination still passes on
+    // {BA, CX, JL}).
+    expect(withJaw.valid).toBe(true);
+    expect(withJaw.findings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ ruleId: 'carrier-combination', severity: 'pass' }),
+        expect.objectContaining({ ruleId: 'max-distance', severity: 'pass' }),
+      ]),
+    );
   });
 
   test('calib.sta-eligibility.co-terminal-direct-vs-two-sectors — physical sectors pinned; zone-arithmetic divergence documented', () => {

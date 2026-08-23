@@ -32,12 +32,12 @@ A web app that replaces the FlyerTalk RTW-routing-thread habit for Taiwan-based 
 
 ## Testing
 
-Run command: `npm run test` (Vitest — 300 tests passing, see README badge). No E2E runner: there is no `test:e2e` script and no Playwright dependency; verify site behavior through component tests + CI.
+Run command: `npm run test` (Vitest — 309 tests passing, see README badge). No E2E runner: there is no `test:e2e` script and no Playwright dependency; verify site behavior through component tests + CI.
 
 - 100% coverage is the goal for `src/lib/calc/**` (engine purity makes it cheap)
 - Every new function gets a test; every if/else gets tests for both branches
 - Every fixed bug gets a regression test
-- **Iron Rule:** `tests/calibration/flyertalk-routings.test.ts` pins real FlyerTalk/community RTW routing threads (transcribed in `docs/calibration-set.md`): 17 active structural tests, zero open engine-gap TODOs. Failing any one of the active tests blocks `/ship`. This operationalizes Success Criterion #2 from the design doc; activated in commit `2af6e2c` (Phase-1 debt payoff), extended in Phase 2 (QF caps, ANA archived band/surface), and in Phase 4 t4 (CX any-first pricing — mechanism pinned against live bands plus the complete official rv=2018.Q2 chart fixture (research round 2, Wayback 20180528013013); BR TPE–GUM network-gap watchlist warning; co-terminal direct-vs-two-sectors conflict guard).
+- **Iron Rule:** `tests/calibration/flyertalk-routings.test.ts` pins real FlyerTalk/community RTW routing threads (transcribed in `docs/calibration-set.md`): 18 active structural tests, zero open engine-gap TODOs. Failing any one of the active tests blocks `/ship`. This operationalizes Success Criterion #2 from the design doc; activated in commit `2af6e2c` (Phase-1 debt payoff), extended in Phase 2 (QF caps, ANA archived band/surface), in Phase 4 t4 (CX any-first pricing — mechanism pinned against live bands plus the complete official rv=2018.Q2 chart fixture (research round 2, Wayback 20180528013013); BR TPE–GUM network-gap watchlist warning; co-terminal direct-vs-two-sectors conflict guard), and in Phase 5 (CX open-jaw distance counting — `calib.cx-multicarrier.open-jaw-distance-counts` activated per decision record `docs/decisions/open-jaw-distance.md`).
 
 ## Testing strategy minimums (from eng review)
 

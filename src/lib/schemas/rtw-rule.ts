@@ -27,6 +27,22 @@ export const RtwSurfaceDistancePolicySchema = z.enum([
 ]);
 export type RtwSurfaceDistancePolicy = z.infer<typeof RtwSurfaceDistancePolicySchema>;
 
+/**
+ * Whether TRUE open jaws (the unflown gap between consecutive groups of a
+ * multi-group routing — decision record docs/decisions/open-jaw-distance.md
+ * D1) count toward the product's priced/capped distance. Conservative
+ * default is excluded (= pre-policy behavior, D3); only evidence-backed
+ * products opt into counting (FT 2184572 agent practice for the CX
+ * oneworld Multi-carrier award). Jaws are DISTANCE-ONLY (D4): even when
+ * counted they never become segments, stopovers, transfers, surface
+ * sectors, or ocean crossings, and direction checks never see them.
+ */
+export const RtwOpenJawDistancePolicySchema = z.enum([
+  'counts-toward-distance',
+  'excluded-from-distance',
+]);
+export type RtwOpenJawDistancePolicy = z.infer<typeof RtwOpenJawDistancePolicySchema>;
+
 export const RtwRuleLimitsSchema = z.object({
   minFlights: z.number().int().positive().optional(),
   maxFlights: z.number().int().positive().optional(),
@@ -85,6 +101,7 @@ export const RtwRuleSetSchema = z.object({
   status: RtwProductStatusSchema,
   bookingStatusNote: z.string().min(1).optional(),
   surfaceDistancePolicy: RtwSurfaceDistancePolicySchema.default('counts-toward-distance'),
+  openJawDistancePolicy: RtwOpenJawDistancePolicySchema.default('excluded-from-distance'),
   sourceUrls: z.array(z.string().url()).min(1),
   limits: RtwRuleLimitsSchema,
   geography: RtwGeographyRulesSchema,
