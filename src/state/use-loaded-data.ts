@@ -17,6 +17,10 @@ import {
   CountryContinentCatalogSchema,
   type ContinentId,
 } from '../lib/schemas/country-continent.ts';
+import {
+  parseScheduleCatalog,
+  type ScheduleEntry,
+} from '../lib/schemas/flight-schedules.ts';
 import { MarketProfileSchema, type MarketProfile } from '../lib/schemas/market.ts';
 import {
   parseNetworkGapCatalog,
@@ -60,6 +64,13 @@ export interface LoadedData {
    * network-gap warnings (same degrade-to-null contract as `valuations`).
    */
   networkGaps: ReadonlyArray<NetworkGapEntry> | null;
+  /**
+   * Curated directional flight schedules (schedules/current.json). Null
+   * if the file is unavailable/malformed — the engine then emits no
+   * schedule-day warnings and the UI keeps date pickers fully enabled
+   * (same degrade-to-null contract as `networkGaps`).
+   */
+  schedules: ReadonlyArray<ScheduleEntry> | null;
 }
 
 export type LoadState =
@@ -106,6 +117,7 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
           marketRaw,
           geoRaw,
           networkGapsRaw,
+          schedulesRaw,
           ...programRaws
         ] = await Promise.all([
           fetchJsonStrict(`${baseUrl}/data/airports.json`),
@@ -117,6 +129,7 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
           fetchJsonStrict(`${baseUrl}/data/markets/tw/current.json`),
           fetchJsonOptional(`${baseUrl}/data/geo/current.json`),
           fetchJsonOptional(`${baseUrl}/data/network-gaps/current.json`),
+          fetchJsonOptional(`${baseUrl}/data/schedules/current.json`),
           ...programDirs.map((dir) =>
             fetchJsonOptional(`${baseUrl}/data/programs/${dir}/current.json`),
           ),
@@ -155,6 +168,18 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
           } catch (e) {
             console.warn(
               'network-gaps/current.json schema parse failed; network-gap warnings disabled:',
+              e,
+            );
+          }
+        }
+
+        let schedules: ReadonlyArray<ScheduleEntry> | null = null;
+        if (schedulesRaw !== null && schedulesRaw !== undefined) {
+          try {
+            schedules = parseScheduleCatalog(schedulesRaw).entries;
+          } catch (e) {
+            console.warn(
+              'schedules/current.json schema parse failed; schedule warnings and calendar day-disabling disabled:',
               e,
             );
           }
@@ -199,6 +224,7 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
             countryContinents,
             airportContinentOverrides,
             networkGaps,
+            schedules,
           },
         });
       } catch (e) {

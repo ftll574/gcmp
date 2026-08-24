@@ -344,7 +344,8 @@
       "surface": "地面段",
       "operatingLabel": "{from} 到 {to} 的執飛航司",
       "timingLabel": "{from} 到 {to} 的停留/轉機狀態",
-      "surfaceLabel": "{from} 到 {to} 的地面段"
+      "surfaceLabel": "{from} 到 {to} 的地面段",
+      "date": "日期"
     },
     "legChip": {
       "stopoverLabel": "第 {n} 段停留/轉機狀態",
@@ -359,6 +360,17 @@
       "stopover": "停留",
       "stopoverLong": "停留（24h+）",
       "surface": "地面段"
+    },
+    "schedule": {
+      "frequency": "每週{days}",
+      "unknown": "班表未知",
+      "dateLabel": "選擇第 {index} 段出發日期",
+      "nextAvailable": "跳到下一個可用日",
+      "noFlight": "此日無航班",
+      "prevMonth": "上個月",
+      "nextMonth": "下個月",
+      "close": "關閉",
+      "clear": "清除日期"
     },
     "findings": {
       "productStatusNote": "{note}",
@@ -386,6 +398,9 @@
       "transfersPerCityFail": "以下城市轉機次數過多：{cities}。",
       "networkGapOpen": "{carrier} 目前並未營運 {from}-{to} 航線（自 {since} 起停飛）；建議改搭其他航空公司。",
       "networkGapUntil": "{carrier} 在 {since} 至 {until} 期間並未營運 {from}-{to} 航線。",
+      "legChronologyFail": "行程日期倒序：第 {nextLeg} 段於 {nextDate} 出發，早於第 {prevLeg} 段的 {prevDate}。",
+      "tripDatesMismatch": "行程日期（{startDate} 至 {endDate}）與航班日期不符（首段航班 {firstDepart} 出發，末段航班 {lastDepart} 出發）。",
+      "scheduleDayMismatch": "{carrier} 於 {date} 不營運此航段（營運日：{days}）。",
       "surfaceCitiesPass": "地面段 / open-jaw 端點沒有重複。",
       "surfaceCitiesFail": "以下地面段 / open-jaw 端點重複過多：{cities}。",
       "carrierCombinationPass": "路線使用 {count} 家合格航司，符合多航司規則。",

@@ -154,6 +154,13 @@ export interface Leg {
    * coupon and has no operating carrier eligibility.
    */
   readonly surface?: boolean;
+  /**
+   * Optional per-leg departure date, ISO `YYYY-MM-DD`. Absent = undated
+   * (the leg carries no timing claim; chronology/day checks skip it).
+   * Shared via the URL `d=` parameter, which mirrors `op`'s group/leg shape
+   * (docs/decisions/flight-schedule-model.md S1).
+   */
+  readonly departsOn?: string;
 }
 
 export type ProjectionShortCode = 'm' | 'e' | 'a' | 'o';

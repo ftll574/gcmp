@@ -468,6 +468,26 @@ function Ready({
     }));
   }
 
+  function changeLegDate(legIndex: number, departsOn: string | undefined): void {
+    updateActiveGroup((group) => ({
+      legs: group.legs.map((leg, i) => {
+        if (i !== legIndex) return leg;
+        if (departsOn === undefined) {
+          // Strip the field rather than store undefined — keeps URL clean.
+          return {
+            from: leg.from,
+            to: leg.to,
+            operatingCarrier: leg.operatingCarrier,
+            ...(leg.fareClass !== undefined ? { fareClass: leg.fareClass } : {}),
+            ...(leg.stopover !== undefined ? { stopover: leg.stopover } : {}),
+            ...(leg.surface !== undefined ? { surface: leg.surface } : {}),
+          };
+        }
+        return { ...leg, departsOn };
+      }),
+    }));
+  }
+
   function changeCabin(cabin: CabinId): void {
     setRouting({ ...routing, cabin });
   }
@@ -699,10 +719,13 @@ function Ready({
                   operatingCarriers={activeGroup.legs.map((leg) => leg.operatingCarrier)}
                   stopovers={activeGroup.legs.map((leg) => leg.stopover)}
                   surfaces={activeGroup.legs.map((leg) => leg.surface)}
+                  departsOn={activeGroup.legs.map((leg) => leg.departsOn)}
+                  schedules={data.schedules}
                   airlines={eligibleAirlines}
                   onCarrierChange={changeCarrier}
                   onStopoverChange={changeStopover}
                   onSurfaceChange={changeSurface}
+                  onDateChange={changeLegDate}
                 />
               </details>
             </div>

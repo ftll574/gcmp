@@ -4,7 +4,7 @@
 
 Taiwan-first round-the-world award route planner. Build an itinerary, mark stopovers and surface sectors, validate it against RTW and multi-carrier mileage-redemption award rules, and share the URL.
 
-![Status: RTW pivot](https://img.shields.io/badge/status-RTW%20pivot-blue) ![License: MIT](https://img.shields.io/badge/license-MIT-green) ![Tests: 353 passing](https://img.shields.io/badge/tests-353%20passing-green)
+![Status: RTW pivot](https://img.shields.io/badge/status-RTW%20pivot-blue) ![License: MIT](https://img.shields.io/badge/license-MIT-green) ![Tests: 431 passing](https://img.shields.io/badge/tests-431%20passing-green)
 
 ## What It Does
 
@@ -73,6 +73,7 @@ https://ftll574.github.io/gcmp/#/r/v1/TPE-NRT-LAX-JFK-LHR-HKG-TPE?op=JL,JL,AA,BA
 - `op` — operating carriers; groups by `;`, legs by `,`
 - `stp` — per-leg stopover flags: `1` stopover, `0` transfer, empty unknown
 - `surf` — per-leg surface/open-jaw flags: `1` surface, `0` flown sector
+- `d` — optional per-leg departure dates (ISO `YYYY-MM-DD`), same shape as `op`: groups by `;`, legs by `,`, empty cell = undated leg; a present group's date count must equal its leg count (typed parse error otherwise); absent ⇒ every leg is undated (e.g. `&d=2026-04-03,,2026-04-07`)
 - `fc` — optional fare class letters for mileage estimate
 - `p`, `c`, `rv`, `st` — secondary mileage estimate parameters
 - `proj` — map projection
@@ -86,6 +87,7 @@ RTW planning data is separate from mileage earning data:
 - `public/data/rtw-products/current.json` — RTW fare and award products
 - `public/data/award-pricing/current.json` — award pricing bands for supported products
 - `public/data/network-gaps/current.json` — carrier pairs known not flown, backing honest sector warnings
+- `public/data/schedules/current.json` — curated weekly operating-day catalog (directional carrier pairs, evidence-graded) backing the date picker's day-disabling and schedule warnings
 - `public/data/programs/**` — secondary mileage earning rules
 
 Schemas live in:
@@ -96,11 +98,13 @@ Schemas live in:
 - `src/lib/schemas/program.ts`
 - `src/lib/schemas/airports.ts`
 - `src/lib/schemas/network-gaps.ts`
+- `src/lib/schemas/flight-schedules.ts`
 
 Pure engines:
 
 - `src/lib/rtw/validate.ts` — RTW rule validation
 - `src/lib/rtw/award-pricing.ts` — award price estimation
+- `src/lib/rtw/schedule-days.ts` — schedule lookup: ISO weekday of a date plus operating-day/window resolution against the schedules catalog
 - `src/lib/calc/**` — distance and mileage estimate engine
 
 ## Development
@@ -118,7 +122,7 @@ npm run build
 
 Current local baseline:
 
-- 353 Vitest tests in 23 files (incl. the Iron Rule calibration suite — 24 active structural tests)
+- 431 Vitest tests in 26 files (incl. the Iron Rule calibration suite — 24 active structural tests)
 - strict TypeScript
 - ESLint engine purity rule for `src/lib/calc/**`
 - production build via Vite
@@ -129,7 +133,8 @@ Current local baseline:
 - **Pricing covers 4 of 7 catalog products** — EVA (fixed price), Cathay (distance bands, rebased to the fourth-era/current chart), Qantas Classic Flight Reward (partial: top bracket only — 19,201–35,000 mi ⇒ flat 318,000 business, chart-verified against the pre-Aug-2025 chart era; smaller brackets/economy intentionally absent pending verification), and the ANA archived award (partial: business cabin only). A fifth entry sits catalog-ready but does not change the planner count yet: the China Airlines SkyTeam partner award zone-pair chart (full 66-cell Era-2 matrix over the 11 published zones, `published-chart`, asOfEra 2025-10) plus a direction-agnostic engine accessor (`getZonePairQuote()`, `src/lib/rtw/award-pricing.ts`) — itinerary-level CI estimates wait on airport→region wiring, so CI still validates rules without a price estimate. The two cash fares are excluded by adjudication: oneworld Explorer and Star Alliance RTW Fare are paid tickets sold in money (continent-count / distance fares; miles flow earn-side only — §A8(b)); continent-count *awards* shaped like Explorer would need separately verified productIds. Research appendix §A6 (`docs/calibration-set.md`) scoped JL/NH/SQ: no compatible band-chart or RTW award product exists at JAL or Singapore, and ANA's distance-band RTW chart is discontinued for new ticketing (2025-06-23) — already modeled as archived.
 - **Cathay fourth-era chart drift is resolved at cell level; two gaps stay honestly open.** The FT 2184572 Jan-2025 data point (230,000 miles @ 19,442 self-stated flown miles) that matched no frozen-era band cell is now explained: it is Zone 10 (18,001–20,000 mi) Business under the revised fourth-era grid — pinned by two independent data points (Prince of Travel 2025-07-16; Suitesmile full-grid transcription 2026-05-02) with a third browser-render cross-check (§A9). Zone edges are byte-identical to rv=2018.Q3; only prices moved. Remaining gaps: the official flights.cathaypacific.com chart page is unresolvable from this network (DNS failure), so the grid rests on community sources rather than the airline's own page; and the exact effective date inside the bracket (2023-02-26, 2025-01-25] stays unpinned.
 - **Award fee schedules are display-only.** Era-pinned fees render on the validation panel (CX seed: date-change / reissue / refund, as of 2018-05), but total cost with taxes/fees is not estimated.
-- **Date-based trip-duration limits ARE enforced when dates exist.** The `trip-duration` rule (`src/lib/rtw/validate.ts`) fails itineraries outside the product's min/max trip days whenever start+end dates are set, and reports severity unknown ("Trip duration cannot be checked until start and end dates are set.") without them. What stays shallow is per-segment timing: stopover duration is user-marked and there is no per-leg/per-stopover date model yet, so stopover-length rules have nothing to check.
+- **Per-leg dates are modeled; chronology and schedule checks run on them.** Legs carry an optional departure date (`Leg.departsOn`, ISO `YYYY-MM-DD`, shared via the URL `d=` parameter), and the `trip-duration` rule (`src/lib/rtw/validate.ts`) still fails itineraries outside the product's min/max trip days whenever start+end dates are set (severity unknown without them). On top of leg dates the engine enforces `leg-chronology` as a fail (consecutive dated legs may not run backwards), warns when trip start/end dates disagree with the first/last leg dates (`trip-dates-mismatch`), and warns when a dated flight leg falls on a weekday its carrier+pair doesn't operate (`schedule-day-mismatch`) — a warning, never a fail, because timetables drift and a conflict makes a trip unbookable rather than illegal. Stopover *duration* remains user-marked with no duration model.
+- **Flight-schedule coverage is a curated seed, not live data.** `public/data/schedules/current.json` holds 10 directional weekly-frequency entries under the project's confidence vocabulary: CI×6 `chart-verified` from China Airlines' official complete-timetable PDF recovered via Wayback (validity 2025-01-01→2025-03-29 — expired windows seed the catalog honestly but produce no current-date findings, by design), BR×2 + JX×2 `community-corrected` from AeroRoutes filing transcriptions. Pinned pairs cover TPE→HKG/NRT/LAX/KIX/BKK/SFO (CI), TPE→SFO/SIN (BR), TPE→KIX/NRT (JX) — one direction only; reverse directions are unknown. Pairs without a verified entry keep a fully enabled date input plus a 「班表未知」 badge — unverified schedules never disable or block dates. The CX HKG→LHR April-2026 transcription is deliberately excluded from the seed (it pins only extra sections over an unpinned near-daily base service). No live/global schedule coverage exists or is claimed; sources, negatives, and omissions are recorded in research appendix §A10 (`docs/calibration-set.md`).
 - **Standing cuts:** MPM (maximum permitted mileage), fare-basis input, plus the full list under CLAUDE.md's "NOT in scope".
 - Earning/PQM/RDM math remains as a secondary estimate and should not drive RTW validity.
 

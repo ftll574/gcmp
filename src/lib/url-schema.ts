@@ -13,9 +13,18 @@
  *       comma per leg). Optional — when absent, engine falls back to the
  *       carrier's defaultLetterByCabin[cabin].
  *
+ *   Per-leg departure dates (v1.10, docs/decisions/flight-schedule-model.md S1):
+ *     /r/v1/TPE-NRT-KIX?op=BR,BR&p=BR&c=J&d=2026-09-01,,2026-09-05
+ *     → per-leg ISO YYYY-MM-DD; same shape as `op` (semicolon per group,
+ *       comma per leg). Empty segment = undated leg (`2026-09-01,,`).
+ *       When present, segment count MUST equal the flattened leg count
+ *       (typed parse error otherwise); when absent every leg is undated.
+ *
  *   Path:       groups separated by `,`, airports within group by `-`
  *   `op`:       groups separated by `;`, legs within group by `,`
  *   `fc`:       per-leg fare class letters, same shape as `op` — optional
+ *   `d`:        per-leg departure dates (ISO YYYY-MM-DD), same shape as
+ *               `op` with empty segments for undated legs — optional
  *   `p`:        global crediting programs (AA, AS, ...)
  *   `c`:        global cabin (Y / W / J / F)
  *   `rv`:       global rules version (optional)
@@ -151,6 +160,7 @@ export function parseShareUrl(input: string): UrlParseResult {
   const pRaw = params.get('p');
   const cRaw = params.get('c');
   const fcRaw = params.get('fc');
+  const dRaw = params.get('d');
   const stopoverRaw = params.get('stp');
   const surfaceRaw = params.get('surf');
   const rvRaw = params.get('rv');
@@ -183,6 +193,22 @@ export function parseShareUrl(input: string): UrlParseResult {
       return err(
         'mismatched-op-length',
         `Expected ${iataByGroup.length} group(s) in fc (semicolon-separated); got ${fcByGroupStr.length}.`,
+      );
+    }
+  }
+
+  // Per-leg departure dates. Optional. Same shape as op: `;`-separated
+  // groups, `,`-separated legs; an empty cell means "this leg is undated"
+  // (docs/decisions/flight-schedule-model.md S1 — partial dating inside a
+  // present `d=` is allowed). When present the segment counts must line up
+  // with the path exactly; when absent every leg stays undated.
+  let datesByGroupStr: string[] | null = null;
+  if (dRaw) {
+    datesByGroupStr = dRaw.split(';');
+    if (datesByGroupStr.length !== iataByGroup.length) {
+      return err(
+        'mismatched-op-length',
+        `Expected ${iataByGroup.length} group(s) in d (semicolon-separated); got ${datesByGroupStr.length}.`,
       );
     }
   }
@@ -281,6 +307,35 @@ export function parseShareUrl(input: string): UrlParseResult {
       fareClasses = out;
     }
 
+    // Decode departure dates for this group, if present. Empty cell =
+    // undated leg; non-empty must be ISO YYYY-MM-DD.
+    let departures: ReadonlyArray<string | undefined> | null = null;
+    if (datesByGroupStr) {
+      const groupDStr = datesByGroupStr[gi] ?? '';
+      const rawDates = groupDStr === '' ? [] : groupDStr.split(',');
+      if (rawDates.length > 0 && rawDates.length !== expectedOpCount) {
+        return err(
+          'mismatched-op-length',
+          `Group ${gi + 1}: expected ${expectedOpCount} date(s) in d; got ${rawDates.length}.`,
+        );
+      }
+      const paddedDates = rawDates.length === 0
+        ? new Array<string>(expectedOpCount).fill('')
+        : rawDates;
+      const decodedDates: Array<string | undefined> = [];
+      for (const cell of paddedDates) {
+        const cleaned = (cell ?? '').trim();
+        if (cleaned === '') {
+          decodedDates.push(undefined);
+        } else if (ISO_DATE_PATTERN.test(cleaned)) {
+          decodedDates.push(cleaned);
+        } else {
+          return err('malformed-path', `Invalid departure date: "${cell}". Expected YYYY-MM-DD.`);
+        }
+      }
+      departures = decodedDates;
+    }
+
     let stopovers: ReadonlyArray<boolean | undefined> | null = null;
     if (stopoverByGroupStr) {
       const decoded = decodeBooleanCells(stopoverByGroupStr[gi] ?? '', expectedOpCount, gi, 'stp');
@@ -306,6 +361,7 @@ export function parseShareUrl(input: string): UrlParseResult {
       const fc = fareClasses?.[i];
       const stopover = stopovers?.[i];
       const surface = surfaces?.[i];
+      const departsOn = departures?.[i];
       legs.push({
         from,
         to,
@@ -313,6 +369,7 @@ export function parseShareUrl(input: string): UrlParseResult {
         ...(fc !== undefined ? { fareClass: fc } : {}),
         ...(stopover !== undefined ? { stopover } : {}),
         ...(surface !== undefined ? { surface } : {}),
+        ...(departsOn !== undefined ? { departsOn } : {}),
       });
     }
     groups.push({ legs });
@@ -441,6 +498,13 @@ export function encodeShareUrl(req: RoutingRequest): string {
   const surfaceByGroup = anySurface
     ? req.groups.map((group) => group.legs.map((leg) => leg.surface === undefined ? '' : leg.surface ? '1' : '0').join(','))
     : null;
+  // Per-leg departure dates. Encode as `d=2026-09-01,,2026-09-05` mirroring
+  // `op` shape. Empty cell for undated legs. Skip the whole param when no
+  // leg is dated — preserves URL compatibility with every pre-dating link.
+  const anyDated = req.groups.some((g) => g.legs.some((l) => l.departsOn !== undefined));
+  const datesByGroup = anyDated
+    ? req.groups.map((group) => group.legs.map((leg) => leg.departsOn ?? '').join(','))
+    : null;
 
   const path = groupChains.join(',');
   const op = opByGroup.join(';');
@@ -462,6 +526,9 @@ export function encodeShareUrl(req: RoutingRequest): string {
   }
   if (surfaceByGroup) {
     params.set('surf', surfaceByGroup.join(';'));
+  }
+  if (datesByGroup) {
+    params.set('d', datesByGroup.join(';'));
   }
   if (req.rulesVersion !== undefined) {
     params.set('rv', req.rulesVersion);

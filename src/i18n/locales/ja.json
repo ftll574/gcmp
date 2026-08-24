@@ -344,7 +344,8 @@
       "surface": "地上区間",
       "operatingLabel": "{from} から {to} の運航キャリア",
       "timingLabel": "{from} から {to} の滞在/乗り継ぎ区分",
-      "surfaceLabel": "{from} から {to} の地上区間"
+      "surfaceLabel": "{from} から {to} の地上区間",
+      "date": "日付"
     },
     "legChip": {
       "stopoverLabel": "第 {n} 区間の滞在/乗り継ぎ状態",
@@ -359,6 +360,17 @@
       "stopover": "ストップオーバー",
       "stopoverLong": "ストップオーバー（24h+）",
       "surface": "地上区間"
+    },
+    "schedule": {
+      "frequency": "毎週{days}",
+      "unknown": "時刻表不明",
+      "dateLabel": "{index} 区間の出発日を選択",
+      "nextAvailable": "次の運航日に移動",
+      "noFlight": "この日は運航なし",
+      "prevMonth": "前の月",
+      "nextMonth": "次の月",
+      "close": "閉じる",
+      "clear": "日付をクリア"
     },
     "findings": {
       "productStatusNote": "{note}",
@@ -386,6 +398,9 @@
       "transfersPerCityFail": "次の都市で乗り継ぎ回数が上限を超えています：{cities}。",
       "networkGapOpen": "{carrier}は{from}-{to}路線を運航していません（{since}に運航終了）；他の航空会社をご検討ください。",
       "networkGapUntil": "{carrier}は{since}から{until}の間、{from}-{to}路線を運航していません。",
+      "legChronologyFail": "日程が逆転しています：第{nextLeg}便は{nextDate}出発で、第{prevLeg}便の{prevDate}より前です。",
+      "tripDatesMismatch": "旅行期間（{startDate}〜{endDate}）がフライト日と一致しません（最初の便は{firstDepart}出発、最終便は{lastDepart}出発）。",
+      "scheduleDayMismatch": "{carrier}はこの区間を{date}に運航していません（運航日：{days}）。",
       "surfaceCitiesPass": "地上区間 / オープンジョーの両端点は重複していません。",
       "surfaceCitiesFail": "次の地上区間 / オープンジョー端点が上限を超えて重複しています：{cities}。",
       "carrierCombinationPass": "経路は対象キャリア {count} 社を利用しており、このマルチキャリアルールを満たしています。",

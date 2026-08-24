@@ -27,13 +27,13 @@ A web app that replaces the FlyerTalk RTW-routing-thread habit for Taiwan-based 
 
 - **Engine purity:** Files under `src/lib/calc/**` MUST NOT import React, react-dom, or any UI library. ESLint enforces this (Q3 from eng review). Engine is pure functions only — portable to CLI, npm package, Raycast extension later.
 - **Earning rules:** Each program lives at `data/programs/{carrier}/v{YYYY.Q}.json`. Validated by zod schema at build and runtime. Every entry carries a `confidence` field (`chart-verified` or `community-corrected`).
-- **URL schema (v1):** hash routes — `#/r/v1/TPE-NRT-LAX?op=BR,BR&p=AA,AS&c=J&stp=1,0&surf=0,0&fc=J,J&proj=a&rv=2026.4&st=n&rtw=eva-star-alliance-world-travel`. Path = airport chains (groups separated by `,`, legs within a group by `-`); query carries operating carriers (`op`), stopover flags (`stp`: 1 stopover / 0 transfer), surface sectors (`surf`), fare classes (`fc`), projection (`proj`), rules version (`rv`), elite tier (`st`), and selected RTW product (`rtw`). The `/v1/` segment exists so v2 can coexist without breaking shared URLs. Parser is `src/lib/url-schema.ts` and returns a typed error union, never throws; v0.x URLs still parse.
+- **URL schema (v1):** hash routes — `#/r/v1/TPE-NRT-LAX?op=BR,BR&p=AA,AS&c=J&stp=1,0&surf=0,0&fc=J,J&proj=a&rv=2026.4&st=n&rtw=eva-star-alliance-world-travel`. Path = airport chains (groups separated by `,`, legs within a group by `-`); query carries operating carriers (`op`), stopover flags (`stp`: 1 stopover / 0 transfer), surface sectors (`surf`), fare classes (`fc`), per-leg departure dates (`d`: mirrors `op`'s shape — groups by `;`, legs by `,`, empty cell = undated leg; a present group's date count must equal its leg count or parsing fails with a typed error; absent ⇒ every leg undated), projection (`proj`), rules version (`rv`), elite tier (`st`), and selected RTW product (`rtw`). The `/v1/` segment exists so v2 can coexist without breaking shared URLs. Parser is `src/lib/url-schema.ts` and returns a typed error union, never throws; v0.x URLs still parse.
 - **Rules version drift:** Shared URLs include `rv=YYYY.Q`. When the current rules version differs, the app shows a banner: "Rules have changed since this URL was created." Past 4 quarterly snapshots bundled.
 - **Diagrams in comments:** Non-trivial pipelines (engine, URL parsing, rules resolver) get inline ASCII diagrams. Update diagrams in the same commit as the code they describe.
 
 ## Testing
 
-Run command: `npm run test` (Vitest — 353 tests passing, see README badge). No E2E runner: there is no `test:e2e` script and no Playwright dependency; verify site behavior through component tests + CI.
+Run command: `npm run test` (Vitest — 431 tests passing, see README badge). No E2E runner: there is no `test:e2e` script and no Playwright dependency; verify site behavior through component tests + CI.
 
 - 100% coverage is the goal for `src/lib/calc/**` (engine purity makes it cheap)
 - Every new function gets a test; every if/else gets tests for both branches

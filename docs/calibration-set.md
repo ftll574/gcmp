@@ -1623,3 +1623,206 @@ cached HTML immediately before writing; AwardWallet/Reddit lines are search-snip
 marked as such. Confidence: zone-10 {E,B} = community-corrected (two independent DPs); full grid =
 single-source post-devaluation transcription. No code/data changes; nothing committed; no Iron
 Rule test activates from A9; existing calib.cx-multicarrier.* mechanisms unaffected.
+
+## A10 — Taiwan-first weekly-schedule transcription (Phase-10 research pass)
+
+Question (consumes `docs/decisions/flight-schedule-model.md` S3/S5): can weekly operating days
+(ISO weekday 1=Mon..7=Sun) be PINNED with citable sources for the Taiwan-first carrier pairs?
+Unverified pairs are omitted, never guessed (S3). Method: web_search discovery + AeroRoutes
+article fetches (day-coded transcriptions of airline OAG/GDS filings) + Wayback raw `id_`
+replays (CDX `matchType=prefix`, NO `filter=` per checklist). Gold artifact: China Airlines
+official complete-timetable PDF recovered from Wayback and text-extracted with pypdf. Research
+window: late Aug 2026 (post-2026-08-23). Day-code conventions: AeroRoutes trailing tokens =
+operating days (`D`=daily; bare digits = ISO weekdays, e.g. `246`=Tue/Thu/Sat; `x12`=EXCEPT
+Mon/Tue); CI PDF tables use a 7-position day grid whose extracted digit runs (`1234567`,
+`3  5  7`) carry the same meaning (spacing garbles under extraction; digit PRESENCE is the
+signal). Confidence vocabulary per checklist: carrier-official artifact = `chart-verified`;
+AeroRoutes transcription of filings = `community-corrected`.
+
+### (a) Pinned pairs (verbatim evidence)
+
+**CI block — official complete timetable PDF, validity 2025-01-01 → 2025-03-29** (replay
+`https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf`,
+1,843,009 B captured 2025-03-19; validity confirmed by filename AND in-PDF "01Jan25 - 29Mar25"
+plus Jan/Feb/Mar-2025 calendar pages; caches `sc-ci-wb-2025-timetable.{pdf,txt}`; grade
+chart-verified for every row below):
+
+- TPE→HKG (PDF p.7) verbatim extraction: "TAIPEI TAOYUAN … HONG KONG 1h50m ~ 2h05m / CI 601
+  1234567 07:15-09:15 / CI 903 1234567 08:05-10:05 / CI 909 1234567 10:50-12:55 / CI 915
+  1234567 14:30-16:30 / CI 919 1234567 16:55-19:00 / CI 923 1234567 18:10-20:10 / CI 921
+  [  23  5  7] 21:10-23:00 / CI 607 [1    4  6] 22:30-00:20+1" ⇒ route operates ALL 7 days;
+  six dailies + CI921{2,3,5,7} + CI607{1,4,6}; all rows "EQV" (equipment varies).
+- TPE→NRT (p.4): "CI 100 1234567 09:30-13:30 / CI 104 1234567 12:35-16:35 / CI 108 1234567
+  14:35-18:40 / CI 106 [    3  5  7] 16:25-20:25" + partner rows "CI 9902 (JL 802) 1234567 …
+  CI 9958 (JL 8664) 1234567" ⇒ own-metal daily (CI100/104/108) + CI106{3,5,7}; codeshares are
+  JL-operated and excluded from flightNumbers.
+- TPE→LAX (p.9): "CI 006 [    3  5  7] 16:55-12:30 359 01Jan25-07Mar25 / CI 006 [    3  5  7]
+  16:55-13:30 359 09Mar25-28Mar25 / CI 008 1234567 23:50-19:35 77W 01Jan25-08Mar25 / CI 008
+  1234567 23:50-20:35 77W 09Mar25-29Mar25" ⇒ CI008 daily throughout (arrival-time change at
+  09Mar25 DST); CI006{3,5,7} both sub-windows.
+- BONUS pairs, same source/window: TPE→KIX "CI 156 1234567 / CI 152 1234567 / CI 172 1234567"
+  (p.4); TPE→BKK "CI 833 / CI 831 / CI 835 / CI 837" all 1234567 (p.5); TPE→SFO "CI 004
+  1234567 23:45-18:50 77W" with return "CI 003 1234567" (p.9). OPEN LEAD: whether CI TPE-SFO
+  survived past 2025-03-29 was NOT researched; do not infer current status from this row.
+
+**BR block — AeroRoutes NS26 filing transcriptions** (grade community-corrected):
+
+- TPE→SFO (`https://www.aeroroutes.com/eng/251229-brns26sfo`, published 29DEC25): "From
+  29MAR26, the daytime BR008/007 service will see 787-9 operating, replacing 777-300ER." +
+  flight list "BR008 TPE1015 – 0635SFO 789 D · BR018 TPE1940 – 1600SFO 77W D · BR028 TPE2340 –
+  2000SFO 77W D" (+ returns BR017/BR027/BR007 all D) ⇒ THREE dailies, all 7 days,
+  effective from 2026-03-29. Cache `sc-aero-br-ns26sfo.html`.
+- TPE→SIN (same article): "the carrier once again schedules 787-9 aircraft on 1 of 2 daily
+  Taipei Taoyuan – Singapore route from 22APR26 to 09MAY26 … BR225 TPE0740 – 1200SIN 77W D ·
+  BR215 TPE0925 – 1350SIN 789 D" (+ returns BR226/BR216 D) ⇒ two dailies, all 7 days; the
+  dated window is an EQUIPMENT swap on one frequency, not a service gap.
+
+**JX block — AeroRoutes** (grade community-corrected):
+
+- TPE→KIX (`https://www.aeroroutes.com/eng/260114-jxapr26kix`, published 14JAN26): "From
+  03APR26 to 30APR26, JX820/821 service will be operated by Airbus A350-900 aircraft … During
+  this period the airline schedules 2 daily flights with the A350-900. JX820 TPE0830 –
+  1215KIX 359 D · JX822 TPE1015 – 1400KIX 359 D" ⇒ daily ×2 within the STATED window
+  2026-04-03..2026-04-30. Cache `sc-aero-jx-apr26kix.html`.
+- TPE→NRT (`https://www.aeroroutes.com/eng/260730-jxnw26nrt`, published 30JUL26): "The 3rd
+  daily JX804/805 service from 01DEC26 to 28FEB27 will be operated by a mix of A350-900/-1000…
+  JX800 TPE0825 – 1235NRT 351 D · JX802 TPE1010 – 1420NRT 351 D · JX804 TPE1500 – 1900NRT
+  359 12 · JX804 … 351 x12" ⇒ JX800/JX802 daily year-round pattern; JX804 daily VIA EQUIPMENT
+  SPLIT (A359 on days {1,2}, A351 remaining days) — this reading of `12`+`x12` as a complementary
+  pair is documented here for t3; third-daily state explicitly windowed 2026-12-01..2027-02-28.
+  Cache `sc-aero-jx-nw26nrt.html`.
+
+**CX block — AeroRoutes** (grade community-corrected):
+
+- HKG→LHR April-2026 EXTRA sections (`https://www.aeroroutes.com/eng/260320-cxapr26eu`,
+  published 20MAR26): "Hong Kong – London Heathrow 02APR26 – 30APR26 Increase from 32 to 35
+  weekly, CX239/256 operated by 777-300ER/A350-900 · CX239 HKG1105 – 1810LHR 77W 246 · CX239
+  HKG1105 – 1810LHR 359 35 · CX256 LHR2015 – 1545+1HKG 77W 246 · CX256 … 359 35" ⇒ the +3
+  weekly EXTRAS run days {2,3,4,5,6} on CX239 in the HKG→LHR direction (77W rotation {2,4,6},
+  A359 rotation {3,5}); CX256 rows describe the LHR→HKG return legs. This entry describes the
+  extras ONLY — base coverage (32 weekly) is NOT day-pinned here. Windowed seasonal entry.
+  Cache `sc-aero-cx-apr26eu.html`.
+
+### (b) Negatives & non-pins
+
+- china-airlines.com HTML timetable = form/JS shell in BOTH replayed eras: capture
+  `us/en/fly/flight-status/timetable.html @20190822115248` renders "Flight Timetable / Select
+  Your Airport From / To / Date … Submit"; capture `…/timetable @20151214215604` identical +
+  "Download our complete timetable as pdf for your own records." link (which led to the PDF
+  gold above). Caches `sc-ci-wb-{2015,2019}-timetable.html`.
+- `/eBooking/` ASP.NET portal: domain CDX holds only `?aspxerrorpath=/eBooking/en/Timetable.aspx`
+  (a 2026 error-path capture); subtree prefix query returned **0 rows** — no archived
+  server-rendered timetable exists under that path.
+- evaair.com: `_download-files/timetables-downloads/pdf-timetables-download-en.html
+  @20130330002950` replays as country-selector/nav shell with ZERO pdf hrefs (cache
+  `sc-br-wb-2013-pdftt-page.html`) — EVA's downloadable-timetable trail goes cold in Wayback;
+  live `en-global/about-eva-air/news/travel-news/2026-05-26-notice-of-flight-schedule-adjustment.html`
+  → **HTTP 403 bot-block** on shell fetch (error-only convention, no artifact; matches A8's
+  CI-403 lesson). `booking.evaair.com/flyeva/EVA/B2C/flight-schedules.aspx` is an interactive
+  app ("please use the 'Online Search' function above", search-snippet grade) — not replayed,
+  expected JS shell.
+- Counts-without-weekday-resolution (context only, NOT entries): CX May/Jun-2026 reductions
+  (`260419-cxmay26`, period 16MAY26–30JUN26): HKG–TPE 548→543 flights, HKG–SIN 368→358,
+  HKG–NRT 219→209, HKG–SYD 173→163, HKG–BKK 340→308 (period totals; no days). Cache
+  `sc-aero-cx-may26.html`. BR TPE–HKG 2Q26 (`260414-br2q26hkg`): "Taipei Taoyuan – Hong Kong
+  04MAY26 – 26JUN26 Reduce from 46 to 44 weekly (BR809/810 4 weekly service to be reduced to
+  2 weekly during this period)" — weekly counts, days unstated. Cache `sc-aero-br-2q26hkg.html`.
+- NOT attempted (budget discipline): cathaypacific.com `book-a-trip/timetable.html` browser
+  render; Wikipedia destination lists (weekly-COUNT columns cannot fill daysOfWeek);
+  evaair.com Excel-timetable path (`excel-timetables-download-en.html @20161019202217` exists);
+  second CI window `timetable-20230701-20231028_tcm162-4228.pdf @20230803104026` (cheap
+  follow-up for whoever extends this).
+- OMISSIONS (no day-level source found within budget — honest skips): BR TPE→NRT / KIX / LAX /
+  BKK / SGN / HAN; CX HKG→TPE / NRT / SIN / SYD. These MUST stay out of the seed catalog.
+
+### (c) Machine-readable summary for t3
+
+Apply verbatim as ScheduleEntrySchema rows. Normalizations: flightNumbers written without
+inner spaces, leading zeros preserved ("CI008"); partner-operated CI9xxx/JL numbers excluded;
+daysOfWeek = union over listed own-metal flights; CI entries carry their PDF validity window
+(expired windows produce no engine findings per S4 — they seed the catalog honestly, they do
+not power current-date warnings); BR/JX/CX effectiveFrom values are season/filing dates stated
+in the cited articles.
+
+```json
+[
+  {"carrier":"CI","pair":["TPE","HKG"],"daysOfWeek":[1,2,3,4,5,6,7],"flightNumbers":["CI601","CI903","CI909","CI915","CI919","CI921","CI923","CI607"],"effectiveFrom":"2025-01-01","effectiveUntil":"2025-03-29","status":"operating","confidence":"chart-verified","sourceUrls":["https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf","https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"],"notes":"Six dailies (CI601/903/909/915/919/923) plus CI921 days{2,3,5,7} and CI607 days{1,4,6}; all equipment EQV."},
+  {"carrier":"CI","pair":["TPE","NRT"],"daysOfWeek":[1,2,3,4,5,6,7],"flightNumbers":["CI100","CI104","CI108","CI106"],"effectiveFrom":"2025-01-01","effectiveUntil":"2025-03-29","status":"operating","confidence":"chart-verified","sourceUrls":["https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"],"notes":"CI100/104/108 daily, CI106 days{3,5,7}; JL-operated codeshares CI9902(JL802)/CI9958(JL8664) daily excluded from flightNumbers."},
+  {"carrier":"CI","pair":["TPE","LAX"],"daysOfWeek":[1,2,3,4,5,6,7],"flightNumbers":["CI008","CI006"],"effectiveFrom":"2025-01-01","effectiveUntil":"2025-03-29","status":"operating","confidence":"chart-verified","sourceUrls":["https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"],"notes":"CI008 daily across both DST sub-windows (arr 19:35 to 08Mar25, 20:35 from 09Mar25); CI006 days{3,5,7} both sub-windows."},
+  {"carrier":"CI","pair":["TPE","KIX"],"daysOfWeek":[1,2,3,4,5,6,7],"flightNumbers":["CI156","CI152","CI172"],"effectiveFrom":"2025-01-01","effectiveUntil":"2025-03-29","status":"operating","confidence":"chart-verified","sourceUrls":["https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"],"notes":"Three dailies; beyond priority set, transcribed as bonus."},
+  {"carrier":"CI","pair":["TPE","BKK"],"daysOfWeek":[1,2,3,4,5,6,7],"flightNumbers":["CI833","CI831","CI835","CI837"],"effectiveFrom":"2025-01-01","effectiveUntil":"2025-03-29","status":"operating","confidence":"chart-verified","sourceUrls":["https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"],"notes":"Four dailies; beyond priority set, transcribed as bonus."},
+  {"carrier":"CI","pair":["TPE","SFO"],"daysOfWeek":[1,2,3,4,5,6,7],"flightNumbers":["CI004"],"effectiveFrom":"2025-01-01","effectiveUntil":"2025-03-29","status":"operating","confidence":"chart-verified","sourceUrls":["https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"],"notes":"Daily CI004 (return CI003 daily). Post-window operation NOT researched — open lead."},
+  {"carrier":"BR","pair":["TPE","SFO"],"daysOfWeek":[1,2,3,4,5,6,7],"flightNumbers":["BR008","BR018","BR028"],"effectiveFrom":"2026-03-29","status":"operating","confidence":"community-corrected","sourceUrls":["https://www.aeroroutes.com/eng/251229-brns26sfo"],"notes":"Three dailies from NS26; BR008 upgauged to 787-9 from 29MAR26; returns BR007/017/027 all D."},
+  {"carrier":"BR","pair":["TPE","SIN"],"daysOfWeek":[1,2,3,4,5,6,7],"flightNumbers":["BR225","BR215"],"effectiveFrom":"2026-03-29","status":"operating","confidence":"community-corrected","sourceUrls":["https://www.aeroroutes.com/eng/251229-brns26sfo"],"notes":"Two dailies; 787-9 swap on one frequency 22APR26-09MAY26 is equipment-only, not a service gap."},
+  {"carrier":"JX","pair":["TPE","KIX"],"daysOfWeek":[1,2,3,4,5,6,7],"flightNumbers":["JX820","JX822"],"effectiveFrom":"2026-04-03","effectiveUntil":"2026-04-30","status":"operating","confidence":"community-corrected","sourceUrls":["https://www.aeroroutes.com/eng/260114-jxapr26kix"],"notes":"Two dailies explicitly within stated window (A350-900 incl. First Class period)."},
+  {"carrier":"JX","pair":["TPE","NRT"],"daysOfWeek":[1,2,3,4,5,6,7],"flightNumbers":["JX800","JX802","JX804"],"status":"operating","confidence":"community-corrected","sourceUrls":["https://www.aeroroutes.com/eng/260730-jxnw26nrt"],"notes":"NW26 filing: JX800/JX802 daily; JX804 daily via equipment split (A359 days{1,2}, A351 x12 rest-of-week); 3rd daily explicitly 2026-12-01..2027-02-28."},
+  {"carrier":"CX","pair":["HKG","LHR"],"daysOfWeek":[2,3,4,5,6],"flightNumbers":["CX239"],"effectiveFrom":"2026-04-02","effectiveUntil":"2026-04-30","status":"seasonal","confidence":"community-corrected","sourceUrls":["https://www.aeroroutes.com/eng/260320-cxapr26eu"],"notes":"EXTRA sections only (route raised 32->35 weekly): CX239 HKG->LHR 77W rotation days{2,4,6} + A359 rotation days{3,5}; base 32-weekly coverage NOT day-pinned; CX256 rows are the LHR->HKG return."}
+]
+```
+
+### (d) Budget + honesty ledger
+
+Origin/live/replay: 11 budgeted fetches OK + 1 disclosed failed call = 12 vs cap ~12:
+1. live aeroroutes 260419-cxmay26 → 200 (202,913 B)
+2. live aeroroutes 260320-cxapr26eu → 200 (198,542 B)
+3. WB replay 20190822115248 CI timetable.html (112,244 B) OK — negative (form shell)
+4. WB replay 20151214215604 CI timetable (66,293 B) OK — negative (form shell) + PDF link lead
+5. live aeroroutes 260114-jxapr26kix → 200 (209,536 B)
+6. live aeroroutes 251229-brns26sfo → 200 (215,718 B)
+7. WB replay 20250319152449id_ CI timetable PDF (1,843,009 B) OK — GOLD
+8. live aeroroutes 260730-jxnw26nrt → 200 (275,151 B)
+9. live aeroroutes /eng/category/NS26 discovery page → 200 (234,578 B)
+10. WB replay 20130330002950id_ EVA pdf-timetables page (59,399 B) OK — negative (nav shell)
+11. live evaair.com 2026-05-26 schedule-adjustment notice → HTTP 403 FAILED (bot-block;
+    error-only, no artifact) — overage disclosure #11
+12. live aeroroutes 260414-br2q26hkg → 200 (230,128 B)
+
+CDX API: exactly 6/6, ALL matchType=prefix, NO filter= param: (1) china-airlines.com domain
+(5,000 rows, lexicographic truncation → motivated targeted follow-ups), (2)
+china-airlines.com/eBooking/ (0 rows), (3) china-airlines.com/us/en/ (3,000 rows),
+(4) china-airlines.com/english/ (0 rows), (5) china-airlines.com/us/en/Images/timetable
+(51 rows → BOTH PDF captures found), (6) evaair.com/en-global/ (4,150 rows). Cached as
+sc-cdx-ci-domain.txt, sc-cdx-ci-ebooking.txt, sc-cdx-ci-us-en.txt, sc-cdx-ci-english.txt,
+sc-cdx-ci-pdf.txt, sc-cdx-br-englobal.txt.
+
+Search plane (separate ledger): web_search 10 calls / ~34 delivered queries (1 call failed
+HTTP 429 rate-limit, retried OK). Search snippets were used for DISCOVERY only; every JSON
+entry above traces to a fetched-and-cached artifact, except the booking.evaair.com JS-app
+characterization which is snippet-grade and lives in negatives, not entries. Tooling fetch
+disclosed separately: python -m pip install pypdf (PyPI download for PDF text extraction).
+
+Cache (%TEMP%\gcmp-research\, 22 sc-* files): sc-ci-wb-2025-timetable.pdf 1,843,009 B +
+sc-ci-wb-2025-timetable.txt 97,550 B (pypdf text); sc-cdx-ci-domain.txt 774,742 B;
+sc-cdx-br-englobal.txt 511,293 B; sc-aero-tag-br.html 260,596 B; sc-aero-cat-ns26.html
+234,578 B; sc-aero-jx-nw26nrt.html 275,151 B; sc-aero-br-2q26hkg.html 230,128 B;
+sc-aero-br-ns26sfo.html 215,718 B; sc-aero-jx-apr26kix.html 209,536 B; sc-aero-cx-may26.html
+202,913 B; sc-aero-cx-apr26eu.html 198,542 B; sc-cdx-ci-us-en.txt 363,235 B;
+sc-ci-wb-2019-timetable.html 112,244 B; sc-ci-wb-2015-timetable.html 66,293 B;
+sc-br-wb-2013-pdftt-page.html 59,399 B; sc-cdx-ci-pdf.txt 5,664 B; two empty CDX dumps
+(sc-cdx-ci-ebooking.txt, sc-cdx-ci-english.txt — 0-row results kept as evidence); extractor
+scripts sc-extract-ci-pdf.py / sc-scan-ci-pdf.py / sc-dump-ci-pages.py.
+
+Tooling lessons: piping a PowerShell helper through Out-Null swallows its diagnostic output
+(silent fetch failures — print inside the caller instead); PS `-f` mangles Python %-formatting
+(use `.Replace('PLACEHOLDER', value)`); Squarespace slug regexes must allow hyphens
+(`[a-z0-9]+` silently misses slugs like 260114-jxapr26kix); aeroroutes `x12` = except-days
+notation complementing bare-digit day lists; CDX domain-wide prefix dumps truncate
+lexicographically — always follow with targeted subtree prefixes; CI PDF CJK text garbles
+under the console codepage while ASCII (flights/times/days) extracts cleanly, so keyword
+search should target flight numbers, not city names.
+
+No quotes fabricated: every verbatim string above was re-read against local caches
+immediately before writing; bracketed day-grid tokens like `[  23  5  7]` mark extracted digit
+runs whose spacing is extraction noise (digit presence is the data). No code/data changes;
+nothing committed; no Iron Rule test activates from A10; existing calib.* mechanisms
+unaffected.
+
+### (e) Suggested calib.* test ids (docs-only; none activated)
+
+- calib.schedule.ci-tpe-hkg-six-daily-plus-921-2357-607-146 — window-scoped union = all 7 days.
+- calib.schedule.ci-tpe-nrt-ci106-days-357 — sparse-frequency pin inside an otherwise-daily route.
+- calib.schedule.ci-tpe-lax-ci008-daily-across-dst-subwindows.
+- calib.schedule.br-tpe-sfo-three-daily-from-29mar26.
+- calib.schedule.jx-tpe-nrt-split-rotation-still-daily — `359 12` + `351 x12` union = daily.
+- calib.schedule.cx-hkg-lhr-extra-sections-days-23456 — extras-only semantics guard.
+- calib.schedule.expired-window-no-findings — CI rows must yield no current-date warnings (S4).

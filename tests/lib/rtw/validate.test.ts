@@ -8,6 +8,7 @@ import {
 } from '../../../src/lib/schemas/country-continent.ts';
 import { continentsVisited } from '../../../src/lib/rtw/continents.ts';
 import { NetworkGapCatalogSchema, type NetworkGapEntry } from '../../../src/lib/schemas/network-gaps.ts';
+import type { ScheduleEntry } from '../../../src/lib/schemas/flight-schedules.ts';
 import { distanceNm } from '../../../src/lib/calc/haversine.ts';
 import { MILES_PER_NAUTICAL_MILE, validateRtwRoute } from '../../../src/lib/rtw/validate.ts';
 import type { Airport, Leg } from '../../../src/lib/types.ts';
@@ -949,5 +950,429 @@ describe('validateRtwRoute — network-gap watchlist warnings', () => {
     expect(gaps.length).toBe(1);
     expect(gaps[0]?.messageKey).toBe('rtw.findings.networkGapOpen');
     expect(gaps[0]?.affectedLegIndexes).toEqual([4]);
+  });
+});
+
+/**
+ * Synthetic fixture schedules (docs/decisions/flight-schedule-model.md S4).
+ * NOT the real public/data/schedules/current.json — that file is applied by
+ * a separate task; these pins cover the engine mechanism only.
+ *
+ * Weekday anchors for 2026-09 (2026-01-01 is a Thursday):
+ *   2026-09-01 Tue · 09-07 Mon(ISO 1) · 09-08 Tue(ISO 2) ·
+ *   09-12 Sat(ISO 6) · 09-14 Mon(ISO 1)
+ */
+const scheduleEntries: ScheduleEntry[] = [
+  {
+    carrier: 'BR',
+    pair: ['TPE', 'NRT'],
+    daysOfWeek: [1, 3, 5],
+    status: 'operating',
+    confidence: 'chart-verified',
+    sourceUrls: ['https://example.com/br-tpe-nrt'],
+  },
+  {
+    carrier: 'CI',
+    pair: ['TPE', 'KHH'],
+    daysOfWeek: [2],
+    status: 'suspended',
+    confidence: 'community-corrected',
+    sourceUrls: ['https://example.com/ci-tpe-khh'],
+  },
+  {
+    carrier: 'MM',
+    pair: ['NRT', 'KIX'],
+    daysOfWeek: [6],
+    status: 'seasonal',
+    confidence: 'community-corrected',
+    sourceUrls: ['https://example.com/mm-nrt-kix'],
+  },
+];
+
+function dayMismatchFindings(result: ReturnType<typeof validateRtwRoute>) {
+  return result.findings.filter((f) => f.ruleId === 'schedule-day-mismatch');
+}
+
+describe('leg-chronology (flight-schedule-model S2, product-independent)', () => {
+  function validateChronology(legs: ReadonlyArray<Leg>) {
+    return validateRtwRoute(product('oneworld-explorer'), legs, { airports, allianceCatalog });
+  }
+
+  test('fails when consecutive dated legs go backwards in time', () => {
+    const legs: Leg[] = [
+      { from: 'TPE', to: 'NRT', operatingCarrier: 'JL', departsOn: '2026-09-10' },
+      { from: 'NRT', to: 'LAX', operatingCarrier: 'JL', departsOn: '2026-09-01' },
+    ];
+    const result = validateChronology(legs);
+    const chrono = result.findings.filter((f) => f.ruleId === 'leg-chronology');
+    expect(chrono.length).toBe(1);
+    expect(chrono[0]?.severity).toBe('fail');
+    expect(chrono[0]?.affectedLegIndexes).toEqual([0, 1]);
+    expect(chrono[0]?.messageParams).toEqual({
+      prevLeg: 1,
+      nextLeg: 2,
+      prevDate: '2026-09-10',
+      nextDate: '2026-09-01',
+    });
+    // A chronology fail invalidates the itinerary.
+    expect(result.valid).toBe(false);
+  });
+
+  test('passes ascending and equal consecutive dates without a finding', () => {
+    const legs: Leg[] = [
+      { from: 'TPE', to: 'NRT', operatingCarrier: 'JL', departsOn: '2026-09-01' },
+      { from: 'NRT', to: 'BKK', operatingCarrier: 'JL', departsOn: '2026-09-01' },
+      { from: 'BKK', to: 'HKG', operatingCarrier: 'CX', departsOn: '2026-09-05' },
+    ];
+    const result = validateChronology(legs);
+    expect(result.findings.some((f) => f.ruleId === 'leg-chronology')).toBe(false);
+  });
+
+  test('skips pairs where either side is undated (partial information)', () => {
+    const legs: Leg[] = [
+      { from: 'TPE', to: 'NRT', operatingCarrier: 'JL', departsOn: '2026-09-10' },
+      { from: 'NRT', to: 'BKK', operatingCarrier: 'JL' },
+      { from: 'BKK', to: 'HKG', operatingCarrier: 'CX', departsOn: '2026-09-01' },
+    ];
+    const result = validateChronology(legs);
+    expect(result.findings.some((f) => f.ruleId === 'leg-chronology')).toBe(false);
+  });
+});
+
+describe('trip-dates-mismatch cross-check (flight-schedule-model S2)', () => {
+  function mismatchFindings(result: ReturnType<typeof validateRtwRoute>) {
+    return result.findings.filter((f) => f.ruleId === 'trip-dates-mismatch');
+  }
+
+  test('warns when the first flight leg date disagrees with trip startDate', () => {
+    const legs: Leg[] = [
+      { from: 'TPE', to: 'NRT', operatingCarrier: 'JL', departsOn: '2026-09-02' },
+      { from: 'NRT', to: 'LAX', operatingCarrier: 'JL', departsOn: '2026-09-11' },
+    ];
+    const result = validateRtwRoute(
+      product('oneworld-explorer'),
+      legs,
+      { airports, allianceCatalog },
+      { startDate: '2026-09-01', endDate: '2026-09-11' },
+    );
+    const mismatches = mismatchFindings(result);
+    expect(mismatches.length).toBe(1);
+    expect(mismatches[0]?.severity).toBe('warning');
+    // Warnings never invalidate the itinerary.
+    expect(mismatches[0]?.messageParams).toEqual({
+      startDate: '2026-09-01',
+      endDate: '2026-09-11',
+      firstDepart: '2026-09-02',
+      lastDepart: '2026-09-11',
+    });
+  });
+
+  test('stays silent when both boundaries agree with the trip dates', () => {
+    const legs: Leg[] = [
+      { from: 'TPE', to: 'NRT', operatingCarrier: 'JL', departsOn: '2026-09-01' },
+      { from: 'NRT', to: 'LAX', operatingCarrier: 'JL', departsOn: '2026-09-11' },
+    ];
+    const result = validateRtwRoute(
+      product('oneworld-explorer'),
+      legs,
+      { airports, allianceCatalog },
+      { startDate: '2026-09-01', endDate: '2026-09-11' },
+    );
+    expect(mismatchFindings(result)).toEqual([]);
+  });
+
+  test('surface sectors never anchor a boundary; undated boundaries stay silent', () => {
+    // The surface leg carries a stray date that matches NEITHER trip date;
+    // the only flight leg (first AND last) agrees with both boundaries.
+    const legs: Leg[] = [
+      { from: 'TPE', to: 'NRT', operatingCarrier: 'JL', surface: true, stopover: false, departsOn: '2026-08-30' },
+      { from: 'NRT', to: 'LAX', operatingCarrier: 'JL', stopover: false, departsOn: '2026-09-11' },
+    ];
+
+    const result = validateRtwRoute(
+      product('oneworld-explorer'),
+      legs,
+      { airports, allianceCatalog },
+      { startDate: '2026-09-11', endDate: '2026-09-11' },
+    );
+    expect(mismatchFindings(result)).toEqual([]);
+  });
+
+  test('warns on the end boundary when the last flight leg disagrees with endDate', () => {
+    const legs: Leg[] = [
+      { from: 'TPE', to: 'NRT', operatingCarrier: 'JL', departsOn: '2026-09-01' },
+      { from: 'NRT', to: 'LAX', operatingCarrier: 'JL', departsOn: '2026-09-21' },
+    ];
+    const result = validateRtwRoute(
+      product('oneworld-explorer'),
+      legs,
+      { airports, allianceCatalog },
+      { startDate: '2026-09-01', endDate: '2026-09-11' },
+    );
+    const mismatches = mismatchFindings(result);
+    expect(mismatches.length).toBe(1);
+    expect(mismatches[0]?.severity).toBe('warning');
+  });
+});
+
+describe('schedule-day-mismatch (flight-schedule-model S4)', () => {
+  test('warns when the dated weekday is not an operating day', () => {
+    // 2026-09-08 is a Tuesday (ISO 2); BR TPE→NRT operates Mon/Wed/Fri.
+    const legs: Leg[] = [{ from: 'TPE', to: 'NRT', operatingCarrier: 'BR', departsOn: '2026-09-08' }];
+    const result = validateRtwRoute(product('oneworld-explorer'), legs, {
+      airports,
+      allianceCatalog,
+      schedules: scheduleEntries,
+    });
+
+    const mismatches = dayMismatchFindings(result);
+    expect(mismatches.length).toBe(1);
+    expect(mismatches[0]?.severity).toBe('warning');
+    expect(mismatches[0]?.messageKey).toBe('rtw.findings.scheduleDayMismatch');
+    expect(mismatches[0]?.messageParams).toEqual({
+      carrier: 'BR',
+      date: '2026-09-08',
+      days: 'Mon, Wed, Fri',
+    });
+    expect(mismatches[0]?.affectedLegIndexes).toEqual([0]);
+    expect(mismatches[0]?.sourceUrl).toBe('https://example.com/br-tpe-nrt');
+    // Unbookable ≠ illegal: adding the schedules input may add warnings but
+    // never changes `valid`, which only reacts to `fail` findings.
+    const withoutSchedules = validateRtwRoute(product('oneworld-explorer'), legs, {
+      airports,
+      allianceCatalog,
+    });
+    expect(result.valid).toBe(withoutSchedules.valid);
+  });
+
+  test('stays silent when the dated weekday IS an operating day', () => {
+    // 2026-09-07 is a Monday (ISO 1) ∈ [1,3,5].
+    const legs: Leg[] = [{ from: 'TPE', to: 'NRT', operatingCarrier: 'BR', departsOn: '2026-09-07' }];
+    const result = validateRtwRoute(product('oneworld-explorer'), legs, {
+      airports,
+      allianceCatalog,
+      schedules: scheduleEntries,
+    });
+    expect(dayMismatchFindings(result)).toEqual([]);
+  });
+
+  test('lookup is directional: the reversed pair never matches (no reverse lookup)', () => {
+    // NRT→TPE on BR — the catalog entry is TPE→NRT only. Even though
+    // 2026-09-08 (Tue) would fail BR's days if it matched, direction kills it.
+    const legs: Leg[] = [{ from: 'NRT', to: 'TPE', operatingCarrier: 'BR', departsOn: '2026-09-08' }];
+    const result = validateRtwRoute(product('oneworld-explorer'), legs, {
+      airports,
+      allianceCatalog,
+      schedules: scheduleEntries,
+    });
+    expect(dayMismatchFindings(result)).toEqual([]);
+  });
+
+  test('carrier must also match — same pair on another carrier is silent', () => {
+    const legs: Leg[] = [{ from: 'TPE', to: 'NRT', operatingCarrier: 'CI', departsOn: '2026-09-08' }];
+    const result = validateRtwRoute(product('oneworld-explorer'), legs, {
+      airports,
+      allianceCatalog,
+      schedules: scheduleEntries,
+    });
+    expect(dayMismatchFindings(result)).toEqual([]);
+  });
+
+  test('suspended entries produce no day-level finding', () => {
+    // CI TPE→KHH suspended; Monday (ISO 1 ∉ [2]) would warn if operating.
+    const legs: Leg[] = [{ from: 'TPE', to: 'KHH', operatingCarrier: 'CI', departsOn: '2026-09-07' }];
+    const result = validateRtwRoute(product('oneworld-explorer'), legs, {
+      airports,
+      allianceCatalog,
+      schedules: scheduleEntries,
+    });
+    expect(dayMismatchFindings(result)).toEqual([]);
+  });
+
+  test('seasonal entries still warn (only suspended is exempt)', () => {
+    // MM NRT→KIX operates Saturdays [6]; 2026-09-14 is a Monday (ISO 1).
+    const legs: Leg[] = [{ from: 'NRT', to: 'KIX', operatingCarrier: 'MM', departsOn: '2026-09-14' }];
+    const result = validateRtwRoute(product('oneworld-explorer'), legs, {
+      airports,
+      allianceCatalog,
+      schedules: scheduleEntries,
+    });
+    const mismatches = dayMismatchFindings(result);
+    expect(mismatches.length).toBe(1);
+    expect(mismatches[0]?.messageParams).toEqual({
+      carrier: 'MM',
+      date: '2026-09-14',
+      days: 'Sat',
+    });
+  });
+
+  test('undated flight legs stay silent even when an entry exists', () => {
+    const legs: Leg[] = [{ from: 'TPE', to: 'NRT', operatingCarrier: 'BR' }];
+    const result = validateRtwRoute(product('oneworld-explorer'), legs, {
+      airports,
+      allianceCatalog,
+      schedules: scheduleEntries,
+    });
+    expect(dayMismatchFindings(result)).toEqual([]);
+  });
+
+  test('surface sectors are skipped even when dated off-schedule', () => {
+    const legs: Leg[] = [
+      { from: 'TPE', to: 'NRT', operatingCarrier: 'BR', surface: true, stopover: false, departsOn: '2026-09-08' },
+    ];
+    const result = validateRtwRoute(product('oneworld-explorer'), legs, {
+      airports,
+      allianceCatalog,
+      schedules: scheduleEntries,
+    });
+    expect(dayMismatchFindings(result)).toEqual([]);
+  });
+
+  test('absent schedules input produces zero findings', () => {
+    const legs: Leg[] = [{ from: 'TPE', to: 'NRT', operatingCarrier: 'BR', departsOn: '2026-09-08' }];
+    const result = validateRtwRoute(product('oneworld-explorer'), legs, { airports, allianceCatalog });
+    expect(dayMismatchFindings(result)).toEqual([]);
+  });
+
+  test('summary shape is unchanged by the new inputs', () => {
+    const legs: Leg[] = [
+      { from: 'TPE', to: 'NRT', operatingCarrier: 'BR', departsOn: '2026-09-08' },
+    ];
+    const result = validateRtwRoute(product('oneworld-explorer'), legs, {
+      airports,
+      allianceCatalog,
+      schedules: scheduleEntries,
+    });
+    expect(Object.keys(result.summary).sort()).toEqual([
+      'continentsVisited',
+      'direction',
+      'flightSegments',
+      'ineligibleLegIndexes',
+      'knownStopovers',
+      'knownTransfers',
+      'oceansCrossed',
+      'repeatedStopoverCities',
+      'repeatedSurfaceCities',
+      'repeatedTransferCities',
+      'surfaceSectors',
+      'totalDistanceMiles',
+      'tripDays',
+      'unknownStopovers',
+    ]);
+  });
+});
+
+describe('schedule-day-mismatch against the real §A10 catalog', () => {
+  // public/data/schedules/current.json applies docs/calibration-set.md A10
+  // MINUS the CX HKG→LHR extras-only row (captain ruling: it pins only
+  // seasonal extra sections Tue–Sat while the base 32-weekly days stay
+  // unpinned, so keeping it would make the engine/UI misjudge base flights
+  // as not operating). Every remaining row is daily [1..7], so no UNMODIFIED
+  // real row can produce an off-day mismatch; the window-expiry semantics
+  // (captain ruling b) therefore exercise via ciWindowFixture — the REAL
+  // CI TPE→HKG row with only daysOfWeek narrowed, preserving its
+  // transcribed effective window 2025-01-01..2025-03-29. Schema conformance
+  // of the real file is asserted in
+  // tests/lib/schemas/flight-schedules.test.ts.
+  const rawScheduleCatalog = JSON.parse(
+    readFileSync('public/data/schedules/current.json', 'utf8'),
+  ) as { entries: ScheduleEntry[] };
+  const realSchedules = rawScheduleCatalog.entries;
+
+  const dayMismatches = (result: ReturnType<typeof validateRtwRoute>) =>
+    result.findings.filter((f) => f.ruleId === 'schedule-day-mismatch');
+
+  const ciRow = realSchedules.find(
+    (e) => e.carrier === 'CI' && e.pair[0] === 'TPE' && e.pair[1] === 'HKG',
+  );
+  if (ciRow === undefined) throw new Error('CI TPE→HKG row missing from real schedules catalog');
+  const ciWindowFixture: ScheduleEntry[] = [{ ...ciRow, daysOfWeek: [2] }];
+
+  test('operating day INSIDE the entry window stays silent (real row)', () => {
+    // CI TPE→HKG is daily [1..7]; 2025-02-10 is a Monday inside the
+    // transcribed window 2025-01-01..2025-03-29.
+    const legs: Leg[] = [
+      { from: 'TPE', to: 'HKG', operatingCarrier: 'CI', departsOn: '2025-02-10' },
+    ];
+    const result = validateRtwRoute(product('oneworld-explorer'), legs, {
+      airports,
+      allianceCatalog,
+      schedules: realSchedules,
+    });
+    expect(dayMismatches(result)).toEqual([]);
+  });
+
+  test('fires on an off-day while the row window covers the date (ruling b)', () => {
+    // 2025-02-03 is a Monday (ISO 1 ∉ [2]) INSIDE the CI window.
+    const legs: Leg[] = [
+      { from: 'TPE', to: 'HKG', operatingCarrier: 'CI', departsOn: '2025-02-03' },
+    ];
+    const result = validateRtwRoute(product('oneworld-explorer'), legs, {
+      airports,
+      allianceCatalog,
+      schedules: ciWindowFixture,
+    });
+    const mismatches = dayMismatches(result);
+    expect(mismatches.length).toBe(1);
+    expect(mismatches[0]?.severity).toBe('warning');
+    expect(mismatches[0]?.messageParams).toEqual({
+      carrier: 'CI',
+      date: '2025-02-03',
+      days: 'Tue',
+    });
+    expect(mismatches[0]?.sourceUrl).toBe(
+      'https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf',
+    );
+  });
+
+  test('EXPIRED row stays silent even on an off-day (ruling b)', () => {
+    // "Today" (UTC) is forever past effectiveUntil 2025-03-29 → the row does
+    // not describe that date; prefer silence over a wrong claim regardless
+    // of weekday.
+    const todayIso = new Date().toISOString().slice(0, 10);
+    const legs: Leg[] = [
+      { from: 'TPE', to: 'HKG', operatingCarrier: 'CI', departsOn: todayIso },
+    ];
+    const result = validateRtwRoute(product('oneworld-explorer'), legs, {
+      airports,
+      allianceCatalog,
+      schedules: ciWindowFixture,
+    });
+    expect(dayMismatches(result)).toEqual([]);
+  });
+
+  test('directional lookup holds on real data: NRT→TPE never matches TPE→NRT', () => {
+    // Reversed direction on a real row, in-window operating date.
+    const legs: Leg[] = [
+      { from: 'NRT', to: 'TPE', operatingCarrier: 'CI', departsOn: '2025-02-04' },
+    ];
+    const result = validateRtwRoute(product('oneworld-explorer'), legs, {
+      airports,
+      allianceCatalog,
+      schedules: realSchedules,
+    });
+    expect(dayMismatches(result)).toEqual([]);
+  });
+
+  test('stale real seed stays silent on the UNMODIFIED CI row, in-window and expired', () => {
+    // Honesty contract against REAL data (captain spec): the transcribed CI
+    // TPE→HKG window 2025-01-01..2025-03-29 is long past — the row must
+    // never warn on dates outside it, and being daily [1..7] it also stays
+    // silent inside its own window. Zero schedule findings at BOTH
+    // 2025-02-09 (inside the old window) and 2026-08-25 (expired).
+    // (Assertions scope to schedule-day-mismatch only: CI is not
+    // oneworld-eligible under this product, so alliance eligibility
+    // findings fire independently.)
+    for (const dateIso of ['2025-02-09', '2026-08-25']) {
+      const legs: Leg[] = [
+        { from: 'TPE', to: 'HKG', operatingCarrier: 'CI', departsOn: dateIso },
+      ];
+      const result = validateRtwRoute(product('oneworld-explorer'), legs, {
+        airports,
+        allianceCatalog,
+        schedules: realSchedules,
+      });
+      expect(dayMismatches(result)).toEqual([]);
+    }
   });
 });

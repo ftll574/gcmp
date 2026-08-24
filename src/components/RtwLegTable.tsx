@@ -1,15 +1,26 @@
+import { useState } from 'react';
 import type { Airline, AirlineIata, Airport } from '../lib/types.ts';
 import { useLocale } from '../i18n/use-locale.ts';
+import { LegDateCalendar } from './LegDateCalendar.tsx';
+import {
+  humanizeDays,
+  operatingDaysForDate,
+  todayIso,
+  type ScheduleLike,
+} from '../lib/rtw/schedule-days.ts';
 
 interface RtwLegTableProps {
   readonly airports: ReadonlyArray<Airport>;
   readonly operatingCarriers: ReadonlyArray<AirlineIata>;
   readonly stopovers: ReadonlyArray<boolean | undefined>;
   readonly surfaces: ReadonlyArray<boolean | undefined>;
+  readonly departsOn: ReadonlyArray<string | undefined>;
+  readonly schedules: ReadonlyArray<ScheduleLike> | null;
   readonly airlines: ReadonlyArray<Airline>;
   readonly onCarrierChange: (legIndex: number, carrier: AirlineIata) => void;
   readonly onStopoverChange: (legIndex: number, stopover: boolean | undefined) => void;
   readonly onSurfaceChange: (legIndex: number, surface: boolean) => void;
+  readonly onDateChange: (legIndex: number, iso: string | undefined) => void;
 }
 
 export function RtwLegTable({
@@ -17,12 +28,16 @@ export function RtwLegTable({
   operatingCarriers,
   stopovers,
   surfaces,
+  departsOn,
+  schedules,
   airlines,
   onCarrierChange,
   onStopoverChange,
   onSurfaceChange,
+  onDateChange,
 }: RtwLegTableProps): React.ReactElement | null {
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
+  const [openDateLeg, setOpenDateLeg] = useState<number | null>(null);
   if (airports.length < 2) return null;
 
   return (
@@ -39,6 +54,7 @@ export function RtwLegTable({
             <tr>
               <th>{t('rtw.legTable.leg')}</th>
               <th>{t('rtw.legTable.operating')}</th>
+              <th>{t('rtw.legTable.date')}</th>
               <th>{t('rtw.legTable.timing')}</th>
               <th>{t('rtw.legTable.surface')}</th>
             </tr>
@@ -47,6 +63,15 @@ export function RtwLegTable({
             {airports.slice(0, -1).map((from, index) => {
               const to = airports[index + 1];
               if (!to) return null;
+              // Chip reflects the schedule ACTIVE TODAY (window-aware);
+              // per-date disabling happens inside the calendar itself.
+              const scheduleDays = operatingDaysForDate(
+                schedules,
+                operatingCarriers[index] ?? '',
+                from.iata,
+                to.iata,
+                todayIso(),
+              );
               return (
                 <tr key={`${from.iata}-${to.iata}-${index}`}>
                   <td>
@@ -70,6 +95,40 @@ export function RtwLegTable({
                         </option>
                       ))}
                     </select>
+                  </td>
+                  <td className="rtw-leg-date-cell">
+                    <button
+                      type="button"
+                      className={`rtw-leg-date-btn${departsOn[index] !== undefined ? ' has-date' : ''}`}
+                      aria-label={t('rtw.schedule.dateLabel', { index: index + 1 })}
+                      disabled={surfaces[index] === true}
+                      onClick={() =>
+                        setOpenDateLeg((prev) => (prev === index ? null : index))
+                      }
+                    >
+                      {departsOn[index] ?? '—'}
+                    </button>
+                    {schedules !== null && surfaces[index] !== true && (
+                      <span className="rtw-sched-note">
+                        {scheduleDays === null
+                          ? t('rtw.schedule.unknown')
+                          : t('rtw.schedule.frequency', {
+                              days: humanizeDays(scheduleDays, locale),
+                            })}
+                      </span>
+                    )}
+                    {openDateLeg === index && (
+                      <LegDateCalendar
+                        value={departsOn[index]}
+                        schedules={schedules}
+                        carrier={operatingCarriers[index] ?? ''}
+                        fromIata={from.iata}
+                        toIata={to.iata}
+                        onChange={(iso) => onDateChange(index, iso)}
+                        onClose={() => setOpenDateLeg(null)}
+                        ariaLabel={t('rtw.schedule.dateLabel', { index: index + 1 })}
+                      />
+                    )}
                   </td>
                   <td>
                     <select

@@ -1538,6 +1538,136 @@
   font: inherit;
 }
 
+/* ── RTW per-leg date column + calendar popover ── */
+.rtw-leg-date-cell {
+  position: relative;
+  white-space: nowrap;
+}
+.rtw-leg-date-btn {
+  min-width: 96px;
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-control);
+  padding: 6px 8px;
+  color: var(--tertiary-label);
+  background: var(--grouped-background);
+  font: inherit;
+}
+.rtw-leg-date-btn.has-date {
+  font-family: var(--font-mono);
+  color: var(--label);
+}
+.rtw-leg-date-btn:disabled {
+  color: var(--tertiary-label);
+  cursor: not-allowed;
+}
+.rtw-sched-note {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--type-caption);
+  color: var(--tertiary-label);
+}
+.rtw-cal {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 30;
+  min-width: 252px;
+  padding: var(--space-3);
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-card);
+  background: var(--secondary-grouped-background);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+.rtw-cal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+.rtw-cal-nav {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--label);
+  font-size: var(--type-title-3);
+  line-height: 1;
+}
+.rtw-cal-nav:hover {
+  background: var(--separator);
+}
+.rtw-cal-month {
+  min-width: 128px;
+  text-align: center;
+  font-weight: 700;
+  font-size: var(--type-footnote);
+  color: var(--label);
+}
+.rtw-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+.rtw-cal-dow {
+  text-align: center;
+  font-size: var(--type-caption);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--tertiary-label);
+  padding-bottom: 2px;
+}
+.rtw-cal-day {
+  height: 28px;
+  border: none;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--label);
+  font: inherit;
+  font-size: var(--type-footnote);
+  cursor: pointer;
+}
+.rtw-cal-day:hover:not(:disabled) {
+  background: var(--separator);
+}
+.rtw-cal-day:disabled {
+  color: var(--tertiary-label);
+  opacity: 0.45;
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+.rtw-cal-day-selected {
+  background: var(--label);
+  color: var(--grouped-background);
+  font-weight: 800;
+}
+.rtw-cal-day-selected:hover:not(:disabled) {
+  background: var(--label);
+}
+.rtw-cal-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+.rtw-cal-action {
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-control);
+  padding: 5px 9px;
+  background: var(--grouped-background);
+  color: var(--label);
+  font-size: var(--type-caption);
+  font-weight: 600;
+}
+.rtw-cal-action:hover {
+  background: var(--separator);
+}
+.rtw-cal-fix {
+  color: var(--semantic-green);
+  border-color: currentColor;
+}
+
 /* ── Tier selector (iOS segmented control, v1.9) ── */
 .tier-selector {
   display: inline-flex;

@@ -524,3 +524,183 @@ describe('RTW metadata (stopover + surface)', () => {
     }
   });
 });
+
+describe('per-leg departure dates (d=, flight-schedule-model S1)', () => {
+  const DATED_SINGLE: RoutingRequest = {
+    groups: [
+      {
+        legs: [
+          { from: 'TPE', to: 'NRT', operatingCarrier: 'BR', departsOn: '2026-09-01' },
+          { from: 'NRT', to: 'BKK', operatingCarrier: 'JL' },
+          { from: 'BKK', to: 'HKG', operatingCarrier: 'CX', departsOn: '2026-09-05' },
+        ],
+      },
+    ],
+    cabin: 'business',
+    programs: ['br-infinity'],
+  };
+
+  test('encode omits d= when no leg carries a date', () => {
+    expect(encodeShareUrl(SINGLE_GROUP)).not.toContain('d=');
+  });
+
+  test('encode emits d= with empty cells for undated legs', () => {
+    const url = encodeShareUrl(DATED_SINGLE);
+    // "2026-09-01,,2026-09-05" with ',' encoded as %2C
+    expect(url).toContain('d=2026-09-01%2C%2C2026-09-05');
+  });
+
+  test('round-trips partially dated legs exactly', () => {
+    const parsed = parseShareUrl(encodeShareUrl(DATED_SINGLE));
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.request.groups).toEqual(DATED_SINGLE.groups);
+    }
+  });
+
+  test('round-trips fully dated legs exactly', () => {
+    const req: RoutingRequest = {
+      ...DATED_SINGLE,
+      groups: [
+        {
+          legs: [
+            { from: 'TPE', to: 'NRT', operatingCarrier: 'BR', departsOn: '2026-09-01' },
+            { from: 'NRT', to: 'BKK', operatingCarrier: 'JL', departsOn: '2026-09-03' },
+            { from: 'BKK', to: 'HKG', operatingCarrier: 'CX', departsOn: '2026-09-05' },
+          ],
+        },
+      ],
+    };
+    const parsed = parseShareUrl(encodeShareUrl(req));
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.request.groups).toEqual(req.groups);
+    }
+  });
+
+  test('round-trips multi-group dates joined by semicolons', () => {
+    const req: RoutingRequest = {
+      groups: [
+        {
+          legs: [
+            { from: 'TPE', to: 'NRT', operatingCarrier: 'BR', departsOn: '2026-09-01' },
+            { from: 'NRT', to: 'BKK', operatingCarrier: 'JL' },
+          ],
+        },
+        {
+          legs: [{ from: 'JFK', to: 'LHR', operatingCarrier: 'BA', departsOn: '2026-09-10' }],
+        },
+      ],
+      cabin: 'business',
+      programs: ['br-infinity'],
+    };
+    const url = encodeShareUrl(req);
+    // ';' encodes as %3B between groups
+    expect(url).toContain('d=2026-09-01%2C%3B2026-09-10');
+    const parsed = parseShareUrl(url);
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.request.groups).toEqual(req.groups);
+    }
+  });
+
+  test('parses hand-written d= with partial dating inside a present param', () => {
+    const parsed = parseShareUrl(
+      '/r/v1/TPE-NRT-KIX-HND?op=BR,BR,BR&p=BR&c=J&d=2026-09-01,,2026-09-05',
+    );
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      const legs = parsed.request.groups[0]?.legs ?? [];
+      expect(legs[0]?.departsOn).toBe('2026-09-01');
+      expect(legs[1]?.departsOn).toBeUndefined();
+      expect(legs[2]?.departsOn).toBe('2026-09-05');
+    }
+  });
+
+  test('absent d= leaves every leg undated (pre-dating URLs unchanged)', () => {
+    const parsed = parseShareUrl('/r/v1/SFO-NRT-BKK?op=AA,JL&p=AA,AS&c=J');
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      for (const leg of parsed.request.groups[0]?.legs ?? []) {
+        expect(leg.departsOn).toBeUndefined();
+      }
+    }
+  });
+
+  test('rejects d= group count mismatch with path', () => {
+    const parsed = parseShareUrl(
+      '/r/v1/SFO-NRT,JFK-LHR?op=AA;BA&p=AA&c=J&d=2026-01-01',
+    );
+    expect(parsed.ok).toBe(false);
+    if (!parsed.ok) {
+      expect(parsed.kind).toBe('mismatched-op-length');
+    }
+  });
+
+  test('rejects d= leg count mismatch within group', () => {
+    const parsed = parseShareUrl(
+      '/r/v1/SFO-NRT-BKK?op=AA,JL&p=AA&c=J&d=2026-01-01',
+    );
+    expect(parsed.ok).toBe(false);
+    if (!parsed.ok) {
+      expect(parsed.kind).toBe('mismatched-op-length');
+    }
+  });
+
+  test('rejects malformed date cell', () => {
+    const parsed = parseShareUrl('/r/v1/SFO-NRT?op=AA&p=AA&c=J&d=20260101');
+    expect(parsed.ok).toBe(false);
+    if (!parsed.ok) {
+      expect(parsed.kind).toBe('malformed-path');
+    }
+  });
+
+  test('property: parse∘encode ≡ identity across generated dated routings', () => {
+    // Deterministic LCG — no Math.random, CI stays reproducible.
+    let state = 42;
+    const rnd = () => {
+      state = (state * 1103515245 + 12345) % 2147483648;
+      return state / 2147483648;
+    };
+    const pick = <T>(pool: ReadonlyArray<T>): T =>
+      pool[Math.floor(rnd() * pool.length)] as T;
+    const airports = ['TPE', 'NRT', 'HKG', 'BKK', 'LAX', 'SIN', 'LHR'];
+    const carriers = ['BR', 'CI', 'CX', 'JL', 'NH', 'UA'];
+    const dates = ['2026-09-01', '2026-09-07', '2026-09-14', '2026-10-02'];
+
+    for (let trial = 0; trial < 80; trial++) {
+      const groupCount = 1 + Math.floor(rnd() * 2);
+      const groups = Array.from({ length: groupCount }, () => {
+        const legCount = 1 + Math.floor(rnd() * 3);
+        let cursor = pick(airports);
+        const legs = Array.from({ length: legCount }, () => {
+          let next = pick(airports);
+          while (next === cursor) next = pick(airports); // chains must advance
+          const from = cursor;
+          const to = next;
+          cursor = next;
+          const leg: { from: string; to: string; operatingCarrier: string; departsOn?: string } = {
+            from,
+            to,
+            operatingCarrier: pick(carriers),
+          };
+          // ~2/3 of legs carry a date.
+          if (rnd() > 1 / 3) leg.departsOn = pick(dates);
+          return leg;
+        });
+        return { legs };
+      });
+      const req: RoutingRequest = {
+        groups,
+        cabin: 'business',
+        programs: ['br-infinity'],
+      };
+
+      const parsed = parseShareUrl(encodeShareUrl(req));
+      expect(parsed.ok, `trial ${trial}: ${encodeShareUrl(req)}`).toBe(true);
+      if (parsed.ok) {
+        expect(parsed.request.groups).toEqual(req.groups);
+      }
+    }
+  });
+});

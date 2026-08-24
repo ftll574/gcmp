@@ -2,6 +2,7 @@ import type { Airport, Leg, RoutingRequest } from '../types.ts';
 import type { AllianceCatalog } from '../schemas/alliance.ts';
 import type { RtwRuleSet, RtwSurfaceDistancePolicy } from '../schemas/rtw-rule.ts';
 import type { NetworkGapEntry } from '../schemas/network-gaps.ts';
+import type { ScheduleEntry } from '../schemas/flight-schedules.ts';
 import type { ContinentId } from '../schemas/country-continent.ts';
 import { distanceNm } from '../calc/haversine.ts';
 import { continentsVisited } from './continents.ts';
@@ -101,6 +102,17 @@ export interface RtwValidationInputs {
    * handling elsewhere. Backward-compatible: when absent, nothing changes.
    */
   readonly openJawSectors?: ReadonlyArray<{ from: string; to: string }> | undefined;
+  /**
+   * Optional curated schedule catalog built from
+   * `public/data/schedules/current.json` (ScheduleCatalogSchema,
+   * docs/decisions/flight-schedule-model.md S3/S4). When set, a FLIGHT leg
+   * whose operatingCarrier + ORDERED pair matches an entry and whose
+   * `departsOn` weekday is not in the entry's `daysOfWeek` emits a WARNING
+   * (`schedule-day-mismatch`) — unbookable, never illegal. Suspended
+   * entries stay silent; undated legs stay silent; absent schedules input
+   * changes nothing (degrade-to-null in the loader, like `networkGaps`).
+   */
+  readonly schedules?: ReadonlyArray<ScheduleEntry> | undefined;
 }
 
 function source(ruleSet: RtwRuleSet): string | undefined {
@@ -229,6 +241,34 @@ function tripDays(startDate: string | undefined, endDate: string | undefined): n
   const end = parseDateUtc(endDate);
   if (start === null || end === null) return null;
   return Math.round((end - start) / 86_400_000) + 1;
+}
+
+/**
+ * ISO weekday (Monday=1 … Sunday=7) of an ISO `YYYY-MM-DD` date, parsed as
+ * UTC to avoid timezone drift. `Date.getUTCDay()` is Sunday-indexed
+ * (0=Sunday..6=Saturday), so Sunday maps to 7 and everything else passes
+ * through. Unparseable dates return null (caller skips silently).
+ */
+function isoWeekdayUtc(dateIso: string): number | null {
+  const ms = parseDateUtc(dateIso);
+  if (ms === null) return null;
+  const dow = new Date(ms).getUTCDay();
+  return dow === 0 ? 7 : dow;
+}
+
+/**
+ * 'Mon, Wed, Fri'-style human list for finding message params. The engine
+ * stays i18n-free (engine purity), so abbreviations are the neutral
+ * interchange form; locale templates embed them via the `{days}` param.
+ */
+const DAY_ABBREVIATIONS: ReadonlyArray<string> = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+function humanizeDaysOfWeek(days: ReadonlyArray<number>): string {
+  return [...days]
+    .sort((a, b) => a - b)
+    .map((d) => DAY_ABBREVIATIONS[d - 1])
+    .filter((label): label is string => label !== undefined)
+    .join(', ');
 }
 
 function resolvedLegAirports(
@@ -433,6 +473,75 @@ export function validateRtwRoute(
     });
   }
 
+  // Per-leg chronology (docs/decisions/flight-schedule-model.md S2). Runs
+  // PRODUCT-INDEPENDENT: consecutive legs that are BOTH dated must not go
+  // backwards in time — ISO dates sort lexicographically, so string
+  // comparison is exact. Pairs involving an undated leg are skipped (same
+  // partial-information pattern as trip-duration's `unknown`).
+  for (let i = 0; i < legs.length - 1; i++) {
+    const prev = legs[i];
+    const next = legs[i + 1];
+    if (!prev || !next) continue;
+    if (prev.departsOn === undefined || next.departsOn === undefined) continue;
+    if (next.departsOn >= prev.departsOn) continue;
+    findings.push(localizedFinding(
+      {
+        ruleId: 'leg-chronology',
+        severity: 'fail',
+        message: `Leg ${i + 2} departs ${next.departsOn}, before leg ${i + 1} departs ${prev.departsOn}.`,
+        affectedLegIndexes: [i, i + 1],
+      },
+      'rtw.findings.legChronologyFail',
+      { prevLeg: i + 1, nextLeg: i + 2, prevDate: prev.departsOn, nextDate: next.departsOn },
+    ));
+  }
+
+  // Cross-check against the trip-level dates (S2): when BOTH trip dates are
+  // set AND a boundary flight leg is dated, disagreement is surfaced as a
+  // WARNING naming all four values — never silently reconciled. Surface
+  // sectors are not flights and never anchor a boundary.
+  const firstFlightIndex = legs.findIndex((leg) => leg.surface !== true);
+  const lastFlightIndex = (() => {
+    for (let i = legs.length - 1; i >= 0; i--) {
+      const leg = legs[i];
+      if (leg && leg.surface !== true) return i;
+    }
+    return -1;
+  })();
+  const firstFlight = firstFlightIndex >= 0 ? legs[firstFlightIndex] : undefined;
+  const lastFlight = lastFlightIndex >= 0 ? legs[lastFlightIndex] : undefined;
+  const startMismatch =
+    request?.startDate !== undefined &&
+    firstFlight?.departsOn !== undefined &&
+    firstFlight.departsOn !== request.startDate;
+  const endMismatch =
+    request?.endDate !== undefined &&
+    lastFlight?.departsOn !== undefined &&
+    lastFlight.departsOn !== request.endDate;
+  if (startMismatch || endMismatch) {
+    const affected = [
+      ...(startMismatch && firstFlightIndex >= 0 ? [firstFlightIndex] : []),
+      ...(endMismatch && lastFlightIndex >= 0 && lastFlightIndex !== firstFlightIndex
+        ? [lastFlightIndex]
+        : []),
+    ];
+    findings.push(localizedFinding(
+      {
+        ruleId: 'trip-dates-mismatch',
+        severity: 'warning',
+        message: `Trip dates (${request?.startDate} to ${request?.endDate}) disagree with flight dates (first flight departs ${firstFlight?.departsOn ?? 'n/a'}, last flight departs ${lastFlight?.departsOn ?? 'n/a'}).`,
+        ...(affected.length > 0 ? { affectedLegIndexes: affected } : {}),
+      },
+      'rtw.findings.tripDatesMismatch',
+      {
+        startDate: request?.startDate ?? '',
+        endDate: request?.endDate ?? '',
+        firstDepart: firstFlight?.departsOn ?? '',
+        lastDepart: lastFlight?.departsOn ?? '',
+      },
+    ));
+  }
+
   const members = activeAllianceMembers(ruleSet, inputs.allianceCatalog);
   const ineligibleLegIndexes = legs
     .map((leg, index) => ({ leg, index }))
@@ -517,6 +626,75 @@ export function validateRtwRoute(
           to,
           since: gap.since,
           until: gap.until ?? '',
+        },
+      ));
+    }
+  }
+
+  // True when every present window field admits dateIso (YYYY-MM-DD).
+  // Canonical flight-schedule-model semantics (captain ruling 2026-08-25),
+  // shared VERBATIM with the UI-layer schedule-days helper: ISO bounds
+  // compare as plain strings (YYYY-MM-DD is lexically ordered); MM-DD
+  // season bounds compare on dateIso.slice(5), both-present ranges wrap
+  // when start > end (e.g. 12-01..03-15), and a one-sided season field
+  // constrains only its own side. Absent fields and effectiveUntil: null
+  // mean "no bound". A row outside its period describes a different era of
+  // the route — prefer silence over a wrong claim.
+  function isScheduleEntryEffectiveOn(entry: ScheduleEntry, dateIso: string): boolean {
+    if (entry.effectiveFrom !== undefined && dateIso < entry.effectiveFrom) return false;
+    if (entry.effectiveUntil != null && dateIso > entry.effectiveUntil) return false;
+    const mmdd = dateIso.slice(5);
+    if (entry.seasonStart !== undefined && entry.seasonEnd !== undefined) {
+      const inSeason = entry.seasonStart <= entry.seasonEnd
+        ? mmdd >= entry.seasonStart && mmdd <= entry.seasonEnd
+        : mmdd >= entry.seasonStart || mmdd <= entry.seasonEnd;
+      if (!inSeason) return false;
+    } else if (entry.seasonStart !== undefined) {
+      if (mmdd < entry.seasonStart) return false;
+    } else if (entry.seasonEnd !== undefined) {
+      if (mmdd > entry.seasonEnd) return false;
+    }
+    return true;
+  }
+
+  // Schedule day-level warnings (docs/decisions/flight-schedule-model.md
+  // S4). For each FLIGHT leg (surface sectors skipped), look up the entry
+  // matching operatingCarrier AND the pair EXACTLY as ordered — schedules
+  // are directional, so a TPE→NRT entry says nothing about NRT→TPE and no
+  // reverse lookup happens. Found + not suspended + EFFECTIVE ON THE LEG'S
+  // DATE (window check above; expired/out-of-season rows stay silent) +
+  // dated leg whose ISO weekday ∉ daysOfWeek ⇒ WARNING naming the operating
+  // days; a schedule conflict makes a trip unbookable, not illegal, so it
+  // is never a fail. Suspended entries stay silent (network-gaps owns
+  // "route gone"), undated legs stay silent (no nagging), and an absent
+  // schedules input produces zero findings (degrade-to-null loader contract).
+  if (inputs.schedules !== undefined && inputs.schedules.length > 0) {
+    for (const [index, leg] of legs.entries()) {
+      if (leg.surface === true) continue;
+      if (leg.departsOn === undefined) continue;
+      const entry = inputs.schedules.find(
+        (candidate) =>
+          candidate.carrier === leg.operatingCarrier &&
+          candidate.pair[0] === leg.from &&
+          candidate.pair[1] === leg.to,
+      );
+      if (!entry || entry.status === 'suspended') continue;
+      if (!isScheduleEntryEffectiveOn(entry, leg.departsOn)) continue;
+      const weekday = isoWeekdayUtc(leg.departsOn);
+      if (weekday === null || entry.daysOfWeek.includes(weekday)) continue;
+      findings.push(localizedFinding(
+        {
+          ruleId: 'schedule-day-mismatch',
+          severity: 'warning',
+          message: `${leg.operatingCarrier} does not operate ${leg.from}-${leg.to} on ${leg.departsOn} (operates ${humanizeDaysOfWeek(entry.daysOfWeek)}).`,
+          affectedLegIndexes: [index],
+          ...(entry.sourceUrls[0] !== undefined ? { sourceUrl: entry.sourceUrls[0] } : {}),
+        },
+        'rtw.findings.scheduleDayMismatch',
+        {
+          carrier: leg.operatingCarrier,
+          date: leg.departsOn,
+          days: humanizeDaysOfWeek(entry.daysOfWeek),
         },
       ));
     }
