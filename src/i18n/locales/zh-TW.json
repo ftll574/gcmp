@@ -314,6 +314,7 @@
       },
       "cabin": {
         "economy": "經濟艙",
+        "premiumEconomy": "豪華經濟",
         "business": "商務艙",
         "first": "頭等艙"
       },

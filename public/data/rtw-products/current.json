@@ -214,7 +214,9 @@
       "status": "active",
       "bookingStatusNote": "Important Taiwan award product, but not a true RTW candidate: China Airlines states itineraries crossing both the Pacific and Atlantic are not accepted.",
       "sourceUrls": [
-        "https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/reward-tickets-skyteam"
+        "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+        "https://web.archive.org/web/20190822111127/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam.html",
+        "https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket"
       ],
       "limits": {
         "maxFlights": 6,

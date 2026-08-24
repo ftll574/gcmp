@@ -17,7 +17,7 @@ function quote(overrides?: Partial<AwardZoneQuote>): AwardZoneQuote {
     label: 'Fixture product',
     confidence: 'reference-recheck',
     band: { minMiles: 20001, maxMiles: 22000 },
-    prices: { economy: 95000, business: 140000, first: 205000 },
+    prices: { economy: 95000, premiumEconomy: 120000, business: 140000, first: 205000 },
     notes: [],
     sourceUrls: ['https://example.com/chart'],
     ...overrides,
@@ -30,12 +30,13 @@ afterEach(() => {
 });
 
 describe('AwardZoneBreakdown', () => {
-  it('shows the zone range and all three priced cabins', () => {
+  it('shows the zone range and every priced cabin', () => {
     const { container } = render(<AwardZoneBreakdown quote={quote()} />);
 
     expect(screen.getByText('Zone 20,001-22,000 mi')).toBeInTheDocument();
     const list = container.querySelector('.rtw-award-zone-cabins') as HTMLElement;
     expect(within(list).getByText('95,000')).toBeInTheDocument();
+    expect(within(list).getByText('120,000')).toBeInTheDocument();
     expect(within(list).getByText('140,000')).toBeInTheDocument();
     expect(within(list).getByText('205,000')).toBeInTheDocument();
   });
@@ -49,7 +50,7 @@ describe('AwardZoneBreakdown', () => {
 
     const list = container.querySelector('.rtw-award-zone-cabins') as HTMLElement;
     expect(within(list).getByText('125,000')).toBeInTheDocument();
-    expect(within(list).getAllByText('—')).toHaveLength(2);
+    expect(within(list).getAllByText('—')).toHaveLength(3);
   });
 
   it('renders an open-ended band with the infinity suffix', () => {
@@ -78,6 +79,7 @@ describe('AwardZoneBreakdown', () => {
 
     expect(screen.getByText('20,001-22,000 哩區間')).toBeInTheDocument();
     expect(screen.getByText('經濟艙')).toBeInTheDocument();
+    expect(screen.getByText('豪華經濟')).toBeInTheDocument();
     expect(screen.getByText('頭等艙')).toBeInTheDocument();
   });
 });

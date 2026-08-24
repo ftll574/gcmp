@@ -11,6 +11,7 @@ A web app that replaces the FlyerTalk RTW-routing-thread habit for Taiwan-based 
 - **Design system:** `DESIGN.md` — typography, palette, spacing, component vocabulary, AI-slop blacklist
 - **Pivot plan:** `docs/rtw-pivot-plan.md` — the product reset from earning calculator to RTW route planner
 - **Taiwan-first scope:** `docs/taiwan-first-scope.md` — first-market product priorities (BR/EVA, CX primary; CI important-but-not-true-RTW)
+- **Chart-drift review:** `docs/process/chart-drift-checklist.md` — quarterly rv-era chart re-verification workflow: Wayback CDX playbook (`filter=` soft-fails; use prefix queries), JS-shell/RSC discrimination, dual confidence vocabulary, CONFLICT #N ledger, negatives-as-evidence
 - **Full design doc** (problem statement, premises, cross-model reviews, 13 design decisions, 11 eng findings, 20 implementation tasks): `~/.gstack/projects/GreatCircleMapper/zhenyu-initial-design-20260521-044157.md`
 - **Test plan** for `/qa` consumption: `~/.gstack/projects/GreatCircleMapper/zhenyu-initial-eng-review-test-plan-20260521-051002.md`
 
@@ -32,12 +33,12 @@ A web app that replaces the FlyerTalk RTW-routing-thread habit for Taiwan-based 
 
 ## Testing
 
-Run command: `npm run test` (Vitest — 335 tests passing, see README badge). No E2E runner: there is no `test:e2e` script and no Playwright dependency; verify site behavior through component tests + CI.
+Run command: `npm run test` (Vitest — 353 tests passing, see README badge). No E2E runner: there is no `test:e2e` script and no Playwright dependency; verify site behavior through component tests + CI.
 
 - 100% coverage is the goal for `src/lib/calc/**` (engine purity makes it cheap)
 - Every new function gets a test; every if/else gets tests for both branches
 - Every fixed bug gets a regression test
-- **Iron Rule:** `tests/calibration/flyertalk-routings.test.ts` pins real FlyerTalk/community RTW routing threads (transcribed in `docs/calibration-set.md`): 18 active structural tests, zero open engine-gap TODOs. Failing any one of the active tests blocks `/ship`. This operationalizes Success Criterion #2 from the design doc; activated in commit `2af6e2c` (Phase-1 debt payoff), extended in Phase 2 (QF caps, ANA archived band/surface), in Phase 4 t4 (CX any-first pricing — mechanism pinned against live bands plus the complete official rv=2018.Q2 chart fixture (research round 2, Wayback 20180528013013); BR TPE–GUM network-gap watchlist warning; co-terminal direct-vs-two-sectors conflict guard), and in Phase 5 (CX open-jaw distance counting — `calib.cx-multicarrier.open-jaw-distance-counts` activated per decision record `docs/decisions/open-jaw-distance.md`).
+- **Iron Rule:** `tests/calibration/flyertalk-routings.test.ts` pins real FlyerTalk/community RTW routing threads (transcribed in `docs/calibration-set.md`): 24 active structural tests, zero open engine-gap TODOs. Failing any one of the active tests blocks `/ship`. This operationalizes Success Criterion #2 from the design doc; activated in commit `2af6e2c` (Phase-1 debt payoff), extended in Phase 2 (QF caps, ANA archived band/surface), in Phase 4 t4 (CX any-first pricing — mechanism pinned against live bands plus the complete official rv=2018.Q2 chart fixture (research round 2, Wayback 20180528013013); BR TPE–GUM network-gap watchlist warning; co-terminal direct-vs-two-sectors conflict guard), in Phase 5 (CX open-jaw distance counting — `calib.cx-multicarrier.open-jaw-distance-counts` activated per decision record `docs/decisions/open-jaw-distance.md`), and in Phase 9 (CI SkyTeam partner zone-pair chart — six `calib.ci-skyteampartner.*` pins over the §A8 Era-2 matrix via `getZonePairQuote()`). Quarterly chart re-verification follows `docs/process/chart-drift-checklist.md`.
 
 ## Testing strategy minimums (from eng review)
 

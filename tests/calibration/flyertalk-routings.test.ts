@@ -48,7 +48,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, test } from 'vitest';
 import { distanceNm } from '../../src/lib/calc/haversine.ts';
-import { estimateAwardPrice, priceRtwItinerary } from '../../src/lib/rtw/award-pricing.ts';
+import { estimateAwardPrice, getZonePairQuote, priceRtwItinerary } from '../../src/lib/rtw/award-pricing.ts';
 import { validateRtwRoute, MILES_PER_NAUTICAL_MILE } from '../../src/lib/rtw/validate.ts';
 import { AllianceCatalogSchema } from '../../src/lib/schemas/alliance.ts';
 import { AwardPricingCatalogSchema } from '../../src/lib/schemas/award-pricing.ts';
@@ -462,7 +462,7 @@ describe('FlyerTalk calibration set — Iron Rule (docs/calibration-set.md)', ()
       'business',
     );
     expect(priced?.cabin).toBe('first');
-    expect(priced?.miles).toBe(220000); // live 10,001–14,000 F band
+    expect(priced?.miles).toBe(250000); // live 10,001–14,000 F band (fourth era, §A9)
     expect(priced?.confidence).toBe('reference-recheck');
 
     const allBusiness = priceRtwItinerary(
@@ -473,7 +473,7 @@ describe('FlyerTalk calibration set — Iron Rule (docs/calibration-set.md)', ()
       'business',
     );
     expect(allBusiness?.cabin).toBe('business');
-    expect(allBusiness?.miles).toBe(135000); // live 10,001–14,000 J band
+    expect(allBusiness?.miles).toBe(170000); // live 10,001–14,000 J band (fourth era, §A9)
   });
 
   test('calib.cx-multicarrier.band-boundary-jump — crossing the 14,000-mile boundary reprices 155k→190k', () => {
@@ -781,16 +781,26 @@ describe('FlyerTalk calibration set — Iron Rule (docs/calibration-set.md)', ()
     // Honest band note: unlike the thread narrative (nautical 19,442 +
     // ~765 ≈ 20,207 crossing "20,000"), the real chain does NOT straddle a
     // band edge once everything is statute miles. The cliff a jaw CAN
-    // trigger near an edge is therefore demonstrated DIRECTLY on the
-    // official chart rows 10↔11 (same pattern as band-boundary-jump):
-    // 20,000 zones row 10 (J140k/F205k); one mile more flips to row 11
-    // (J160k/F235k).
-    const rowTop = estimateAwardPrice(PRICING_RV_2018Q2, CX_RV18_ID, 20000, 'business');
-    const rowBase = estimateAwardPrice(PRICING_RV_2018Q2, CX_RV18_ID, 20001, 'business');
+    // trigger near an edge is therefore demonstrated DIRECTLY on the live
+    // fourth-era rows 10↔11 (docs §A9; same pattern as
+    // band-boundary-jump): 20,000 zones zone 10 (J230k/F330k); one mile
+    // more flips to zone 11 (J250k/F350k).
+    const rowTop = estimateAwardPrice(
+      pricing,
+      'cx-asia-miles-oneworld-multi-carrier-award',
+      20000,
+      'business',
+    );
+    const rowBase = estimateAwardPrice(
+      pricing,
+      'cx-asia-miles-oneworld-multi-carrier-award',
+      20001,
+      'business',
+    );
     expect(rowTop?.band.maxMiles).toBe(20000);
-    expect(rowTop?.miles).toBe(140000);
+    expect(rowTop?.miles).toBe(230000);
     expect(rowBase?.band.minMiles).toBe(20001);
-    expect(rowBase?.miles).toBe(160000);
+    expect(rowBase?.miles).toBe(250000);
 
     // Structural coherence: both measured totals zone into row 11.
     expect(
@@ -860,5 +870,128 @@ describe('FlyerTalk calibration set — Iron Rule (docs/calibration-set.md)', ()
       distanceNm(airport('TPE'), airport('BKK')) + distanceNm(airport('BKK'), airport('LHR'));
     const directNm = distanceNm(airport('TPE'), airport('LHR'));
     expect(flownSumNm).toBeGreaterThan(directNm);
+  });
+
+  // ==========================================================================
+  // A8 — CI SkyTeam partner-award zone chart (docs/calibration-set.md §A8).
+  // Zone-pair pricing model landed with the Era-2 matrix (capture
+  // 20251008063633, confidence published-chart). Engine-supportable calib.*
+  // ids are ACTIVATED below; rules that live in publication text only (one-
+  // way semantics per era, sector/stopover caps, MU/FM suspension) are
+  // pinned as data-shape assertions on the entry's notes and the matching
+  // rtw-products entry — never silently dropped.
+  // ==========================================================================
+  const CI_PRICING_ID = 'china-airlines-skyteam-partner-award';
+  const ciPricing = pricing.products.find((p) => p.productId === CI_PRICING_ID);
+  if (!ciPricing || !('zoneMatrix' in ciPricing)) {
+    throw new Error('CI SkyTeam partner award must be a zone-pair product');
+  }
+  const ciNotes = ciPricing.notes ?? [];
+
+  test('calib.ci-skyteampartner.zone-pair-era2-chart — §A8 sample cells price through getZonePairQuote', () => {
+    // ACTIVATED (engine support: zone-pair quote path). Values verbatim from
+    // the §A8(a) Era-2 matrix; any chart drift fails loudly here.
+    expect(getZonePairQuote(pricing, CI_PRICING_ID, 'NEA', 'EU', 'business')?.miles).toBe(160000);
+    expect(getZonePairQuote(pricing, CI_PRICING_ID, 'NEA', 'SWP', 'economy')?.miles).toBe(110000);
+    expect(getZonePairQuote(pricing, CI_PRICING_ID, 'SWP', 'SWP', 'economy')?.miles).toBe(35000);
+    expect(getZonePairQuote(pricing, CI_PRICING_ID, 'NEA', 'EU', 'premium-economy')?.miles).toBe(120000);
+  });
+
+  test('calib.ci-skyteampartner.era1-me-diagonal-blank — ME is the UNIQUE blank Era-1 diagonal; Era-2 ME diagonal prices', () => {
+    // ACTIVATED (engine support + note pin). Guards against column-shift
+    // misreads of the archived chart: Era-1 left ME-ME blank while every
+    // other diagonal was priced; Era-2 prices it (E35/P40/B60 ×1,000).
+    expect(getZonePairQuote(pricing, CI_PRICING_ID, 'ME', 'ME', 'economy')?.miles).toBe(35000);
+    expect(getZonePairQuote(pricing, CI_PRICING_ID, 'ME', 'ME', 'premium-economy')?.miles).toBe(40000);
+    expect(getZonePairQuote(pricing, CI_PRICING_ID, 'ME', 'ME', 'business')?.miles).toBe(60000);
+    expect(
+      ciNotes.some(
+        (note) =>
+          note.includes('Middle East diagonal uniquely blank') &&
+          note.includes('one-way equal to round-trip') &&
+          note.includes('First Class'),
+      ),
+    ).toBe(true);
+    // Era-2 has no blank cells at all — every one of the 66 pairs prices all
+    // three published cabins.
+    for (const cell of ciPricing.zoneMatrix) {
+      expect(Object.keys(cell.prices).sort()).toEqual(['business', 'economy', 'premiumEconomy']);
+    }
+  });
+
+  test('calib.ci-skyteampartner.data-shape — full 66-cell upper triangle over the 11 published zones', () => {
+    // Data-shape coverage for the transcription as a whole: the generator
+    // cross-checked all 198 values docs↔archived-HTML (zero diffs); this
+    // pins the shipped shape so future edits cannot thin it silently.
+    expect(ciPricing.zones).toEqual([
+      'NEA',
+      'SEA',
+      'SWA',
+      'ME',
+      'EU',
+      'NAf',
+      'SAf',
+      'NAm',
+      'CAm',
+      'SAm',
+      'SWP',
+    ]);
+    expect(ciPricing.zoneMatrix).toHaveLength(66);
+    const pairs = new Set(ciPricing.zoneMatrix.map((c) => `${c.originRegion}-${c.destinationRegion}`));
+    expect(pairs.size).toBe(66);
+    for (let i = 0; i < ciPricing.zones.length; i++) {
+      for (let j = i; j < ciPricing.zones.length; j++) {
+        expect(pairs.has(`${ciPricing.zones[i]}-${ciPricing.zones[j]}`)).toBe(true);
+      }
+    }
+    for (const cell of ciPricing.zoneMatrix) {
+      for (const price of Object.values(cell.prices)) {
+        expect(price).toBeGreaterThan(0);
+        expect(Number.isInteger(price)).toBe(true);
+        expect(price % 1000).toBe(0); // chart unit is "1000 miles"
+      }
+    }
+  });
+
+  test('calib.ci-skyteampartner.oneway-half-of-roundtrip-era2 + oneway-equals-roundtrip-era1 — one-way semantics pinned as era notes', () => {
+    // Engine models ROUND-TRIP chart values only; the per-era one-way
+    // semantics are publication text, so they ride in notes (data-shape).
+    expect(
+      ciNotes.some((n) => n.includes('one-way = half round-trip (Era-2 rule)')),
+    ).toBe(true);
+    expect(
+      ciNotes.some((n) => n.includes('kept one-way equal to round-trip')),
+    ).toBe(true);
+  });
+
+  test('calib.ci-skyteampartner.mufm-oneway-suspension-note-current — current-era MU/FM suspension recorded', () => {
+    // Current-era rules text (RSC payload, numerals absent) suspends MU/FM
+    // one-way reward tickets; recorded so the drift story stays complete.
+    expect(ciNotes.some((n) => n.includes('MU/FM one-way reward tickets'))).toBe(true);
+  });
+
+  test('calib.ci-skyteampartner.rt-caps-and-ocean-rejects — rtw-products entry pins sector/stopover limits and the dual-ocean reject', () => {
+    // Rules that the rtw-products entry already models structurally:
+    // six sectors / one stopover (RT), and the shortest-direct-route
+    // via-prohibitions behind rejectsAtlanticAndPacificCrossing.
+    const entry = product(CI_PRICING_ID);
+    expect(entry.limits).toEqual({ maxFlights: 6, maxStopovers: 1, maxSurfaceSectors: 1 });
+    expect(entry.geography.rejectsAtlanticAndPacificCrossing).toBe(true);
+    // Captain-approved sourceUrl refresh (Phase 9): the Era-2 Wayback
+    // capture (2025-10-08) leads as pricing provenance, the Era-1 capture
+    // (2019-08-22) corroborates, and the live canonical page closes the
+    // list — replacing the dead redeem-airline-miles slug.
+    expect(entry.sourceUrls[0]).toContain('web.archive.org/web/20251008063633');
+    expect(
+      entry.sourceUrls.some((url) =>
+        url.includes('web.archive.org/web/20190822111127'),
+      ),
+    ).toBe(true);
+    expect(
+      entry.sourceUrls.some((url) =>
+        url.includes('china-airlines.com/us/en/member/miles/redeem/reward-ticket'),
+      ),
+    ).toBe(true);
+    expect(getZonePairQuote(pricing, CI_PRICING_ID, 'NEA', 'EU', 'first')).toBeNull();
   });
 });

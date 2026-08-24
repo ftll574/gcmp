@@ -314,6 +314,7 @@
       },
       "cabin": {
         "economy": "economy",
+        "premiumEconomy": "premium economy",
         "business": "business",
         "first": "first"
       },

@@ -1,7 +1,7 @@
 {
   "brand": {
     "name": "gcmp",
-    "tagline": "マイル計算機"
+    "tagline": "世界一周 経路プランナー"
   },
   "lang": {
     "english": "English",
@@ -17,7 +17,7 @@
     "copyTextTitle": "テキスト形式の経路表 — FlyerTalk / 2ch / 個人ブログ向け",
     "copied": "コピー済み ✓"
   },
-  "loading": "空港データ + マイルルールを読み込み中…",
+  "loading": "空港データ + 世界一周ルールを読み込み中…",
   "errors": {
     "loadFailed": "データ読み込み失敗：{message}",
     "loadFailedHelp": "ページを再読み込みしてください。問題が続く場合は GitHub に Issue を立ててください。"
@@ -33,8 +33,8 @@
     "clearAll": "クリア"
   },
   "hero": {
-    "tagline": "どのマイレージプログラムが一番お得か、ひと目で。",
-    "subtagline": "空港とクラスを選ぶだけで、18 のプログラム・4 つのアライアンスを比較。"
+    "tagline": "世界一周の経路を計画し、ルールを検証。",
+    "subtagline": "経路を組み立て、ストップオーバーと地上区間をマークして、世界一周運賃と特典ルールをチェックできます。"
   },
   "samples": {
     "sfoNrtBkk": {
@@ -64,7 +64,7 @@
     "removeGroup": "経路 {n} を削除",
     "groupN": "経路 {n}",
     "grandTotal": "全経路合計",
-    "compareHint": "複数の経路を同じ地図上で比較。下の PQM は全経路の合計です。"
+    "compareHint": "複数の経路を同じ地図上で比較。世界一周ルールのチェックは選択中の経路が対象です。"
   },
   "tier": {
     "label": "上級会員",
@@ -142,11 +142,11 @@
   "footer": {
     "openSource": "gcmp — GitHub オープンソース",
     "browseByAirline": "キャリア別に見る",
-    "disclaimer": "マイル数は公式パートナー表に基づく計算です。実際の付与マイルをご確認ください。"
+    "disclaimer": "世界一周のチェックは構造的なルールのみを検証します。特典席の空席状況と発券は航空会社にご確認ください。"
   },
   "map": {
     "fallbackHeading": "地図の描画に失敗しました。",
-    "fallbackHint": "マイル計算は引き続き機能します。下のボタンで地図の再描画を試してください。",
+    "fallbackHint": "世界一周ルールのチェックは引き続き機能します。下のボタンで地図の再描画を試してください。",
     "retry": "再試行",
     "ariaLabelEmpty": "世界地図",
     "ariaLabel": "経路を表示：{chain}"
@@ -225,72 +225,72 @@
     "none": "アライアンス無所属"
   },
   "rtw": {
-    "noProducts": "No RTW products loaded.",
-    "planningEyebrow": "Planning context",
-    "planningTitle": "{market}-first RTW route",
-    "validationEyebrow": "Taiwan-first RTW planner",
-    "validationTitle": "Route rule check",
-    "product": "RTW product",
-    "productShort": "Product",
-    "alliance": "Alliance",
-    "type": "Type",
-    "carrierSeed": "Carrier seed",
-    "empty": "Add at least one flight segment to start validating RTW rules.",
-    "mileageEstimate": "Mileage estimate",
-    "routeLegDetails": "Flight details",
-    "inspectorRules": "Rules",
-    "inspectorTools": "Tools",
-    "inspectorSaved": "Saved",
-    "resizeEditor": "Resize route editor",
-    "resizeInspector": "Resize route inspector",
+    "noProducts": "世界一周商品が読み込まれていません。",
+    "planningEyebrow": "プランニング条件",
+    "planningTitle": "{market}優先 世界一周路線",
+    "validationEyebrow": "台湾優先の世界一周プランナー",
+    "validationTitle": "経路ルールチェック",
+    "product": "世界一周商品",
+    "productShort": "商品",
+    "alliance": "アライアンス",
+    "type": "種別",
+    "carrierSeed": "基準キャリア",
+    "empty": "飛行区間を1区間以上追加すると、世界一周ルールのチェックを開始できます。",
+    "mileageEstimate": "マイル概算",
+    "routeLegDetails": "区間詳細",
+    "inspectorRules": "ルール",
+    "inspectorTools": "ツール",
+    "inspectorSaved": "保存済み",
+    "resizeEditor": "経路エディタの幅を調整",
+    "resizeInspector": "ルールパネルの幅を調整",
     "market": {
-      "TW": "Taiwan"
+      "TW": "台湾"
     },
     "productKind": {
-      "cash": "Cash RTW fare",
-      "award": "RTW award",
-      "multiCarrier": "Multi-carrier award"
+      "cash": "現金世界一周運賃",
+      "award": "世界一周特典",
+      "multiCarrier": "マルチキャリア特典"
     },
     "startEnd": {
-      "label": "Start/end",
-      "sameCity": "same city",
-      "sameCountry": "same country",
-      "open": "open jaw allowed"
+      "label": "出発・到着地",
+      "sameCity": "同一都市",
+      "sameCountry": "同一国内",
+      "open": "オープンジョー可"
     },
     "limits": {
-      "maxFlights": "max {count} flights",
-      "maxStopovers": "max {count} stopovers",
-      "distanceCap": "{count} mi cap",
-      "rulesLoaded": "rules loaded",
-      "crossOceans": "cross {oceans}"
+      "maxFlights": "最大 {count} 区間",
+      "maxStopovers": "ストップオーバー最大 {count} 回",
+      "distanceCap": "上限 {count} マイル",
+      "rulesLoaded": "ルール読み込み済み",
+      "crossOceans": "{oceans} を横断"
     },
     "ocean": {
-      "pacific": "Pacific",
-      "atlantic": "Atlantic"
+      "pacific": "太平洋",
+      "atlantic": "大西洋"
     },
     "status": {
-      "valid": "Valid so far",
-      "invalid": "Needs fixes",
-      "empty": "Add route"
+      "valid": "現時点で有効",
+      "invalid": "要修正",
+      "empty": "経路を追加"
     },
     "summary": {
-      "segments": "Segments",
-      "miles": "Miles",
-      "carrierIssues": "Carrier issues",
-      "stopovers": "Stopovers",
-      "surface": "Surface",
-      "transfers": "Transfers",
-      "oceans": "Oceans",
+      "segments": "区間数",
+      "miles": "総マイル",
+      "carrierIssues": "キャリアの問題",
+      "stopovers": "ストップオーバー",
+      "surface": "地上区間",
+      "transfers": "乗り継ぎ",
+      "oceans": "大洋横断",
       "continents": "経由大陸",
-      "direction": "Direction",
-      "cityRepeats": "City repeats",
-      "tripDays": "Trip days"
+      "direction": "方向",
+      "cityRepeats": "都市の重複",
+      "tripDays": "旅程日数"
     },
     "direction": {
-      "eastbound": "eastbound",
-      "westbound": "westbound",
-      "mixed": "mixed",
-      "unknown": "unknown"
+      "eastbound": "東回り",
+      "westbound": "西回り",
+      "mixed": "混在",
+      "unknown": "不明"
     },
     "continent": {
       "africa": "アフリカ",
@@ -314,6 +314,7 @@
       },
       "cabin": {
         "economy": "エコノミー",
+        "premiumEconomy": "プレミアムエコノミー",
         "business": "ビジネス",
         "first": "ファースト"
       },
@@ -329,78 +330,78 @@
       }
     },
     "tripDates": {
-      "eyebrow": "RTW trip duration",
-      "title": "Travel dates",
-      "start": "Start",
-      "end": "End"
+      "eyebrow": "世界一周の旅程日数",
+      "title": "旅行日付",
+      "start": "出発",
+      "end": "帰着"
     },
     "legTable": {
-      "eyebrow": "RTW itinerary details",
-      "title": "Flight, stopover, surface sectors",
-      "leg": "Leg",
-      "operating": "Operating",
-      "timing": "Timing",
-      "surface": "Surface",
-      "operatingLabel": "Operating carrier for {from} to {to}",
-      "timingLabel": "Stopover timing for {from} to {to}",
-      "surfaceLabel": "Surface sector for {from} to {to}"
+      "eyebrow": "世界一周の旅程詳細",
+      "title": "飛行・ストップオーバー・地上区間",
+      "leg": "区間",
+      "operating": "運航",
+      "timing": "滞在/乗り継ぎ",
+      "surface": "地上区間",
+      "operatingLabel": "{from} から {to} の運航キャリア",
+      "timingLabel": "{from} から {to} の滞在/乗り継ぎ区分",
+      "surfaceLabel": "{from} から {to} の地上区間"
     },
     "legChip": {
-      "stopoverLabel": "Stopover status for leg {n}",
-      "stopoverTitle": "RTW timing: transfer is under 24h, stopover is 24h+",
-      "surfaceTitle": "Surface/open-jaw sector: no flight is taken for this segment"
+      "stopoverLabel": "第 {n} 区間の滞在/乗り継ぎ状態",
+      "stopoverTitle": "世界一周の時間ルール：24時間未満は乗り継ぎ、24時間以上はストップオーバー。",
+      "surfaceTitle": "地上区間 / オープンジョー：この区間は飛行機に搭乗して移動しません。"
     },
     "timing": {
-      "unknownShort": "Timing?",
-      "unknown": "Unknown",
-      "transfer": "Transfer",
-      "transferLong": "Transfer (<24h)",
-      "stopover": "Stopover",
-      "stopoverLong": "Stopover (24h+)",
-      "surface": "Surface"
+      "unknownShort": "時間？",
+      "unknown": "不明",
+      "transfer": "乗り継ぎ",
+      "transferLong": "乗り継ぎ（<24h）",
+      "stopover": "ストップオーバー",
+      "stopoverLong": "ストップオーバー（24h+）",
+      "surface": "地上区間"
     },
     "findings": {
       "productStatusNote": "{note}",
-      "productStatus": "{label} is {status}.",
-      "airlineEligibilityPass": "All operating carriers match this product eligibility rule.",
-      "airlineEligibilityFail": "One or more operating carriers are not eligible for this product.",
-      "flightSegmentsPass": "Route has {count} flight segments within the allowed range.",
-      "flightSegmentsFail": "Route has {count} flight segments; allowed range is {min}-{max}.",
-      "maxDistancePass": "Route is {miles} miles within the {max} mile cap.",
-      "maxDistanceFail": "Route is {miles} miles; maximum is {max} miles.",
-      "tripDurationUnknown": "Trip duration cannot be checked until start and end dates are set.",
-      "tripDurationPass": "Trip is {days} days, within the allowed duration.",
-      "tripDurationFail": "Trip is {days} days; allowed range is {min}-{max} days.",
-      "stopoversUnknown": "{count} stopovers marked, {unknown} segment(s) unknown. Mark stopover/transfer to complete this rule.",
-      "stopoversPass": "Route has {count} stopovers within the allowed range.",
-      "stopoversFail": "Route has {count} stopovers; allowed range is {min}-{max}.",
-      "transfersUnknown": "{count} transfers marked, {unknown} segment(s) unknown. Mark stopover/transfer to complete this rule.",
-      "transfersPass": "Route has {count} transfers within the {max} transfer cap.",
-      "transfersFail": "Route has {count} transfers; maximum is {max}.",
-      "surfaceSectorsPass": "Route has {count} surface sectors within the {max} sector cap.",
-      "surfaceSectorsFail": "Route has {count} surface sectors; maximum is {max}.",
-      "stopoversPerCityPass": "No city exceeds the {max} stopover-per-city cap.",
-      "stopoversPerCityFail": "Stopover repeated too many times in: {cities}.",
+      "productStatus": "{label} の現在の状態は {status}。",
+      "airlineEligibilityPass": "すべての運航キャリアがこの商品の対象キャリアルールを満たしています。",
+      "airlineEligibilityFail": "一部の運航キャリアがこの商品の対象外です。",
+      "flightSegmentsPass": "経路は {count} 区間の飛行で、許容範囲内です。",
+      "flightSegmentsFail": "経路は {count} 区間の飛行です。許容範囲は {min}-{max} です。",
+      "maxDistancePass": "経路の距離は {miles} マイルで、{max} マイルの上限内です。",
+      "maxDistanceFail": "経路の距離は {miles} マイルです。上限は {max} マイルです。",
+      "tripDurationUnknown": "出発日と帰着日が未設定のため、旅程日数をチェックできません。",
+      "tripDurationPass": "旅程は {days} 日間で、許容日数内です。",
+      "tripDurationFail": "旅程は {days} 日間です。許容範囲は {min}-{max} 日です。",
+      "stopoversUnknown": "ストップオーバー {count} 件をマーク済み、{unknown} 区間が未指定です。ストップオーバー/乗り継ぎをマークしてチェックを完了してください。",
+      "stopoversPass": "経路にはストップオーバーが {count} 件あり、許容範囲内です。",
+      "stopoversFail": "経路にはストップオーバーが {count} 件あります。許容範囲は {min}-{max} です。",
+      "transfersUnknown": "乗り継ぎ {count} 件をマーク済み、{unknown} 区間が未指定です。ストップオーバー/乗り継ぎをマークしてチェックを完了してください。",
+      "transfersPass": "経路には乗り継ぎが {count} 件あり、{max} 件の上限内です。",
+      "transfersFail": "経路には乗り継ぎが {count} 件あります。上限は {max} 件です。",
+      "surfaceSectorsPass": "経路には地上区間が {count} 件あり、{max} 件の上限内です。",
+      "surfaceSectorsFail": "経路には地上区間が {count} 件あります。上限は {max} 件です。",
+      "stopoversPerCityPass": "どの都市も1都市あたり {max} 回のストップオーバー上限を超えていません。",
+      "stopoversPerCityFail": "次の都市でストップオーバー回数が上限を超えています：{cities}。",
       "transfersPerCityPass": "どの都市も1都市あたり{max}回の乗り継ぎ上限を超えていません。",
       "transfersPerCityFail": "次の都市で乗り継ぎ回数が上限を超えています：{cities}。",
       "networkGapOpen": "{carrier}は{from}-{to}路線を運航していません（{since}に運航終了）；他の航空会社をご検討ください。",
       "networkGapUntil": "{carrier}は{since}から{until}の間、{from}-{to}路線を運航していません。",
-      "surfaceCitiesPass": "Surface/open-jaw endpoints are not repeated.",
-      "surfaceCitiesFail": "Surface/open-jaw endpoint repeated too many times in: {cities}.",
-      "carrierCombinationPass": "Route uses {count} eligible carrier(s), satisfying this multi-carrier rule.",
-      "carrierCombinationFail": "Route uses {count} carrier(s); this product requires at least {required}.",
-      "oceanCrossingsPass": "Route crosses required ocean(s): {oceans}.",
-      "oceanCrossingsFail": "Route is missing required ocean crossing(s): {missing}.",
-      "prohibitedOceanCombinationPass": "Route does not cross both the Pacific and Atlantic.",
-      "prohibitedOceanCombinationFail": "This product does not allow itineraries crossing both the Pacific and Atlantic.",
-      "directionPass": "Route is {direction}.",
-      "directionMixed": "Route mixes eastbound and westbound movement; this product requires one continuous global direction.",
-      "directionUnknown": "Route direction could not be determined.",
-      "startEndUnknown": "Start/end airport could not be validated because the route is empty or contains unknown airports.",
-      "startEndSameCityPass": "Route starts and ends in the same city/airport.",
-      "startEndSameCityFail": "Route starts at {start} and ends at {end}; this product requires the same city.",
-      "startEndSameCountryPass": "Route starts and ends in the same country.",
-      "startEndSameCountryFail": "Route starts in {start} and ends in {end}; this product requires the same country."
+      "surfaceCitiesPass": "地上区間 / オープンジョーの両端点は重複していません。",
+      "surfaceCitiesFail": "次の地上区間 / オープンジョー端点が上限を超えて重複しています：{cities}。",
+      "carrierCombinationPass": "経路は対象キャリア {count} 社を利用しており、このマルチキャリアルールを満たしています。",
+      "carrierCombinationFail": "経路は {count} 社のキャリアを利用しています。この商品には最低 {required} 社が必要です。",
+      "oceanCrossingsPass": "経路は必要な大洋（{oceans}）を横断しています。",
+      "oceanCrossingsFail": "経路には必要な大洋横断がありません：{missing}。",
+      "prohibitedOceanCombinationPass": "経路は太平洋と大西洋の両方を横断していません。",
+      "prohibitedOceanCombinationFail": "この商品は太平洋と大西洋の両方を横断する旅程を許可していません。",
+      "directionPass": "経路の方向は {direction} です。",
+      "directionMixed": "経路に東回りと西回りの移動が混在しています。この商品には一貫した同一方向の周遊が必要です。",
+      "directionUnknown": "経路の方向を判定できませんでした。",
+      "startEndUnknown": "経路が空か不明な空港を含むため、出発地・到着地を検証できません。",
+      "startEndSameCityPass": "経路の出発地と到着地は同じ都市 / 空港です。",
+      "startEndSameCityFail": "経路は {start} 出発で {end} 到着です。この商品は同じ都市での出発・到着が必要です。",
+      "startEndSameCountryPass": "経路の出発地と到着地は同じ国内です。",
+      "startEndSameCountryFail": "経路は {start} 出発で {end} 到着です。この商品は同じ国内での出発・到着が必要です。"
     }
   },
   "carrierNotes": {

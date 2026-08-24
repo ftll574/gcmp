@@ -1,5 +1,10 @@
 import { useMemo } from 'react';
-import { estimateAwardPrice, getAwardFees, quoteAwardZone } from '../lib/rtw/award-pricing.ts';
+import {
+  estimateAwardPrice,
+  getAwardFees,
+  PRICE_KEY_BY_CABIN,
+  quoteAwardZone,
+} from '../lib/rtw/award-pricing.ts';
 import { sortMileageRedemptionRtwProductsForMarket } from '../lib/rtw/products.ts';
 import { validateRtwRoute } from '../lib/rtw/validate.ts';
 import { useLocale } from '../i18n/use-locale.ts';
@@ -245,7 +250,7 @@ export function RtwValidationPanel({
                   </div>
                   <strong>{t('rtw.award.miles', { count: awardPrice.miles.toLocaleString() })}</strong>
                   <small>
-                    {t(`rtw.award.cabin.${awardPrice.cabin}`)} · {awardPrice.band.minMiles.toLocaleString()}-
+                    {t(`rtw.award.cabin.${PRICE_KEY_BY_CABIN[awardPrice.cabin]}`)} · {awardPrice.band.minMiles.toLocaleString()}-
                     {awardPrice.band.maxMiles?.toLocaleString() ?? '∞'} {t('rtw.award.milesBand')}
                   </small>
                 </>

@@ -1211,3 +1211,415 @@ that `public/data/rtw-products/*` should model? Verdict vocabulary per charter:
 - No code/data changes; nothing committed. `public/data/network-gaps/current.json`
   NOT touched (recommendation only, §(a)). No Iron Rule test activates from
   A7; existing `calib.*` mechanisms are unaffected.
+
+## A8 — CI SkyTeam partner-award chart archaeology + OWE / Star Alliance RTW cash-fare adjudication
+
+Researcher pass, team gcmp-phase9 task t1. Scope: recover the zone-based mileage chart behind
+`china-airlines-skyteam-partner-award` (current entry: pricingBasis zones,
+rejectsAtlanticAndPacificCrossing true, limits maxFlights 6 / maxStopovers 1 / maxSurfaceSectors 1);
+adjudicate whether `oneworld-explorer` / `star-alliance-rtw-fare` belong in award-pricing scope.
+Docs-only: NO other file touched, nothing committed.
+
+### (a) Chart recovered — two full era matrices pinned; current-era numerals NOT recoverable
+
+All evidence from official china-airlines.com pages replayed via Wayback raw id_ captures (cached
+under %TEMP%\gcmp-research\a8-*):
+- ERA-1 pinned by TWO captures whose rules text verifies identical:
+  `https://web.archive.org/web/20151216204817/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam.html`
+  and `https://web.archive.org/web/20190822111127/…ticket-awards-skyteam.html`.
+- ERA-2 pinned by `https://web.archive.org/web/20251008063633/…ticket-awards-skyteam` — the last
+  fully recoverable numeric chart.
+- CURRENT era: the old slug soft-404s since the Next.js redesign (archived shell
+  `https://web.archive.org/web/20260606194931/…ticket-awards-skyteam` is a 356 KB NEXT_NOT_FOUND
+  RSC shell; live URL renders "Page not found" in a real browser; Invoke-WebRequest is bot-blocked
+  with HTTP 403). New canonical page
+  `https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket` (archived
+  `https://web.archive.org/web/20260705122302/…reward-ticket`): its RSC payload carries the full
+  CURRENT rules text but ZERO numeric mileage tables — the numbers load client-side and are absent
+  from the archive.
+- RECOMMENDATION ONLY (not applied here): refresh the china-airlines-skyteam-partner-award
+  sourceUrls in `public/data/rtw-products/current.json` to the new canonical path; the old slug is
+  dead.
+
+Region abbreviations (chart column order): NEA Northeast Asia, SEA Southeast Asia, SWA Southwest
+Asia, ME Middle East, EU Europe, NAf North Africa, SAf South Africa, NAm North America, CAm Central
+America, SAm South America, SWP Southwest Pacific. Upper triangle read L→R; '·' = blank mirror cell;
+values are ROUND-TRIP miles in thousands (×1,000 for miles).
+
+ERA-1 matrix — cabins Economy / Business / First Class:
+
+```
+Economy       NEA  SEA  SWA  ME   EU   NAf  SAf  NAm  CAm  SAm  SWP
+NEA           45   50   70   90   110  120  120  110  110  120  110
+SEA            ·   45   70   90   110  120  120  120  120  120  90
+SWA            ·    ·   50   75   90   110  110  110  120  120  110
+ME             ·    ·    ·    ·   50   60   90   100  110  110  120
+EU             ·    ·    ·    ·   35   70   70   70   70   90   120
+NAf            ·    ·    ·    ·    ·   40   60   70   70   80   120
+SAf            ·    ·    ·    ·    ·    ·   80   80   100  70   120
+NAm            ·    ·    ·    ·    ·    ·    ·   35   40   50   120
+CAm            ·    ·    ·    ·    ·    ·    ·    ·   40   45   120
+SAm            ·    ·    ·    ·    ·    ·    ·    ·    ·   40   120
+SWP            ·    ·    ·    ·    ·    ·    ·    ·    ·    ·   70
+
+Business      NEA  SEA  SWA  ME   EU   NAf  SAf  NAm  CAm  SAm  SWP
+NEA           60   70   90   130  160  180  180  160  160  180  160
+SEA            ·   60   90   130  160  180  180  180  180  180  130
+SWA            ·    ·   70   95   130  160  160  160  180  180  160
+ME             ·    ·    ·    ·   70   80   130  150  160  160  180
+EU             ·    ·    ·    ·   50   90   90   90   90   130  180
+NAf            ·    ·    ·    ·    ·   60   80   90   90   120  180
+SAf            ·    ·    ·    ·    ·    ·   120  120  150  90   180
+NAm            ·    ·    ·    ·    ·    ·    ·   50   60   70   180
+CAm            ·    ·    ·    ·    ·    ·    ·    ·   60   60   180
+SAm            ·    ·    ·    ·    ·    ·    ·    ·    ·   60   180
+SWP            ·    ·    ·    ·    ·    ·    ·    ·    ·    ·   90
+
+First Class   NEA  SEA  SWA  ME   EU   NAf  SAf  NAm  CAm  SAm  SWP
+NEA           80   90   120  180  210  240  240  210  210  240  210
+SEA            ·   80   120  180  210  240  240  240  240  240  180
+SWA            ·    ·   90   130  180  210  210  210  240  240  210
+ME             ·    ·    ·    ·   100  110  180  200  210  210  240
+EU             ·    ·    ·    ·   75   120  120  120  120  180  240
+NAf            ·    ·    ·    ·    ·   80   110  120  120  160  240
+SAf            ·    ·    ·    ·    ·    ·   160  160  200  120  240
+NAm            ·    ·    ·    ·    ·    ·    ·   75   80   90   240
+CAm            ·    ·    ·    ·    ·    ·    ·    ·   80   80   240
+SAm            ·    ·    ·    ·    ·    ·    ·    ·    ·   80   240
+SWP            ·    ·    ·    ·    ·    ·    ·    ·    ·    ·   120
+```
+
+ERA-1 rules (verbatim; verified identical across the 2015-12-16 and 2019-08-22 captures):
+- "Redemption levels are based on round-trip travel. The required mileage for redeeming one-way
+  award tickets is the same as that for round trips."
+- "The redemption level for the highest cabin class will apply if the award ticket journey involves
+  different cabin classes." (mixed-cabin rule; highest-cabin applies)
+- "One open-jaw and one stopover is allowed in the itinerary for SkyTeam award tickets."
+- "An open-jaw itinerary must be in the same redemption area."
+- "A stopover is a stop of over 24 hours at a place other than the destination and the turnaround
+  point and must be in the same region as the point of origin or the destination."
+- "For the purpose of flight connecting, SkyTeam award tickets allow a maximum of six sectors
+  (including open-jaws). When the point of origin and the destination of itineraries are in
+  different redemption region, transit points can be in different redemption regions…"
+- Shortest-direct-route principle with all three via-prohibitions (byte-identical across BOTH
+  eras): "The itinerary connections of SkyTeam award tickets must be the shortest direct route
+  between the point of origin and the destination. Based on this principle, itineraries between
+  Europe/Africa/Middle East and America shall not be via Asia/Southwest Pacific, itineraries
+  between America and Asia/Southwest Pacific shall not be via Europe/Africa/Middle East and
+  itineraries between Asia/Southwest Pacific and Europe/Africa/Middle East shall not be via
+  Americas." — this trio is the operative wording behind rejectsAtlanticAndPacificCrossing.
+- "Stopovers and transit points also have to comply with the shortest direct route principle and
+  must be in the same direction during the itinerary (either eastbound or westbound). This means
+  stopovers and transit points must be the points on…"
+
+ERA-2 matrix (capture 2025-10-08) — cabins Economy / Premium Economy / Business (First Class
+discontinued); explicit red table caption "unit: 1000 miles":
+
+```
+Economy          NEA  SEA  SWA  ME   EU   NAf  SAf  NAm  CAm  SAm  SWP
+NEA              35   35   60   90   110  110  110  110  110  110  110
+SEA               ·   35   50   90   110  110  110  110  110  110  90
+SWA               ·    ·   35   75   90   110  110  110  110  110  110
+ME                ·    ·    ·   35   50   60   90   100  110  110  120
+EU                ·    ·    ·    ·   35   70   70   70   70   90   120
+NAf               ·    ·    ·    ·    ·   35   60   70   70   80   120
+SAf               ·    ·    ·    ·    ·    ·   80   80   100  70   120
+NAm               ·    ·    ·    ·    ·    ·    ·   35   40   50   120
+CAm               ·    ·    ·    ·    ·    ·    ·    ·   35   45   120
+SAm               ·    ·    ·    ·    ·    ·    ·    ·    ·   35   120
+SWP               ·    ·    ·    ·    ·    ·    ·    ·    ·    ·   35
+
+Premium Economy  NEA  SEA  SWA  ME   EU   NAf  SAf  NAm  CAm  SAm  SWP
+NEA              40   40   65   100  120  120  120  120  120  120  120
+SEA               ·   40   55   100  120  120  120  120  120  120  100
+SWA               ·    ·   40   85   100  120  120  120  120  120  120
+ME                ·    ·    ·   40   55   65   100  110  120  120  130
+EU                ·    ·    ·    ·   40   75   75   75   75   100  130
+NAf               ·    ·    ·    ·    ·   40   65   75   75   90   130
+SAf               ·    ·    ·    ·    ·    ·   90   90   110  75   130
+NAm               ·    ·    ·    ·    ·    ·    ·   40   45   55   130
+CAm               ·    ·    ·    ·    ·    ·    ·    ·   40   50   130
+SAm               ·    ·    ·    ·    ·    ·    ·    ·    ·   40   130
+SWP               ·    ·    ·    ·    ·    ·    ·    ·    ·    ·   45
+
+Business         NEA  SEA  SWA  ME   EU   NAf  SAf  NAm  CAm  SAm  SWP
+NEA              60   60   80   130  160  160  160  160  160  160  160
+SEA               ·   60   70   130  160  160  160  160  160  160  130
+SWA               ·    ·   60   95   130  160  160  160  160  160  160
+ME                ·    ·    ·   60   70   80   130  150  160  160  180
+EU                ·    ·    ·    ·   60   90   90   90   90   130  180
+NAf               ·    ·    ·    ·    ·   60   80   90   90   120  180
+SAf               ·    ·    ·    ·    ·    ·   120  120  150  90   180
+NAm               ·    ·    ·    ·    ·    ·    ·   60   65   70   180
+CAm               ·    ·    ·    ·    ·    ·    ·    ·   60   60   180
+SAm               ·    ·    ·    ·    ·    ·    ·    ·    ·   60   180
+SWP               ·    ·    ·    ·    ·    ·    ·    ·    ·    ·   60
+```
+
+ERA-2 deltas (verbatim):
+- "One-way ticket award level will be calculated half of round-trip award ticket redemption
+  level." — one-way semantics FLIPPED from Era-1 (was: same price as round trip).
+- "Stopovers are not allowed for a one-way ticket. A maximum of three sectors are allowed for each
+  one-way award ticket."
+- "For the purpose of flight connecting, SkyTeam round-trip award tickets allow a maximum of six
+  sectors (including open-jaws)." — six-sector cap now scoped to round-trips.
+- "One open-jaw and one stopover are allowed in the itinerary for round-trip SkyTeam award
+  tickets." (is→are, and scoped to round-trip)
+- "A stopover refers to a stay of 24 hours or more at a point other than the destination and the
+  turnaround point and must be in the same region as the origin or destination." (>24 h → ≥24 h;
+  "point of origin" → "origin")
+- "Redemption for Premium Economy Class award tickets is only available for flights providing
+  Premium Economy class service."
+- The ME diagonal — the UNIQUE blank diagonal in Era-1 — becomes PRICED (E35/P40/B60); its tail
+  values (EU…SWP literal row) are IDENTICAL to Era-1's, retroactively confirming that the Era-1 ME
+  blank was intentional and that no column shift occurred in either matrix.
+
+Transcription honesty notes:
+- Unit attribution: the 2015-12-16 page carries NO unit annotation anywhere (probe hits for 'unit',
+  '1000', '1,000': zero); "unit: 1000 miles" is pinned by the 2019-08-22 capture (red span above
+  the table) and repeated in Era-2. Thousands-scale for the 2015 numbers therefore rests on the
+  2019 annotation + magnitude continuity + community figures, not on a 2015-page verbatim string.
+- Era windows: Era-1 pinned at 2015-12-16 and 2019-08-22 (rules text verified identical; matrix
+  transcribed consistently from both); intermediate captures exist (20210923 / 20240519 /
+  20250324) but were not replayed within budget. Era-2 pinned 2025-10-08, superseded by the
+  Next.js redesign some time ≤2026-06. If ever encoded, confidence grade = 'published-chart'
+  (schema enum), era-tagged.
+- Seasonality (separate archived page, WB 20190822112138 …/seasonality-chart.html, 105 KB):
+  verbatim "During boom season, it is not allowed to redeem free ticket award for certain routes
+  on Korea Air. Members must confirm the following blackout dates before redemption." followed by
+  a route|departure blackout TABLE whose year columns are 2017/2018 only — era-limited snapshot,
+  no general rule extractable.
+- Community corroboration (search-snippet grade; pages NOT fetched): tripplus guide(七)
+  (blog.tripplus.cc/zh/160308/brady_china_airlines_guide_2023_s07) quotes 「商務艙僅需35,000哩，
+  來回商務艙僅需70,000哩」 — zone unspecified, so LOW grade; consistent with zone-based
+  thousands-scale pricing but not reconcilable to a specific cell. FlyerTalk thread 2154364 p4:
+  CI reviewed partner strategy after members used SkyTeam partner awards to fly CI (context for
+  availability embargoes). PTT points M.1699878516.A.DA4: general dynamic-pricing QA context.
+  Nothing contradicts either matrix.
+- Current-era rules recovered from the RSC payload (verbatim excerpts; numerals ABSENT):
+  "The flights to be taken through SkyTeam reward ticket redemption must be marketed and operated
+  by the same SkyTeam partner airlines. Code-shared flights of SkyTeam partner airlines are not
+  eligible for reward ticket redemption."; "(suspension of MU/FM one-way reward tickets, please
+  refer to /us/en/member/announcements/20260629-1)"; fee schedule: reissue "A handling fee of
+  TWD1,500 (or the equivalent amount in local currency) will be charged for reissuing a reward
+  ticket.", refund legacy "To refund a totally unused reward ticket, a handling fee of TWD1,500…
+  will be charged." (USD50 variant paragraph also present), no-show "A handling fee of USD100 on
+  the long haul ticket, USD50 on the short haul ticket"; one-way 3-sector/no-stopover, RT 1 OJ +
+  1 stopover, six-sector and shortest-direct-route sentences all still present.
+
+### (b) Adjudication — oneworld-explorer / star-alliance-rtw-fare are cash fares; miles N/A
+
+Both CONFIRMED as paid fares, matching their existing kind:'cash-rtw-fare'; keep OUT of
+award-pricing scope; no catalog change required.
+- oneworld-explorer — live https://www.oneworld.com/round-the-world (cached, 64 KB): "oneworld
+  Explorer: a continent-based fare," / "Global Explorer: a distance-based fare," / "Circle
+  Pacific: an inter-continental journey…"; sold via the oneworld.com booking tool with cabin
+  dropdown; miles appear earn-side only ("earn more miles and points"). Caveat: individual
+  programs historically sell continent-count AWARDS shaped like Explorer (e.g., AA) — those would
+  need a separate productId if ever added; UNVERIFIED this pass (LOW grade).
+- star-alliance-rtw-fare — live
+  https://roundtheworld.staralliance.com/staralliance/en/round-the-world (cached, 101 KB): sold
+  via Book and Fly; "Your Round the World fare qualifies to earn miles and points in your Frequent
+  Flyer Programme." (= earn-side). Validity note seen: First Class RTW / Circle Pacific issued
+  from 1JUL26 must be completed within 12 months or by 1OCT27. Mileage analogue is already modeled
+  as separate program awards (cf. archived ana-star-alliance-rtw-award).
+- Coverage-gap observation only: Global Explorer and Circle Pacific are additional cash RTW fares
+  absent from the gcmp catalog (no action taken).
+
+### (c) Award-pricing proposal — BLOCKED ON SCHEMA EXTENSION (do NOT shoehorn into distance-band)
+
+src/lib/schemas/award-pricing.ts constraints: L54 pricingModel enum ['fixed-rtw','distance-band']
+has NO zone model; AwardPricingBandSchema {minMiles, maxMiles, prices} cannot express zone-pair
+prices without fabricating mileage thresholds; L3 cabin enum ['economy','business','first'] lacks
+premium-economy (required by Era-2). Encoding the zone chart as distance bands would misprice real
+itineraries — explicitly rejected. Required extension: pricingModel +'zone-pair'; zone-keyed band
+shape {originRegion, destinationRegion, prices}; AwardPricingCabinSchema +'premium-economy'.
+Proposed product fragment (NOT directly applicable until that extension lands; full band list =
+the §(a) matrices ×1,000):
+
+```json
+{
+  "productId": "china-airlines-skyteam-partner-award",
+  "label": "China Airlines Dynasty Flyer SkyTeam partner award",
+  "pricingModel": "zone-pair",
+  "confidence": "published-chart",
+  "currency": "miles",
+  "asOfEra": "2025-10",
+  "sourceUrls": [
+    "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+    "https://web.archive.org/web/20190822111127/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam.html"
+  ],
+  "notes": [
+    "Zone chart, upper triangle; values are ROUND-TRIP miles; one-way = half round-trip (Era-2 rule).",
+    "First Class discontinued in Era-2; Premium Economy added.",
+    "Superseded by Next.js redesign <=2026-06; live numeric chart not archive-recoverable.",
+    "Routing rejects any itinerary crossing both the Pacific and the Atlantic (shortest-direct-route via-prohibitions)."
+  ],
+  "zones": ["NEA", "SEA", "SWA", "ME", "EU", "NAf", "SAf", "NAm", "CAm", "SAm", "SWP"],
+  "bands": [
+    { "originRegion": "NEA", "destinationRegion": "EU",  "prices": { "economy": 110000, "premiumEconomy": 120000, "business": 160000 } },
+    { "originRegion": "NEA", "destinationRegion": "SWP", "prices": { "economy": 110000, "premiumEconomy": 120000, "business": 160000 } },
+    { "originRegion": "SWP", "destinationRegion": "SWP", "prices": { "economy": 35000, "premiumEconomy": 45000, "business": 60000 } }
+  ]
+}
+```
+
+Sample bands only above; when the schema extension is approved, machine-generate all pairs from the
+cached HTML instead of hand-transcribing 66 pairs into docs.
+
+### (d) Suggested calib.* test ids (docs-only; none activated)
+
+- calib.ci-skyteampartner.zone-pair-era2-chart — pin sample cells once a zone-pair model exists
+  (NEA→EU B 160,000 RT; NEA→SWP E 110,000 RT; SWP→SWP E 35,000 RT).
+- calib.ci-skyteampartner.oneway-half-of-roundtrip-era2 — OW NEA→EU B = 80,000 = half RT.
+- calib.ci-skyteampartner.oneway-equals-roundtrip-era1 — pre-change semantics guard (era-tagged).
+- calib.ci-skyteampartner.rt-six-sectors-one-openjaw-one-stopover.
+- calib.ci-skyteampartner.oneway-three-sectors-no-stopover-era2.
+- calib.ci-skyteampartner.rejects-via-third-ocean-region — the three via-prohibitions (both eras).
+- calib.ci-skyteampartner.era1-me-diagonal-blank — ME is the UNIQUE blank Era-1 diagonal (every
+  other diagonal is priced); guards against column-shift misreads; ME prices at 35 in Era-2.
+- calib.ci-skyteampartner.mufm-oneway-suspension-note-current — current-era MU/FM suspension rule pin.
+
+### (e) Budget + honesty ledger
+
+Origin/live/replay: 10 budgeted + 1 disclosed retry = 11 vs cap 10 (A7-style overage disclosure):
+1. live reward-tickets-skyteam Invoke-WebRequest → HTTP 403 FAILED (bot-block; error-only, no artifact)
+2. WB replay 20190822111127 (Era-1 .html, 146,433 B) OK
+3. WB replay 20151216204817 (Era-1, 78,596 B) OK
+4. WB replay 20260606194931 (NEXT_NOT_FOUND RSC shell, 356,520 B) OK — negative evidence
+5. WB replay 20190822112138 (seasonality, 105,422 B) OK
+6. WB replay 20251008063633 (Era-2, 149,704 B) OK
+7. browser render live reward-tickets-skyteam → "Page not found" — negative evidence
+8. browser render live hk/en/member/miles/redeem/reward-ticket → loaded, but cookie-consent overlay
+   blocked DOM observation; screenshot attempt failed ("image readback failed"); RPC-timeout retry
+   navigation of the SAME URL = overage call #11, yielded nothing
+9. live oneworld.com/round-the-world OK (64,815 B)
+10. live roundtheworld.staralliance.com/…/round-the-world OK (101,857 B)
+
+CDX API: exactly 5/5 (cap respected). All matchType=prefix, NO filter= param (filter defect
+avoided); every prefix returned rows: (1) prefix us/en/member/redeem-airline-miles collapse=urlkey
+→ 33 rows; (2) prefix …/skyteam-partners → 22 rows; (3)(4)(5) prefixes us|hk|tw
+/en/member/miles/redeem → 15/2/3 rows. Cached: a8-cdx-ci-redeem-prefix.txt,
+a8-cdx-ci-skyteam-partners-all.txt, a8-cdx-ci-newmiles-{us,hk,tw}.txt.
+
+Search plane (separate ledger): web_search ×1 (3 queries; WORKED — no HTTP 402 this session,
+contradicting the stale-defect warning) + anysearch_batch_search ×1 (4 items; the PTT / FlyerTalk /
+tripplus snippets cited above).
+
+Cache (%TEMP%\gcmp-research\, 14 files): a8-ci-wb-2015-ticket-awards-skyteam.html 78,596 B;
+a8-ci-wb-2019-ticket-awards-skyteam.html 146,433 B; a8-ci-wb-2019-seasonality-chart.html 105,422 B;
+a8-ci-wb-2025-ticket-awards-skyteam.html 149,704 B; a8-ci-wb-2026-ticket-awards-skyteam.html
+356,520 B; a8-ci-wb-2026-new-reward-ticket.html 1,583,441 B; a8-ci-wb-2026-rsc-payload.txt
+75,622 B; a8-ow-live-round-the-world.html 64,815 B; a8-star-live-round-the-world.html 101,857 B;
+plus the five CDX dumps above. The failed live fetch left no artifact (error-only convention).
+
+Tooling lessons: Wayback filter= soft-fails (empty 200s) → bypassed with matchType=prefix;
+JS-shell negative heuristic differs on Next.js sites (356 KB RSC-bearing NEXT_NOT_FOUND shell ≠
+the legacy 13–15 KB title-only shell); RSC payloads yield SPA SSR text via regex
+self\.__next_f\.push\(\[1,"((?:[^"\\]|\\.)*)"\]\] + [regex]::Unescape; CI bot-blocks
+Invoke-WebRequest (403) yet allows a real-browser render; the cookie modal persists across clicks
+(the consent cookie is never set) so DOM stays unreadable behind the overlay; PS5.1: avoid
+comma-form -replace args and multi-arg .Substring mistakes.
+
+No quotes fabricated: every verbatim string above was re-verified against local cache immediately
+before writing; two recalled wordings were corrected by zero-hit probes (Era-2 says "round-trip
+SkyTeam award tickets", not "reward"); the Era-1 unit-annotation absence was recorded instead of
+assumed. No code/data changes; nothing committed; the rtw-products sourceUrl update is a
+recommendation only; no Iron Rule test activates from A8; existing calib.* mechanisms are
+unaffected.
+
+## A9 — CX fourth-era multi-carrier chart: community-DP closure (follow-up pass)
+
+Question (consumes §A5(d)'s open cell): can community DPs from 2024–2026 posts explain or pin the
+FT 2184572 Jan-2025 data point (~230,000 miles at a self-stated 19,442 flown miles, cabin unstated)
+that matches NO cell of the frozen eras (rv=2018.Q3 ≡ 2021.Q2 ≡ 2023.Q1)? Method: web_search +
+shell-HTTPS page fetches only — no Wayback, no browser this pass.
+
+**(a) VERDICT: ≥2 consistent DPs pin Zone 10 (18,001–20,000 mi) Business = 230,000**
+
+- DP-1 — FT 2184572, Jan-2025 (thread already transcribed §A3/A5): OP self-stated "flying distance
+  of 19,442 miles", agent-priced **230,000 Asia Miles**, cabin never named.
+- DP-2 — Prince of Travel guide, published AND modified 2025-07-16 (cache
+  `%TEMP%\gcmp-research\a9-pot-multicarrier-chart.html`, 200,975 B), verbatim: "The total distance
+  clocks in at **19,150 miles,** so we'll fall into **Zone 10** of the chart and pay **115,000
+  Asia Miles** in economy class or **230,000 Asia Miles** for business class."
+⇒ Two independent sources place ~19.2–19.4k flown miles at Business 230,000 under one zone-banded
+chart ⇒ approximate-fourth-era pin at confidence `community-corrected`. Bonus: FT's cabin UNSTATED
+resolves to BUSINESS (230k is the J cell; E is 115k).
+
+**(b) Static-chart corroboration — Suitesmile grid (post-1-May-2026 state)**
+
+Suitesmile, published 2026-05-02 (cache `a9-suitesmile-hidden-charts.html`, 262,285 B), intro
+verbatim: charts "take into account the most recent Asia Miles award changes/devaluation that took
+effect on 1 May 2026." Its "Award chart for oneworld multi-carrier" table, transcribed verbatim:
+
+```
+zone | actual flown miles | Economy | Business | First   (fourth era, as of 2026-05-02;
+ 01  |        0 -    1,000|  30,000 |   60,000 |  75,000  zone EDGES identical to
+ 02  |    1,001 -  1,500  |  35,000 |   65,000 |  85,000  rv=2018.Q3; values revised)
+ 03  |    1,501 -  2,000  |  40,000 |   70,000 |  95,000
+ 04  |    2,001 -  4,000  |  45,000 |   80,000 | 110,000
+ 05  |    4,001 -  7,500  |  63,000 |  100,000 | 150,000
+ 06  |    7,501 -  9,000  |  68,000 |  120,000 | 165,000
+ 07  |    9,001 - 10,000  |  77,000 |  135,000 | 175,000
+ 08  |   10,001 - 14,000  |  95,000 |  170,000 | 250,000
+ 09  |   14,001 - 18,000  | 105,000 |  210,000 | 310,000
+ 10  |   18,001 - 20,000  | 115,000 |  230,000 | 330,000  ← DP-corroborated cells
+ 11  |   20,001 - 25,000  | 126,000 |  250,000 | 350,000
+ 12  |   25,001 - 35,000  | 140,000 |  265,000 | 365,000
+ 13  |   35,001 - 50,000  | 160,000 |  280,000 | 380,000
+```
+
+Zone-10 row matches PoT exactly (E115/B230). Caveat: only zone-10 Economy/Business are
+DP-corroborated for the PRE-May-2026 window; every other cell above is a single-source
+transcription of the POST-devaluation state (reference-only until independently checked).
+Premium Economy remains absent, consistent with the no-PE terms.
+
+**(c) Fourth-era deltas vs frozen rv=2018.Q3/2021.Q2/2023.Q1**
+
+Band edges UNCHANGED (same 13 zones, same mile ranges) — only prices moved, every cell up:
+long-haul hit hardest — Business z09 +55k (155→210), z10 +65k (165→230), z11 +65k (185→250),
+z12 +55k; First z09 +60k, z10/z11 +70k each; short-haul mild (+5–15k across all cabins; z05–z07
+Economy +3–7k). This explains §A5(d)'s puzzle verbatim: 230,000 sat between frozen-era J185k and
+F280k because it IS the revised Business price. No new mechanism — same zone-band model,
+highest-class-wins and carrier rules carry over per Reddit r/awardtravel 1ff4qdh ("You will be
+charged the first class price if you include even one F segment").
+
+**(d) Era timeline & open tension (recorded, not resolved)**
+
+- Effective bracket stays **(2023-02-26, 2025-01-25]** exactly as §A5(d): web_search ×3 surfaced
+  NO dated mid-2024 multi-carrier increase thread (Reddit 14s9818 "Major Devaluation" is Jul-2023
+  CX own-metal — different product), so Jan-2025 remains the earliest observed fourth-era price.
+- AwardWallet: "In April 2025, Asia Miles debuted new award charts for flights on its own metal
+  and for Oneworld multi-carrier/round-the-world bookings" — that is the PUBLIC documentation
+  moment, AFTER the first observed fourth-era price ⇒ treat Apr-2025 as publication date, not
+  effect date.
+- OPEN TENSION: the AM agent verbally told the FT OP "20,000–25,000 range" (=zone 11), and
+  §A5(d)'s jaw-inclusive math (23,237 mi) agrees with zone 11 — where the CURRENT grid says
+  B250k ≠ 230k paid. The 230k payment instead fits zone-10 Business under flown-only distance
+  (19,442). Favored reading: OP was zoned by flown sectors into zone 10; the agent's verbal range
+  quote stays unexplained. As in §A5(d), this DP must NOT be used to settle the open-jaw-counting
+  question either way.
+- Catalog flag (observation only, NOT edited here):
+  `public/data/award-pricing/current.json` cx-asia-miles-oneworld-multi-carrier-award bands were
+  seeded from generic references and diverge from BOTH recovered states — e.g. its 20001–25000 row
+  is E120k/J175k/F270k vs official-frozen E115/J185/F280 vs fourth-era E126/J250/F350; its
+  18001–20000 row E110k vs official-frozen E105k / fourth-era E115k. Any t3-style application
+  should rebase against these pinned tables, not the seeds.
+
+**(e) Suggested calib.* test ids (docs-only; none activated)**
+
+- calib.cx-multicarrier.fourth-era-zone10-business-230k — 19,442 mi and 19,150 mi both ⇒ B 230,000.
+- calib.cx-multicarrier.fourth-era-band-edges-unchanged — 13 zone edges byte-equal to rv=2018.Q3.
+- calib.cx-multicarrier.fourth-era-zone11-business-250k-current — current-grid guard (suitesmile).
+- calib.cx-multicarrier.no-premium-economy-cabin-fourth-era.
+
+**(f) Budget & honesty ledger**
+
+web_search 3 calls / 9 queries vs ≤8-call cap ✓; page fetches 2/4 (princeoftravel.com → 200,
+200,975 B; suitesmile.com → 200, 262,285 B; both cached under %TEMP%\gcmp-research\a9-*); CDX 0;
+Wayback 0; browser 0. The PoT sentence and Suitesmile rows above were extracted verbatim from the
+cached HTML immediately before writing; AwardWallet/Reddit lines are search-snippet grade and
+marked as such. Confidence: zone-10 {E,B} = community-corrected (two independent DPs); full grid =
+single-source post-devaluation transcription. No code/data changes; nothing committed; no Iron
+Rule test activates from A9; existing calib.cx-multicarrier.* mechanisms unaffected.

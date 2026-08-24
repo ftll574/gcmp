@@ -3,6 +3,7 @@ import { describe, expect, test } from 'vitest';
 import {
   estimateAwardPrice,
   getAwardFees,
+  getZonePairQuote,
   priceRtwItinerary,
   quoteAwardZone,
 } from '../../../src/lib/rtw/award-pricing.ts';
@@ -12,6 +13,31 @@ import type { CabinId, Leg } from '../../../src/lib/types.ts';
 const catalog = AwardPricingCatalogSchema.parse(
   JSON.parse(readFileSync('public/data/award-pricing/current.json', 'utf8')),
 );
+
+// Inline fixture: same mechanics as the real products, but carrying a
+// premiumEconomy price key — the live band-based products don't have one
+// yet outside CI (whose Era-2 zone chart prices PE on every cell).
+const peFixtureCatalog = AwardPricingCatalogSchema.parse({
+  version: '2026.2',
+  lastVerified: '2026-08-24',
+  products: [
+    {
+      productId: 'fixture-pe-band',
+      label: 'Fixture distance-band product with Premium Economy',
+      pricingModel: 'distance-band',
+      confidence: 'published-chart',
+      currency: 'miles',
+      sourceUrls: ['https://example.com/chart'],
+      bands: [
+        {
+          minMiles: 0,
+          maxMiles: null,
+          prices: { economy: 100000, premiumEconomy: 120000, business: 200000 },
+        },
+      ],
+    },
+  ],
+});
 
 describe('estimateAwardPrice', () => {
   test('returns EVA fixed business RTW price', () => {
@@ -36,7 +62,7 @@ describe('estimateAwardPrice', () => {
     );
 
     expect(estimate?.band).toEqual({ minMiles: 18001, maxMiles: 20000 });
-    expect(estimate?.miles).toBe(165000);
+    expect(estimate?.miles).toBe(230000);
     expect(estimate?.confidence).toBe('reference-recheck');
   });
 
@@ -75,6 +101,13 @@ describe('estimateAwardPrice', () => {
     );
 
     expect(estimate).toBeNull();
+  });
+
+  test('prices premium economy once the chart actually carries a PE price (A8 schema extension)', () => {
+    const estimate = estimateAwardPrice(peFixtureCatalog, 'fixture-pe-band', 21000, 'premium-economy');
+
+    expect(estimate?.cabin).toBe('premium-economy');
+    expect(estimate?.miles).toBe(120000);
   });
 });
 
@@ -129,6 +162,15 @@ describe('priceRtwItinerary', () => {
 
     expect(estimate).toBeNull();
   });
+
+  test('premium-economy highest cabin prices through a chart that carries PE (A8)', () => {
+    const legs: Leg[] = [leg('economy'), leg('premium-economy')];
+
+    const estimate = priceRtwItinerary(peFixtureCatalog, 'fixture-pe-band', 21000, legs, 'economy');
+
+    expect(estimate?.cabin).toBe('premium-economy');
+    expect(estimate?.miles).toBe(120000);
+  });
 });
 
 describe('getAwardFees', () => {
@@ -165,9 +207,9 @@ describe('quoteAwardZone', () => {
     expect(quote?.confidence).toBe('reference-recheck');
     // Values transcribed from the live catalog JSON — asserted so any chart
     // drift fails loudly here instead of silently in the UI.
-    expect(quote?.prices.economy).toBe(110000);
-    expect(quote?.prices.business).toBe(165000);
-    expect(quote?.prices.first).toBe(260000);
+    expect(quote?.prices.economy).toBe(115000);
+    expect(quote?.prices.business).toBe(230000);
+    expect(quote?.prices.first).toBe(330000);
   });
 
   test('honest partial chart: ANA archived quote pins business only', () => {
@@ -192,6 +234,12 @@ describe('quoteAwardZone', () => {
     expect(Object.keys(quote?.prices ?? {})).toEqual(['business']);
   });
 
+  test('includes premiumEconomy in the price record when the chart carries it (A8)', () => {
+    const quote = quoteAwardZone(peFixtureCatalog, 'fixture-pe-band', 21000);
+
+    expect(quote?.prices).toEqual({ economy: 100000, premiumEconomy: 120000, business: 200000 });
+  });
+
   test('returns null for an unknown productId', () => {
     expect(quoteAwardZone(catalog, 'no-such-product', 21000)).toBeNull();
   });
@@ -202,5 +250,55 @@ describe('quoteAwardZone', () => {
     expect(quoteAwardZone(catalog, cx, -1)).toBeNull();
     // Highest covered CX band ends at maxMiles 50,000.
     expect(quoteAwardZone(catalog, cx, 50001)).toBeNull();
+  });
+});
+
+describe('zone-pair pricing (china-airlines-skyteam-partner-award, docs/calibration-set.md §A8)', () => {
+  const CI = 'china-airlines-skyteam-partner-award';
+
+  test('distance-based functions return null for a zone-pair product (behavior preserved)', () => {
+    // Zone charts price region pairs, never total distance: the distance
+    // path must not silently fabricate a band for them.
+    expect(estimateAwardPrice(catalog, CI, 9000, 'business')).toBeNull();
+    expect(priceRtwItinerary(catalog, CI, 9000, [{ from: 'TPE', to: 'LHR', operatingCarrier: 'CI', cabin: 'business' }], 'business')).toBeNull();
+    expect(quoteAwardZone(catalog, CI, 9000)).toBeNull();
+  });
+
+  test('getZonePairQuote pins the §A8 sample cells (Era-2 chart, RT miles)', () => {
+    const neaEu = getZonePairQuote(catalog, CI, 'NEA', 'EU', 'business');
+    expect(neaEu?.miles).toBe(160000);
+    expect(neaEu?.cabin).toBe('business');
+    expect(neaEu?.originRegion).toBe('NEA');
+    expect(neaEu?.destinationRegion).toBe('EU');
+    expect(neaEu?.confidence).toBe('published-chart');
+    expect(neaEu?.prices).toEqual({ economy: 110000, premiumEconomy: 120000, business: 160000 });
+
+    expect(getZonePairQuote(catalog, CI, 'NEA', 'SWP', 'economy')?.miles).toBe(110000);
+
+    const swpSwp = getZonePairQuote(catalog, CI, 'SWP', 'SWP', 'economy');
+    expect(swpSwp?.miles).toBe(35000);
+    expect(swpSwp?.prices).toEqual({ economy: 35000, premiumEconomy: 45000, business: 60000 });
+  });
+
+  test('getZonePairQuote matches either direction (unordered upper-triangle chart)', () => {
+    const forward = getZonePairQuote(catalog, CI, 'EU', 'NEA', 'business');
+    expect(forward?.miles).toBe(160000);
+    // Canonical stored direction is reported regardless of query direction.
+    expect(forward?.originRegion).toBe('NEA');
+    expect(forward?.destinationRegion).toBe('EU');
+  });
+
+  test('getZonePairQuote returns null on misses and unpriced cabins', () => {
+    // Unknown region abbreviations are misses, not guesses.
+    expect(getZonePairQuote(catalog, CI, 'TPE', 'EU', 'business')).toBeNull();
+    expect(getZonePairQuote(catalog, CI, 'XX', 'YY', 'economy')).toBeNull();
+    // Unknown productId / non-zone-pair product.
+    expect(getZonePairQuote(catalog, 'no-such-product', 'NEA', 'EU', 'business')).toBeNull();
+    expect(
+      getZonePairQuote(catalog, 'qantas-oneworld-classic-flight-reward', 'NEA', 'EU', 'business'),
+    ).toBeNull();
+    // Era-2 discontinued First Class — unpriced cabin stays an omitted key,
+    // surfaced as null rather than a guessed number.
+    expect(getZonePairQuote(catalog, CI, 'NEA', 'EU', 'first')).toBeNull();
   });
 });

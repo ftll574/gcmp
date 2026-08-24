@@ -1,7 +1,7 @@
 {
   "brand": {
     "name": "gcmp",
-    "tagline": "里程查票计算器"
+    "tagline": "环球票路线规划"
   },
   "lang": {
     "english": "English",
@@ -17,7 +17,7 @@
     "copyTextTitle": "纯文字航段表 — 可贴到飞客茶馆 / PTT / FlyerTalk",
     "copied": "已复制 ✓"
   },
-  "loading": "加载机场数据 + 里程规则中…",
+  "loading": "加载机场数据 + 环球票规则中…",
   "errors": {
     "loadFailed": "数据加载失败：{message}",
     "loadFailedHelp": "请刷新页面。若持续失败，请到 GitHub 提 issue。"
@@ -33,8 +33,8 @@
     "clearAll": "清除"
   },
   "hero": {
-    "tagline": "找出每段航班最划算的常旅客计划。",
-    "subtagline": "选机场、选舱位，立即比较 18 个常旅客计划、4 大联盟谁给最多里程。"
+    "tagline": "规划并检查环球票路线。",
+    "subtagline": "输入航线、标记停留与地面段，检查环球票与多航司奖励票规则。"
   },
   "samples": {
     "sfoNrtBkk": {
@@ -64,7 +64,7 @@
     "removeGroup": "移除航线 {n}",
     "groupN": "航线 {n}",
     "grandTotal": "全部航线合计",
-    "compareHint": "在同一张地图上比较多条航线。下面的 PQM 数字是全部航线加总。"
+    "compareHint": "在同一张地图上比较多条航线。环球票规则检查以当前选取的航线为主。"
   },
   "tier": {
     "label": "会籍等级",
@@ -142,11 +142,11 @@
   "footer": {
     "openSource": "gcmp — GitHub 开源项目",
     "browseByAirline": "按航空公司浏览",
-    "disclaimer": "里程数依照官方公布的合作伙伴表计算，请以实际入账为准。"
+    "disclaimer": "环球票检查仅验证结构规则；奖励机位与实际出票仍需向航空公司确认。"
   },
   "map": {
     "fallbackHeading": "地图渲染失败。",
-    "fallbackHint": "里程计算仍然有效。下面可重试渲染地图。",
+    "fallbackHint": "环球票规则检查仍然有效。下面可重试渲染地图。",
     "retry": "重试",
     "ariaLabelEmpty": "世界地图",
     "ariaLabel": "地图显示航线：{chain}"
@@ -225,72 +225,72 @@
     "none": "无联盟"
   },
   "rtw": {
-    "noProducts": "No RTW products loaded.",
-    "planningEyebrow": "Planning context",
-    "planningTitle": "{market}-first RTW route",
-    "validationEyebrow": "Taiwan-first RTW planner",
-    "validationTitle": "Route rule check",
-    "product": "RTW product",
-    "productShort": "Product",
-    "alliance": "Alliance",
-    "type": "Type",
-    "carrierSeed": "Carrier seed",
-    "empty": "Add at least one flight segment to start validating RTW rules.",
-    "mileageEstimate": "Mileage estimate",
-    "routeLegDetails": "Flight details",
-    "inspectorRules": "Rules",
-    "inspectorTools": "Tools",
-    "inspectorSaved": "Saved",
-    "resizeEditor": "Resize route editor",
-    "resizeInspector": "Resize route inspector",
+    "noProducts": "尚未载入环球票产品。",
+    "planningEyebrow": "规划条件",
+    "planningTitle": "{market}优先环球票路线",
+    "validationEyebrow": "台湾优先环球票规划器",
+    "validationTitle": "路线规则检查",
+    "product": "环球票产品",
+    "productShort": "产品",
+    "alliance": "航空联盟",
+    "type": "票种",
+    "carrierSeed": "默认航司",
+    "empty": "添加至少一个飞行航段后，就能开始检查环球票规则。",
+    "mileageEstimate": "里程估算",
+    "routeLegDetails": "航段明细",
+    "inspectorRules": "规则",
+    "inspectorTools": "工具",
+    "inspectorSaved": "已保存",
+    "resizeEditor": "调整路线编辑区宽度",
+    "resizeInspector": "调整规则面板宽度",
     "market": {
-      "TW": "Taiwan"
+      "TW": "台湾"
     },
     "productKind": {
-      "cash": "Cash RTW fare",
-      "award": "RTW award",
-      "multiCarrier": "Multi-carrier award"
+      "cash": "现金环球票",
+      "award": "环球奖励票",
+      "multiCarrier": "多航司奖励票"
     },
     "startEnd": {
-      "label": "Start/end",
-      "sameCity": "same city",
-      "sameCountry": "same country",
-      "open": "open jaw allowed"
+      "label": "起讫限制",
+      "sameCity": "同城市",
+      "sameCountry": "同国家",
+      "open": "允许缺口程"
     },
     "limits": {
-      "maxFlights": "max {count} flights",
-      "maxStopovers": "max {count} stopovers",
-      "distanceCap": "{count} mi cap",
-      "rulesLoaded": "rules loaded",
-      "crossOceans": "cross {oceans}"
+      "maxFlights": "最多 {count} 段飞行",
+      "maxStopovers": "最多 {count} 个停留",
+      "distanceCap": "{count} 英里上限",
+      "rulesLoaded": "已载入规则",
+      "crossOceans": "跨越 {oceans}"
     },
     "ocean": {
-      "pacific": "Pacific",
-      "atlantic": "Atlantic"
+      "pacific": "太平洋",
+      "atlantic": "大西洋"
     },
     "status": {
-      "valid": "Valid so far",
-      "invalid": "Needs fixes",
-      "empty": "Add route"
+      "valid": "目前可行",
+      "invalid": "需要修正",
+      "empty": "添加路线"
     },
     "summary": {
-      "segments": "Segments",
-      "miles": "Miles",
-      "carrierIssues": "Carrier issues",
-      "stopovers": "Stopovers",
-      "surface": "Surface",
-      "transfers": "Transfers",
-      "oceans": "Oceans",
+      "segments": "飞行段数",
+      "miles": "总里程",
+      "carrierIssues": "航司问题",
+      "stopovers": "停留",
+      "surface": "地面段",
+      "transfers": "中转",
+      "oceans": "跨洋",
       "continents": "大洲",
-      "direction": "Direction",
-      "cityRepeats": "City repeats",
-      "tripDays": "Trip days"
+      "direction": "方向",
+      "cityRepeats": "城市重复",
+      "tripDays": "旅程天数"
     },
     "direction": {
-      "eastbound": "eastbound",
-      "westbound": "westbound",
-      "mixed": "mixed",
-      "unknown": "unknown"
+      "eastbound": "东行",
+      "westbound": "西行",
+      "mixed": "混合",
+      "unknown": "未知"
     },
     "continent": {
       "africa": "非洲",
@@ -314,6 +314,7 @@
       },
       "cabin": {
         "economy": "经济舱",
+        "premiumEconomy": "超级经济",
         "business": "商务舱",
         "first": "头等舱"
       },
@@ -329,78 +330,78 @@
       }
     },
     "tripDates": {
-      "eyebrow": "RTW trip duration",
-      "title": "Travel dates",
-      "start": "Start",
-      "end": "End"
+      "eyebrow": "环球票旅程天数",
+      "title": "旅行日期",
+      "start": "出发",
+      "end": "返回"
     },
     "legTable": {
-      "eyebrow": "RTW itinerary details",
-      "title": "Flight, stopover, surface sectors",
-      "leg": "Leg",
-      "operating": "Operating",
-      "timing": "Timing",
-      "surface": "Surface",
-      "operatingLabel": "Operating carrier for {from} to {to}",
-      "timingLabel": "Stopover timing for {from} to {to}",
-      "surfaceLabel": "Surface sector for {from} to {to}"
+      "eyebrow": "环球票航段明细",
+      "title": "飞行、停留与地面段",
+      "leg": "航段",
+      "operating": "执飞",
+      "timing": "停留/中转",
+      "surface": "地面段",
+      "operatingLabel": "{from} 到 {to} 的执飞航司",
+      "timingLabel": "{from} 到 {to} 的停留/中转状态",
+      "surfaceLabel": "{from} 到 {to} 的地面段"
     },
     "legChip": {
-      "stopoverLabel": "Stopover status for leg {n}",
-      "stopoverTitle": "RTW timing: transfer is under 24h, stopover is 24h+",
-      "surfaceTitle": "Surface/open-jaw sector: no flight is taken for this segment"
+      "stopoverLabel": "第 {n} 段停留/中转状态",
+      "stopoverTitle": "环球票时间规则：24 小时内为中转，24 小时以上为停留。",
+      "surfaceTitle": "地面段 / 缺口程（open jaw）：这一段不乘坐航班移动。"
     },
     "timing": {
-      "unknownShort": "Timing?",
-      "unknown": "Unknown",
-      "transfer": "Transfer",
-      "transferLong": "Transfer (<24h)",
-      "stopover": "Stopover",
-      "stopoverLong": "Stopover (24h+)",
-      "surface": "Surface"
+      "unknownShort": "时间？",
+      "unknown": "未知",
+      "transfer": "中转",
+      "transferLong": "中转（<24h）",
+      "stopover": "停留",
+      "stopoverLong": "停留（24h+）",
+      "surface": "地面段"
     },
     "findings": {
       "productStatusNote": "{note}",
-      "productStatus": "{label} is {status}.",
-      "airlineEligibilityPass": "All operating carriers match this product eligibility rule.",
-      "airlineEligibilityFail": "One or more operating carriers are not eligible for this product.",
-      "flightSegmentsPass": "Route has {count} flight segments within the allowed range.",
-      "flightSegmentsFail": "Route has {count} flight segments; allowed range is {min}-{max}.",
-      "maxDistancePass": "Route is {miles} miles within the {max} mile cap.",
-      "maxDistanceFail": "Route is {miles} miles; maximum is {max} miles.",
-      "tripDurationUnknown": "Trip duration cannot be checked until start and end dates are set.",
-      "tripDurationPass": "Trip is {days} days, within the allowed duration.",
-      "tripDurationFail": "Trip is {days} days; allowed range is {min}-{max} days.",
-      "stopoversUnknown": "{count} stopovers marked, {unknown} segment(s) unknown. Mark stopover/transfer to complete this rule.",
-      "stopoversPass": "Route has {count} stopovers within the allowed range.",
-      "stopoversFail": "Route has {count} stopovers; allowed range is {min}-{max}.",
-      "transfersUnknown": "{count} transfers marked, {unknown} segment(s) unknown. Mark stopover/transfer to complete this rule.",
-      "transfersPass": "Route has {count} transfers within the {max} transfer cap.",
-      "transfersFail": "Route has {count} transfers; maximum is {max}.",
-      "surfaceSectorsPass": "Route has {count} surface sectors within the {max} sector cap.",
-      "surfaceSectorsFail": "Route has {count} surface sectors; maximum is {max}.",
-      "stopoversPerCityPass": "No city exceeds the {max} stopover-per-city cap.",
-      "stopoversPerCityFail": "Stopover repeated too many times in: {cities}.",
+      "productStatus": "{label} 目前状态为 {status}。",
+      "airlineEligibilityPass": "所有执飞航司都符合此产品的航司资格规则。",
+      "airlineEligibilityFail": "有一段或多段执飞航司不符合此产品资格。",
+      "flightSegmentsPass": "路线共有 {count} 段飞行，符合段数限制。",
+      "flightSegmentsFail": "路线共有 {count} 段飞行；允许范围是 {min}-{max}。",
+      "maxDistancePass": "路线距离 {miles} 英里，低于 {max} 英里上限。",
+      "maxDistanceFail": "路线距离 {miles} 英里；上限为 {max} 英里。",
+      "tripDurationUnknown": "尚未设置出发与返回日期，无法检查旅程天数。",
+      "tripDurationPass": "旅程共 {days} 天，符合天数限制。",
+      "tripDurationFail": "旅程共 {days} 天；允许范围是 {min}-{max} 天。",
+      "stopoversUnknown": "已标记 {count} 个停留，仍有 {unknown} 段时间未知。请标记中转或停留以完成检查。",
+      "stopoversPass": "路线共有 {count} 个停留，符合限制。",
+      "stopoversFail": "路线共有 {count} 个停留；允许范围是 {min}-{max}。",
+      "transfersUnknown": "已标记 {count} 个中转，仍有 {unknown} 段时间未知。请标记中转或停留以完成检查。",
+      "transfersPass": "路线共有 {count} 个中转，低于 {max} 个中转上限。",
+      "transfersFail": "路线共有 {count} 个中转；上限为 {max}。",
+      "surfaceSectorsPass": "路线共有 {count} 个地面段，低于 {max} 个地面段上限。",
+      "surfaceSectorsFail": "路线共有 {count} 个地面段；上限为 {max}。",
+      "stopoversPerCityPass": "没有城市超过每城 {max} 次停留的限制。",
+      "stopoversPerCityFail": "以下城市停留次数过多：{cities}。",
       "transfersPerCityPass": "没有城市超过每城 {max} 次中转的限制。",
       "transfersPerCityFail": "以下城市中转次数过多：{cities}。",
       "networkGapOpen": "{carrier} 目前不运营 {from}-{to} 航线（自 {since} 起停飞）；建议改乘其他航空公司。",
       "networkGapUntil": "{carrier} 在 {since} 至 {until} 期间不运营 {from}-{to} 航线。",
-      "surfaceCitiesPass": "Surface/open-jaw endpoints are not repeated.",
-      "surfaceCitiesFail": "Surface/open-jaw endpoint repeated too many times in: {cities}.",
-      "carrierCombinationPass": "Route uses {count} eligible carrier(s), satisfying this multi-carrier rule.",
-      "carrierCombinationFail": "Route uses {count} carrier(s); this product requires at least {required}.",
-      "oceanCrossingsPass": "Route crosses required ocean(s): {oceans}.",
-      "oceanCrossingsFail": "Route is missing required ocean crossing(s): {missing}.",
-      "prohibitedOceanCombinationPass": "Route does not cross both the Pacific and Atlantic.",
-      "prohibitedOceanCombinationFail": "This product does not allow itineraries crossing both the Pacific and Atlantic.",
-      "directionPass": "Route is {direction}.",
-      "directionMixed": "Route mixes eastbound and westbound movement; this product requires one continuous global direction.",
-      "directionUnknown": "Route direction could not be determined.",
-      "startEndUnknown": "Start/end airport could not be validated because the route is empty or contains unknown airports.",
-      "startEndSameCityPass": "Route starts and ends in the same city/airport.",
-      "startEndSameCityFail": "Route starts at {start} and ends at {end}; this product requires the same city.",
-      "startEndSameCountryPass": "Route starts and ends in the same country.",
-      "startEndSameCountryFail": "Route starts in {start} and ends in {end}; this product requires the same country."
+      "surfaceCitiesPass": "地面段 / 缺口程端点没有重复。",
+      "surfaceCitiesFail": "以下地面段 / 缺口程端点重复过多：{cities}。",
+      "carrierCombinationPass": "路线使用 {count} 家合格航司，符合多航司规则。",
+      "carrierCombinationFail": "路线只使用 {count} 家航司；此产品至少需要 {required} 家。",
+      "oceanCrossingsPass": "路线已跨越必要海洋：{oceans}。",
+      "oceanCrossingsFail": "路线缺少必要跨洋：{missing}。",
+      "prohibitedOceanCombinationPass": "路线没有同时跨越太平洋与大西洋。",
+      "prohibitedOceanCombinationFail": "此产品不允许同时跨越太平洋与大西洋的行程。",
+      "directionPass": "路线方向为 {direction}。",
+      "directionMixed": "路线同时有东行与西行移动；此产品需要同一连续环球方向。",
+      "directionUnknown": "无法判断路线方向。",
+      "startEndUnknown": "路线为空或包含未知机场，无法检查起讫限制。",
+      "startEndSameCityPass": "路线起点与终点在同一城市 / 机场。",
+      "startEndSameCityFail": "路线从 {start} 出发、在 {end} 结束；此产品要求同城市起讫。",
+      "startEndSameCountryPass": "路线起点与终点在同一国家。",
+      "startEndSameCountryFail": "路线从 {start} 出发、在 {end} 结束；此产品要求同国家起讫。"
     }
   },
   "carrierNotes": {

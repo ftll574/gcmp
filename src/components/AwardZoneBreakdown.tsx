@@ -5,10 +5,10 @@
  * into; unpriced cabins render as an em-dash — honest gaps from partial
  * archived charts, never guesses.
  */
-import type { AwardZoneQuote } from '../lib/rtw/award-pricing.ts';
+import { PRICE_KEY_BY_CABIN, type AwardZoneQuote } from '../lib/rtw/award-pricing.ts';
 import { useLocale } from '../i18n/use-locale.ts';
 
-const CABIN_ORDER = ['economy', 'business', 'first'] as const;
+const CABIN_ORDER = ['economy', 'premium-economy', 'business', 'first'] as const;
 type PricedCabin = (typeof CABIN_ORDER)[number];
 
 export function AwardZoneBreakdown({
@@ -27,8 +27,8 @@ export function AwardZoneBreakdown({
       <ul className="rtw-award-zone-cabins">
         {CABIN_ORDER.map((cabin) => (
           <li key={cabin} className={cabin === activeCabin ? 'active' : ''}>
-            <small>{t(`rtw.award.cabin.${cabin}`)}</small>
-            <strong>{quote.prices[cabin]?.toLocaleString() ?? '—'}</strong>
+            <small>{t(`rtw.award.cabin.${PRICE_KEY_BY_CABIN[cabin]}`)}</small>
+            <strong>{quote.prices[PRICE_KEY_BY_CABIN[cabin]]?.toLocaleString() ?? '—'}</strong>
           </li>
         ))}
       </ul>
