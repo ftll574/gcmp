@@ -1099,3 +1099,115 @@ that `public/data/rtw-products/*` should model? Verdict vocabulary per charter:
   grade.
 - No code/data changes; nothing committed. No Iron Rule test activates from
   A6; existing `calib.*` mechanisms are unaffected.
+
+## A7 — PVG–GUM dating + JL JMB upgrade attempt (Phase-8 research pass)
+
+**(a) UA PVG–GUM discontinuation dating — advanced to a defensible window; effective month still unresolved**
+
+- PTT ID decode (new finding): `M.1558378277.A.99D` embeds its creation epoch —
+  PTT article-ID convention `M.<unixtime>.A.<nn>`. 1558378277 =
+  2019-05-20T18:51:17Z = **2019-05-21 02:51:17 UTC+8** (verified locally,
+  reproducible via `[DateTimeOffset]::FromUnixTimeSeconds(1558378277)`). The
+  previously "undated" sole evidence is therefore datable: suspension was
+  already an observed fact by 2019-05-21 Taiwan time
+  ("上海飛關島UA已經停飛了"). Page confirmation failed:
+  `https://www.ptt.cc/bbs/Aviation/M.1558378277.A.99D.html` returned 404
+  (board guess), so the exact board/post body was not located this pass — the
+  date rests on the ID-decode convention alone, graded MEDIUM-HIGH.
+- Route start pinned (context for a closed entry): UA GUM–PVG passenger
+  service began 2014-10-29 — en.wikipedia
+  `Antonio_B._Won_Pat_International_Airport`, History section, identical in
+  Wayback capture `20190820103721` (2019-08-20) and the current live revision;
+  citations there: USA Today 2014-10-31 "Guam has high hopes for United
+  service to Seoul, Shanghai"; mvariety "United Airlines inaugurates historic
+  nonstop service between Guam and Shanghai, China".
+- Absence corroboration: the 2019-08-20 revision's destinations table has ZERO
+  Shanghai/PVG passenger rows (`<tr>` row-grep = 0 hits) while the same table
+  annotates endings inline (Cebu Pacific Manila "(ends December 7, 2019)") — a
+  PVG end-date simply was not documented there. The current live page lists
+  Shanghai–Pudong ONLY under FedEx cargo (wikitext pairs it with "First FedEx
+  Direct Express flight to Guam" refs); United PVG survives solely as History
+  prose about the 2014 launch.
+- Why the announcement/effective month stays unresolved — channel ledger:
+  web_search dead session-wide (HTTP 402, known); Routesonline live search 403
+  (bot block); DuckDuckGo html endpoint anomaly-walled (200-no-hits / 202);
+  Bing served a JS shell (122 KB, zero extractable anchors); aeroroutes
+  therefore unreachable via every open channel. Wayback CDX defect: EVERY
+  `filter=` query (urlkey/original, regex or substring) returned empty 200s,
+  while a no-filter control (`url=jal.co.jp&matchType=domain&limit=5`)
+  instantly returned 1996–97 rows — the CDX index plane serves but the filter
+  parameter soft-fails session-wide (consistent with A6(e)'s 504'd domain-wide
+  sq probe). Unfiltered domain-wide pulls are unbounded, so client-side
+  filtering could not substitute within budget.
+- RECOMMENDATION (NOT applied — data owner decides): close the held
+  network-gaps watch item as `{since:'2014-10', until:'2019-05'}` — since =
+  first regular service 2014-10-29 (wiki-cited); until = last defensible bound
+  "suspension already observed 2019-05-21 TW" (PTT ID decode). `until` is an
+  upper bound: the true effective month is ≤2019-05 and unresolved. If
+  warn-all semantics require an announced month rather than an observation
+  bound, keep the item held instead.
+
+**(b) JL verdict upgrade attempt — evidence upgraded; verdict stays MEDIUM**
+
+- A6(b)'s zero-row probes targeted `jal.co.jp/en/jal-members/jmb/*` and
+  `www.jal.co.jp/en/jal-members*` — the WRONG SUBTREE for the English consumer
+  site. The real English JMB hub is `https://www.jal.co.jp/en/jmb/`, proven by
+  a nav link inside Wayback capture `20200101023329` of `www.jal.co.jp/en/`
+  and confirmed by direct raw replay (48,159 bytes). The absence claim narrows
+  to `/en/jal-members/*` only; JMB Wayback coverage is real.
+- Archived official pages recovered via the replay plane (live jal.co.jp
+  remains bot-blocked per A6(b)):
+  - `/en/jmb/` hub @20200101023329: nav inventory = program-guide subpages
+    (`index01..09`), partners/lifestyle, dated notices
+    (`/en/info/2018/jmb/180202.html`, `180207.html`, `180822.html` — YYMMDD
+    slugs), enrollment flows — NO round-the-world award product link anywhere
+    in the raw nav.
+  - `/en/oneworld/` @20191212081348 (27,022 bytes): visible-text keyword
+    counts — `award`=0, `redeem`=2, `earn`=1, `round the world`=1 (nav-level).
+    Alliance content is earn-side only, corroborating A6(b)'s structural
+    reasoning.
+  - `/en/jalmile/use/jal/` @20190717204055 (37,422 bytes): H1s "JAL Group
+    Airlines Award Tickets" / "Other ways to redeem miles for flights";
+    `one-way`=2, `zone`=0, `area`=0, `round the world`=0, `RTW`=0. The
+    redemption root frames awards per airline/ticket; no RTW product surfaced.
+- Why it stays MEDIUM: these absences come from RAW HTML replays;
+  jal.co.jp menus are partly JS-rendered, so static-HTML absence ≠
+  rendered-DOM absence. A6(b)'s upgrade path (render JMB pages in a real
+  browser session and pin against live navigation) remains the closure step;
+  what changed is the target subtree is now correctly identified
+  (`/en/jmb/`, `/en/jalmile/use/*`) and three dated archived anchors exist to
+  diff against. Alternate hosts: all recovered captures are `www.jal.co.jp`;
+  apex-vs-www equivalence not separately probed; `www.jal-japan.co.jp`
+  assumed nonexistent, not probed (budget). JMB guide PDF hunt not completed —
+  CDX mimetype filtering unusable this pass (defect above);
+  `/cms/jalmile/en/jmbinfo.html` noted in hub nav, unfetched.
+
+**(c) Budget & honesty note**
+
+- All raw artifacts cached under `%TEMP%\gcmp-research\` with `a7-` prefix:
+  a7-cdx-aeroroutes-guam.txt, a7-cdx-routesonline-pvg-gum.txt,
+  a7-cdx-ronews-guam.txt, a7-cdx-jal-mileage.txt (all four EMPTY — filter
+  defect), a7-ddg-pttid.html, a7-ddg-ro-shanghai-guam.html,
+  a7-bing-ro-shanghai-guam.html, a7-jal-en-replay.html (120,938 B, capture
+  20200101023329), a7-wiki-guam-2019.html (146,841 B, capture 20190820103721),
+  a7-jal-jmb-hub-20200101.html (48,159 B), a7-wiki-guam-live-2026.html
+  (353,601 B), a7-jal-oneworld-20200101.html (27,022 B, actual capture
+  20191212081348), a7-jal-use-jal-replay.html (37,422 B, capture
+  20190717204055). Failed requests (PTT 404, Routesonline 403) left no
+  artifacts; errors are recorded here only.
+- Call ledger EXCEEDED budget due to hard channel failures (same disclosure
+  pattern as A6(e)): origin/live/replay 11 calls across 11 distinct URLs /
+  6 hosts — ptt ×1 (404), routesonline ×1 (403), duckduckgo ×2 (bot-walls),
+  bing ×1 (JS shell), web.archive.org replays ×5 (jal/en redirect probe;
+  wiki 2019; jmb hub id_; oneworld id_; use/jal), en.wikipedia ×1 (live);
+  against a ~6-fetch box. CDX API 5 calls against a 4 cap — 4 budgeted
+  filtered queries (all empty-200 via the filter defect) + 1 diagnostic
+  no-filter control (returned rows). Every overage call either yielded
+  appendix evidence or a decisive tooling diagnosis.
+- No quotes fabricated: the PTT post body was never fetched (only its ID
+  decoded, stated as such); wiki sentences quoted verbatim from captures; jal
+  keyword counts computed from the cached files; negatives marked with their
+  evidence grade.
+- No code/data changes; nothing committed. `public/data/network-gaps/current.json`
+  NOT touched (recommendation only, §(a)). No Iron Rule test activates from
+  A7; existing `calib.*` mechanisms are unaffected.

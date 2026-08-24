@@ -40,6 +40,32 @@ describe('estimateAwardPrice', () => {
     expect(estimate?.confidence).toBe('reference-recheck');
   });
 
+  test('returns Qantas OWCFR top-bracket business price (pre-Aug-2025 chart era)', () => {
+    const estimate = estimateAwardPrice(
+      catalog,
+      'qantas-oneworld-classic-flight-reward',
+      25000,
+      'business',
+    );
+
+    expect(estimate?.miles).toBe(318000);
+    expect(estimate?.band).toEqual({ minMiles: 19201, maxMiles: 35000 });
+    // The catalog schema grades products official-fixed | published-chart |
+    // reference-recheck; "chart-verified" is calibration-set research
+    // vocabulary and rides in this entry's notes instead.
+    expect(estimate?.confidence).toBe('reference-recheck');
+  });
+
+  test('Qantas partial chart returns null for unpriced cabin and beyond-cap distances', () => {
+    const qf = 'qantas-oneworld-classic-flight-reward';
+    // Only business is priced in the single verified bracket (19,201-35,000).
+    expect(estimateAwardPrice(catalog, qf, 25000, 'economy')).toBeNull();
+    expect(estimateAwardPrice(catalog, qf, 25000, 'first')).toBeNull();
+    // Nothing is priced past the 35,000-mile cap.
+    expect(estimateAwardPrice(catalog, qf, 35500, 'business')).toBeNull();
+    expect(estimateAwardPrice(catalog, qf, 35500, 'economy')).toBeNull();
+  });
+
   test('returns null for premium economy when product has no price', () => {
     const estimate = estimateAwardPrice(
       catalog,
@@ -154,6 +180,16 @@ describe('quoteAwardZone', () => {
     expect(Object.keys(quote?.prices ?? {})).toEqual(['business']);
     expect(quote?.prices.economy).toBeUndefined();
     expect(quote?.prices.first).toBeUndefined();
+  });
+
+  test('quotes the Qantas single verified band with business-only price keys', () => {
+    const quote = quoteAwardZone(catalog, 'qantas-oneworld-classic-flight-reward', 25000);
+
+    expect(quote?.label).toBe('Qantas oneworld Classic Flight Reward');
+    expect(quote?.band).toEqual({ minMiles: 19201, maxMiles: 35000 });
+    // Business-only verified bracket; unpriced cabins stay absent keys.
+    expect(quote?.prices).toEqual({ business: 318000 });
+    expect(Object.keys(quote?.prices ?? {})).toEqual(['business']);
   });
 
   test('returns null for an unknown productId', () => {

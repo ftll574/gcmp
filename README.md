@@ -4,7 +4,7 @@
 
 Taiwan-first round-the-world award route planner. Build an itinerary, mark stopovers and surface sectors, validate it against RTW and multi-carrier mileage-redemption award rules, and share the URL.
 
-![Status: RTW pivot](https://img.shields.io/badge/status-RTW%20pivot-blue) ![License: MIT](https://img.shields.io/badge/license-MIT-green) ![Tests: 332 passing](https://img.shields.io/badge/tests-332%20passing-green)
+![Status: RTW pivot](https://img.shields.io/badge/status-RTW%20pivot-blue) ![License: MIT](https://img.shields.io/badge/license-MIT-green) ![Tests: 335 passing](https://img.shields.io/badge/tests-335%20passing-green)
 
 ## What It Does
 
@@ -13,7 +13,7 @@ Taiwan-first round-the-world award route planner. Build an itinerary, mark stopo
 - **Taiwan-first priority** — BR/EVA, CI/China Airlines, JX/STARLUX, CX/Asia Miles, JL/JAL, NH/ANA, and SQ/KrisFlyer are modeled as first-market priorities.
 - **Taiwan carrier notes** — the Rules inspector explains why China Airlines cannot form a classic RTW ticket (both-ocean crossings rejected) and why STARLUX COSMILE stays on the watchlist (no own RTW award product today).
 - **Track RTW-specific metadata** — stopover vs transfer, surface/open-jaw sectors, operating carrier eligibility, segment count, distance caps, same-city/same-country constraints.
-- **Estimate award price** — EVA and Cathay RTW/multi-carrier award products show miles required from pricing bands where data is available.
+- **Estimate award price** — EVA, Cathay, and Qantas Classic Flight Reward products show miles required from pricing bands where data is available.
 - **Map the route** — great-circle arcs, four projections, pan/zoom, bearings, distance labels, PNG/SVG export.
 - **Share URL** — routing, operating carriers, fare classes, stopover flags, and surface sectors round-trip in the URL.
 - **Mileage estimate as secondary** — earning/PQM/RDM comparison remains available in a collapsed panel, but it is no longer the main product flow.
@@ -118,7 +118,7 @@ npm run build
 
 Current local baseline:
 
-- 332 Vitest tests in 23 files (incl. the Iron Rule calibration suite)
+- 335 Vitest tests in 23 files (incl. the Iron Rule calibration suite)
 - strict TypeScript
 - ESLint engine purity rule for `src/lib/calc/**`
 - production build via Vite
@@ -126,10 +126,10 @@ Current local baseline:
 ## Current Limits
 
 - **Live award availability is not checked.** The app validates structural rule eligibility only; seat inventory is out of scope.
-- **Pricing covers 3 of 7 catalog products** — EVA (fixed price), Cathay (distance bands), and the ANA archived award (partial: business cabin only); the other four validate rules without a price estimate. Research appendix §A6 (`docs/calibration-set.md`) scoped JL/NH/SQ: no compatible band-chart or RTW award product exists at JAL or Singapore, and ANA's distance-band RTW chart is discontinued for new ticketing (2025-06-23) — already modeled as archived.
+- **Pricing covers 4 of 7 catalog products** — EVA (fixed price), Cathay (distance bands), Qantas Classic Flight Reward (partial: top bracket only — 19,201–35,000 mi ⇒ flat 318,000 business, chart-verified against the pre-Aug-2025 chart era; smaller brackets/economy intentionally absent pending verification), and the ANA archived award (partial: business cabin only); the other three validate rules without a price estimate. Research appendix §A6 (`docs/calibration-set.md`) scoped JL/NH/SQ: no compatible band-chart or RTW award product exists at JAL or Singapore, and ANA's distance-band RTW chart is discontinued for new ticketing (2025-06-23) — already modeled as archived.
 - **Cathay post-2018 chart drift is unresolved.** A Jan-2025 community data point (230,000 miles) matches no known-era band cell; pinning the live chart needs a real-browser render — plain HTML fetch returns an empty JS shell (§A6(d)).
 - **Award fee schedules are display-only.** Era-pinned fees render on the validation panel (CX seed: date-change / reissue / refund, as of 2018-05), but total cost with taxes/fees is not estimated.
-- **Date-based minimum trip duration stays shallow.** Stopover duration is user-marked; there is no date/time itinerary model yet, so day-count minimums cannot be enforced.
+- **Date-based trip-duration limits ARE enforced when dates exist.** The `trip-duration` rule (`src/lib/rtw/validate.ts`) fails itineraries outside the product's min/max trip days whenever start+end dates are set, and reports severity unknown ("Trip duration cannot be checked until start and end dates are set.") without them. What stays shallow is per-segment timing: stopover duration is user-marked and there is no per-leg/per-stopover date model yet, so stopover-length rules have nothing to check.
 - **Standing cuts:** MPM (maximum permitted mileage), fare-basis input, plus the full list under CLAUDE.md's "NOT in scope".
 - **Locale debt:** a few newer zh-CN/ja panels still show residual English strings.
 - Earning/PQM/RDM math remains as a secondary estimate and should not drive RTW validity.

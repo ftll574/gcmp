@@ -93,6 +93,25 @@
       "bands": [
         { "minMiles": 20001, "maxMiles": 22000, "prices": { "business": 125000 } }
       ]
+    },
+    {
+      "productId": "qantas-oneworld-classic-flight-reward",
+      "label": "Qantas oneworld Classic Flight Reward",
+      "pricingModel": "distance-band",
+      "confidence": "reference-recheck",
+      "currency": "miles",
+      "sourceUrls": [
+        "https://community.pointhacks.com/t/need-help-with-one-world-classic-flight-reward-melbourne-to-europe-aug-sept-2025/24765"
+      ],
+      "notes": [
+        "Pre-Aug-2025 Qantas chart era: the source thread plans Aug/Sep 2025 travel; Qantas revised the chart on 2025-08-05, so pin per-rv values rather than one global constant.",
+        "Only the top bracket is verified (verbatim from the thread: business caps at 318,000 pts for distance 19201-35000 miles, flat even when flights are added); smaller brackets and other cabins are intentionally absent rather than invented.",
+        "Conflict guard: the Reddit agent's 365,800-point business total belongs to the post-2025-08-05 revision (docs/calibration-set.md conflict #2, rules-version drift, not a rule disagreement) — never merged into this entry.",
+        "confidence is reference-recheck because the catalog schema's product-level enum has no chart-verified grade; calibration-set.md Case 1 itself carries the chart-verified research label and this entry transcribes that verified thread."
+      ],
+      "bands": [
+        { "minMiles": 19201, "maxMiles": 35000, "prices": { "business": 318000 } }
+      ]
     }
   ]
 }

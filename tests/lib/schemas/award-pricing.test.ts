@@ -15,6 +15,7 @@ describe('award pricing data', () => {
       expect.arrayContaining([
         expect.objectContaining({ productId: 'br-infinity-star-alliance-world-travel-award' }),
         expect.objectContaining({ productId: 'cx-asia-miles-oneworld-multi-carrier-award' }),
+        expect.objectContaining({ productId: 'qantas-oneworld-classic-flight-reward' }),
       ]),
     );
   });
