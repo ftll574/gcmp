@@ -1826,3 +1826,177 @@ unaffected.
 - calib.schedule.jx-tpe-nrt-split-rotation-still-daily — `359 12` + `351 x12` union = daily.
 - calib.schedule.cx-hkg-lhr-extra-sections-days-23456 — extras-only semantics guard.
 - calib.schedule.expired-window-no-findings — CI rows must yield no current-date warnings (S4).
+
+## Appendix A11 — Phase-11 national-carrier schedule coverage research
+
+Question: can EVA Air (BR) full-network days-of-week grids and China Airlines (CI)
+timetable data be captured machine-readably for calibration handoff, given evaair.com and
+china-airlines.com are live-bot-blocked? Method: aeroroutes.com as primary BR source
+(sitemap enumeration → targeted announcement fetches); Wayback CDX prefix sweeps + id_
+raw replays for CI; strict budgets (A: ~12 origin fetches; B: ~6 CDX + ~8 fetches;
+C: <5 fetches then stop). web_search was unavailable (auth-error briefing) and was not
+used; all discovery ran through shell HTTPS (`curl.exe --http1.1 -A "Mozilla/5.0"`) and
+local grep over cached artifacts. Date of session: 2026-08-25 (+08:00).
+
+**(a) Per-source verdicts**
+
+1. aeroroutes.com LIVE — WORKING via curl/http1.1. `/sitemap.xml` (4,915,779 B, fetched
+   2026-08-25) enumerates 24,386 `<loc>` entries including **181 BR slugs**
+   (`/eng/YYMMDD-br…`), a complete announcement index back to 220407. `/eng/latest`
+   renders client-side (only 3 anchors extractable) — the sitemap, not the listing page,
+   is the reliable enumeration path. Article bodies carry verbatim grids in static HTML.
+   Verdict: primary source confirmed; 12/12 budget fetches used, zero retries needed.
+2. Wayback CDX — 5 calls used of ~6: (1) domain sweep
+   `url=www.china-airlines.com&matchType=domain&from=20250601&collapse=urlkey&limit=8000`
+   → exactly 8000 rows (cap hit; SURT truncation ends at `_next/static/media/noto-…`,
+   so every lexicographically-later urlkey was invisible — A10 lesson reconfirmed);
+   (2) `/us/en/Images` prefix → 2241 rows (complete): **zero new timetable PDFs since
+   Jun 2025**, only IR/safety PDFs and the recurring 2.3 KB `timetable v3` nav icon PNG;
+   (3) root captures Apr–Aug 2026 → newest clean homepage 200 = 20260418121352;
+   (4) `/us/en/fly/flight-status/timetable` page prefix → captures through 20260310191110
+   (later ones 403); (5) `/us/en/service/` prefix → `stationsFlight.js` captured
+   20250627094135 and 20260419111057. No 429s hit (sleeps paced between Wayback calls).
+3. Wayback replays — 5 fetches of ~8: timetable-v3 PNG @20260126142806id_ = 2,286 B
+   (icon-sized; visual confirmation impossible this session — model lacks image input,
+   byte size treated as sufficient negative evidence); homepage @20260418121352id_
+   (41,155 B legacy/jquery shell, zero timetable/pdf refs); timetable page
+   @20260310191110id_ (113,052 B, title "Timetable | China Airlines"); direct PDF probe
+   → HTTP 404; `stationsFlight.js` @20260419111057id_ (37,503 B gzip → 651,651 chars).
+4. china-airlines.com LIVE — deliberately not attempted (established 403 bot-block,
+   §A8/A10); Wayback substitutes above were sufficient to bound the answer.
+5. tigerairtw.com — 2 probes (`/zh-TW/news`, `/zh-TW/timetable`) both return the same
+   ~6.5 KB Angular-style SPA shell (generic site title; no timetable/xls/pdf tokens).
+   Verdict: negative, stopped at 2 of <5 budget fetches.
+6. Uni Air (UN) / Mandarin Airlines (AE) standalone sites — not probed this session
+   (budget discipline). Note: Mandarin flights are included INSIDE the combined official
+   CI PDF ("Timetable includes CHINA AIRLINES and MANDARIN AIRLINES flights", p.1).
+
+**(b) Headline findings**
+
+- **CI has published a NEWER official timetable than any Wayback holds**: the archived
+  timetable page (capture 20260310191110) links
+  `href="/us/en/Images/timetable-20260101-20260328_tcm162-4228.pdf"` — but the file was
+  never captured (id_ replay returns 404 HTML). No post-March-2026 capture of the page
+  exists (all 403), so whether a summer-2026 (NS26) edition PDF exists is UNKNOWN from
+  archives this session.
+- Therefore the newest chart-verifiable official CI timetable remains the **Issue 2,
+  validity 2025.01.01–2025.03.29** edition (Wayback @20250319152449id_), whose PDF +
+  pypdf text were already cached by §A10; this pass mined that local artifact (free) into
+  49 structured entries.
+- `stationsFlight.js` (@20260419111057) is official CURRENT network evidence — a
+  station/connectivity matrix (`StnCode`/`ArvStations`; TPE ×644, KHH ×173, RMQ ×102
+  mentions) — but contains **no days-of-week and no flight numbers**; useful for
+  served-market checks, useless for grids.
+- BR: every 2026-relevant filing decoded cleanly. Day-grid notation: bare digits =
+  operated days (ISO 1=Mon…7=Sun), `D` = daily, `x247` = except-days complement.
+
+**(c) Verbatim key quotes (fresh fetches dated 2026-08-25 unless noted)**
+
+- BR TPE–SFO (§A10 cache re-verified 2026-08-25): "From 29MAR26 … BR008 TPE1015 -
+  0635SFO 789 D … BR018 … D … BR028 … D … BR017 SFO0025 - 0515+1TPE 77W D … BR007
+  SFO1230 - 1720+1TPE 789 D".
+- BR TPE–SEA (260116-brns26sea): "From 29MAR26, the 3 weekly BR024/023 will continue to
+  be operated by 787-10 … The carrier overall operates 10 weekly flights … BR024 TPE2300
+  - 1850SEA 781 246 … BR026 … 781 D … BR023 SEA0030 - 0410+1TPE 781 357 … BR025 … 781 D".
+- BR TPE–IAD (260210-brns26iad): "scheduled to commence on 26JUN26 … 27JUN26 - 31AUG26
+  (schedule slightly varies after 01SEP26). BR004 TPE1930 - 2230IAD 789 x247 BR003
+  IAD0150 - 0545+1TPE 789 x135".
+- BR TPE–DEL (260805-brnw26del): "First flight is scheduled on 01DEC26, with 5 weekly
+  flights … service is subject to government approval. BR367 TPE1100 - 1535DEL 333 x14
+  BR368 DEL1955 - 0420+1TPE 333 x14".
+- BR TPE–UKB (260724-brnw26ukb): "continues to operate 10 weekly flights on/after
+  25OCT26, instead of 3 weekly … BR134 TPE0630 - 1000UKB 321 135 BR176 … 321 D BR133 …
+  135 BR175 … D".
+- BR TPE–MUC (251218-brns26muc): "The 4 weekly flights from 22APR26 will be operated by
+  323-seater 777-300ER … BR071 TPE2335 - 0735+1MUC 77W x246 BR072 MUC1200 - 0635+1TPE
+  77W x357".
+- BR KHH A330 launch (260318-brns26khh): "Kaohsiung – Macau eff 21MAY26 BR833/834 (Day
+  36; Previous: 1 weekly eff 23SEP20) Kaohsiung – Shanghai Pu Dong eff 21MAY26 BR706/705
+  (Day x36 …) Kaohsiung – Tokyo Narita eff 20MAY26 BR108/107 (1 daily …)".
+- CI page link (capture 20260310191110): `href="/us/en/Images/timetable-20260101-
+  20260328_tcm162-4228.pdf"`; page copy: "Download our complete timetable as pdf for your
+  own records." + interactive Vue "Search Timetable" form (data loads client-side).
+- CI PDF p.1 (Issue 2, @20250319152449 capture): "2025.01.01 2025.03.29 Issue 2 …
+  Timetable includes CHINA AIRLINES and MANDARIN AIRLINES flights".
+
+**(d) Transcription method (CI PDF)**
+
+pypdf text (97,550 B) splits into `[PAGE n]` blocks; route tables appear as three
+draw-order clusters (flight numbers → day-digit runs → times). A python parser
+(cache/parse-ci-2025tt.py) zips clusters per section when counts align; aircraft codes
+(333/359/738…) are excluded from day-token candidates; DST sub-windows appear as
+duplicate rows differing only in arrival time plus explicit period rows
+("02Jan25-08Mar25"/"09Mar25-29Mar25"). Alignment validated three ways: raw-line dumps for
+DAD/VIE/SEA blocks; ROR→TPE inbound section independently mirrors outbound CI030 [1,4] /
+CI028 [3,6] as CI029 [1,4] / CI027 [3,6]; and the HKG decode reproduces §A10's
+independent `ci-tpe-hkg-six-daily-plus-921-2357-607-146`. Sections failing count-alignment
+were EXCLUDED, not guessed (寧缺毋濫).
+
+**(e) Negatives (recorded as evidence)**
+
+1. NO CI timetable PDF captured anywhere by Wayback newer than the 20250101–20250329
+   edition; the linked 20260101–20260328 edition 404s on replay. Current-season (NS26)
+   CI official grids remain UNREACHABLE from archives this session.
+2. Domain-wide CDX cap/truncation (8000 rows ending mid-`_next`) — targeted subtree
+   prefixes required; filter= still avoided entirely.
+3. Zero `application/pdf` rows among 8000 collapsed domain rows since Jun 2025.
+4. `timetable v3` PNG = 2,286 B nav icon (visual read unavailable — no image-input model).
+5. `stationsFlight.js`: connectivity matrix only; no schedules.
+6. Tigerair Taiwan: SPA shells only on probed paths; no server-visible seasonal XLS.
+7. Uni Air / Mandarin standalone: unprobed (budget), availability unassessed.
+8. BR announcements with no usable weekly grid: 260529-brsep26ams (dated extra sections
+   only), 260420-brjul26khhhkg (odd-date cancellations 01JUL–27JUL26, BR809/810 TPE-HKG
+   46→44 weekly 04MAY–26JUN26 — parity-date semantics outside the model).
+9. CI sections excluded for alignment/sub-period ambiguity: CTS, ICN, PUS, KUL, Yangon,
+   HAN, YVR, SYD, MEL, ROM, WUH, NGB, XMN, OKA, BRU, TSA-Fuzhou mixed block, and the
+   TAICHUNG mega-section (hundreds of CI9xxx charter/codeshare numbers flood the parser).
+10. RMQ-origin: no clean scheduled-international day-grid recoverable for either carrier
+    this pass (zero RMQ slugs in the full aeroroutes BR index; AE rows unalignable).
+11. BR IAD post-01SEP26 variation and BR DEL post-launch persistence: open windows.
+
+**(f) Honesty ledger (calls vs budgets)**
+
+- Task A origin fetches: 12/12 (latest, sitemap.xml, 9 announcements + UKB). Retries: 0
+  (every curl first-attempt OK). Wayback calls: 0.
+- Task B CDX: 5/~6. Task B fetches (all Wayback id_ replays): 5/~8. Sleeps 10–12 s
+  between Wayback hits; zero 429/timeout failures this session.
+- Task C fetches: 2/<5 (then stopped). Uni Air/Mandarin: 0 fetches.
+- Local reuse (zero-cost): §A10 caches sc-aero-br-ns26sfo.html, sc-aero-br-2q26hkg.html,
+  sc-ci-wb-2025-timetable.pdf/.txt, sc-cdx-ci-pdf.txt. Tooling: pypdf 6.16.2 already
+  installed — no new package download. web_search: 0 calls (unavailable).
+- Every JSON entry traces to a fetched-or-cached artifact quoted above; nothing from
+  memory alone; aggregator/Wikipedia sources: none used (hence zero community-corrected
+  entries this pass).
+
+**(g) Handoff artifacts (NOT repo data; engineer applies later)**
+
+- .agent-teams/gcmp-phase11/research/br-schedule-entries.json — 30 entries, 24 directed
+  pairs (TPE↔SFO/SEA/IAD/MUC/SIN/FUK/CNX/UKB, TPE→DEL, KHH↔MFM/PVG/NRT), all
+  chart-verified (aeroroutes reproduces official filings; direction-inference caveat
+  flagged in notes on the three KHH routes lacking explicit dep→arr strings).
+- .agent-teams/gcmp-phase11/research/ci-schedule-entries.json — 49 entries, 32 directed
+  pairs (TPE→NRT/KIX/NGO/BKK/SIN/SGN/DAD/PNH/ROR/MNL/CGK/HKG/LAX/ONT/SFO/SEA/JFK/VIE/
+  PRG/FRA/LHR/AMS/PEK/PVG/CAN/SZX, TSA→HND/SHA, KHH→HKG/NRT/KIX/PVG), all chart-verified
+  from the official 2025-01-01→03-29 PDF; every entry window-stamped
+  effectiveFrom/effectiveUntil so downstream must treat them as expired-window pins.
+- Evidence cache: .agent-teams/gcmp-phase11/research/cache/ (aeroroutes HTML+txt extracts,
+  CDX dumps, CI PDF + extracted text copies, parser script, stationsFlight.js raw+gunzip).
+
+**(h) Suggested calib.* test ids (docs-only; none activated)**
+
+- calib.br-network.tpe-sfo-triple-daily-each-way-from-29mar26.
+- calib.br-network.tpe-sea-split-rotation-246-plus-daily-union.
+- calib.br-network.x-notation-complement-br071-x246-is-1357.
+- calib.br-network.iad-launch-grid-bounded-27jun-31aug.
+- calib.br-network.del-launch-except-mon-thu-subject-to-approval.
+- calib.br-network.ukb-nw26-3-to-10-weekly-step.
+- calib.br-network.fuk-oct26-extras-only-window-semantics.
+- calib.ci-timetable-current.no-official-pdf-newer-than-issue2-2025 (negative pin).
+- calib.ci-timetable-current.linked-2026-edition-uncaptured-404.
+- calib.ci-timetable-current.window-stamped-expired-no-current-warnings.
+- calib.ci-timetable-current.tpe-hkg-six-daily-plus-921-2357-607-146 (2025-Q1 scoped).
+
+No quotes fabricated: every verbatim string was re-checked against local caches
+immediately before writing. No code/data changes under src/** or public/data/**; nothing
+committed; the only repo-file change is this appendix (append-only; no earlier line
+modified).

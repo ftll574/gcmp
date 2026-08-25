@@ -116,3 +116,45 @@ transcription; nobody commits but the captain.
   catalog.
 - Future: arrival times / minimum-connect validation need a duration source —
   out of scope here; `departsOn` ordering is the contract this phase commits to.
+
+## Addendum — Phase 11: national-carrier full coverage via official sources
+
+The user challenged S3's premise ("free complete schedule data does not exist")
+with a scope correction: **only Taiwanese carriers are needed**, and for them
+official one-hand sources DO exist. Verified 2026-09 by direct probing:
+
+### JX — official schedule API (chart-verified grade)
+
+STARLUX's website bundle exposes `scheduleApiUrl:
+https://ecapi.starlux-airlines.com/flightSchedule/v2`; the timetable page calls
+`GET /timetable?depAirport=&arrAirport=&date=`. Live-verified response shape:
+
+```
+{"success":true,"data":{"timetable":[{
+  "flightNo":"JX0800","depTime":"08:30","arrTime":"12:55",
+  "aircraftCode":"351","aircraftModel":"A350-1000",
+  "schedule":["2026-09-11", …7 consecutive dates…],
+  "cargoOnly":[],"stops":[]}]}
+```
+
+Each flight carries its OWN operating-date array — no weekday inference needed.
+Bogus pairs return HTTP 200 with `timetable: []` (clean negative semantics).
+Near-dated queries sometimes return fewer flights; query ~1–3 weeks out.
+
+Derivation rulings (captain): union all flights' `schedule[]` dates → ISO
+`daysOfWeek`; collapse a pair's flights into ONE row (`flightNumbers` list;
+schema uniqueness key cannot hold two rows per pair+window); differing
+day-sets → still one row + explanatory note; `effectiveFrom/Until` = observed
+min/max dates so stale rows self-silence outside the horizon; cargo-only-only
+flights skipped; both directions harvested separately. Harvester lives at
+`scripts/harvest-jx-schedules.mjs` and joins the chart-drift-checklist
+quarterly cadence.
+
+### CI / BR — proven manual paths
+
+CI publishes complete official timetable PDFs (Wayback raw replay +
+pypdf extraction, §A10 method); BR day grids come from aeroroutes official
+filings; an EVA whole-network timetable image exists in Wayback
+(`timetables_tcm35-71663.jpg`) pending vision-capable transcription. Coverage
+strategy going forward: national carriers fully pinned from official sources;
+global aggregate datasets stay out of scope.

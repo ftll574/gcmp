@@ -33,7 +33,7 @@ A web app that replaces the FlyerTalk RTW-routing-thread habit for Taiwan-based 
 
 ## Testing
 
-Run command: `npm run test` (Vitest — 431 tests passing, see README badge). No E2E runner: there is no `test:e2e` script and no Playwright dependency; verify site behavior through component tests + CI.
+Run command: `npm run test` (Vitest — 438 tests passing, see README badge). No E2E runner: there is no `test:e2e` script and no Playwright dependency; verify site behavior through component tests + CI.
 
 - 100% coverage is the goal for `src/lib/calc/**` (engine purity makes it cheap)
 - Every new function gets a test; every if/else gets tests for both branches

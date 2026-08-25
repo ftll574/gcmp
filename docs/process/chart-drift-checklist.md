@@ -181,3 +181,26 @@ unpriced cabins/cells are omitted keys, never guessed fillers. Then:
 - [ ] Negatives logged with grades
 - [ ] calib.* tests activated/pinned; full gate green
 - [ ] CHANGELOG / README Current Limits / CLAUDE.md numbers synced
+
+## Flight-schedule refresh (Phase-11 addition)
+
+The schedule catalog (`public/data/schedules/current.json`) joins this
+quarterly cadence alongside the pricing charts:
+
+- [ ] JX: re-run `node scripts/harvest-jx-schedules.mjs --merge public/data/schedules/current.json`
+      (resume-from-valid-cache means only drifted pairs hit the wire; the API
+      throttles with HTTP-200 body `{"success":false,"code":"99210"}` after
+      ~100 fast calls — the harvester backs off adaptively). Superseded rows
+      are expected; the merge refuses zero-entry runs.
+- [ ] BR: sweep aeroroutes sitemap for new NS/W-season EVA filings; day grids
+      transcribed verbatim, confidence `chart-verified`.
+- [ ] CI: check Wayback for a captured edition newer than Issue 2
+      (timetable-20260101-20260328 exists but was NEVER captured; live page is
+      a 403 bot-wall). Until one surfaces, the 2025-Q1 window rows stay
+      self-silencing — do not refresh their windows without a real source.
+- [ ] Same-pair flight-group rows collapse into ONE entry (uniqueness key
+      carrier|pair|seasonStart|seasonEnd); sequential windows either map onto
+      MM-DD season fields or fold into notes. Nulls never replace absent
+      optional fields (zod treats them as present-and-invalid).
+- [ ] Catalog count + composition asserted in
+      tests/lib/schemas/flight-schedules.test.ts; full gate green.

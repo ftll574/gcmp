@@ -193,6 +193,13 @@ describe('real §A10 catalog (public/data/schedules/current.json)', () => {
       carrier: string;
       pair: [string, string];
       daysOfWeek: number[];
+      flightNumbers?: string[];
+      effectiveFrom?: string;
+      effectiveUntil?: string | null;
+      seasonStart?: string;
+      seasonEnd?: string;
+      confidence: string;
+      status: string;
       sourceUrls: string[];
     }>;
   };
@@ -206,12 +213,21 @@ describe('real §A10 catalog (public/data/schedules/current.json)', () => {
     expect(catalog.entries.every((e) => Array.isArray(e.notes))).toBe(true);
   });
 
-  test('entry count matches the §A10 machine-readable block', () => {
-    // Captain ruling: the CX HKG→LHR extras-only row is OMITTED from the
-    // applied catalog — it pins only seasonal extra sections (Tue–Sat)
-    // while base 32-weekly days stay unpinned; keeping it would make the
-    // engine/UI misjudge base flights as not operating. 11 − 1 = 10.
-    expect(raw.entries.length).toBe(10);
+  test('entry count matches the catalog composition', () => {
+    // Phase-11: the 8 pre-existing §A10/BR rows are preserved verbatim, and
+    // 78 STARLUX (JX) directional pairs were harvested from the OFFICIAL
+    // ecapi timetable API (scripts/harvest-jx-schedules.mjs, queryDate
+    // 2026-09-12, evidence under .agent-teams/gcmp-phase11/jx/). The two
+    // stale community-corrected JX rows (TPE→KIX, TPE→NRT) were SUPERSEDED
+    // by their chart-verified harvests — the catalog uniqueness key forbids
+    // two rows sharing carrier|pair|season-window.
+    // Phase-11b: the researcher's BR/CI pass (aeroroutes NS26/W26 filings +
+    // the complete §A10-era CI PDF transcription) contributed 79 rows that
+    // collapsed to 60 entries (same-key flight-group rows unioned; the
+    // BR TPE↔UKB step-up windows kept as two sequential rows), replacing all
+    // 8 legacy §A10 seed rows with richer chart-verified versions.
+    // 78 + 28 + 32 = 138.
+    expect(raw.entries.length).toBe(138);
   });
 
   test('spot-checks daysOfWeek for CI TPE→HKG, BR TPE→SFO, JX TPE→KIX', () => {
@@ -229,5 +245,87 @@ describe('real §A10 catalog (public/data/schedules/current.json)', () => {
         expect(url.startsWith('https://')).toBe(true);
       }
     }
+  });
+
+  test('Phase-11: 78 JX directional entries, all chart-verified operating rows', () => {
+    const jx = raw.entries.filter((e) => e.carrier === 'JX');
+    expect(jx).toHaveLength(78);
+    for (const entry of jx) {
+      expect(entry.confidence).toBe('chart-verified');
+      expect(entry.status).toBe('operating');
+      // Ruling 4: observed-horizon bounds make stale rows self-silence.
+      expect(entry.effectiveFrom).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      expect(entry.effectiveUntil ?? null).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    }
+  });
+
+  test('Phase-11: JX TPE→NRT present with flightNumbers containing JX0800', () => {
+    const nrt = raw.entries.find(
+      (e) => e.carrier === 'JX' && e.pair[0] === 'TPE' && e.pair[1] === 'NRT',
+    );
+    expect(nrt).toBeDefined();
+    expect(nrt?.flightNumbers).toContain('JX0800');
+  });
+
+  test('Phase-11: JX TPE→PQC daysOfWeek match its cached ecapi evidence', () => {
+    // Hardcoded from the harvest cache observed 2026-08-25
+    // (.agent-teams/gcmp-phase11/jx/raw/TPE-PQC--2026-09-12.json): JX
+    // operates 2026-09-09 (Wed), 2026-09-11 (Fri), 2026-09-14 (Mon)
+    // → ISO weekdays {1,3,5}.
+    const pqc = raw.entries.find(
+      (e) => e.carrier === 'JX' && e.pair[0] === 'TPE' && e.pair[1] === 'PQC',
+    );
+    expect(pqc?.daysOfWeek).toEqual([1, 3, 5]);
+  });
+
+  test('Phase-11: captain cross-check anchors hold (KIX trunk + MNL single-no)', () => {
+    const nos = (from: string, to: string): string[] =>
+      raw.entries.find(
+        (e) => e.carrier === 'JX' && e.pair[0] === from && e.pair[1] === to,
+      )?.flightNumbers ?? [];
+    expect(nos('TPE', 'KIX')).toEqual(expect.arrayContaining(['JX0820', 'JX0822']));
+    expect(nos('KIX', 'TPE')).toEqual(expect.arrayContaining(['JX0821', 'JX0823']));
+    expect(nos('TPE', 'MNL')).toEqual(['JX0785']);
+  });
+
+  test('Phase-11b: BR/CI research pass collapsed same-key flight groups into single rows', () => {
+    // The researcher transcribed per-flight-group rows (e.g. CI TPE→HKG as
+    // three day-groups); the applier unions daysOfWeek/flightNumbers for rows
+    // sharing carrier|pair|season-window. Exactly ONE row must remain.
+    const hkgs = raw.entries.filter(
+      (e) => e.carrier === 'CI' && e.pair[0] === 'TPE' && e.pair[1] === 'HKG',
+    );
+    expect(hkgs).toHaveLength(1);
+    expect(hkgs[0]?.flightNumbers).toEqual(
+      expect.arrayContaining(['CI601', 'CI923']),
+    );
+    const seas = raw.entries.filter(
+      (e) => e.carrier === 'BR' && e.pair[0] === 'TPE' && e.pair[1] === 'SEA',
+    );
+    expect(seas).toHaveLength(1);
+    // CI rows keep the §A10-era window: expired ⇒ self-silencing by design.
+    const ciRows = raw.entries.filter((e) => e.carrier === 'CI');
+    for (const entry of ciRows) {
+      if (entry.effectiveUntil !== undefined) {
+        expect(entry.effectiveUntil < '2026-01-01' || entry.effectiveUntil === null).toBe(true);
+      }
+    }
+  });
+
+  test('non-JX slice stays within the {CI,BR} scope; JX harvest floors at >=70 pairs', () => {
+    // Captain invariant (round 57): schedule-harvest passes must not sneak in
+    // carriers outside the Taiwan-first scope set — JX (Phase-11 ecapi) is the
+    // only addition beyond the pre-existing CI/BR coverage.
+    const carriers = [...new Set(raw.entries.map((e) => e.carrier))].sort();
+    expect(carriers).toEqual(['BR', 'CI', 'JX']);
+    expect(raw.entries.filter((e) => e.carrier === 'JX').length).toBeGreaterThanOrEqual(70);
+  });
+
+  test('no duplicate carrier|pair|season-window keys anywhere in the catalog', () => {
+    const keys = raw.entries.map(
+      (e) =>
+        [e.carrier, e.pair[0], e.pair[1], e.seasonStart ?? '', e.seasonEnd ?? ''].join('|'),
+    );
+    expect(new Set(keys).size).toBe(keys.length);
   });
 });

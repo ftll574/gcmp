@@ -1320,9 +1320,10 @@ describe('schedule-day-mismatch against the real §A10 catalog', () => {
       date: '2025-02-03',
       days: 'Tue',
     });
-    expect(mismatches[0]?.sourceUrl).toBe(
-      'https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf',
-    );
+    // Engine cites evidence[0]; the merged Phase-11b row leads with the
+    // official china-airlines.com PDF asset (Wayback replay listed second).
+    expect(mismatches[0]?.sourceUrl).toBe(ciRow.sourceUrls[0]);
+    expect(mismatches[0]?.sourceUrl).toContain('timetable-20250101-20250329');
   });
 
   test('EXPIRED row stays silent even on an off-day (ruling b)', () => {
