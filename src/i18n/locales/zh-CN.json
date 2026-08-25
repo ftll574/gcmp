@@ -306,6 +306,16 @@
       "miles": "{count} 英里",
       "milesBand": "英里区间",
       "zoneLabel": "{zone} 英里区间",
+      "ciZone": {
+        "title": "CI 天合联盟伙伴奖励・逐段区域引价",
+        "resolved": "已解析 {done}/{total} 航段",
+        "legZones": "{origin}→{dest}",
+        "unknownZone": "区域未知",
+        "unpricedCabin": "{cabin}舱该区间未计价",
+        "surfaceSector": "地面段——不计价",
+        "sum": "各段合计",
+        "sumNote": "合计为逐段加总的辅助下界;CI 全票计价算式未经官方证实,开票价可能不同。"
+      },
       "sources": "来源与备注",
       "confidence": {
         "officialFixed": "官方固定表",

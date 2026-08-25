@@ -2000,3 +2000,224 @@ No quotes fabricated: every verbatim string was re-checked against local caches
 immediately before writing. No code/data changes under src/** or public/data/**; nothing
 committed; the only repo-file change is this appendix (append-only; no earlier line
 modified).
+
+## A12 — CI SkyTeam partner-award station→zone recovery (Phase-12 research pass)
+
+Question: WHICH STATIONS belong to each of the 11 published zones of `china-airlines-skyteam-partner-award`
+(the 66-cell Era-2 matrix already transcribed in §A8/current.json)? Method: re-mining of ALREADY-CACHED
+official artifacts — zero fresh origin fetches, zero CDX calls, zero web_search this pass. Caches:
+§A8 Wayback replays (`%TEMP%\gcmp-research\a8-*`, byte sizes verified against the §A8(e) ledger before
+use), §A10 timetable PDF text, §A11 `ci-2025tt-src.txt` + station DB extracts; all copied into
+`.agent-teams/gcmp-phase12/research/cache/`. Session date 2026-08-25 (+08:00).
+
+### (a) GOLD — official country-per-zone definition table, byte-stable across ALL eras
+
+Every era of the partner-award page embeds a definition table titled verbatim **"Find out first the
+regions which the departing and arriving countries belong to"** — i.e. CI's own chart key is COUNTRY-
+per-zone, not city-per-zone. Recovered IDENTICAL (same countries, same typos) from FOUR artifacts:
+
+- Era-1: WB 20151216204817 and WB 20190822111127 (ticket-awards-skyteam.html)
+- Era-2: WB 20251008063633 — the SAME artifact that carries the priced matrix (its NEA-Economy row
+  opens 35/35/60/90/110…, matching current.json zoneMatrix)
+- Current era: WB 20260705122302 RSC payload of `/us/en/member/miles/redeem/reward-ticket` (Next.js
+  page renders the same table as h4/p blocks)
+
+Verbatim rows (typos preserved: "Nothern", "Bilgium", "Yogoslavia", "East/West Russian", "Ivry",
+"Syrian", "Antidua"):
+
+```
+North East Asia   | Taiwan, China, Korea, Japan, Mongolia, East Russian, North Korea
+South East Asia   | Hong Kong, Macau, Philippines, Thailand, Indonesia, Malaysia, Cambodia,
+                  | Guam, Nothern Mariana Islands, Brunei, Vietnam, Singapore, Myanmar, Laos, Palau
+South West Asia   | India, Nepal, Pakistan, Sri Lanka, Afghanistan, Turkmenistan, Kyrgyzstan,
+                  | Bhutan, Bangladesh, Tajikistan, Kazakhstan, Uzbekistan, Maldives
+Middle East       | Iran, Iraq, Oman, United Arab Emirates, Bahrain, Jordan, Kuwait, Turkey,
+                  | Yemen, Lebanon, Saudi Arabia, Georgia, Syrian, Azerbaijan, Armenia, Qatar, Israel
+Europe            | United Kingdom, France, Germany, Netherlands, Czech, Italy, Austria, Bilgium,
+                  | Bulgaria, Denmark, Cyprus, Finland, Norway, Sweden, Switzerland, Spain,
+                  | Portugal, Andorra, Greece, Albania, Macedonia, Bulgaria, Romania, Hungary,
+                  | Iceland, Ireland Republic, Luxembourg, Estonia, Latvia, Byelorussian SSR,
+                  | Ukraine, Slovakia, West Russian, Lithuania, Yogoslavia, Monaco, Croatia,
+                  | Bosnia and Herzegovina, Moldova, Poland, Serbia, Slovenia, Malta, Turkey
+North Africa      | Algeria, Libya, Egypt, Chad, Sudan, Mali, Mauritania, Morocco, Tunisia,
+                  | Niger, Eritrea, Sudan, Zimbabwe
+South Africa      | Ethiopia, The Central African Republic, Cameroon, Nigeria, Benin, Burkina
+                  | Faso, Ghana, Liberia, Ivry Coast, Sierra Leone, Guinea-Bissau, Senegal,
+                  | Gambia, Kenya, Uganda, Congo, Gabon, Angola, Mozambique, Zambia, Namibia,
+                  | South Africa, Swaziland, Lesotho, Botswana, Malawi, Burundi, Rwanda,
+                  | Madagascar, Somalia, Djibouti, Togolese Republic, Tanzania, Mayotte,
+                  | Equatorial Guinea, Comoros, Seychelles, Zaire, Mauritius
+North America     | USA (Hawaii excluded), Canada
+Central America   | Mexico, State of Hawaii, Cuba, Panama, Nicaragua, Belize, Guatemala,
+                  | Salvador, Honduras, Bahamas, Dominican, Puerto Rico, Jamaica, Bermuda,
+                  | Haiti, Cayman Islands, Costa Rica, Antidua And Barbuda, Barbados, Martinique,
+                  | Virgin Islands (British), Virgin Islands (U.S.) , Saint Lucia,
+                  | Netherlands Antilles, Guadeloupe
+South America     | Venezuela, Colombia, Guyana, Suriname, Ecuador, French Guiana, Peru,
+                  | Bolivia, Brazil, Chile, Paraguay, Uruguay, Argentina
+South West Pacific| Australia, New Zealand, French Polynesia, Republic of Kiribati, Fiji,
+                  | Solomon Islands, New Caledonia, Papua New Guinea, Marshall Islands, Papeete
+```
+
+Table quirks pinned (verbatim): USA is "USA (Hawaii excluded)" while "State of Hawaii" sits under
+CENTRAL AMERICA; Guam + Northern Marianas + Palau under SOUTH EAST ASIA (not SWP); China under NORTH
+EAST ASIA while Hong Kong/Macau sit under SOUTH EAST ASIA; Turkey listed under BOTH Middle East AND
+Europe; Russia split "East Russian"(NEA)/"West Russian"(EU); duplicated list entries (Bulgaria, Sudan,
+Papeete-vs-French Polynesia).
+
+PRODUCT SEPARATION warning: the SAME current-era page carries CI's OWN-METAL Dynasty Flyer scheme with
+DIFFERENT areas — verbatim "following 6 areas: Northeast Asia, Southeast Asia (including Delhi and
+Guam), Mainland China (including Hong Kong), America, Oceania, Europe", plus rules "Reward tickets are
+not eligible for itinerary between Guam and U.S. via Taipei" and captions "including Guam and Delhi" /
+"excluding Guam". Those six areas are NOT the SkyTeam partner zones; never cross-apply.
+
+### (b) Station→zone assignments recovered — 65 airports, all chart-verified
+
+Station evidence: official combined CHINA AIRLINES + MANDARIN AIRLINES complete timetable PDF
+(validity 2025-01-01→2025-03-29, WB id_ 20250319152449 — same era window as the Era-2 chart), every
+included station carrying a verbatim route section. Own-metal vs beyond-gateway-codeshare was
+discriminated per section (CI-number without operator parens = own metal; "(XX nnnn)" or
+"CI 8656-9999 由/operated by …" block = partner beyond-leg, NOT a CI station). Grading rationale: each
+row is a deterministic join of two carrier-official verbatim artifacts — country→zone table names the
+station's territory (verbatim) + timetable names the station as served (verbatim); zero community
+geography. Machine artifact: `.agent-teams/gcmp-phase12/research/ci-zones.json`
+(version 2026.4, lastVerified 2026-08-25, sourceCatalog + per-row notes).
+
+- NEA (31): TPE KHH RMQ TSA · NRT HND KIX NGO FUK OKA CTS KOJ HIJ FSZ TAK · ICN PUS GMP · PEK PVG
+  SHA CAN SZX TFU WUH XMN NKG NGB FOC CGO TAO
+  ("Korea" reads as ROK because North Korea is separately listed; TFU = Chengdu Tianfu, not CTU;
+  cross-strait JV footnote in PDF: CI8000-8999/AE5000-5999 operated by CZ/FM/MF/MU — all SkyTeam.)
+- SEA (18): HKG BKK CNX SIN SGN HAN DAD MNL CEB CGK DPS KUL PEN PNH RGN BWN GUM ROR
+  (RGN = CI7915/7916 {2,4,6}, numbering outside mainline and documented JV ranges — section verbatim;
+  BWN = BI-operated CI9503/9504 marketed by CI, non-SkyTeam operator flagged; GUM own-metal CI025/026.)
+- EU (6): LHR FRA AMS VIE PRG FCO (FCO own-metal CI075/076 A359 with sub-window cancellations noted)
+- NAm (6): LAX ONT SFO SEA JFK YVR (YVR CI031/032 daily 77W)
+- SWP (4): SYD MEL AKL BNE (BNE = own-metal THROUGH-flight CI053 TPE-BNE-AKL, not a codeshare)
+- SWA / ME / NAf / SAf / CAm / SAm: ZERO stations in evidence.
+
+Newly pinned vs §A11's parsed set: OKA CTS ICN PUS GMP PEN RGN BWN GUM CNX KOJ HIJ FSZ TAK FCO BNE
+(§A11 excluded several of these from DAY-grid parsing for alignment reasons; presence-of-service is a
+weaker claim than a day grid and is all that zoning needs).
+
+### (c) Negatives (evidence-grade recorded, nothing inferred)
+
+- HNL Honolulu — the chart's most counter-intuitive pin: "State of Hawaii" → CENTRAL AMERICA (so a
+  hypothetical TPE-HNL award prices NEA↔CAm). But HNL appears ONLY as HA-operated beyond-gateway legs
+  (NRT-HNL CI9552/HA822, KIX-HNL CI9550/HA450) ⇒ NOT a CI station; kept out of ci-zones.json.
+- Beyond-gateway codeshare-only cities (excluded as stations): SDJ/MMY/HKD/AKJ (JL ex-FUK/HND),
+  SUB (GA ex-CGK/DPS), HKT (PG ex-BKK/CNX), YYZ/YYC (WS ex-YVR), MAD/BCN (KL ex-AMS/FRA),
+  ORD/PIT/WAS/MIA/SAN/SJC/LAS (DL blocks ex-JFK/LAX), WLG/CHC (QF ex-SYD).
+- MFM Macau — table assigns Macau→SEA, but the combined 2025-Q1 edition has ZERO Macau sections
+  (MACAU/MACAO/澳門 probes = 0 hits); excluded pending service evidence.
+- DEL/BOM (India→SWA), DXB (UAE→ME), IST (Turkey dual-listed ME+EU — flagged AMBIGUOUS for any future
+  station), CXI (Kiribati→SWP would apply; never evidenced), KMG Kunming absent, CTU superseded by TFU.
+- `stationsFlight.js` (@20260419110557-era extract, 597 StnCodes incl. ABQ/KEF/…) is a GLOBAL flight-
+  status station DB — its TPE ArvStations lists ~644 codes including non-CI stations; NOT usable as
+  route evidence. Route presence came ONLY from the timetable PDF.
+- web_search tool unavailable/broken again this session (not used); no live china-airlines.com fetches
+  attempted (standing 403 bot-block per §A8/A11).
+
+### (d) Honesty ledger
+
+Origin/live/replay/CDX/search calls this pass: **0 / budget ~15** — every finding derives from
+prior-pass Wayback caches whose byte sizes match their ledgers exactly (a8-ci-wb-2025-…html = 149,704 B;
+2019 = 146,433 B; 2015 = 78,596 B; 2026 shell = 356,520 B; rsc-payload.txt = 75,622 B;
+seasonality = 105,422 B; sc-ci-wb-2025-timetable.pdf = 1,843,009 B / .txt = 97,550 B), plus phase-11
+extracts (ci-2025tt-src.txt 63,688+97,550 B variants, stationsFlight json/txt). Cache copies staged at
+`.agent-teams/gcmp-phase12/research/cache/` (12 files). Tooling notes: PS 5.1 comma-form `-replace`
+struck again (used `.Replace()`); `-SortObject` is not a parameter (use `Sort-Object`);
+`(?s)` required for multiline context regexes; pypdf CJK text extracts cleanly enough for bilingual
+city-name substring probes. No quotes fabricated: every verbatim string above re-read against local
+caches immediately before writing. Confidence split: chart-verified 65 / community-corrected 0 /
+inferred 0. No code/data changes under src/** or public/data/**; nothing committed; repo edit limited
+to THIS appendix + the out-of-repo research artifacts.
+
+### (e) Suggested calib.* test ids (docs-only; none activated)
+
+- calib.ci-skyteampartner.zone-table-era-stable — country-per-zone rows identical across 2015/2019/
+  2025 captures and current-era RSC payload.
+- calib.ci-skyteampartner.gum-and-ror-zone-sea-not-swp — Guam/Palau price as SEA pairs (NEA-GUM E35/B60,
+  not the SWP row).
+- calib.ci-skyteampartner.hawaii-central-america-rule — Hawaii→CAm if ever a CI station exists; HNL
+  currently NOT a station.
+- calib.ci-skyteampartner.china-nea-vs-hkg-mfm-sea-split.
+- calib.ci-skyteampartner.turkey-dual-listed-ambiguous — engine must not silently pick ME or EU.
+- calib.ci-skyteampartner.station-universe-65-chart-verified — count guard over ci-zones.json.
+- calib.ci-skyteampartner.own-metal-six-area-scheme-not-partner-zones — product separation guard.
+
+### (f) Z6 shape freeze — `countryZones[]` ×11 with ISO-alpha-2 mapping (captain ruling Z6, 2026-08-25)
+
+`ci-zones.json` rewritten to the frozen four-key shape `{version, lastVerified, assignments,
+countryZones}`. Pre-Z6 artifact (with its methodology/sourceCatalog/negatives/stats blocks) archived
+verbatim at `.agent-teams/gcmp-phase12/research/ci-zones.pre-z6-archive.json`; authored fragment kept
+at `.agent-teams/gcmp-phase12/research/country-zones.z6.json`. Schema note: `CiZoneMapSchema` gains
+`countryZones` upstream (assignments min-count relaxed when countryZones non-empty); until that lands,
+the current seam still parses the document by unknown-key stripping — acceptance harness
+`.agent-teams/gcmp-phase12/validate-cizones.ts` asserts BOTH layers.
+
+DEVIATION FROM THE RULING'S EXAMPLE, flagged not silent: `assignments` is NOT `[]` — all **65**
+rows are retained. Z6 rule 3's own carve-out applies: real AIRPORT-level evidence exists (§A(b)
+two-artifact deterministic join), and discarding chart-verified rows would contradict §(b)/(c).
+
+Mapping decisions (all recorded in-band as per-zone notes):
+
+- Convention: `countriesIso` is ORDER-ALIGNED with `countriesVerbatim` minus EXCLUDED entries;
+  published duplicates stay aligned ('Bulgaria' ×2 → BG ×2 in EU; 'Sudan' ×2 → SD ×2 in NAf).
+- Typos mapped conservatively: 'Bilgium'→BE, 'Ivry Coast'→CI, 'Antidua And Barbuda'→AG,
+  'Nothern Mariana Islands'→MP, 'Czech'→CZ, 'Salvador'→SV, 'Dominican'→DO, 'Syrian'→SY.
+- Historic names: 'Byelorussian SSR'→BY, 'Zaire'→CD (retired ZD), 'Swaziland'→SZ (Eswatini 2018),
+  'Macedonia'→MK (pre-2019 name), 'Togolese Republic'→TG, 'Republic of Kiribati'→KI.
+- Disambiguations noted in-band: 'Korea'→KR reads ROK because 'North Korea'→KP is separately listed;
+  'China'→CN reads MAINLAND ONLY because Hong Kong/Macau sit under SEA (table-resolved);
+  'East Russian'(NEA)/'West Russian'(EU) both→RU per the chart's own split;
+  'USA (Hawaii excluded)'→US pairs with 'State of Hawaii'→US under CENTRAL AMERICA.
+- Territories with own ISO codes mapped as published: GU MP PW HK MO PR BM KY MQ VG VI GP GF YT.
+- OPEN QUESTIONS recorded in-band, not resolved silently: 'Turkey'→TR dual-listed ME+EU (engine must
+  treat TR as ambiguous — matches the §(e) guard id); unqualified 'Congo'→CG primary with CD
+  unavoidable-open; NAf 'Sudan' is ×2 in the rendered table but ×1 in the machine alternativeDesc
+  field of the same 20260705122302 payload (render-vs-field variant documented).
+- EXCLUDED from iso with notes, verbatim only: 'Yogoslavia' (EU; dissolved, successors HR/SI/BA/MK/
+  RS/ME), 'Netherlands Antilles' (CAm; dissolved 2010 → CW/SX/BQ), 'Papeete' (SWP; place inside PF).
+- Totals: 198 verbatim entries, 195 ISO codes, 11/11 zones chart-verified. Acceptance: schema parse OK,
+  65 unique airports intact, resolver smoke vs real catalog pins TPE→HKG J = 60,000 RT (NEA→SEA) and
+  TPE→LHR Y = 110,000 RT.
+
+### (g) Wayback CDX stamps ledger (rule-6 pins)
+
+Saved HTMLs embed no `/web/<14-digit-ts>/` markers (post-processed captures), so pins derive from the
+cached CDX listings plus content fingerprints; where several stamps exist for one URL the alternates
+are RETAINED here rather than silently resolved. §(d) byte sizes corroborate file identity.
+
+| cached file | pinned stamp | basis | alternates kept |
+|---|---|---|---|
+| a8-ci-wb-2015-ticket-awards-skyteam.html | 20151216204817 | only matching URL stamp in CDX | — |
+| a8-ci-wb-2019-ticket-awards-skyteam.html | 20190822111127 | sourceCatalog pin; ©2019 fingerprint; three .html-stamped replays indistinguishable post-processing | 20191015183047, 20191112183251 |
+| a8-ci-wb-2019-seasonality-chart.html | 20190822112138 | same-day harvest-cluster heuristic (.html variants) | 20191015184037, 20191116235325 |
+| a8-ci-wb-2025-ticket-awards-skyteam.html | PROVISIONAL 20240519080156 | filename bucket + prose-only shell family; DISCRIMINATOR: cached bytes contain NO priced matrix ⇒ ≠ 20251008063633 | 20210923175345, 20250324063312 |
+| a8-ci-wb-2026-ticket-awards-skyteam.html | 20260606194931 | only 2026 stamp for legacy URL; Next buildId `27jAC7iv-y8ULcwFqvnl0` proves an independent deploy from the reward-ticket artifacts | — |
+| a8-ci-wb-2026-new-reward-ticket.html | 20260705122302 | sourceCatalog pin; buildId `63HqX3UszVw_QeDtsr6Dz` shared with rsc-payload.txt (same-replay pair); local CDX also lists older 20260113094736 for the path | 20260113094736 |
+| a8-ci-wb-2026-rsc-payload.txt | 20260705122302 | buildId match with the row above | — |
+| a8-cdx-*.txt (5 files) | n/a | prefix-query OUTPUTS — provenance artifacts in their own right; full listings preserved in cache | — |
+
+### (h) Matrix re-pin result — 66/66 (prose only per Z6 rule 4)
+
+Structured extraction of the WB 20260705122302 payload (Charge-Zone taxonomy itemId 18150; per-pair
+components titled `N-N <Zone A> - <Zone B>` with `tableTitle: "Required Mileage"`, headers
+Class / Economy / Premium Economy / Business / Round-Trip) yields ALL 66 unordered pairs including
+diagonals, and every Round-Trip E/PE/B triple is IDENTICAL to the `zoneMatrix` already transcribed in
+`public/data/award-pricing/current.json` — 66/66 (64 via scripted diff; `5-10 Europe -South America`
+and `5-11 Europe -South West Pacific` verified by hand after a dash-space title quirk broke the naive
+regex). One-Way halves are present and corroborate Era-2 one-way = half round-trip (e.g. SWP-SWP
+17,500/22,500/30,000). Extraction quirks for future re-runs: ~131 Required-Mileage blocks ≈ duplicated
+renderings (2×66), segments bleed into neighbours unless tightly windowed, and some titles omit the
+space after the dash. Per ruling this re-pin lives ONLY here, not in the JSON.
+
+### (i) OPEN QUESTION OQ-Z6-1 — unidentified reversed-numbering mileage tables
+
+NAME: **OQ-Z6-1**. The same WB 20260705122302 payload carries ~7 additional Required-Mileage blocks
+with REVERSED numbering ("1-1 North America - North America", "2-1 Central America - North America",
+"4-1 Europe - North America", …) whose values match no §A8 column ordering (the first triple of
+"1-1 NAm-NAm" reads 35,000/60,000/40,000 — an E/B/PE reading fits NAm-NAm, but later blocks fit neither
+E/PE/B nor E/B/PE consistently). Hypotheses: (a) CI OWN-METAL six-area scheme widget sharing the page,
+(b) a how-to-read/examples component, (c) a partner-specific sub-chart. NOTHING from this cluster has
+been transcribed into any data file; adjudication requested before anyone tries.

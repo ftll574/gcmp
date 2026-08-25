@@ -306,6 +306,16 @@
       "miles": "{count} miles",
       "milesBand": "miles band",
       "zoneLabel": "Zone {zone} mi",
+      "ciZone": {
+        "title": "CI SkyTeam partner award · per-leg zone quotes",
+        "resolved": "{done}/{total} legs resolved",
+        "legZones": "{origin}→{dest}",
+        "unknownZone": "Zone unknown",
+        "unpricedCabin": "No {cabin} price for this zone pair",
+        "surfaceSector": "Surface sector — not priced",
+        "sum": "Sum of legs",
+        "sumNote": "The sum is a segment-by-segment lower-bound aid; CI's whole-ticket arithmetic is not officially verified and the ticketed price may differ."
+      },
       "sources": "Sources and notes",
       "confidence": {
         "officialFixed": "official fixed",

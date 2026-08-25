@@ -6,10 +6,12 @@ import {
   quoteAwardZone,
 } from '../lib/rtw/award-pricing.ts';
 import { sortMileageRedemptionRtwProductsForMarket } from '../lib/rtw/products.ts';
+import { quoteCiLeg, resolveCiZone } from '../lib/rtw/ci-zones.ts';
 import { validateRtwRoute } from '../lib/rtw/validate.ts';
 import { useLocale } from '../i18n/use-locale.ts';
 import { AwardZoneBreakdown } from './AwardZoneBreakdown.tsx';
 import { AwardFeeScheduleCard } from './AwardFeeScheduleCard.tsx';
+import { CiZoneQuotes, type CiZoneQuoteRow } from './CiZoneQuotes.tsx';
 import {
   CHINA_AIRLINES_SKYTEAM_PRODUCT_ID,
   ChinaAirlinesNotRtwCard,
@@ -17,6 +19,7 @@ import {
 } from './TaiwanCarrierNotes.tsx';
 import type { AwardPricingCatalog } from '../lib/schemas/award-pricing.ts';
 import type { AllianceCatalog } from '../lib/schemas/alliance.ts';
+import type { CiZoneMap } from '../lib/schemas/ci-zones.ts';
 import type { ContinentId } from '../lib/schemas/country-continent.ts';
 import type { MarketProfile } from '../lib/schemas/market.ts';
 import type { NetworkGapEntry } from '../lib/schemas/network-gaps.ts';
@@ -36,6 +39,11 @@ interface RtwValidationPanelProps {
   readonly airportContinentOverrides: ReadonlyMap<string, ContinentId> | null;
   /** Network-gap watchlist; null ⇒ engine emits no gap findings. */
   readonly networkGaps: ReadonlyArray<NetworkGapEntry> | null;
+  /**
+   * CI station→zone map; null ⇒ the CI zone-quote block stays hidden
+   * (degrade-to-null loader contract).
+   */
+  readonly ciZones: CiZoneMap | null;
   readonly selectedProductId: string;
   readonly onProductChange: (productId: string) => void;
 }
@@ -88,6 +96,7 @@ export function RtwValidationPanel({
   countryContinents,
   airportContinentOverrides,
   networkGaps,
+  ciZones,
   selectedProductId,
   onProductChange,
 }: RtwValidationPanelProps): React.ReactElement {
@@ -159,14 +168,54 @@ export function RtwValidationPanel({
   // shows when its product is picked or any leg is flown by CI; the JX
   // watchlist note always renders. The rule link fires only when the
   // engine's prohibited-ocean-combination check actually fails.
-  if (!selectedProduct) return <section className="rtw-panel">{t('rtw.noProducts')}</section>;
-
-  const ciProductSelected = selectedProduct.id === CHINA_AIRLINES_SKYTEAM_PRODUCT_ID;
+  // (Computed before the early return below — hooks ordering.)
+  const ciProductSelected = selectedProduct?.id === CHINA_AIRLINES_SKYTEAM_PRODUCT_ID;
   const ciCarriersIncluded = legs.some((leg) => leg.operatingCarrier === 'CI');
   const ciOceanRuleTripped =
     result?.findings.some(
       (finding) => finding.ruleId === 'prohibited-ocean-combination' && finding.severity === 'fail',
     ) ?? false;
+
+  // Per-leg CI zone quotes (Phase-12; docs/decisions/ci-zone-resolution.md).
+  // Built only when the CI product is selected AND the zone map loaded —
+  // otherwise the block stays absent entirely (no empty shell). Surface
+  // legs are labeled, never quoted (Z1); unmapped endpoints surface as
+  // 「區域未知」 rows instead of guesses.
+  const ciProductId = selectedProduct?.id;
+  const ciZoneRows: ReadonlyArray<CiZoneQuoteRow> | null = useMemo(() => {
+    if (!ciProductSelected || !ciZones || ciProductId === undefined || legs.length === 0) {
+      return null;
+    }
+    return legs.map((leg) => {
+      const surface = leg.surface === true;
+      if (surface) {
+        return { from: leg.from, to: leg.to, surface: true, quote: null, fromZone: null, toZone: null };
+      }
+      const fromZone = resolveCiZone(ciZones, leg.from);
+      const toZone = resolveCiZone(ciZones, leg.to);
+      const quote =
+        fromZone && toZone
+          ? quoteCiLeg({
+              catalog: awardPricingCatalog,
+              productId: ciProductId,
+              zoneMap: ciZones,
+              fromAirport: leg.from,
+              toAirport: leg.to,
+              cabin: routing.cabin,
+            })
+          : null;
+      return {
+        from: leg.from,
+        to: leg.to,
+        surface: false,
+        quote,
+        fromZone: fromZone?.zone ?? null,
+        toZone: toZone?.zone ?? null,
+      };
+    });
+  }, [ciProductSelected, ciZones, ciProductId, legs, awardPricingCatalog, routing.cabin]);
+
+  if (!selectedProduct) return <section className="rtw-panel">{t('rtw.noProducts')}</section>;
 
   return (
     <section className="rtw-panel" aria-label="RTW validation">
@@ -262,6 +311,7 @@ export function RtwValidationPanel({
                 />
               )}
               {feeSchedule && <AwardFeeScheduleCard schedule={feeSchedule} />}
+              {ciZoneRows && <CiZoneQuotes rows={ciZoneRows} cabin={routing.cabin} />}
               {awardPrice && (awardPrice.sourceUrls.length > 0 || awardPrice.notes.length > 0) ? (
                 <details className="rtw-award-sources">
                   <summary>{t('rtw.award.sources')}</summary>

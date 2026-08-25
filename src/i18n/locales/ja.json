@@ -306,6 +306,16 @@
       "miles": "{count} マイル",
       "milesBand": "マイルゾーン",
       "zoneLabel": "{zone} マイルゾーン",
+      "ciZone": {
+        "title": "CI スカイチーム提携特典・区間別ゾーン見積り",
+        "resolved": "解決済み {done}/{total} 区間",
+        "legZones": "{origin}→{dest}",
+        "unknownZone": "ゾーン不明",
+        "unpricedCabin": "このゾーンペアには{cabin}の価格がありません",
+        "surfaceSector": "地上区間——価格対象外",
+        "sum": "区間合計",
+        "sumNote": "合計は区間ごとの下限参考値です。CI の航空券全体の計算式は公式には未確認のため、発券価格とは異なる場合があります。"
+      },
       "sources": "出典と備考",
       "confidence": {
         "officialFixed": "公式確定表",

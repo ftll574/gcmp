@@ -840,6 +840,7 @@ function Ready({
                 countryContinents={data.countryContinents}
                 airportContinentOverrides={data.airportContinentOverrides}
                 networkGaps={data.networkGaps}
+                ciZones={data.ciZones}
                 selectedProductId={selectedRtwProductId}
                 onProductChange={changeRtwProduct}
               />

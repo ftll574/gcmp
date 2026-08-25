@@ -17,6 +17,7 @@ import {
   CountryContinentCatalogSchema,
   type ContinentId,
 } from '../lib/schemas/country-continent.ts';
+import { parseCiZoneMap, type CiZoneMap } from '../lib/schemas/ci-zones.ts';
 import {
   parseScheduleCatalog,
   type ScheduleEntry,
@@ -71,6 +72,12 @@ export interface LoadedData {
    * (same degrade-to-null contract as `networkGaps`).
    */
   schedules: ReadonlyArray<ScheduleEntry> | null;
+  /**
+   * CI SkyTeAm partner-award station→zone map (geo/ci-zones.json). Null if
+   * the file is unavailable/malformed — the panel then shows no per-leg
+   * zone quotes (degrade-to-null, same contract as `networkGaps`).
+   */
+  ciZones: CiZoneMap | null;
 }
 
 export type LoadState =
@@ -118,6 +125,7 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
           geoRaw,
           networkGapsRaw,
           schedulesRaw,
+          ciZonesRaw,
           ...programRaws
         ] = await Promise.all([
           fetchJsonStrict(`${baseUrl}/data/airports.json`),
@@ -130,6 +138,7 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
           fetchJsonOptional(`${baseUrl}/data/geo/current.json`),
           fetchJsonOptional(`${baseUrl}/data/network-gaps/current.json`),
           fetchJsonOptional(`${baseUrl}/data/schedules/current.json`),
+          fetchJsonOptional(`${baseUrl}/data/geo/ci-zones.json`),
           ...programDirs.map((dir) =>
             fetchJsonOptional(`${baseUrl}/data/programs/${dir}/current.json`),
           ),
@@ -185,6 +194,18 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
           }
         }
 
+        let ciZones: CiZoneMap | null = null;
+        if (ciZonesRaw !== null && ciZonesRaw !== undefined) {
+          try {
+            ciZones = parseCiZoneMap(ciZonesRaw);
+          } catch (e) {
+            console.warn(
+              'geo/ci-zones.json schema parse failed; CI per-leg zone quotes disabled:',
+              e,
+            );
+          }
+        }
+
         if (!Array.isArray(airlinesRaw)) throw new Error('airlines.json malformed');
         const allianceCatalog = AllianceCatalogSchema.parse(allianceRaw);
         const rtwRuleCatalog = RtwRuleCatalogSchema.parse(rtwRulesRaw);
@@ -225,6 +246,7 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
             airportContinentOverrides,
             networkGaps,
             schedules,
+            ciZones,
           },
         });
       } catch (e) {

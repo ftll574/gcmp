@@ -1,0 +1,1457 @@
+{
+    "version":  "2026.4",
+    "lastVerified":  "2026-08-25",
+    "assignments":  [
+                        {
+                            "airport":  "TPE",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Taiwan listed verbatim under \u0027North East Asia\u0027; primary gateway, 119 section mentions in official 2025-Q1 timetable."
+                                      ]
+                        },
+                        {
+                            "airport":  "KHH",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Taiwan verbatim under \u0027North East Asia\u0027; Kaohsiung gateway (30 mentions)."
+                                      ]
+                        },
+                        {
+                            "airport":  "RMQ",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Taichung section present in official PDF incl. Mandarin AE1857/1858 RMQ-SGN; day-grid parsing was excluded there as a charter/codeshare-heavy mega-block (calibration-set A11(e)) - PRESENCE is claimed, not frequency."
+                                      ]
+                        },
+                        {
+                            "airport":  "TSA",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Taiwan verbatim under \u0027North East Asia\u0027; Songshan sections TSA-HHG(SHA)/FOC/GMP own-metal in PDF."
+                                      ]
+                        },
+                        {
+                            "airport":  "NRT",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Japan verbatim under \u0027North East Asia\u0027.",
+                                          "Own-metal CI100/104/106/108 (+JL-operated CI9xxx codeshares)."
+                                      ]
+                        },
+                        {
+                            "airport":  "HND",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Japan verbatim under \u0027North East Asia\u0027; TSA-HND per calibration-set A11(g) parsed entries from this same PDF."
+                                      ]
+                        },
+                        {
+                            "airport":  "KIX",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Japan verbatim under \u0027North East Asia\u0027; own-metal CI152/156/172."
+                                      ]
+                        },
+                        {
+                            "airport":  "NGO",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Japan verbatim under \u0027North East Asia\u0027; own-metal CI150/154 (+JL8340/8670 codeshare)."
+                                      ]
+                        },
+                        {
+                            "airport":  "FUK",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Japan verbatim under \u0027North East Asia\u0027; own-metal CI110/111/116/117/128/129 across DST sub-windows."
+                                      ]
+                        },
+                        {
+                            "airport":  "OKA",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Japan verbatim under \u0027North East Asia\u0027; own-metal CI120/121/122/123 daily."
+                                      ]
+                        },
+                        {
+                            "airport":  "CTS",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Japan verbatim under \u0027North East Asia\u0027; own-metal CI130/131 + CI2130/2131. Day-grid alignment was excluded in A11(e); presence verified directly here."
+                                      ]
+                        },
+                        {
+                            "airport":  "KOJ",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Japan verbatim under \u0027North East Asia\u0027; own-metal Kagoshima CI118/119 days{2,6}."
+                                      ]
+                        },
+                        {
+                            "airport":  "HIJ",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Japan verbatim under \u0027North East Asia\u0027; own-metal Hiroshima CI112/113."
+                                      ]
+                        },
+                        {
+                            "airport":  "FSZ",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Japan verbatim under \u0027North East Asia\u0027; own-metal Shizuoka CI2168/2169 (single-day weekly pattern, dated sub-window 03Jan25)."
+                                      ]
+                        },
+                        {
+                            "airport":  "TAK",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Japan verbatim under \u0027North East Asia\u0027; own-metal Takamatsu CI178/179 days{2,3,4,6,7}. Found during Phase-12 sweep; absent from A11 parsed set."
+                                      ]
+                        },
+                        {
+                            "airport":  "ICN",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "\u0027Korea\u0027 listed verbatim under \u0027North East Asia\u0027; \u0027North Korea\u0027 listed separately, so \u0027Korea\u0027 reads as Republic of Korea.",
+                                          "Own-metal Seoul Incheon CI160/161/162/163 + CI2160s (+KE-operated CI906x codeshares)."
+                                      ]
+                        },
+                        {
+                            "airport":  "PUS",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "\u0027Korea\u0027 (=ROK, see ICN) verbatim under \u0027North East Asia\u0027; own-metal Busan CI186/188 (+KE2250 codeshare). Day grids excluded in A11(e); presence verified here."
+                                      ]
+                        },
+                        {
+                            "airport":  "GMP",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "\u0027Korea\u0027 (=ROK) verbatim under \u0027North East Asia\u0027; own-metal TSA-Gimpo CI260/261 days{1,4,7}."
+                                      ]
+                        },
+                        {
+                            "airport":  "PEK",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "China verbatim under \u0027North East Asia\u0027; Hong Kong/Macau are separately listed under South East Asia.",
+                                          "Own-metal Beijing Capital CI511/512/517/518."
+                                      ]
+                        },
+                        {
+                            "airport":  "PVG",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "China verbatim under \u0027North East Asia\u0027; Shanghai Pu Dong per A11(g) parsed entries (TPE and KHH origins)."
+                                      ]
+                        },
+                        {
+                            "airport":  "SHA",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "China verbatim under \u0027North East Asia\u0027; own-metal TSA-Hongqiao CI201/202 (+FM/MU JV codeshares)."
+                                      ]
+                        },
+                        {
+                            "airport":  "CAN",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "China verbatim under \u0027North East Asia\u0027; own-metal Guangzhou CI521/522 (+CZ3098 JV)."
+                                      ]
+                        },
+                        {
+                            "airport":  "SZX",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "China verbatim under \u0027North East Asia\u0027; own-metal Shenzhen CI527/528 (+CZ3088 JV)."
+                                      ]
+                        },
+                        {
+                            "airport":  "TFU",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "China verbatim under \u0027North East Asia\u0027; Chengdu TIANFU CI551/552 days{2,7} - the PDF serves Tianfu, not Shuangliu (CTU negative)."
+                                      ]
+                        },
+                        {
+                            "airport":  "WUH",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "China verbatim under \u0027North East Asia\u0027; Mandarin AE217/218 TSA-Wuhan own + CI8011(MU)/8541(CZ) JV."
+                                      ]
+                        },
+                        {
+                            "airport":  "XMN",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "China verbatim under \u0027North East Asia\u0027; Mandarin AE991/992 Xiamen own (+MF888 JV)."
+                                      ]
+                        },
+                        {
+                            "airport":  "NKG",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "China verbatim under \u0027North East Asia\u0027; Nanjing AE5007/5008 (MU-operated JV)."
+                                      ]
+                        },
+                        {
+                            "airport":  "NGB",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "China verbatim under \u0027North East Asia\u0027; Ningbo AE5003/5004 (MU-operated JV)."
+                                      ]
+                        },
+                        {
+                            "airport":  "FOC",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "China verbatim under \u0027North East Asia\u0027; Fuzhou via TSA AE211/212 own + AE5109(MF) JV."
+                                      ]
+                        },
+                        {
+                            "airport":  "CGO",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "China verbatim under \u0027North East Asia\u0027; Zhengzhou AE5993/5994 (CZ-operated JV)."
+                                      ]
+                        },
+                        {
+                            "airport":  "TAO",
+                            "zone":  "NEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "China verbatim under \u0027North East Asia\u0027; Qingdao CI8009/8010 (MU-operated JV, documented CI8000-8999 range)."
+                                      ]
+                        },
+                        {
+                            "airport":  "HKG",
+                            "zone":  "SEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "\u0027Hong Kong\u0027 listed verbatim under \u0027South East Asia\u0027 - NOT North East Asia despite mainland China being NEA; this is the chart\u0027s own key, not geography.",
+                                          "Six dailies + CI921{2,3,5,7}/CI607{1,4,6} per A10."
+                                      ]
+                        },
+                        {
+                            "airport":  "BKK",
+                            "zone":  "SEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Thailand verbatim under \u0027South East Asia\u0027; own-metal CI831/833/835/837 dailies."
+                                      ]
+                        },
+                        {
+                            "airport":  "CNX",
+                            "zone":  "SEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Thailand verbatim under \u0027South East Asia\u0027; own-metal Chiang Mai CI851/852 days{2,3,5,6,7}. Newly pinned in Phase-12 sweep."
+                                      ]
+                        },
+                        {
+                            "airport":  "SIN",
+                            "zone":  "SEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Singapore verbatim under \u0027South East Asia\u0027; own-metal CI753/755 dailies."
+                                      ]
+                        },
+                        {
+                            "airport":  "SGN",
+                            "zone":  "SEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Vietnam verbatim under \u0027South East Asia\u0027; Ho Chi Minh City per A11(g) entries (+VN-operated codeshares)."
+                                      ]
+                        },
+                        {
+                            "airport":  "HAN",
+                            "zone":  "SEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Vietnam verbatim under \u0027South East Asia\u0027; Hanoi section present in PDF (day-grid exclusion in A11(e) does not affect presence)."
+                                      ]
+                        },
+                        {
+                            "airport":  "DAD",
+                            "zone":  "SEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Vietnam verbatim under \u0027South East Asia\u0027; Da Nang per A11(g) entries."
+                                      ]
+                        },
+                        {
+                            "airport":  "MNL",
+                            "zone":  "SEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Philippines verbatim under \u0027South East Asia\u0027; Manila per A11(g) entries."
+                                      ]
+                        },
+                        {
+                            "airport":  "CEB",
+                            "zone":  "SEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Philippines verbatim under \u0027South East Asia\u0027; own-metal Cebu CI705/706 days{1,2,4,6,7}."
+                                      ]
+                        },
+                        {
+                            "airport":  "CGK",
+                            "zone":  "SEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Indonesia verbatim under \u0027South East Asia\u0027; Jakarta per A11(g) entries (+GA-operated codeshares beyond CGK)."
+                                      ]
+                        },
+                        {
+                            "airport":  "DPS",
+                            "zone":  "SEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Indonesia verbatim under \u0027South East Asia\u0027; own-metal Denpasar Bali CI771/772 daily 333."
+                                      ]
+                        },
+                        {
+                            "airport":  "KUL",
+                            "zone":  "SEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Malaysia verbatim under \u0027South East Asia\u0027; own-metal Kuala Lumpur CI721/722 days{2,3,5,6,7} (+MH-operated CI94xx codeshares)."
+                                      ]
+                        },
+                        {
+                            "airport":  "PEN",
+                            "zone":  "SEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Malaysia verbatim under \u0027South East Asia\u0027; own-metal Penang CI731/732 daily."
+                                      ]
+                        },
+                        {
+                            "airport":  "PNH",
+                            "zone":  "SEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Cambodia verbatim under \u0027South East Asia\u0027; Phnom Penh per A11(g) entries (incl. AE2xx TSA-PNH)."
+                                      ]
+                        },
+                        {
+                            "airport":  "RGN",
+                            "zone":  "SEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Myanmar verbatim under \u0027South East Asia\u0027; Yangon CI7915/7916 days{2,4,6} 738 - numbering outside both mainline and documented JV ranges; official section quoted verbatim, operator unstated in extraction."
+                                      ]
+                        },
+                        {
+                            "airport":  "BWN",
+                            "zone":  "SEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Brunei verbatim under \u0027South East Asia\u0027.",
+                                          "Service is BI-operated codeshare MARKETED by CI (CI9503/9504 = BI451/452) - non-SkyTeam operator, so partner-chart eligibility is limited; included because the official timetable lists it as a CI-numbered TPE route."
+                                      ]
+                        },
+                        {
+                            "airport":  "GUM",
+                            "zone":  "SEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "\u0027Guam\u0027 listed verbatim under \u0027South East Asia\u0027 - NOT South-West Pacific despite US territory; triple-corroborated by current-era page rules \u0027Reward tickets are not eligible for itinerary between Guam and U.S. via Taipei\u0027 and own-metal captions \u0027including Guam and Delhi\u0027/\u0027excluding Guam\u0027.",
+                                          "Own-metal CI025/{4,7} out, CI026/{3,6} back, 32Q."
+                                      ]
+                        },
+                        {
+                            "airport":  "ROR",
+                            "zone":  "SEA",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "\u0027Palau\u0027 listed verbatim under \u0027South East Asia\u0027.",
+                                          "Own-metal Koror CI030/CI028 {1,4}/{3,6} out, CI029/CI027 back, 738/32Q."
+                                      ]
+                        },
+                        {
+                            "airport":  "LHR",
+                            "zone":  "EU",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "United Kingdom verbatim under \u0027Europe\u0027; London Heathrow per A11(g) entries."
+                                      ]
+                        },
+                        {
+                            "airport":  "FRA",
+                            "zone":  "EU",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Germany verbatim under \u0027Europe\u0027; Frankfurt per A11(g) entries."
+                                      ]
+                        },
+                        {
+                            "airport":  "AMS",
+                            "zone":  "EU",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Netherlands verbatim under \u0027Europe\u0027; Amsterdam per A11(g) entries (+KL beyond-gateway legs AMS-MAD/BCN excluded as stations)."
+                                      ]
+                        },
+                        {
+                            "airport":  "VIE",
+                            "zone":  "EU",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Austria verbatim under \u0027Europe\u0027; Vienna per A11(g) entries."
+                                      ]
+                        },
+                        {
+                            "airport":  "PRG",
+                            "zone":  "EU",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "\u0027Czech\u0027 listed verbatim under \u0027Europe\u0027; Prague per A11(g) entries."
+                                      ]
+                        },
+                        {
+                            "airport":  "FCO",
+                            "zone":  "EU",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Italy verbatim under \u0027Europe\u0027; own-metal Rome CI075/076 A359 (PDF annotates sub-window cancellations 23Feb25/04Mar25 and 24Feb25/05Mar25)."
+                                      ]
+                        },
+                        {
+                            "airport":  "LAX",
+                            "zone":  "NAm",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "\u0027USA (Hawaii excluded)\u0027 verbatim under \u0027North America\u0027; Los Angeles CI006/008 per A10 (daily CI008 across DST sub-windows)."
+                                      ]
+                        },
+                        {
+                            "airport":  "ONT",
+                            "zone":  "NAm",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "\u0027USA (Hawaii excluded)\u0027 verbatim under \u0027North America\u0027; Ontario CA own-metal CI023/024 daily 77W/359."
+                                      ]
+                        },
+                        {
+                            "airport":  "SFO",
+                            "zone":  "NAm",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "\u0027USA (Hawaii excluded)\u0027 verbatim under \u0027North America\u0027; San Francisco CI003/004 daily (post-2025-03-29 survival remains an open lead from A10 - irrelevant to zone membership)."
+                                      ]
+                        },
+                        {
+                            "airport":  "SEA",
+                            "zone":  "NAm",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "\u0027USA (Hawaii excluded)\u0027 verbatim under \u0027North America\u0027; Seattle own-metal CI021/022 A359."
+                                      ]
+                        },
+                        {
+                            "airport":  "JFK",
+                            "zone":  "NAm",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "\u0027USA (Hawaii excluded)\u0027 verbatim under \u0027North America\u0027; New York JFK per A11(g) entries."
+                                      ]
+                        },
+                        {
+                            "airport":  "YVR",
+                            "zone":  "NAm",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Canada verbatim under \u0027North America\u0027; Vancouver own-metal CI031/032 daily 77W (+WS beyond-gateway legs to YYZ/YYC excluded as stations)."
+                                      ]
+                        },
+                        {
+                            "airport":  "SYD",
+                            "zone":  "SWP",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Australia verbatim under \u0027South West Pacific\u0027; Sydney per A11(g) entries (+QF beyond-gateway legs to WLG/CHC excluded)."
+                                      ]
+                        },
+                        {
+                            "airport":  "MEL",
+                            "zone":  "SWP",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Australia verbatim under \u0027South West Pacific\u0027; Melbourne per A11(g) entries."
+                                      ]
+                        },
+                        {
+                            "airport":  "BNE",
+                            "zone":  "SWP",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "Australia verbatim under \u0027South West Pacific\u0027; own-metal THROUGH-flight CI053 TPE-Brisbane-Auckland (BNE leg AKL-BNE 3h15m) plus return section Auckland-Brisbane-Taipei - Brisbane is an own-metal stopover point, not a codeshare."
+                                      ]
+                        },
+                        {
+                            "airport":  "AKL",
+                            "zone":  "SWP",
+                            "confidence":  "chart-verified",
+                            "sourceUrls":  [
+                                               "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam",
+                                               "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                               "https://web.archive.org/web/20250319152449id_/https://www.china-airlines.com/us/en/Images/timetable-20250101-20250329_tcm162-4228.pdf"
+                                           ],
+                            "notes":  [
+                                          "New Zealand verbatim under \u0027South West Pacific\u0027; Auckland own-metal (incl. CI053 TPE-BNE-AKL rotation)."
+                                      ]
+                        }
+                    ],
+    "countryZones":  [
+                         {
+                             "zone":  "NEA",
+                             "countriesVerbatim":  [
+                                                       "Taiwan",
+                                                       "China",
+                                                       "Korea",
+                                                       "Japan",
+                                                       "Mongolia",
+                                                       "East Russian",
+                                                       "North Korea"
+                                                   ],
+                             "countriesIso":  [
+                                                  "TW",
+                                                  "CN",
+                                                  "KR",
+                                                  "JP",
+                                                  "MN",
+                                                  "RU",
+                                                  "KP"
+                                              ],
+                             "confidence":  "chart-verified",
+                             "sourceUrls":  [
+                                                "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                                "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam"
+                                            ],
+                             "notes":  [
+                                           "verbatim description: \u0027Taiwan, China, Korea, Japan, Mongolia, East Russian, North Korea\u0027",
+                                           "capture timestamps: WB 20260705122302 (current-era canonical page; machine Charge-Zone field + rendered h4/p blocks) cross-checked byte-stable against Era-2 WB 20251008063633 and Era-1 WB 20151216204817 / WB 20190822111127 renderings",
+                                           "\u0027China\u0027 -\u003e CN reads MAINLAND ONLY: the same table lists Hong Kong and Macau under South East Asia (table-resolved, not an open guess)",
+                                           "\u0027Korea\u0027 -\u003e KR reads Republic of Korea because \u0027North Korea\u0027 is separately listed; \u0027North Korea\u0027 -\u003e KP",
+                                           "\u0027East Russian\u0027 -\u003e RU: adjectival construction of the Russia split (\u0027East Russian\u0027 here / \u0027West Russian\u0027 under Europe)"
+                                       ]
+                         },
+                         {
+                             "zone":  "SEA",
+                             "countriesVerbatim":  [
+                                                       "Hong Kong",
+                                                       "Macau",
+                                                       "Philippines",
+                                                       "Thailand",
+                                                       "Indonesia",
+                                                       "Malaysia",
+                                                       "Cambodia",
+                                                       "Guam",
+                                                       "Nothern Mariana Islands",
+                                                       "Brunei",
+                                                       "Vietnam",
+                                                       "Singapore",
+                                                       "Myanmar",
+                                                       "Laos",
+                                                       "Palau"
+                                                   ],
+                             "countriesIso":  [
+                                                  "HK",
+                                                  "MO",
+                                                  "PH",
+                                                  "TH",
+                                                  "ID",
+                                                  "MY",
+                                                  "KH",
+                                                  "GU",
+                                                  "MP",
+                                                  "BN",
+                                                  "VN",
+                                                  "SG",
+                                                  "MM",
+                                                  "LA",
+                                                  "PW"
+                                              ],
+                             "confidence":  "chart-verified",
+                             "sourceUrls":  [
+                                                "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                                "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam"
+                                            ],
+                             "notes":  [
+                                           "verbatim description: \u0027Hong Kong, Macau, Philippines, Thailand, Indonesia, Malaysia, Cambodia, Guam, Nothern Mariana Islands, Brunei, Vietnam, Singapore, Myanmar, Laos, Palau\u0027",
+                                           "capture timestamps: WB 20260705122302 cross-checked byte-stable against WB 20251008063633 / 20190822111127 / 20151216204817",
+                                           "\u0027Nothern Mariana Islands\u0027 typo preserved verbatim -\u003e MP",
+                                           "chart-key quirks mapped as published, never re-sorted: Guam GU and Palau PW sit under SEA (not SWP); Hong Kong HK + Macau MO under SEA while mainland China is NEA"
+                                       ]
+                         },
+                         {
+                             "zone":  "SWA",
+                             "countriesVerbatim":  [
+                                                       "India",
+                                                       "Nepal",
+                                                       "Pakistan",
+                                                       "Sri Lanka",
+                                                       "Afghanistan",
+                                                       "Turkmenistan",
+                                                       "Kyrgyzstan",
+                                                       "Bhutan",
+                                                       "Bangladesh",
+                                                       "Tajikistan",
+                                                       "Kazakhstan",
+                                                       "Uzbekistan",
+                                                       "Maldives"
+                                                   ],
+                             "countriesIso":  [
+                                                  "IN",
+                                                  "NP",
+                                                  "PK",
+                                                  "LK",
+                                                  "AF",
+                                                  "TM",
+                                                  "KG",
+                                                  "BT",
+                                                  "BD",
+                                                  "TJ",
+                                                  "KZ",
+                                                  "UZ",
+                                                  "MV"
+                                              ],
+                             "confidence":  "chart-verified",
+                             "sourceUrls":  [
+                                                "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                                "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam"
+                                            ],
+                             "notes":  [
+                                           "verbatim description: \u0027India, Nepal, Pakistan, Sri Lanka, Afghanistan, Turkmenistan, Kyrgyzstan, Bhutan, Bangladesh, Tajikistan, Kazakhstan, Uzbekistan, Maldives\u0027",
+                                           "capture timestamps: WB 20260705122302 cross-checked byte-stable against WB 20251008063633 / 20190822111127 / 20151216204817",
+                                           "zero CI/Mandarin stations in evidence for this zone (see negatives); zone definition only"
+                                       ]
+                         },
+                         {
+                             "zone":  "ME",
+                             "countriesVerbatim":  [
+                                                       "Iran",
+                                                       "Iraq",
+                                                       "Oman",
+                                                       "United Arab Emirates",
+                                                       "Bahrain",
+                                                       "Jordan",
+                                                       "Kuwait",
+                                                       "Turkey",
+                                                       "Yemen",
+                                                       "Lebanon",
+                                                       "Saudi Arabia",
+                                                       "Georgia",
+                                                       "Syrian",
+                                                       "Azerbaijan",
+                                                       "Armenia",
+                                                       "Qatar",
+                                                       "Israel"
+                                                   ],
+                             "countriesIso":  [
+                                                  "IR",
+                                                  "IQ",
+                                                  "OM",
+                                                  "AE",
+                                                  "BH",
+                                                  "JO",
+                                                  "KW",
+                                                  "TR",
+                                                  "YE",
+                                                  "LB",
+                                                  "SA",
+                                                  "GE",
+                                                  "SY",
+                                                  "AZ",
+                                                  "AM",
+                                                  "QA",
+                                                  "IL"
+                                              ],
+                             "confidence":  "chart-verified",
+                             "sourceUrls":  [
+                                                "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                                "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam"
+                                            ],
+                             "notes":  [
+                                           "verbatim description: \u0027Iran, Iraq, Oman, United Arab Emirates, Bahrain, Jordan, Kuwait, Turkey, Yemen, Lebanon, Saudi Arabia, Georgia, Syrian, Azerbaijan, Armenia, Qatar, Israel\u0027",
+                                           "capture timestamps: WB 20260705122302 cross-checked byte-stable against WB 20251008063633 / 20190822111127 / 20151216204817",
+                                           "OPEN QUESTION (dual listing): \u0027Turkey\u0027 -\u003e TR appears under BOTH Middle East AND Europe; engine must treat TR as ambiguous until adjudicated (calib.ci-skyteampartner.turkey-dual-listed-ambiguous)",
+                                           "\u0027Syrian\u0027 -\u003e SY: adjectival form preserved from source"
+                                       ]
+                         },
+                         {
+                             "zone":  "EU",
+                             "countriesVerbatim":  [
+                                                       "United Kingdom",
+                                                       "France",
+                                                       "Germany",
+                                                       "Netherlands",
+                                                       "Czech",
+                                                       "Italy",
+                                                       "Austria",
+                                                       "Bilgium",
+                                                       "Bulgaria",
+                                                       "Denmark",
+                                                       "Cyprus",
+                                                       "Finland",
+                                                       "Norway",
+                                                       "Sweden",
+                                                       "Switzerland",
+                                                       "Spain",
+                                                       "Portugal",
+                                                       "Andorra",
+                                                       "Greece",
+                                                       "Albania",
+                                                       "Macedonia",
+                                                       "Bulgaria",
+                                                       "Romania",
+                                                       "Hungary",
+                                                       "Iceland",
+                                                       "Ireland Republic",
+                                                       "Luxembourg",
+                                                       "Estonia",
+                                                       "Latvia",
+                                                       "Byelorussian SSR",
+                                                       "Ukraine",
+                                                       "Slovakia",
+                                                       "West Russian",
+                                                       "Lithuania",
+                                                       "Yogoslavia",
+                                                       "Monaco",
+                                                       "Croatia",
+                                                       "Bosnia and Herzegovina",
+                                                       "Moldova",
+                                                       "Poland",
+                                                       "Serbia",
+                                                       "Slovenia",
+                                                       "Malta",
+                                                       "Turkey"
+                                                   ],
+                             "countriesIso":  [
+                                                  "GB",
+                                                  "FR",
+                                                  "DE",
+                                                  "NL",
+                                                  "CZ",
+                                                  "IT",
+                                                  "AT",
+                                                  "BE",
+                                                  "BG",
+                                                  "DK",
+                                                  "CY",
+                                                  "FI",
+                                                  "NO",
+                                                  "SE",
+                                                  "CH",
+                                                  "ES",
+                                                  "PT",
+                                                  "AD",
+                                                  "GR",
+                                                  "AL",
+                                                  "MK",
+                                                  "BG",
+                                                  "RO",
+                                                  "HU",
+                                                  "IS",
+                                                  "IE",
+                                                  "LU",
+                                                  "EE",
+                                                  "LV",
+                                                  "BY",
+                                                  "UA",
+                                                  "SK",
+                                                  "RU",
+                                                  "LT",
+                                                  "MC",
+                                                  "HR",
+                                                  "BA",
+                                                  "MD",
+                                                  "PL",
+                                                  "RS",
+                                                  "SI",
+                                                  "MT",
+                                                  "TR"
+                                              ],
+                             "confidence":  "chart-verified",
+                             "sourceUrls":  [
+                                                "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                                "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam"
+                                            ],
+                             "notes":  [
+                                           "verbatim description: \u0027United Kingdom, France, Germany, Netherlands, Czech, Italy, Austria, Bilgium, Bulgaria, Denmark, Cyprus, Finland, Norway, Sweden, Switzerland, Spain, Portugal, Andorra, Greece, Albania, Macedonia, Bulgaria, Romania, Hungary, Iceland, Ireland Republic, Luxembourg, Estonia, Latvia, Byelorussian SSR, Ukraine, Slovakia, West Russian, Lithuania, Yogoslavia, Monaco, Croatia, Bosnia and Herzegovina, Moldova, Poland, Serbia, Slovenia, Malta, Turkey\u0027",
+                                           "capture timestamps: WB 20260705122302 cross-checked byte-stable against WB 20251008063633 / 20190822111127 / 20151216204817",
+                                           "convention: countriesIso is order-aligned with countriesVerbatim minus EXCLUDED entries ??\u0027Bulgaria\u0027 is listed TWICE in the published row (both kept verbatim, BG appears twice in iso)",
+                                           "typos/historic names mapped conservatively: \u0027Bilgium\u0027-\u003eBE, \u0027Czech\u0027-\u003eCZ, \u0027Ireland Republic\u0027-\u003eIE, \u0027Macedonia\u0027-\u003eMK (pre-2019 name), \u0027Byelorussian SSR\u0027-\u003eBY (historic)",
+                                           "\u0027West Russian\u0027 -\u003e RU: pairs with NEA \u0027East Russian\u0027; Russia split across two zones by the chart itself",
+                                           "EXCLUDED from countriesIso with note: \u0027Yogoslavia\u0027 ??dissolved state, no single ISO successor (HR/SI/BA/MK/RS/ME); kept verbatim only",
+                                           "\u0027Turkey\u0027 -\u003e TR dual-listed ME+EU (open question, see ME zone)"
+                                       ]
+                         },
+                         {
+                             "zone":  "NAf",
+                             "countriesVerbatim":  [
+                                                       "Algeria",
+                                                       "Libya",
+                                                       "Egypt",
+                                                       "Chad",
+                                                       "Sudan",
+                                                       "Mali",
+                                                       "Mauritania",
+                                                       "Morocco",
+                                                       "Tunisia",
+                                                       "Niger",
+                                                       "Eritrea",
+                                                       "Sudan",
+                                                       "Zimbabwe"
+                                                   ],
+                             "countriesIso":  [
+                                                  "DZ",
+                                                  "LY",
+                                                  "EG",
+                                                  "TD",
+                                                  "SD",
+                                                  "ML",
+                                                  "MR",
+                                                  "MA",
+                                                  "TN",
+                                                  "NE",
+                                                  "ER",
+                                                  "SD",
+                                                  "ZW"
+                                              ],
+                             "confidence":  "chart-verified",
+                             "sourceUrls":  [
+                                                "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                                "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam"
+                                            ],
+                             "notes":  [
+                                           "verbatim description: \u0027Algeria, Libya, Egypt, Chad, Sudan, Mali, Mauritania, Morocco, Tunisia, Niger, Eritrea, Sudan, Zimbabwe\u0027",
+                                           "capture timestamps: WB 20260705122302 cross-checked byte-stable against WB 20251008063633 / 20190822111127 / 20151216204817",
+                                           "verbatim source form: RENDERED four-era-stable table (next note records the machine-field variant)",
+                                           "\u0027Sudan\u0027 appears TWICE in the four-era-stable RENDERED table (both kept verbatim; SD mapped twice). VARIANT RECORDED: the machine-readable alternativeDesc field in the WB 20260705122302 payload lists Sudan once ??rendering-vs-field delta documented, not silently resolved",
+                                           "Zimbabwe ZW under NORTH AFRICA is CI\u0027s own quirk (southern Africa) ??mapped as published"
+                                       ]
+                         },
+                         {
+                             "zone":  "SAf",
+                             "countriesVerbatim":  [
+                                                       "Ethiopia",
+                                                       "The Central African Republic",
+                                                       "Cameroon",
+                                                       "Nigeria",
+                                                       "Benin",
+                                                       "Burkina Faso",
+                                                       "Ghana",
+                                                       "Liberia",
+                                                       "Ivry Coast",
+                                                       "Sierra Leone",
+                                                       "Guinea-Bissau",
+                                                       "Senegal",
+                                                       "Gambia",
+                                                       "Kenya",
+                                                       "Uganda",
+                                                       "Congo",
+                                                       "Gabon",
+                                                       "Angola",
+                                                       "Mozambique",
+                                                       "Zambia",
+                                                       "Namibia",
+                                                       "South Africa",
+                                                       "Swaziland",
+                                                       "Lesotho",
+                                                       "Botswana",
+                                                       "Malawi",
+                                                       "Burundi",
+                                                       "Rwanda",
+                                                       "Madagascar",
+                                                       "Somalia",
+                                                       "Djibouti",
+                                                       "Togolese Republic",
+                                                       "Tanzania",
+                                                       "Mayotte",
+                                                       "Equatorial Guinea",
+                                                       "Comoros",
+                                                       "Seychelles",
+                                                       "Zaire",
+                                                       "Mauritius"
+                                                   ],
+                             "countriesIso":  [
+                                                  "ET",
+                                                  "CF",
+                                                  "CM",
+                                                  "NG",
+                                                  "BJ",
+                                                  "BF",
+                                                  "GH",
+                                                  "LR",
+                                                  "CI",
+                                                  "SL",
+                                                  "GW",
+                                                  "SN",
+                                                  "GM",
+                                                  "KE",
+                                                  "UG",
+                                                  "CG",
+                                                  "GA",
+                                                  "AO",
+                                                  "MZ",
+                                                  "ZM",
+                                                  "NA",
+                                                  "ZA",
+                                                  "SZ",
+                                                  "LS",
+                                                  "BW",
+                                                  "MW",
+                                                  "BI",
+                                                  "RW",
+                                                  "MG",
+                                                  "SO",
+                                                  "DJ",
+                                                  "TG",
+                                                  "TZ",
+                                                  "YT",
+                                                  "GQ",
+                                                  "KM",
+                                                  "SC",
+                                                  "CD",
+                                                  "MU"
+                                              ],
+                             "confidence":  "chart-verified",
+                             "sourceUrls":  [
+                                                "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                                "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam"
+                                            ],
+                             "notes":  [
+                                           "verbatim description: \u0027Ethiopia, The Central African Republic, Cameroon, Nigeria, Benin, Burkina Faso, Ghana, Liberia, Ivry Coast, Sierra Leone, Guinea-Bissau, Senegal, Gambia, Kenya, Uganda, Congo, Gabon, Angola, Mozambique, Zambia, Namibia, South Africa, Swaziland, Lesotho, Botswana, Malawi, Burundi, Rwanda, Madagascar, Somalia, Djibouti, Togolese Republic, Tanzania, Mayotte, Equatorial Guinea, Comoros, Seychelles, Zaire, Mauritius\u0027",
+                                           "capture timestamps: WB 20260705122302 cross-checked byte-stable against WB 20251008063633 / 20190822111127 / 20151216204817",
+                                           "OPEN QUESTION (ambiguous country word): unqualified \u0027Congo\u0027 -\u003e CG as primary (Republic of the Congo bears the bare name); CD (Democratic Republic of the Congo) cannot be excluded ??flagged rather than resolved",
+                                           "\u0027Zaire\u0027 -\u003e CD: historic name of DR Congo (retired ISO code ZD mapped to modern CD); compounds the Congo CG/CD open question",
+                                           "typos/historic names: \u0027Ivry Coast\u0027-\u003eCI, \u0027Swaziland\u0027-\u003eSZ (renamed Eswatini 2018), \u0027Togolese Republic\u0027-\u003eTG",
+                                           "territories with own ISO codes mapped as published: Mayotte YT (French overseas territory)"
+                                       ]
+                         },
+                         {
+                             "zone":  "NAm",
+                             "countriesVerbatim":  [
+                                                       "USA (Hawaii excluded)",
+                                                       "Canada"
+                                                   ],
+                             "countriesIso":  [
+                                                  "US",
+                                                  "CA"
+                                              ],
+                             "confidence":  "chart-verified",
+                             "sourceUrls":  [
+                                                "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                                "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam"
+                                            ],
+                             "notes":  [
+                                           "verbatim description: \u0027USA (Hawaii excluded), Canada\u0027",
+                                           "capture timestamps: WB 20260705122302 cross-checked byte-stable against WB 20251008063633 / 20190822111127 / 20151216204817",
+                                           "parenthetical \u0027(Hawaii excluded)\u0027 kept attached to the USA entry in the conservative split; its counterpart \u0027State of Hawaii\u0027 sits under CENTRAL AMERICA (see that zone)"
+                                       ]
+                         },
+                         {
+                             "zone":  "CAm",
+                             "countriesVerbatim":  [
+                                                       "Mexico",
+                                                       "State of Hawaii",
+                                                       "Cuba",
+                                                       "Panama",
+                                                       "Nicaragua",
+                                                       "Belize",
+                                                       "Guatemala",
+                                                       "Salvador",
+                                                       "Honduras",
+                                                       "Bahamas",
+                                                       "Dominican",
+                                                       "Puerto Rico",
+                                                       "Jamaica",
+                                                       "Bermuda",
+                                                       "Haiti",
+                                                       "Cayman Islands",
+                                                       "Costa Rica",
+                                                       "Antidua And Barbuda",
+                                                       "Barbados",
+                                                       "Martinique",
+                                                       "Virgin Islands (British)",
+                                                       "Virgin Islands (U.S.)",
+                                                       "Saint Lucia",
+                                                       "Netherlands Antilles",
+                                                       "Guadeloupe"
+                                                   ],
+                             "countriesIso":  [
+                                                  "MX",
+                                                  "US",
+                                                  "CU",
+                                                  "PA",
+                                                  "NI",
+                                                  "BZ",
+                                                  "GT",
+                                                  "SV",
+                                                  "HN",
+                                                  "BS",
+                                                  "DO",
+                                                  "PR",
+                                                  "JM",
+                                                  "BM",
+                                                  "HT",
+                                                  "KY",
+                                                  "CR",
+                                                  "AG",
+                                                  "BB",
+                                                  "MQ",
+                                                  "VG",
+                                                  "VI",
+                                                  "LC",
+                                                  "GP"
+                                              ],
+                             "confidence":  "chart-verified",
+                             "sourceUrls":  [
+                                                "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                                "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam"
+                                            ],
+                             "notes":  [
+                                           "verbatim description: \u0027Mexico, State of Hawaii, Cuba, Panama, Nicaragua, Belize, Guatemala, Salvador, Honduras, Bahamas, Dominican, Puerto Rico, Jamaica, Bermuda, Haiti, Cayman Islands, Costa Rica, Antidua And Barbuda, Barbados, Martinique, Virgin Islands (British), Virgin Islands (U.S.) , Saint Lucia, Netherlands Antilles, Guadeloupe\u0027",
+                                           "capture timestamps: WB 20260705122302 cross-checked byte-stable against WB 20251008063633 / 20190822111127 / 20151216204817",
+                                           "\u0027State of Hawaii\u0027 -\u003e US deliberately DUPLICATES USA-under-North-America: the chart\u0027s most counter-intuitive pin (a hypothetical TPE-HNL award would price NEA\u003c-\u003eCAm); HNL is NOT currently a CI station ??see negatives",
+                                           "conservative splits: \u0027Salvador\u0027-\u003eSV (El Salvador), \u0027Dominican\u0027-\u003eDO (Dominican Republic), \u0027Antidua And Barbuda\u0027-\u003eAG (typo for Antigua)",
+                                           "territories with own ISO codes mapped as published: Puerto Rico PR, Bermuda BM, Cayman Islands KY, Martinique MQ, Virgin Islands VG/VI, Guadeloupe GP",
+                                           "EXCLUDED from countriesIso with note: \u0027Netherlands Antilles\u0027 ??dissolved 2010, successors CW/SX/BQ; kept verbatim only"
+                                       ]
+                         },
+                         {
+                             "zone":  "SAm",
+                             "countriesVerbatim":  [
+                                                       "Venezuela",
+                                                       "Colombia",
+                                                       "Guyana",
+                                                       "Suriname",
+                                                       "Ecuador",
+                                                       "French Guiana",
+                                                       "Peru",
+                                                       "Bolivia",
+                                                       "Brazil",
+                                                       "Chile",
+                                                       "Paraguay",
+                                                       "Uruguay",
+                                                       "Argentina"
+                                                   ],
+                             "countriesIso":  [
+                                                  "VE",
+                                                  "CO",
+                                                  "GY",
+                                                  "SR",
+                                                  "EC",
+                                                  "GF",
+                                                  "PE",
+                                                  "BO",
+                                                  "BR",
+                                                  "CL",
+                                                  "PY",
+                                                  "UY",
+                                                  "AR"
+                                              ],
+                             "confidence":  "chart-verified",
+                             "sourceUrls":  [
+                                                "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                                "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam"
+                                            ],
+                             "notes":  [
+                                           "verbatim description: \u0027Venezuela, Colombia, Guyana, Suriname, Ecuador, French Guiana, Peru, Bolivia, Brazil, Chile, Paraguay, Uruguay, Argentina\u0027",
+                                           "capture timestamps: WB 20260705122302 cross-checked byte-stable against WB 20251008063633 / 20190822111127 / 20151216204817",
+                                           "French Guiana GF: French overseas territory with own ISO code, mapped as published; zero CI stations in evidence for this zone"
+                                       ]
+                         },
+                         {
+                             "zone":  "SWP",
+                             "countriesVerbatim":  [
+                                                       "Australia",
+                                                       "New Zealand",
+                                                       "French Polynesia",
+                                                       "Republic of Kiribati",
+                                                       "Fiji",
+                                                       "Solomon Islands",
+                                                       "New Caledonia",
+                                                       "Papua New Guinea",
+                                                       "Marshall Islands",
+                                                       "Papeete"
+                                                   ],
+                             "countriesIso":  [
+                                                  "AU",
+                                                  "NZ",
+                                                  "PF",
+                                                  "KI",
+                                                  "FJ",
+                                                  "SB",
+                                                  "NC",
+                                                  "PG",
+                                                  "MH"
+                                              ],
+                             "confidence":  "chart-verified",
+                             "sourceUrls":  [
+                                                "https://web.archive.org/web/20260705122302/https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket",
+                                                "https://web.archive.org/web/20251008063633/https://www.china-airlines.com/us/en/member/redeem-airline-miles/skyteam-partners/ticket-awards-skyteam"
+                                            ],
+                             "notes":  [
+                                           "verbatim description: \u0027Australia, New Zealand, French Polynesia, Republic of Kiribati, Fiji, Solomon Islands, New Caledonia, Papua New Guinea, Marshall Islands, Papeete\u0027",
+                                           "capture timestamps: WB 20260705122302 cross-checked byte-stable against WB 20251008063633 / 20190822111127 / 20151216204817",
+                                           "EXCLUDED from countriesIso with note: \u0027Papeete\u0027 ??a commune/place (Tahiti) inside French Polynesia PF, redundant alongside it per the chart\u0027s own quirk ledger; kept verbatim only",
+                                           "Guam/Northern Marianas/Palau are SOUTH EAST ASIA in this chart, not SWP (see SEA zone)"
+                                       ]
+                         }
+                     ]
+}

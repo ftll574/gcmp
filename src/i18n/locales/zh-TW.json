@@ -306,6 +306,16 @@
       "miles": "{count} 哩",
       "milesBand": "哩區間",
       "zoneLabel": "{zone} 哩區間",
+      "ciZone": {
+        "title": "CI SkyTeam 夥伴獎勵・逐段區域引價",
+        "resolved": "已解析 {done}/{total} 航段",
+        "legZones": "{origin}→{dest}",
+        "unknownZone": "區域未知",
+        "unpricedCabin": "{cabin}艙本區間未計價",
+        "surfaceSector": "陸段——不計價",
+        "sum": "各段合計",
+        "sumNote": "合計為逐段加總的輔助下界;CI 全票計價算式未經官方證實,開票價可能不同。"
+      },
       "sources": "來源與備註",
       "confidence": {
         "officialFixed": "官方固定表",
