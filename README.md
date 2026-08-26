@@ -4,7 +4,7 @@
 
 Taiwan-first round-the-world award route planner. Build an itinerary, mark stopovers and surface sectors, validate it against RTW and multi-carrier mileage-redemption award rules, and share the URL.
 
-![Status: RTW pivot](https://img.shields.io/badge/status-RTW%20pivot-blue) ![License: MIT](https://img.shields.io/badge/license-MIT-green) ![Tests: 462 passing](https://img.shields.io/badge/tests-462%20passing-green)
+![Status: RTW pivot](https://img.shields.io/badge/status-RTW%20pivot-blue) ![License: MIT](https://img.shields.io/badge/license-MIT-green) ![Tests: 492 passing](https://img.shields.io/badge/tests-492%20passing-green)
 
 ## What It Does
 
@@ -13,10 +13,10 @@ Taiwan-first round-the-world award route planner. Build an itinerary, mark stopo
 - **Taiwan-first priority** — BR/EVA, CI/China Airlines, JX/STARLUX, CX/Asia Miles, JL/JAL, NH/ANA, and SQ/KrisFlyer are modeled as first-market priorities.
 - **Taiwan carrier notes** — the Rules inspector explains why China Airlines cannot form a classic RTW ticket (both-ocean crossings rejected) and why STARLUX COSMILE stays on the watchlist (no own RTW award product today).
 - **Track RTW-specific metadata** — stopover vs transfer, surface/open-jaw sectors, operating carrier eligibility, segment count, distance caps, same-city/same-country constraints.
-- **Estimate award price** — EVA, Cathay, and Qantas Classic Flight Reward products show miles required from pricing bands where data is available.
-- **Map the route** — great-circle arcs, four projections, pan/zoom, bearings, distance labels, PNG/SVG export.
-- **Share URL** — routing, operating carriers, fare classes, stopover flags, and surface sectors round-trip in the URL.
-- **Mileage estimate as secondary** — earning/PQM/RDM comparison remains available in a collapsed panel, but it is no longer the main product flow.
+- **Estimate award price** — EVA, Cathay, and Qantas Classic Flight Reward products show miles required from pricing bands where data is available; CI legs get SkyTeam zone-pair quotes.
+- **Map the route** — great-circle arcs, pan/zoom, optional per-arc distance labels.
+- **Share URL** — routing, operating carriers, fare classes, stopover flags, dates, and surface sectors round-trip in the URL.
+- **Earning calculator removed** — the pre-pivot PQM/RDM panel was cut outright (`docs/convergence-contract.md` §5); its legacy URL parameters still parse so previously shared links never break.
 
 ## Why
 
@@ -74,9 +74,10 @@ https://ftll574.github.io/gcmp/#/r/v1/TPE-NRT-LAX-JFK-LHR-HKG-TPE?op=JL,JL,AA,BA
 - `stp` — per-leg stopover flags: `1` stopover, `0` transfer, empty unknown
 - `surf` — per-leg surface/open-jaw flags: `1` surface, `0` flown sector
 - `d` — optional per-leg departure dates (ISO `YYYY-MM-DD`), same shape as `op`: groups by `;`, legs by `,`, empty cell = undated leg; a present group's date count must equal its leg count (typed parse error otherwise); absent ⇒ every leg is undated (e.g. `&d=2026-04-03,,2026-04-07`)
-- `fc` — optional fare class letters for mileage estimate
-- `p`, `c`, `rv`, `st` — secondary mileage estimate parameters
-- `proj` — map projection
+- `fc` — optional fare class letters (parsed for backward compatibility)
+- `p`, `c`, `st` — legacy earning-estimate parameters: parsed so old links keep working, no longer surfaced in the UI
+- `rv` — rules version; drives the drift banner when it differs from the bundled snapshot
+- `proj` — map projection; parsed for backward compatibility (the picker was cut — URLs render the projection they carry, otherwise the default)
 
 ## Data Model
 
@@ -88,7 +89,7 @@ RTW planning data is separate from mileage earning data:
 - `public/data/award-pricing/current.json` — award pricing bands for supported products
 - `public/data/network-gaps/current.json` — carrier pairs known not flown, backing honest sector warnings
 - `public/data/schedules/current.json` — curated weekly operating-day catalog (directional carrier pairs, evidence-graded) backing the date picker's day-disabling and schedule warnings
-- `public/data/programs/**` — secondary mileage earning rules
+- `public/data/programs/**` — mileage earning rules backing the plain-text share post
 
 Schemas live in:
 
@@ -122,7 +123,7 @@ npm run build
 
 Current local baseline:
 
-- 462 Vitest tests in 29 files (incl. the Iron Rule calibration suite — 24 active structural tests)
+- 492 Vitest tests in 33 files (incl. the Iron Rule calibration suite — 24 active structural tests)
 - strict TypeScript
 - ESLint engine purity rule for `src/lib/calc/**`
 - production build via Vite
@@ -132,10 +133,12 @@ Current local baseline:
 - **Live award availability is not checked.** The app validates structural rule eligibility only; seat inventory is out of scope.
 - **Pricing covers 4 of 7 catalog products** — EVA (fixed price), Cathay (distance bands, rebased to the fourth-era/current chart), Qantas Classic Flight Reward (partial: top bracket only — 19,201–35,000 mi ⇒ flat 318,000 business, chart-verified against the pre-Aug-2025 chart era; smaller brackets/economy intentionally absent pending verification), and the ANA archived award (partial: business cabin only). A fifth entry sits catalog-ready but does not change the planner count yet: the China Airlines SkyTeam partner award zone-pair chart (full 66-cell Era-2 matrix over the 11 published zones, `published-chart`, asOfEra 2025-10) plus a direction-agnostic engine accessor (`getZonePairQuote()`, `src/lib/rtw/award-pricing.ts`) — itinerary-level CI estimates wait on airport→region wiring, so CI still validates rules without a price estimate. The two cash fares are excluded by adjudication: oneworld Explorer and Star Alliance RTW Fare are paid tickets sold in money (continent-count / distance fares; miles flow earn-side only — §A8(b)); continent-count *awards* shaped like Explorer would need separately verified productIds. Research appendix §A6 (`docs/calibration-set.md`) scoped JL/NH/SQ: no compatible band-chart or RTW award product exists at JAL or Singapore, and ANA's distance-band RTW chart is discontinued for new ticketing (2025-06-23) — already modeled as archived.
 - **Cathay fourth-era chart drift is resolved at cell level; two gaps stay honestly open.** The FT 2184572 Jan-2025 data point (230,000 miles @ 19,442 self-stated flown miles) that matched no frozen-era band cell is now explained: it is Zone 10 (18,001–20,000 mi) Business under the revised fourth-era grid — pinned by two independent data points (Prince of Travel 2025-07-16; Suitesmile full-grid transcription 2026-05-02) with a third browser-render cross-check (§A9). Zone edges are byte-identical to rv=2018.Q3; only prices moved. Remaining gaps: the official flights.cathaypacific.com chart page is unresolvable from this network (DNS failure), so the grid rests on community sources rather than the airline's own page; and the exact effective date inside the bracket (2023-02-26, 2025-01-25] stays unpinned.
-- **Award fee schedules are display-only.** Era-pinned fees render on the validation panel (CX seed: date-change / reissue / refund, as of 2018-05), but total cost with taxes/fees is not estimated.
+- **Total cost with taxes/fees is not estimated.** The former display-only fee-schedule cards were cut under `docs/convergence-contract.md` §5 — they carried chart-drift obligations without feeding any total.
 - **Per-leg dates are modeled; chronology and schedule checks run on them.** Legs carry an optional departure date (`Leg.departsOn`, ISO `YYYY-MM-DD`, shared via the URL `d=` parameter), and the `trip-duration` rule (`src/lib/rtw/validate.ts`) still fails itineraries outside the product's min/max trip days whenever start+end dates are set (severity unknown without them). On top of leg dates the engine enforces `leg-chronology` as a fail (consecutive dated legs may not run backwards), warns when trip start/end dates disagree with the first/last leg dates (`trip-dates-mismatch`), and warns when a dated flight leg falls on a weekday its carrier+pair doesn't operate (`schedule-day-mismatch`) — a warning, never a fail, because timetables drift and a conflict makes a trip unbookable rather than illegal. Stopover *duration* remains user-marked with no duration model.
 - **Flight-schedule coverage is a curated national-carrier catalog, not live data.** `public/data/schedules/current.json` holds 138 directional weekly-frequency entries — **JX×78 `chart-verified` harvested from STARLUX's official public schedule API** (`ecapi.starlux-airlines.com/flightSchedule/v2/timetable`; every route × both directions, each row citing its exact query URL, quarterly refresh via `scripts/harvest-jx-schedules.mjs`), **BR×28 `chart-verified` from AeroRoutes official filings** (current NS26/W26 seasons incl. the new TPE→IAD launch and the TPE→DEL Dec-2026 launch window), and **CI×32 `chart-verified` from China Airlines' official complete-timetable PDF** (Issue 2, validity 2025-01-01→2025-03-29 — expired windows seed the catalog honestly but produce no current-date findings, by design; a newer official PDF exists but has never been archived and the live page blocks crawlers, so current-season CI grids remain an honest gap). All three carriers now cover both directions of every pinned route. Pairs without a verified entry keep a fully enabled date input plus a 「班表未知」 badge — unverified schedules never disable or block dates. The CX HKG→LHR April-2026 transcription is deliberately excluded from the seed (it pins only extra sections over an unpinned near-daily base service). No live/global schedule coverage exists or is claimed; sources, negatives, and omissions are recorded in research appendices §A10–§A12 (`docs/calibration-set.md`). CI zone-pair quotes resolve through a 65-station chart-verified map (§A12) covering every station in the pinned network.
 - **Standing cuts:** MPM (maximum permitted mileage), fare-basis input, plus the full list under CLAUDE.md's "NOT in scope".
+- **Scope convergence:** binding scope decisions (acceptance line, frozen backlog, executed cuts) live in `docs/convergence-contract.md`.
+- **Data freshness is best-effort, not a guaranteed cadence.** Quarterly chart-drift re-verification (`docs/process/chart-drift-checklist.md`) and schedule-catalog refreshes happen when they happen; datasets render their asOf/era honestly and stale data degrades visibly instead of silently claiming currency.
 - Earning/PQM/RDM math remains as a secondary estimate and should not drive RTW validity.
 
 ## License

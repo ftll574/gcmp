@@ -33,3 +33,7 @@ playwright-report/
 
 # Build-time generated static SEO pages — regenerated from program JSONs
 public/airline/
+
+# Tooling workspace artifacts (not project source)
+.dsh-vision-toolkit/
+design/

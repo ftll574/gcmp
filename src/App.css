@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────
-   gcmp — app layout + component styles
+   gcmp — app layout + component styles (editorial system, see DESIGN.md)
    ─────────────────────────────────────────────────────────────────── */
 
 .app {
@@ -25,7 +25,7 @@
   color: var(--text-primary);
 }
 
-/* ── Header (Apple-style sticky vibrancy, responsive wrap) ── */
+/* Header (sticky, hairline bottom) */
 .app-header {
   position: sticky;
   top: 0;
@@ -36,8 +36,8 @@
   gap: var(--space-3);
   padding: var(--space-3) var(--space-6);
   background: var(--material-regular);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   border-bottom: 1px solid var(--separator);
   flex-wrap: wrap;
 }
@@ -88,7 +88,7 @@
   flex-wrap: wrap;
 }
 
-/* ── Language picker (Apple pill) ── */
+/* Language picker */
 .lang-picker {
   display: inline-flex;
   align-items: center;
@@ -130,51 +130,7 @@
   outline: none;
 }
 
-/* ── Glossary tooltip ── */
-.glossary {
-  position: relative;
-  display: inline;
-  border-bottom: 1px dotted var(--accent);
-  cursor: help;
-}
-.glossary:focus-visible {
-  outline-offset: 2px;
-}
-.glossary-term {
-  color: inherit;
-}
-.glossary {
-  border-bottom-color: var(--tertiary-label);
-  border-bottom-style: dashed;
-}
-.glossary-popover {
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 200;
-  max-width: 30ch;
-  width: max-content;
-  padding: var(--space-3);
-  background: var(--label);
-  color: var(--system-background);
-  font-family: var(--font-sans);
-  font-size: var(--type-footnote);
-  line-height: 1.4;
-  border-radius: var(--radius-button);
-  box-shadow: var(--shadow-popover);
-  white-space: normal;
-}
-.glossary-popover::after {
-  content: '';
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border: 5px solid transparent;
-  border-top-color: var(--label);
-}
-/* ── Sample routings (Apple card components) ── */
+/* Sample routings */
 .sample-routings {
   display: flex;
   flex-direction: column;
@@ -226,18 +182,10 @@
   border-radius: var(--radius-card);
   cursor: pointer;
   text-align: left;
-  transition:
-    border-color var(--motion-base) var(--ease-standard),
-    transform var(--motion-base) var(--ease-spring),
-    box-shadow var(--motion-base) var(--ease-standard);
+  transition: border-color var(--motion-base) var(--ease-standard);
 }
 .sample-routing-card:hover {
   border-color: var(--tint);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-card);
-}
-.sample-routing-card:active {
-  transform: translateY(0);
 }
 .sample-routing-title {
   font-size: var(--type-callout);
@@ -251,30 +199,7 @@
   color: var(--secondary-label);
 }
 
-/* ── Earning helper copy ── */
-.earning-panel-comparison {
-  margin: 0 0 var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  background: var(--tint-fill-soft);
-  font-size: var(--type-footnote);
-  color: var(--label);
-  border-radius: var(--radius-card);
-  line-height: 1.5;
-}
-/* ── App controls ── */
-.app-controls-group {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-.app-controls-label {
-  font-size: var(--type-caption);
-  color: var(--tertiary-label);
-  font-family: var(--font-sans);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-weight: 600;
-}
+/* App controls */
 .app-clear {
   background: transparent;
   border: none;
@@ -290,13 +215,13 @@
   background: rgba(255, 59, 48, 0.12);
 }
 
-/* ── Autocomplete city-code hint ── */
+/* Autocomplete city-code hint */
 .autocomplete-city-code-hint {
   background: var(--bg-map-land);
   color: var(--accent);
 }
 
-/* ── Banner ── */
+/* Banner */
 .app-banner {
   padding: var(--space-2) var(--space-6);
   font-size: var(--type-footnote);
@@ -309,7 +234,7 @@
   border-bottom: 1px solid var(--separator);
 }
 
-/* ── Editor workbench ── */
+/* Editor workbench */
 .app-workbench {
   flex: 1 1 auto;
   display: grid;
@@ -397,7 +322,7 @@
   flex-wrap: wrap;
 }
 
-/* ── RTW planning context ── */
+/* RTW planning context */
 .rtw-planning-context {
   display: flex;
   flex-direction: column;
@@ -457,6 +382,192 @@
   color: var(--label);
   background: var(--grouped-background);
   font: inherit;
+}
+/* Two-step selection (convergence contract §4, network explorer A):
+   alliance chips → member carriers → product. Chips reuse the chip
+   vocabulary; the active chip is filled, others are outlined. */
+.rtw-alliance-chips {
+  display: flex;
+  gap: var(--space-2);
+}
+.rtw-alliance-chip {
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-chip);
+  padding: var(--space-2) var(--space-3);
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  font-size: var(--type-footnote);
+  font-weight: 600;
+  cursor: pointer;
+}
+.rtw-alliance-chip.active {
+  background: var(--accent);
+  color: var(--system-background);
+}
+.rtw-member-carriers {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+  font-size: var(--type-caption);
+  color: var(--secondary-label);
+}
+.rtw-member-carriers > span:first-child {
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--tertiary-label);
+}
+.rtw-member-carrier {
+  border-radius: var(--radius-pill);
+  padding: 1px 7px;
+  background: var(--tertiary-fill);
+  font-size: var(--type-caption);
+  font-weight: 700;
+}
+/* Destinations panel (network explorer B): schedule-catalog-backed
+   nonstop chips; disabled = cannot legally attach to the chain. */
+.rtw-explorer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--separator);
+}
+.rtw-explorer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.rtw-explorer-head h3 {
+  margin: 0;
+  font-size: var(--type-footnote);
+  font-weight: 700;
+}
+.rtw-explorer-carrier {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--type-caption);
+  color: var(--secondary-label);
+}
+.rtw-explorer-carrier select {
+  max-width: 200px;
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-control);
+  padding: 4px 6px;
+  background: var(--grouped-background);
+  color: var(--label);
+  font: inherit;
+  font-size: var(--type-caption);
+}
+.rtw-explorer-origins {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+.rtw-origin-chip {
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-chip);
+  padding: 2px 9px;
+  background: var(--grouped-background);
+  color: var(--secondary-label);
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+  cursor: pointer;
+}
+.rtw-origin-chip.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 700;
+}
+.rtw-dest-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+.rtw-dest-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-chip);
+  padding: var(--space-2) var(--space-3);
+  background: var(--grouped-background);
+  cursor: pointer;
+  font: inherit;
+}
+.rtw-dest-chip strong {
+  font-family: var(--font-mono);
+  font-size: var(--type-chip);
+}
+.rtw-dest-chip span {
+  color: var(--secondary-label);
+  font-size: var(--type-caption);
+}
+.rtw-dest-chip em {
+  color: var(--tertiary-label);
+  font-style: normal;
+  font-size: var(--type-caption);
+}
+.rtw-dest-chip:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.rtw-explorer-empty,
+.rtw-explorer-legend {
+  margin: 0;
+  font-size: var(--type-caption);
+  color: var(--secondary-label);
+}
+/* Geographic tiering: continent heading → subregion details → country
+   details → chips. Hairlines only; summaries stay terse. */
+.rtw-dest-tree {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.rtw-dest-continent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.rtw-dest-continent h4 {
+  margin: var(--space-1) 0 0;
+  font-size: var(--type-caption);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--tertiary-label);
+}
+.rtw-dest-subregion > summary,
+.rtw-dest-country > summary {
+  cursor: pointer;
+  padding: var(--space-1) 0;
+  font-size: var(--type-footnote);
+  color: var(--secondary-label);
+  user-select: none;
+}
+.rtw-dest-subregion[open] > summary,
+.rtw-dest-country[open] > summary {
+  color: var(--label);
+}
+.rtw-dest-countries {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-left: var(--space-3);
+}
+.rtw-dest-country-count {
+  margin-left: var(--space-2);
+  color: var(--tertiary-label);
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
+}
+.rtw-dest-country .rtw-dest-chips {
+  padding-bottom: var(--space-1);
 }
 .rtw-planning-facts {
   display: grid;
@@ -541,26 +652,25 @@
   flex-wrap: wrap;
   align-items: center;
 }
-.bearings-toggle {
+.map-toggle {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
   background: var(--material-thick);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(120%) blur(6px);
+  -webkit-backdrop-filter: saturate(120%) blur(6px);
   border: 1px solid var(--separator);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-chip);
   padding: 6px var(--space-3) 6px 10px;
   font-size: var(--type-footnote);
   font-weight: 500;
   color: var(--label);
   cursor: pointer;
-  box-shadow: var(--shadow-1);
   user-select: none;
 }
-/* iOS-style toggle: hide the native checkbox, draw a 32×20 pill that
+/* Paper toggle: hide the native checkbox, draw a 32×20 track that
    slides a 16×16 thumb on :checked. */
-.bearings-toggle input[type='checkbox'] {
+.map-toggle input[type='checkbox'] {
   -webkit-appearance: none;
   appearance: none;
   margin: 0;
@@ -573,87 +683,25 @@
   transition: background var(--motion-base) var(--ease-standard);
   flex-shrink: 0;
 }
-.bearings-toggle input[type='checkbox']::before {
+.map-toggle input[type='checkbox']::before {
   content: '';
   position: absolute;
   top: 2px;
   left: 2px;
   width: 16px;
   height: 16px;
-  background: #ffffff;
+  background: var(--secondary-system-background);
   border-radius: 50%;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  transition: transform var(--motion-base) var(--ease-spring);
+  transition: transform var(--motion-base) var(--ease-standard);
 }
-.bearings-toggle input[type='checkbox']:checked {
+.map-toggle input[type='checkbox']:checked {
   background: var(--semantic-green);
 }
-.bearings-toggle input[type='checkbox']:checked::before {
+.map-toggle input[type='checkbox']:checked::before {
   transform: translateX(12px);
 }
-.map-download {
-  background: var(--material-thick);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  border: 1px solid var(--separator);
-  border-radius: var(--radius-pill);
-  padding: 6px var(--space-3);
-  font-size: var(--type-footnote);
-  font-weight: 600;
-  color: var(--tint);
-  cursor: pointer;
-  box-shadow: var(--shadow-1);
-  transition:
-    background var(--motion-fast) var(--ease-standard),
-    color var(--motion-fast) var(--ease-standard);
-}
-.map-download:hover {
-  background: var(--tint);
-  color: #ffffff;
-}
 
-/* Download menu (v1.8) — PNG/SVG with transparent toggles */
-.download-menu {
-  position: relative;
-  display: inline-block;
-}
-.download-menu-popover {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  min-width: 200px;
-  background: var(--material-thick);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  border: 1px solid var(--separator);
-  border-radius: var(--radius-card);
-  box-shadow: var(--shadow-popover);
-  padding: 4px;
-  animation: popoverIn var(--motion-base) var(--ease-spring);
-  transform-origin: top left;
-}
-.download-menu-popover button {
-  background: transparent;
-  border: none;
-  text-align: left;
-  padding: 8px 12px;
-  font-size: var(--type-footnote);
-  font-weight: 500;
-  color: var(--label);
-  border-radius: var(--radius-button);
-  cursor: pointer;
-  transition: background var(--motion-fast) var(--ease-standard);
-}
-.download-menu-popover button:hover {
-  background: var(--tint-fill-soft);
-  color: var(--tint);
-}
-
-/* ── Bearing + distance labels on map ── */
-.map-bearing-label,
+/* Distance labels on map */
 .map-distance-label {
   font-family: var(--font-mono);
   font-weight: 600;
@@ -666,7 +714,7 @@
   font-weight: 700;
 }
 
-/* ── Import from gcmap ── */
+/* Import from gcmap */
 .gcmap-import-toggle {
   background: var(--tint-fill-soft);
   border: 1px dashed var(--tint);
@@ -683,7 +731,7 @@
 }
 .gcmap-import-toggle:hover {
   background: var(--tint);
-  color: #ffffff;
+  color: var(--system-background);
   border-style: solid;
 }
 .gcmap-import {
@@ -730,59 +778,7 @@
   color: var(--semantic-red);
 }
 
-/* ── Projection picker (iOS segmented control on glass) ── */
-.projection-picker {
-  display: inline-flex;
-  background: var(--material-thick);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  border: 1px solid var(--separator);
-  border-radius: var(--radius-pill);
-  padding: 2px;
-  box-shadow: var(--shadow-1);
-  gap: 0;
-}
-.projection-picker-button {
-  border: none;
-  background: transparent;
-  color: var(--secondary-label);
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1px;
-  padding: 4px var(--space-3);
-  cursor: pointer;
-  min-width: 56px;
-  border-radius: var(--radius-pill);
-  transition:
-    background var(--motion-fast) var(--ease-standard),
-    color var(--motion-fast) var(--ease-standard);
-}
-.projection-picker-button:hover:not(.active) {
-  color: var(--label);
-}
-.projection-picker-button.active {
-  background: var(--system-background);
-  color: var(--label);
-  font-weight: 600;
-  box-shadow: var(--shadow-1);
-}
-@media (prefers-color-scheme: dark) {
-  .projection-picker-button.active {
-    background: var(--tertiary-system-background);
-  }
-}
-.projection-picker-icon {
-  font-size: 13px;
-  line-height: 1;
-}
-.projection-picker-label {
-  font-size: 10px;
-  letter-spacing: 0.03em;
-  font-weight: 500;
-}
-
-/* ── Map additions ── */
+/* Map additions */
 .map-land {
   stroke: var(--map-coast);
   stroke-width: 0.5;
@@ -881,10 +877,10 @@
 }
 .map-airport-popover-button:hover .map-airport-popover-button-bg,
 .map-airport-popover-button:focus-visible .map-airport-popover-button-bg {
-  fill: color-mix(in srgb, var(--tint) 84%, white);
+  fill: color-mix(in srgb, var(--tint) 84%, var(--system-background));
 }
 .map-airport-popover-button-text {
-  fill: #ffffff;
+  fill: var(--system-background);
   font-weight: 700;
   pointer-events: none;
 }
@@ -929,9 +925,9 @@
 }
 
 .inspector-tab.active {
-  color: var(--label);
+  color: var(--tint);
   background: var(--system-background);
-  box-shadow: var(--shadow-1);
+  box-shadow: inset 0 -2px 0 var(--tint);
 }
 
 .inspector-tab span:last-child {
@@ -952,7 +948,7 @@
   gap: var(--space-4);
 }
 
-/* ── Mobile ── */
+/* Mobile */
 .app.mobile {
   height: auto;
   overflow: auto;
@@ -984,7 +980,7 @@
   border-bottom: 1px solid var(--separator);
 }
 
-/* ── Footer ── */
+/* Footer */
 .app-footer {
   display: flex;
   align-items: center;
@@ -1010,7 +1006,7 @@
   text-decoration: underline;
 }
 
-/* ── Autocomplete (Apple search-bar feel) ── */
+/* Autocomplete */
 .autocomplete {
   position: relative;
   max-width: 560px;
@@ -1047,14 +1043,14 @@
   margin: 0;
   padding: 6px;
   background: var(--material-thick);
-  backdrop-filter: saturate(180%) blur(24px);
-  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   border: 1px solid var(--separator);
   border-radius: var(--radius-card);
   max-height: 360px;
   overflow-y: auto;
   box-shadow: var(--shadow-popover);
-  animation: popoverIn var(--motion-base) var(--ease-spring);
+  animation: popoverIn var(--motion-base) var(--ease-standard);
   transform-origin: top center;
 }
 .autocomplete-hint {
@@ -1113,7 +1109,7 @@
   font-size: var(--type-detail);
 }
 
-/* ── Group tabs ── */
+/* Group tabs */
 .group-tabs {
   display: flex;
   flex-wrap: wrap;
@@ -1133,7 +1129,7 @@
 }
 .group-tab.active {
   background: var(--system-background);
-  box-shadow: 0 0 0 1px var(--tint), var(--shadow-1);
+  box-shadow: 0 0 0 1px var(--tint);
 }
 @media (prefers-color-scheme: dark) {
   .group-tab.active {
@@ -1197,42 +1193,7 @@
   background: var(--tint-fill-soft);
 }
 
-/* ── Group breakdown table in earning panel ── */
-.earning-group-breakdown {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: var(--space-2);
-  font-family: var(--font-mono);
-  font-size: var(--type-detail);
-}
-.earning-group-breakdown th,
-.earning-group-breakdown td {
-  padding: 2px var(--space-1);
-  text-align: right;
-  border-bottom: 1px solid var(--rule);
-}
-.earning-group-breakdown th:first-child,
-.earning-group-breakdown td:first-child {
-  text-align: left;
-  font-family: var(--font-sans);
-  color: var(--text-secondary);
-}
-
-.per-leg-table-wrap {
-  margin-bottom: var(--space-3);
-}
-.per-leg-group-heading {
-  margin: var(--space-2) 0 var(--space-1);
-  font-size: var(--type-detail);
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-/* ── Leg chain editor ── */
+/* Leg chain editor */
 .leg-chain {
   list-style: none;
   display: grid;
@@ -1310,7 +1271,7 @@
 }
 .leg-chip-remove:hover {
   background: var(--semantic-red);
-  color: #ffffff;
+  color: var(--system-background);
 }
 .leg-chip-carrier-wrap {
   display: grid;
@@ -1344,8 +1305,8 @@
 .leg-chip-carrier:hover {
   border-color: var(--tint);
 }
-/* Fare-class picker. When unset (showing "—"), looks like a subtle hint
-   that nudges users to set it; when set, lights up tint to signal an
+/* Fare-class picker. When unset (showing an em dash), it reads as a subtle
+   hint that nudges users to set it; when set, it lights up tint to signal an
    explicit override. */
 .leg-chip-fareclass {
   width: 100%;
@@ -1428,7 +1389,7 @@
   background: color-mix(in srgb, var(--semantic-orange) 12%, transparent);
 }
 
-/* ── RTW leg editor ── */
+/* RTW leg editor */
 .rtw-leg-table-wrap {
   width: 100%;
   margin-top: var(--space-2);
@@ -1504,7 +1465,7 @@
   margin: 0;
 }
 
-/* ── RTW trip dates ── */
+/* RTW trip dates */
 .rtw-trip-dates {
   display: flex;
   flex-wrap: wrap;
@@ -1538,7 +1499,7 @@
   font: inherit;
 }
 
-/* ── RTW per-leg date column + calendar popover ── */
+/* RTW per-leg date column + calendar popover */
 .rtw-leg-date-cell {
   position: relative;
   white-space: nowrap;
@@ -1576,7 +1537,7 @@
   border: 1px solid var(--separator);
   border-radius: var(--radius-card);
   background: var(--secondary-grouped-background);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  box-shadow: var(--shadow-popover);
 }
 .rtw-cal-head {
   display: flex;
@@ -1668,77 +1629,7 @@
   border-color: currentColor;
 }
 
-/* ── Tier selector (iOS segmented control, v1.9) ── */
-.tier-selector {
-  display: inline-flex;
-  background: var(--secondary-fill);
-  border: none;
-  border-radius: var(--radius-pill);
-  padding: 2px;
-  gap: 0;
-}
-.tier-tab {
-  background: transparent;
-  border: none;
-  padding: 5px var(--space-3);
-  color: var(--secondary-label);
-  cursor: pointer;
-  border-radius: var(--radius-pill);
-  font-size: var(--type-footnote);
-  font-weight: 500;
-  transition:
-    background var(--motion-fast) var(--ease-standard),
-    color var(--motion-fast) var(--ease-standard);
-}
-.tier-tab:hover:not(.selected) {
-  color: var(--label);
-}
-.tier-tab.selected {
-  background: var(--system-background);
-  color: var(--label);
-  font-weight: 600;
-  box-shadow: var(--shadow-1);
-}
-@media (prefers-color-scheme: dark) {
-  .tier-tab.selected {
-    background: var(--tertiary-system-background);
-  }
-}
-
-/* Revenue-based "estimate" chip (v1.9) */
-.revenue-based-chip {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 8px;
-  border-radius: var(--radius-pill);
-  background: rgba(255, 149, 0, 0.16);
-  color: var(--semantic-orange);
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  cursor: help;
-}
-
-/* Tier bonus line on each program card (v1.9) */
-.earning-tier-bonus {
-  margin-top: 6px;
-  padding: 4px 10px;
-  background: rgba(0, 122, 255, 0.08);
-  border-radius: var(--radius-pill);
-  width: fit-content;
-  font-size: var(--type-footnote);
-  color: var(--tint);
-  font-weight: 500;
-  cursor: help;
-}
-@media (prefers-color-scheme: dark) {
-  .earning-tier-bonus {
-    background: rgba(10, 132, 255, 0.16);
-  }
-}
-
-/* ── Cabin selector (iOS segmented control) ── */
+/* Cabin selector (segmented tabs) */
 .cabin-selector {
   display: inline-flex;
   background: var(--secondary-fill);
@@ -1768,8 +1659,8 @@
 }
 .cabin-tab.selected {
   background: var(--system-background);
-  color: var(--label);
-  box-shadow: var(--shadow-1);
+  color: var(--tint);
+  box-shadow: inset 0 -2px 0 var(--tint);
 }
 @media (prefers-color-scheme: dark) {
   .cabin-tab.selected {
@@ -1786,83 +1677,6 @@
   font-weight: 500;
 }
 
-/* ── Program toggle ── */
-.program-toggle {
-  display: inline-flex;
-  gap: var(--space-2);
-}
-.program-toggle-button {
-  border: 1px solid var(--rule);
-  border-radius: var(--border-radius-button);
-  background: var(--bg-page);
-  color: var(--text-secondary);
-  padding: var(--space-2) var(--space-3);
-  font-size: var(--type-chip);
-  cursor: pointer;
-}
-.program-toggle-button.active {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: var(--bg-page);
-}
-
-/* ── Program picker (Apple-material popover, v1.4 redesign) ── */
-.program-picker {
-  position: relative;
-  display: inline-block;
-}
-.program-picker-trigger {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  background: var(--secondary-fill);
-  border: none;
-  border-radius: var(--radius-pill);
-  color: var(--label);
-  padding: 6px var(--space-3);
-  font-size: var(--type-footnote);
-  font-weight: 600;
-  font-family: var(--font-sans);
-  cursor: pointer;
-  min-width: 96px;
-  transition:
-    background var(--motion-fast) var(--ease-standard),
-    transform var(--motion-fast) var(--ease-standard);
-}
-.program-picker-trigger:hover {
-  background: var(--fill);
-}
-.program-picker-trigger:active {
-  transform: scale(0.97);
-}
-.program-picker-summary {
-  font-family: var(--font-mono);
-  font-weight: 600;
-  letter-spacing: 0.04em;
-}
-.program-picker-caret {
-  color: var(--tertiary-label);
-  font-size: 9px;
-}
-.program-picker-popover {
-  position: absolute;
-  top: calc(100% + var(--space-2));
-  right: 0;
-  z-index: 50;
-  min-width: 280px;
-  max-width: min(320px, calc(100vw - var(--space-6)));
-  max-height: min(70vh, 560px);
-  overflow-y: auto;
-  background: var(--material-thick);
-  backdrop-filter: saturate(180%) blur(24px);
-  -webkit-backdrop-filter: saturate(180%) blur(24px);
-  border: 1px solid var(--separator);
-  border-radius: var(--radius-card);
-  box-shadow: var(--shadow-popover);
-  padding: var(--space-3);
-  animation: popoverIn var(--motion-base) var(--ease-spring);
-  transform-origin: top right;
-}
 @keyframes popoverIn {
   from {
     opacity: 0;
@@ -1873,86 +1687,7 @@
     transform: scale(1) translateY(0);
   }
 }
-.program-picker-hint {
-  margin: 0 0 var(--space-3);
-  font-size: var(--type-footnote);
-  color: var(--secondary-label);
-  line-height: 1.4;
-}
-.program-picker-warn {
-  margin: 0 0 var(--space-3);
-  padding: var(--space-2) var(--space-3);
-  font-size: var(--type-footnote);
-  color: var(--label);
-  background: var(--warn-bg);
-  border-radius: var(--radius-button);
-}
-.program-picker-group {
-  margin-top: var(--space-4);
-}
-.program-picker-group:first-of-type {
-  margin-top: 0;
-}
-.program-picker-alliance {
-  margin: 0 var(--space-3) var(--space-1);
-  font-size: var(--type-caption);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--tertiary-label);
-}
-.program-picker-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  background: var(--secondary-grouped-background);
-  border-radius: var(--radius-button);
-  overflow: hidden;
-}
-.program-picker-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: 10px var(--space-3);
-  cursor: pointer;
-  font-size: var(--type-callout);
-  border-bottom: 1px solid var(--separator);
-  transition: background var(--motion-fast) var(--ease-standard);
-}
-.program-picker-list li:last-child .program-picker-row {
-  border-bottom: none;
-}
-.program-picker-row:hover {
-  background: var(--quaternary-fill);
-}
-.program-picker-row.active {
-  color: var(--label);
-}
-.program-picker-row.locked {
-  cursor: default;
-  opacity: 0.6;
-}
-.program-picker-row input[type='checkbox'] {
-  margin: 0;
-  cursor: inherit;
-  accent-color: var(--tint);
-  width: 18px;
-  height: 18px;
-}
-.program-picker-short {
-  font-family: var(--font-mono);
-  font-weight: 600;
-  font-size: var(--type-footnote);
-  letter-spacing: 0.05em;
-  min-width: 32px;
-  color: var(--tint);
-}
-.program-picker-name {
-  color: var(--label);
-  font-size: var(--type-callout);
-}
-
-/* ── Action row (Apple pill buttons) ── */
+/* Action row */
 .action-row {
   display: inline-flex;
   align-items: center;
@@ -1981,7 +1716,7 @@
 }
 .action-button.primary {
   background: var(--tint);
-  color: #ffffff;
+  color: var(--system-background);
 }
 .action-button.primary:hover:not(:disabled) {
   background: var(--tint-pressed);
@@ -2009,7 +1744,7 @@
   border-color: var(--tint);
 }
 
-/* ── Map ── */
+/* Map */
 .map-view {
   display: block;
   width: 100%;
@@ -2078,432 +1813,7 @@
   cursor: pointer;
 }
 
-/* ── Earning panel ── */
-.earning-panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-}
-.earning-panel-empty {
-  padding: var(--space-6) 0;
-  color: var(--text-secondary);
-  text-align: center;
-}
-.earning-panel-hint {
-  font-style: italic;
-  margin: 0;
-}
-/* ── Best-program recommendation (v1.4 Phase C) ── */
-.earning-best {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: var(--space-4);
-  background: linear-gradient(135deg, var(--tint), var(--tint-pressed));
-  color: #ffffff;
-  border-radius: var(--radius-card);
-  box-shadow:
-    0 8px 16px rgba(0, 122, 255, 0.16),
-    0 2px 4px rgba(0, 122, 255, 0.12);
-  position: relative;
-  overflow: hidden;
-}
-@media (prefers-color-scheme: dark) {
-  .earning-best {
-    box-shadow:
-      0 8px 24px rgba(10, 132, 255, 0.32),
-      0 2px 6px rgba(10, 132, 255, 0.2);
-  }
-}
-.earning-best-badge {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  opacity: 0.85;
-}
-.earning-best-program {
-  font-size: var(--type-title);
-  font-weight: 700;
-  letter-spacing: -0.015em;
-  line-height: 1.2;
-}
-.earning-best-delta {
-  font-size: var(--type-footnote);
-  opacity: 0.92;
-  font-weight: 500;
-}
-
-.earning-program {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-4);
-  background: var(--secondary-grouped-background);
-  border: 1px solid var(--separator);
-  border-radius: var(--radius-card);
-  box-shadow: var(--shadow-1);
-  transition: box-shadow var(--motion-base) var(--ease-standard);
-}
-.earning-program-top {
-  border-color: var(--tint);
-  box-shadow:
-    0 0 0 1px var(--tint),
-    var(--shadow-card);
-}
-.earning-program-best-pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 8px;
-  background: var(--tint);
-  color: #ffffff;
-  border-radius: var(--radius-pill);
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-left: auto;
-}
-
-/* "Where to credit?" inverse-view ranked list (v1.7) */
-.earning-where-to-credit-section {
-  margin-top: var(--space-3);
-}
-.where-to-credit {
-  margin-top: var(--space-2);
-  padding: var(--space-3);
-  background: var(--secondary-grouped-background);
-  border: 1px solid var(--separator);
-  border-radius: var(--radius-card);
-}
-.where-to-credit-hint {
-  margin: 0 0 var(--space-2);
-  font-size: var(--type-footnote);
-  color: var(--secondary-label);
-}
-.where-to-credit-empty {
-  margin: var(--space-2) 0 0;
-  font-size: var(--type-footnote);
-  color: var(--tertiary-label);
-  text-align: center;
-  padding: var(--space-3);
-}
-.where-to-credit-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.where-to-credit-row {
-  display: grid;
-  grid-template-columns: 28px 1fr auto auto auto;
-  gap: var(--space-2);
-  align-items: center;
-  padding: 6px 10px;
-  border-radius: var(--radius-button);
-  font-size: var(--type-footnote);
-  transition: background var(--motion-fast) var(--ease-standard);
-}
-.where-to-credit-row:hover {
-  background: var(--quaternary-fill);
-}
-.where-to-credit-row.selected {
-  background: var(--tint-fill-soft);
-}
-.where-to-credit-rank {
-  font-family: var(--font-mono);
-  font-weight: 600;
-  font-size: var(--type-caption);
-  color: var(--tertiary-label);
-  text-align: center;
-}
-.where-to-credit-row.selected .where-to-credit-rank {
-  color: var(--tint);
-}
-.where-to-credit-program {
-  color: var(--label);
-  font-weight: 500;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.where-to-credit-miles {
-  font-family: var(--font-mono);
-  font-feature-settings: 'tnum';
-  color: var(--label);
-  font-weight: 600;
-  min-width: 4.5em;
-  text-align: right;
-}
-.where-to-credit-cash {
-  font-family: var(--font-mono);
-  font-feature-settings: 'tnum';
-  color: var(--semantic-green);
-  font-weight: 600;
-  min-width: 3em;
-  text-align: right;
-}
-.where-to-credit-add {
-  width: 22px;
-  height: 22px;
-  border: 1px solid var(--tint);
-  background: transparent;
-  color: var(--tint);
-  border-radius: var(--radius-pill);
-  cursor: pointer;
-  font-size: 14px;
-  line-height: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  transition:
-    background var(--motion-fast) var(--ease-standard),
-    color var(--motion-fast) var(--ease-standard);
-}
-.where-to-credit-add:hover {
-  background: var(--tint);
-  color: #ffffff;
-}
-.where-to-credit-selected-tick {
-  color: var(--tint);
-  font-weight: 700;
-  font-size: 14px;
-  width: 22px;
-  text-align: center;
-}
-
-/* Cash-equivalent chip (v1.6) — TPG ¢/mile × RDM */
-.earning-cash-equivalent {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 6px;
-  margin-top: 4px;
-  padding: 4px 10px;
-  background: var(--quaternary-fill);
-  border-radius: var(--radius-pill);
-  width: fit-content;
-  cursor: help;
-}
-.earning-cash-value {
-  font-family: var(--font-mono);
-  font-feature-settings: 'tnum';
-  font-weight: 600;
-  font-size: var(--type-footnote);
-  color: var(--semantic-green);
-}
-.earning-cash-rate {
-  font-size: var(--type-caption);
-  color: var(--tertiary-label);
-}
-
-/* seats.aero outbound link (v1.6) */
-.earning-program-actions {
-  display: flex;
-  gap: var(--space-2);
-  margin-top: var(--space-1);
-}
-.earning-program-seats-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  background: transparent;
-  border: 1px solid var(--separator);
-  border-radius: var(--radius-pill);
-  color: var(--tint);
-  font-size: var(--type-caption);
-  font-weight: 500;
-  text-decoration: none;
-  transition:
-    background var(--motion-fast) var(--ease-standard),
-    border-color var(--motion-fast) var(--ease-standard);
-}
-.earning-program-seats-link:hover {
-  background: var(--tint-fill-soft);
-  border-color: var(--tint);
-  text-decoration: none;
-}
-
-.earning-program-provenance {
-  margin-top: var(--space-2);
-  padding-top: var(--space-3);
-  border-top: 1px solid var(--separator);
-  font-size: var(--type-caption);
-  color: var(--tertiary-label);
-  font-family: var(--font-mono);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  align-items: baseline;
-}
-.earning-program-source-link {
-  color: var(--tint);
-  text-decoration: none;
-  font-weight: 500;
-}
-.earning-program-source-link:hover {
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-.earning-program-label {
-  margin: 0;
-  font-size: var(--type-headline);
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: var(--label);
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-.earning-numbers {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.earning-number-row {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-2);
-}
-.earning-number-value {
-  font-family: var(--font-mono);
-  font-feature-settings: 'tnum';
-  font-size: 28px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--label);
-  line-height: 1.1;
-}
-.earning-number-secondary .earning-number-value {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--secondary-label);
-}
-.earning-number-unit {
-  font-family: var(--font-sans);
-  font-size: var(--type-footnote);
-  font-weight: 500;
-  color: var(--secondary-label);
-}
-.confidence-chip {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 8px;
-  border-radius: var(--radius-pill);
-  font-family: var(--font-sans);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-weight: 600;
-}
-.confidence-chart {
-  background: var(--tertiary-fill);
-  color: var(--secondary-label);
-}
-.confidence-corrected {
-  background: rgba(52, 199, 89, 0.16);
-  color: var(--semantic-green);
-}
-.confidence-mixed {
-  background: rgba(255, 149, 0, 0.16);
-  color: var(--semantic-orange);
-}
-.earning-program-notes {
-  margin: 0;
-  padding-left: var(--space-4);
-  font-size: var(--type-footnote);
-  color: var(--secondary-label);
-}
-.earning-totals {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-4);
-  background: var(--secondary-grouped-background);
-  border: 1px solid var(--separator);
-  border-radius: var(--radius-card);
-}
-.earning-totals-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-}
-.earning-totals-label {
-  color: var(--secondary-label);
-  font-family: var(--font-sans);
-  font-size: var(--type-footnote);
-  font-weight: 500;
-}
-.earning-totals-value {
-  font-family: var(--font-mono);
-  font-feature-settings: 'tnum';
-  font-weight: 600;
-  color: var(--label);
-}
-.earning-warnings {
-  list-style: none;
-  margin: var(--space-2) 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-.earning-warning {
-  font-size: var(--type-footnote);
-  color: var(--semantic-orange);
-}
-.earning-toggle {
-  background: var(--secondary-fill);
-  border: none;
-  color: var(--tint);
-  padding: 8px var(--space-4);
-  font-size: var(--type-footnote);
-  font-weight: 600;
-  cursor: pointer;
-  text-align: left;
-  border-radius: var(--radius-pill);
-  align-self: flex-start;
-  transition: background var(--motion-fast) var(--ease-standard);
-}
-.earning-toggle:hover {
-  background: var(--fill);
-}
-.per-leg-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: var(--space-2);
-  font-size: var(--type-detail);
-  font-family: var(--font-mono);
-}
-.per-leg-table th,
-.per-leg-table td {
-  text-align: right;
-  padding: var(--space-1) var(--space-2);
-  border-bottom: 1px solid var(--rule);
-}
-.per-leg-table th:first-child,
-.per-leg-table td:first-child {
-  text-align: left;
-}
-.per-leg-route {
-  white-space: nowrap;
-}
-.per-leg-carrier {
-  color: var(--text-secondary);
-}
-.per-leg-missing {
-  color: var(--text-secondary);
-}
-.per-leg-note-marker {
-  color: var(--warning);
-  margin-left: 2px;
-  cursor: help;
-}
-
-/* ── RTW validation ── */
+/* Saved routings */
 .rtw-panel {
   display: flex;
   flex-direction: column;
@@ -2633,7 +1943,7 @@
 .rtw-award-price strong {
   color: var(--semantic-green);
   font-family: var(--font-mono);
-  font-size: var(--type-title-3);
+  font-size: var(--type-total);   /* the hero number — DESIGN.md §Typography */
 }
 .rtw-award-price small {
   color: var(--secondary-label);
@@ -2732,40 +2042,6 @@
   color: var(--tertiary-label);
   font-size: var(--type-caption);
 }
-.rtw-award-fees {
-  margin-top: var(--space-2);
-}
-.rtw-award-fee-list {
-  list-style: none;
-  margin: var(--space-1) 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-.rtw-award-fee-list li {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-2);
-}
-.rtw-award-fee-list li span {
-  min-width: 6.5em;
-  color: var(--secondary-label);
-  font-size: var(--type-caption);
-}
-.rtw-award-fee-list li strong {
-  font-family: var(--font-mono);
-}
-.rtw-award-fee-list li small {
-  color: var(--tertiary-label);
-  font-size: var(--type-caption);
-}
-.rtw-award-fee-asof {
-  display: block;
-  margin-top: var(--space-1);
-  color: var(--tertiary-label);
-  font-size: var(--type-caption);
-}
 .rtw-award-sources {
   margin-top: var(--space-1);
   color: var(--secondary-label);
@@ -2833,52 +2109,25 @@
 .rtw-finding.unknown .rtw-finding-severity {
   color: var(--semantic-orange);
 }
+/* Violation fix hint (convergence contract §3) — remedy line under a
+   fail finding; secondary tone so the rule message stays primary. */
+.rtw-fix-hint {
+  display: block;
+  margin-top: var(--space-1);
+  font-style: normal;
+  color: var(--secondary-label);
+}
+.rtw-fix-hint::before {
+  content: '→';
+  font-weight: 700;
+}
 .rtw-empty {
   margin: 0;
   color: var(--secondary-label);
   font-size: var(--type-footnote);
 }
 
-/* ── Mileage estimate (secondary) ── */
-.mileage-estimate {
-  border: 1px solid var(--separator);
-  border-radius: var(--radius-card);
-  background: var(--secondary-grouped-background);
-  overflow: hidden;
-}
-.mileage-estimate-toggle {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  border: none;
-  background: transparent;
-  color: var(--label);
-  padding: var(--space-3) var(--space-4);
-  font-size: var(--type-callout);
-  font-weight: 700;
-  cursor: pointer;
-}
-.mileage-estimate-toggle:hover {
-  background: var(--tertiary-fill);
-}
-.mileage-estimate-body {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  padding: 0 var(--space-4) var(--space-4);
-}
-.mileage-estimate-controls {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-3);
-  padding-top: var(--space-2);
-  border-top: 1px solid var(--separator);
-}
-
-/* ── Saved routings ── */
+/* Saved routings */
 .saved-routings {
   border-top: 1px solid var(--separator);
   padding-top: var(--space-4);
@@ -2940,11 +2189,11 @@
     background var(--motion-fast) var(--ease-standard);
 }
 .saved-routings-delete:hover {
-  color: #ffffff;
+  color: var(--system-background);
   background: var(--semantic-red);
 }
 
-/* ── Taiwan-first carrier notes (CI not-true-RTW caveat + JX watchlist) ──
+/* Taiwan-first carrier notes (CI not-true-RTW caveat + JX watchlist):
    Quiet panel-section cards per DESIGN.md: hairline border, no shadow,
    amber status dot only (codeshare-badge vocabulary), no error styling. */
 .carrier-note {

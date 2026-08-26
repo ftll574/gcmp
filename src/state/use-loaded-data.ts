@@ -29,7 +29,6 @@ import {
 } from '../lib/schemas/network-gaps.ts';
 import { ProgramSchema, type Program } from '../lib/schemas/program.ts';
 import { RtwRuleCatalogSchema, type RtwRuleCatalog } from '../lib/schemas/rtw-rule.ts';
-import { ValuationsSchema, type Valuations } from '../lib/schemas/valuations.ts';
 import {
   PROGRAM_REGISTRY,
   type Airline,
@@ -45,14 +44,19 @@ export interface LoadedData {
   rtwRuleCatalog: RtwRuleCatalog;
   awardPricingCatalog: AwardPricingCatalog;
   marketProfile: MarketProfile;
-  /** Per-program ¢/mile redemption-value chip. Null if file unavailable. */
-  valuations: Valuations | null;
   /**
    * Country→continent base map for `summary.continentsVisited`.
    * Null if the geo file is unavailable/malformed — the engine then
-   * degrades to an empty continents list (same contract as `valuations`).
+   * degrades to an empty continents list (degrade-to-null contract).
    */
   countryContinents: ReadonlyMap<string, ContinentId> | null;
+  /**
+   * Country→subregion second tier for the destinations explorer
+   * (geo `.mappings[].subregion`, optional per row). Null alongside
+   * `countryContinents`; countries without a row hang directly under
+   * their continent.
+   */
+  countrySubregions: ReadonlyMap<string, string> | null;
   /**
    * Airport-level continent overrides (geo `.airportOverrides`, keyed by
    * IATA). Null alongside `countryContinents` — applied by the engine
@@ -62,7 +66,7 @@ export interface LoadedData {
   /**
    * Carrier network-gap watchlist entries (network-gaps/current.json).
    * Null if the file is unavailable/malformed — the engine then emits no
-   * network-gap warnings (same degrade-to-null contract as `valuations`).
+   * network-gap warnings (degrade-to-null contract).
    */
   networkGaps: ReadonlyArray<NetworkGapEntry> | null;
   /**
@@ -117,7 +121,6 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
         const [
           airportsRaw,
           airlinesRaw,
-          valuationsRaw,
           allianceRaw,
           rtwRulesRaw,
           awardPricingRaw,
@@ -130,7 +133,6 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
         ] = await Promise.all([
           fetchJsonStrict(`${baseUrl}/data/airports.json`),
           fetchJsonStrict(`${baseUrl}/data/airlines.json`),
-          fetchJsonOptional(`${baseUrl}/data/valuations/current.json`),
           fetchJsonStrict(`${baseUrl}/data/alliances/current.json`),
           fetchJsonStrict(`${baseUrl}/data/rtw-products/current.json`),
           fetchJsonStrict(`${baseUrl}/data/award-pricing/current.json`),
@@ -145,22 +147,19 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
         ]);
         if (cancelled) return;
 
-        let valuations: Valuations | null = null;
-        if (valuationsRaw !== null && valuationsRaw !== undefined) {
-          try {
-            valuations = ValuationsSchema.parse(valuationsRaw);
-          } catch (e) {
-            console.warn('Valuations schema parse failed; redemption-value chip will be hidden:', e);
-          }
-        }
-
         let countryContinents: ReadonlyMap<string, ContinentId> | null = null;
+        let countrySubregions: ReadonlyMap<string, string> | null = null;
         let airportContinentOverrides: ReadonlyMap<string, ContinentId> | null = null;
         if (geoRaw !== null && geoRaw !== undefined) {
           try {
             const geoCatalog = CountryContinentCatalogSchema.parse(geoRaw);
             countryContinents = new Map(
               geoCatalog.mappings.map((row) => [row.country, row.continent] as const),
+            );
+            countrySubregions = new Map(
+              geoCatalog.mappings
+                .filter((row) => row.subregion !== undefined)
+                .map((row) => [row.country, row.subregion as string] as const),
             );
             airportContinentOverrides = new Map(
               geoCatalog.airportOverrides.map((o) => [o.iata, o.continent] as const),
@@ -241,8 +240,8 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
             rtwRuleCatalog,
             awardPricingCatalog,
             marketProfile,
-            valuations,
             countryContinents,
+            countrySubregions,
             airportContinentOverrides,
             networkGaps,
             schedules,

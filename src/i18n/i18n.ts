@@ -1,7 +1,7 @@
 /**
  * Hand-rolled i18n. No react-i18next dep — keeps the bundle small.
  *
- *   t('panel.totalDistance')                    → "Total distance"
+ *   t('rtw.validationTitle')                   → "Route rule check"
  *   t('leg.ariaLabel', { n: 1, total: 3, ... }) → "Leg 1 of 3: SFO to NRT"
  *
  * Locale detection order:
@@ -16,15 +16,11 @@
 
 import en from './locales/en.json';
 import zhTW from './locales/zh-TW.json';
-import zhCN from './locales/zh-CN.json';
-import ja from './locales/ja.json';
 import { LOCALES, type Locale, type LocaleMessages } from './types.ts';
 
 const MESSAGES: Record<Locale, LocaleMessages> = {
   en,
   'zh-TW': zhTW,
-  'zh-CN': zhCN,
-  ja,
 };
 
 const STORAGE_KEY = 'gcmp.locale';
@@ -58,11 +54,11 @@ function detectLocale(): Locale {
     const lang = navigator.language;
     if (isLocale(lang)) return lang;
     // Match prefix.
-    if (lang.startsWith('zh-Hans') || lang.startsWith('zh-CN') || lang === 'zh-Hans') return 'zh-CN';
     if (lang.startsWith('zh-Hant') || lang.startsWith('zh-TW') || lang.startsWith('zh-HK')) return 'zh-TW';
     const prefix = lang.split('-')[0];
-    if (prefix === 'zh') return 'zh-TW'; // default Chinese to Traditional (user's locale)
-    if (prefix === 'ja') return 'ja';
+    // Taiwan-first: any other Chinese variant (zh-Hans/zh-CN/zh) defaults to
+    // Traditional Chinese; everything non-Chinese falls back to English.
+    if (prefix === 'zh') return 'zh-TW';
     if (prefix === 'en') return 'en';
   }
 

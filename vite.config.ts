@@ -19,4 +19,13 @@ export default defineConfig({
     sourcemap: true,
     target: 'es2022',
   },
+  server: {
+    watch: {
+      // Atomic-save tools create+delete `<name>.<uuid>.tmpdir/<file>.tmp`
+      // siblings next to real sources; chokidar's Windows watcher exits
+      // with EBUSY when one of those transient files disappears mid-watch,
+      // killing the whole dev server. Ignore them explicitly.
+      ignored: ['**/.*.tmpdir/**', '**/*.tmp'],
+    },
+  },
 });

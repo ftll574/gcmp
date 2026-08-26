@@ -12,6 +12,7 @@ import {
   StarluxWatchlistCard,
 } from '../../src/components/TaiwanCarrierNotes.tsx';
 import { setLocale } from '../../src/i18n/i18n.ts';
+import { LOCALES } from '../../src/i18n/types.ts';
 
 const CI_LABEL = 'China Airlines · important, but not a true RTW product';
 const JX_LABEL = 'STARLUX COSMILE · watchlist';
@@ -97,15 +98,7 @@ describe('carrier notes locale coverage', () => {
     expect(screen.getByLabelText('星宇航空 COSMILE · 觀察名單')).toBeInTheDocument();
   });
 
-  it('renders Simplified Chinese copy under zh-CN', () => {
-    setLocale('zh-CN');
-    render(<StarluxWatchlistCard />);
-    expect(screen.getByLabelText('星宇航空 COSMILE · 观察名单')).toBeInTheDocument();
-  });
-
-  it('renders Japanese copy under ja', () => {
-    setLocale('ja');
-    render(<ChinaAirlinesNotRtwCard {...visibleProps} />);
-    expect(screen.getByLabelText('チャイナエアライン · 重要だが真のRTW商品ではない')).toBeInTheDocument();
+  it('ships exactly en + zh-TW (convergence contract §5: zh-CN/ja removed)', () => {
+    expect(LOCALES).toEqual(['en', 'zh-TW']);
   });
 });

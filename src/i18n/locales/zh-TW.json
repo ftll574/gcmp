@@ -4,10 +4,6 @@
     "tagline": "環球票路線規劃"
   },
   "lang": {
-    "english": "English",
-    "zhTW": "繁體中文",
-    "zhCN": "简体中文",
-    "ja": "日本語",
     "label": "語言"
   },
   "header": {
@@ -66,19 +62,6 @@
     "grandTotal": "全部航線合計",
     "compareHint": "在同一張地圖上比較多條航線。環球票規則檢查以目前選取的航線為主。"
   },
-  "tier": {
-    "label": "會籍等級",
-    "none": "無",
-    "mid": "銀卡",
-    "high": "金卡",
-    "top": "白金/頂級",
-    "bonusLine": "+{count} 會員加成 ({pct}%)",
-    "tip": "一般化的會籍等級 — 只加成酬賓里數。無=0%、銀=+25%、金=+50%、白金/頂級=+100%。"
-  },
-  "revenueBased": {
-    "chip": "估算",
-    "tip": "此計畫使用消費型累積（每花一美元賺多少哩，而非距離型）。畫面數字是依艙等推估，請以實際入帳為準。"
-  },
   "cabin": {
     "label": "艙等",
     "economy": "經濟艙",
@@ -97,36 +80,6 @@
     "fareClassLabel": "第 {n} 段預訂艙等",
     "fareClassTitle": "票面上的單字母訂位艙等代碼 — 哩程累積率視艙等代碼而不僅是艙等。",
     "fareClassAuto": "—"
-  },
-  "panel": {
-    "emptyHint": "加入 2 個以上機場，看你能拿多少哩程。",
-    "totalDistance": "總距離",
-    "milesUnit": "海浬",
-    "perLegToggle": "每段詳細",
-    "perLegHidden": "▸ {label}",
-    "perLegShown": "▾ {label}",
-    "warningsLabel": "提醒",
-    "pqmShort": "PQM",
-    "rdmShort": "RDM",
-    "pqmLong": "菁英資格哩數",
-    "rdmLong": "酬賓里數",
-    "confidenceChart": "官方表",
-    "confidenceCorrected": "已修正",
-    "confidenceMixed": "混合",
-    "confidenceChartTip": "依照航空公司公布的合作夥伴累積表計算，實際入帳可能略有出入。",
-    "confidenceCorrectedTip": "已根據實際入帳紀錄修正過的規則。",
-    "confidenceMixedTip": "此航線各段混合了「官方表」與「已修正」的規則。"
-  },
-  "table": {
-    "leg": "航段",
-    "distance": "距離",
-    "missing": "—",
-    "missingTip": "此計畫沒有這家航空的規則。歡迎 PR 補一份 JSON。"
-  },
-  "warnings": {
-    "polar": "航線穿越極區 — 距離正確，但麥卡托地圖會把弧線畫歪。",
-    "unknownAirport": "找不到航段機場 {from}→{to}",
-    "carrierNotInRules": "{program} 沒有 {carrier} 的規則，歡迎 PR 補一份。"
   },
   "save": {
     "promptName": "幫這個航線取名字",
@@ -154,17 +107,6 @@
   "mobile": {
     "banner": "手機版 — 點一個範例先看看，完整編輯體驗在桌機最佳。"
   },
-  "projection": {
-    "label": "地圖投影",
-    "mercator": "麥卡托",
-    "mercatorTip": "熟悉的平面地圖。極區航線會扭曲。",
-    "flat": "平面",
-    "flatTip": "等距方格投影，渲染最快。",
-    "azimuthal": "方位",
-    "azimuthalTip": "以中心點出發的大圓航線變成放射狀直線（gcmap 招牌）。",
-    "globe": "地球儀",
-    "globeTip": "真正的 3D 地球儀。拖拉旋轉、滾輪縮放。"
-  },
   "gcmapImport": {
     "open": "從 gcmap 匯入",
     "label": "貼上 gcmap.com 連結或航線字串",
@@ -172,51 +114,8 @@
     "invalid": "無法解析，預期是 gcmap.com 連結或像 SFO-NRT,JFK-LHR 的航線字串",
     "hint": "範例：SFO-NRT-BKK · SFO-NRT,LAX-HKG · http://www.gcmap.com/mapui?P=SFO-NRT-BKK"
   },
-  "download": {
-    "button": "下載",
-    "png": "PNG",
-    "pngTransparent": "PNG · 透明背景",
-    "svg": "SVG",
-    "svgTransparent": "SVG · 透明背景",
-    "filename": "gcmp-航線"
-  },
-  "bearings": {
-    "show": "方位角"
-  },
   "distances": {
     "show": "距離"
-  },
-  "best": {
-    "badge": "推薦",
-    "label": "這條航線最划算的常客計畫",
-    "creditTo": "建議掛 {program}",
-    "delta": "比第二名多 {count} 哩（{pct}%）",
-    "cashEquivalent": "≈ {value} 現金價值",
-    "pill": "最佳"
-  },
-  "cashEq": {
-    "atRate": "≈ {rate}¢/哩",
-    "tip": "依 {source} 公布的標價估算的現金等值。實際兌換價值依航線、艙等、獎勵機票供應情況而異。"
-  },
-  "provenance": {
-    "line": "規則 {version} · 校對於 {date}",
-    "source": "查官方表"
-  },
-  "seats": {
-    "findAwards": "搜獎勵機票",
-    "tip": "用同一條航線 + 艙等開 seats.aero。"
-  },
-  "whereToCredit": {
-    "toggle": "該掛哪家？— 顯示全部 18 家常客計畫排行",
-    "hint": "依價值排序（哩程 × 每哩價值）。點 + 加入你的選擇。",
-    "empty": "目前還沒有這些航空的累積規則。",
-    "addLabel": "把 {program} 加入選擇"
-  },
-  "programPicker": {
-    "label": "累積哩程的常客計畫",
-    "hint": "選擇這條航線要掛到哪些常客計畫；每個都會單獨計算可累積的哩程。",
-    "tooMany": "已選 {count} 個常客計畫 — 哩程面板可能會擠。",
-    "none": "未選"
   },
   "alliance": {
     "oneworld": "寰宇一家",
@@ -235,8 +134,19 @@
     "alliance": "航空聯盟",
     "type": "票種",
     "carrierSeed": "預設航司",
+    "memberCarriers": "聯盟成員航司",
+    "explorer": {
+      "title": "已知直飛航點",
+      "carrier": "航空公司",
+      "origin": "出發地",
+      "empty": "班表目錄尚未收錄 {carrier} 的航點——覆蓋率本來就有限，不代表它不能飛。",
+      "addHint": "把 {origin}→{to} 接上行尾",
+      "startHint": "從 {origin}→{to} 開始行程",
+      "mismatchHint": "目前鏈尾在 {end}，請改選從 {end} 出發的航點才能接續",
+      "community": "社群校正班表",
+      "otherRegions": "其他地區"
+    },
     "empty": "加入至少一段飛行航段後，就能開始檢查環球票規則。",
-    "mileageEstimate": "哩程估算",
     "routeLegDetails": "航段明細",
     "inspectorRules": "規則",
     "inspectorTools": "工具",
@@ -301,6 +211,36 @@
       "oceania": "大洋洲",
       "south-america": "南美洲"
     },
+    "subregion": {
+      "northeast-asia": "東北亞",
+      "southeast-asia": "東南亞",
+      "south-asia": "南亞",
+      "central-europe": "中歐",
+      "western-europe": "西歐"
+    },
+    "country": {
+      "TW": "台灣",
+      "CN": "中國",
+      "HK": "香港",
+      "MO": "澳門",
+      "JP": "日本",
+      "KR": "韓國",
+      "VN": "越南",
+      "TH": "泰國",
+      "PH": "菲律賓",
+      "MY": "馬來西亞",
+      "SG": "新加坡",
+      "ID": "印尼",
+      "KH": "柬埔寨",
+      "IN": "印度",
+      "GB": "英國",
+      "NL": "荷蘭",
+      "DE": "德國",
+      "AT": "奧地利",
+      "CZ": "捷克",
+      "US": "美國",
+      "PW": "帛琉"
+    },
     "award": {
       "estimate": "獎勵票估算",
       "miles": "{count} 哩",
@@ -327,16 +267,6 @@
         "premiumEconomy": "豪華經濟",
         "business": "商務艙",
         "first": "頭等艙"
-      },
-      "fees": {
-        "title": "改票/重簽/退票費用",
-        "dateChange": "日期變更",
-        "reissue": "重簽",
-        "refund": "退票",
-        "orPerMiles": "或每段 {miles} 哩",
-        "asOf": "{month} 時點費率",
-        "confidenceChartVerified": "圖表核實",
-        "confidenceCommunityCorrected": "社群修正"
       }
     },
     "tripDates": {
@@ -427,6 +357,18 @@
       "startEndSameCityFail": "路線從 {start} 開始、在 {end} 結束；此產品要求同城市起訖。",
       "startEndSameCountryPass": "路線起點與終點在同一國家。",
       "startEndSameCountryFail": "路線從 {start} 開始、在 {end} 結束；此產品要求同國家起訖。"
+    },
+    "fix": {
+      "flightSegmentsTooMany": "修正：減少 {drop} 段飛行——砍掉最遠的支線行程，或把多餘進港改成當日轉機（24 小時內）。",
+      "flightSegmentsTooFew": "修正：再增加 {add} 段飛行——例如把一段長途線改經合格航司轉飛一程。",
+      "stopoversTooMany": "修正：把 {convert} 個停留改成轉機（進出站都在 24 小時內），或刪掉對應的支線行程。",
+      "stopoversTooFew": "修正：把 {promote} 段轉機延長超過 24 小時，即可計為所需的停留。",
+      "maxDistanceNumbered": "修正：設法縮短約 {over} 哩——把最長的折返段改經較短轉點，或砍掉最遠的繞程。",
+      "maxDistanceGeneric": "修正：把總哩程壓回上限內——折返段改經較短轉點，或刪除遠程繞程。",
+      "airlineEligibility": "修正：把第 {legs} 段的執飛航司換成此產品聯盟／合作範圍內的航司。",
+      "oceanMissingPacific": "修正：加入一段跨太平洋航線（例如 TPE–LAX），讓路線跨越太平洋。",
+      "oceanMissingAtlantic": "修正：加入一段跨大西洋航線，讓路線跨越該大洋。",
+      "oceanMissingBoth": "修正：把路線延伸成真正的環球形狀——太平洋與大西洋各跨一次。"
     }
   },
   "carrierNotes": {
@@ -439,15 +381,5 @@
       "label": "星宇航空 COSMILE · 觀察名單",
       "body": "星宇目前沒有環球獎勵產品，公布的航空公司合作夥伴兌換以阿拉斯加航空 Mileage Plan 為主。待其加入聯盟或夥伴規則擴大後再關注。"
     }
-  },
-  "glossary": {
-    "pqm": "菁英資格哩數（Status / Premier Qualifying Miles）— 累積到一定數量可升上金卡、白金卡等會籍等級。跟酬賓里數不同。",
-    "rdm": "酬賓里數（Redeemable Miles）— 可以拿來換獎勵機票的點數。",
-    "cabin": "艙等：經濟艙（Y）、豪華經濟（W）、商務艙（J）、頭等艙（F）。",
-    "fareClass": "訂位艙等代碼（單字母如 J、C、D、Y、B、K…），同一艙等有多個訂位艙等，累積的哩程也不同。",
-    "operatingCarrier": "實際執飛這段航線的航空公司。哩程通常掛這家，即使是聯名航班（codeshare）也一樣。",
-    "alliance": "星空聯盟、寰宇一家、天合聯盟 — 合作夥伴航空互相承認哩程的群體。",
-    "credit": "選哪家常客計畫累積你的哩程。同一張票掛到不同常客計畫，能拿到的哩程可能差很多。",
-    "mileageRunner": "為了累積哩程而搭飛機（而不是為了去某地）的旅客。"
   }
 }

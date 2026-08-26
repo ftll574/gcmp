@@ -1,5 +1,4 @@
 import type {
-  AwardFeeSchedule,
   AwardPricingBand,
   AwardPricingCabin,
   AwardPricingCatalog,
@@ -42,19 +41,6 @@ export const PRICE_KEY_BY_CABIN: Record<
 
 function findProduct(catalog: AwardPricingCatalog, productId: string): AwardPricingProduct | undefined {
   return catalog.products.find((product) => product.productId === productId);
-}
-
-/**
- * Look up a product's era-pinned award fee schedule (display-only this
- * phase; NO tax estimation). Thin find by productId: returns the catalog's
- * schedule object by identity, or undefined when the product is unknown or
- * carries no fees key (e.g. BR, ANA — optional key intentionally absent).
- */
-export function getAwardFees(
-  catalog: AwardPricingCatalog,
-  productId: string,
-): AwardFeeSchedule | undefined {
-  return findProduct(catalog, productId)?.fees;
 }
 
 /**

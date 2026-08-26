@@ -1,16 +1,15 @@
 import { useMemo } from 'react';
 import {
   estimateAwardPrice,
-  getAwardFees,
   PRICE_KEY_BY_CABIN,
   quoteAwardZone,
 } from '../lib/rtw/award-pricing.ts';
 import { sortMileageRedemptionRtwProductsForMarket } from '../lib/rtw/products.ts';
 import { quoteCiLeg, resolveCiZone } from '../lib/rtw/ci-zones.ts';
+import { fixHintForFinding } from '../lib/rtw/fix-hints.ts';
 import { validateRtwRoute } from '../lib/rtw/validate.ts';
 import { useLocale } from '../i18n/use-locale.ts';
 import { AwardZoneBreakdown } from './AwardZoneBreakdown.tsx';
-import { AwardFeeScheduleCard } from './AwardFeeScheduleCard.tsx';
 import { CiZoneQuotes, type CiZoneQuoteRow } from './CiZoneQuotes.tsx';
 import {
   CHINA_AIRLINES_SKYTEAM_PRODUCT_ID,
@@ -152,12 +151,6 @@ export function RtwValidationPanel({
     if (!selectedProduct || !result) return null;
     return quoteAwardZone(awardPricingCatalog, selectedProduct.id, result.summary.totalDistanceMiles);
   }, [awardPricingCatalog, selectedProduct, result]);
-  // Era-pinned fee schedule (display-only): shown for products whose
-  // catalog entry carries one (CX today); BR/ANA stay silent.
-  const feeSchedule = useMemo(
-    () => (selectedProduct ? getAwardFees(awardPricingCatalog, selectedProduct.id) : undefined),
-    [awardPricingCatalog, selectedProduct],
-  );
   const visibleFindings = useMemo(() => {
     if (!result) return [];
     const needsAttention = result.findings.filter((finding) => finding.severity !== 'pass');
@@ -283,7 +276,7 @@ export function RtwValidationPanel({
               <strong>{result.summary.tripDays ?? '—'}</strong>
             </div>
           </div>
-          {(awardPrice || zoneQuote || feeSchedule) && (
+          {(awardPrice || zoneQuote) && (
             <div className="rtw-award-price">
               {awardPrice && (
                 <>
@@ -310,7 +303,6 @@ export function RtwValidationPanel({
                   quote={zoneQuote}
                 />
               )}
-              {feeSchedule && <AwardFeeScheduleCard schedule={feeSchedule} />}
               {ciZoneRows && <CiZoneQuotes rows={ciZoneRows} cabin={routing.cabin} />}
               {awardPrice && (awardPrice.sourceUrls.length > 0 || awardPrice.notes.length > 0) ? (
                 <details className="rtw-award-sources">
@@ -338,12 +330,31 @@ export function RtwValidationPanel({
             </div>
           )}
           <ul className="rtw-findings">
-            {visibleFindings.map((finding) => (
-              <li key={finding.ruleId} className={`rtw-finding ${finding.severity}`}>
-                <span className="rtw-finding-severity">{finding.severity}</span>
-                <span>{findingMessage(finding, t)}</span>
-              </li>
-            ))}
+            {visibleFindings.map((finding) => {
+              // Violation fix hints v1 (docs/convergence-contract.md §3):
+              // top-5 fail rules get one textual remedy; everything else
+              // falls back to the plain rule message above.
+              const fixHint =
+                finding.severity === 'fail'
+                  ? fixHintForFinding(finding, {
+                      totalDistanceMiles: result.summary.totalDistanceMiles,
+                      distanceCapMiles: selectedProduct.limits.maxDistanceMiles,
+                    })
+                  : null;
+              return (
+                <li key={finding.ruleId} className={`rtw-finding ${finding.severity}`}>
+                  <span className="rtw-finding-severity">{finding.severity}</span>
+                  <span>
+                    {findingMessage(finding, t)}
+                    {fixHint && (
+                      <em className="rtw-fix-hint">
+                        {t(fixHint.remedyKey, fixHint.remedyParams)}
+                      </em>
+                    )}
+                  </span>
+                </li>
+              );
+            })}
           </ul>
         </>
       ) : (

@@ -4,12 +4,15 @@ Project conventions and skill routing for **gcmp** (Taiwan-first RTW award route
 
 ## What this is
 
-A web app that replaces the FlyerTalk RTW-routing-thread habit for Taiwan-based award travelers. Build a multi-leg round-the-world itinerary, validate it against RTW and multi-carrier mileage-redemption award rules (segment counts, stopovers vs transfers, surface sectors, ocean crossings, direction, start/end constraints), estimate the award price where pricing bands exist, then fix violations and share the URL. Mileage earning / PQM-RDM comparison survives as a secondary panel, not the main flow. Single-page static site. No backend. URL is the share artifact.
+A web app that replaces the FlyerTalk RTW-routing-thread habit for Taiwan-based award travelers. Build a multi-leg round-the-world itinerary, validate it against RTW and multi-carrier mileage-redemption award rules (segment counts, stopovers vs transfers, surface sectors, ocean crossings, direction, start/end constraints), estimate the award price where pricing bands exist, then fix violations and share the URL. Mileage earning / PQM-RDM panel was removed outright (see `docs/convergence-contract.md` §5); the pure earning engine stays as lib code and legacy URL params keep parsing. Single-page static site. No backend. URL is the share artifact.
+
+**Binding scope:** while the acceptance line in `docs/convergence-contract.md` is unmet, no new data subsystem, product, locale, or map feature may start — frozen backlog items (CI airport→region wiring, schedule-catalog expansion) included.
 
 ## Source of truth
 
 - **Design system:** `DESIGN.md` — typography, palette, spacing, component vocabulary, AI-slop blacklist
 - **Pivot plan:** `docs/rtw-pivot-plan.md` — the product reset from earning calculator to RTW route planner
+- **Convergence contract:** `docs/convergence-contract.md` — BINDING north star (bounded rigor), BR/CX acceptance line, sole next phase (violation fix hints v1), frozen backlog, executed cuts, best-effort maintenance stance
 - **Taiwan-first scope:** `docs/taiwan-first-scope.md` — first-market product priorities (BR/EVA, CX primary; CI important-but-not-true-RTW)
 - **Chart-drift review:** `docs/process/chart-drift-checklist.md` — quarterly rv-era chart re-verification workflow: Wayback CDX playbook (`filter=` soft-fails; use prefix queries), JS-shell/RSC discrimination, dual confidence vocabulary, CONFLICT #N ledger, negatives-as-evidence
 - **Full design doc** (problem statement, premises, cross-model reviews, 13 design decisions, 11 eng findings, 20 implementation tasks): `~/.gstack/projects/GreatCircleMapper/zhenyu-initial-design-20260521-044157.md`
@@ -18,7 +21,7 @@ A web app that replaces the FlyerTalk RTW-routing-thread habit for Taiwan-based 
 ## Stack
 
 - **Vite + React + TypeScript** (`strict: true`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`)
-- **SVG d3-geo map renderer** — great-circle arcs, 4 projections, antimeridian wraparound (deck.gl was spiked post-v1.9 and reverted; don't reintroduce without a new decision)
+- **SVG d3-geo map renderer** — great-circle arcs, antimeridian wraparound; projection picker cut (single default projection renders unless a shared URL carries one) (deck.gl was spiked post-v1.9 and reverted; don't reintroduce without a new decision)
 - **zod** for build-time + runtime validation of `public/data/**` JSON (loyalty programs, alliances, market profiles, RTW products, award pricing, airports, continent mapping, network gaps)
 - **Vitest + Testing Library** for unit + component tests — Vitest only. There is NO E2E framework: no `test:e2e` script, no Playwright devDep.
 - **GitHub Pages** hosting (`https://ftll574.github.io/gcmp/`); **GitHub Actions** for CI + deploy
@@ -33,7 +36,7 @@ A web app that replaces the FlyerTalk RTW-routing-thread habit for Taiwan-based 
 
 ## Testing
 
-Run command: `npm run test` (Vitest — 462 tests passing, see README badge). No E2E runner: there is no `test:e2e` script and no Playwright dependency; verify site behavior through component tests + CI.
+Run command: `npm run test` (Vitest — 492 tests passing, see README badge). No E2E runner: there is no `test:e2e` script and no Playwright dependency; verify site behavior through component tests + CI.
 
 - 100% coverage is the goal for `src/lib/calc/**` (engine purity makes it cheap)
 - Every new function gets a test; every if/else gets tests for both branches
@@ -49,7 +52,7 @@ Run command: `npm run test` (Vitest — 462 tests passing, see README badge). No
 
 ## NOT in scope
 
-See `README.md`'s "Current Limits" section. Standing cuts: deck.gl (spiked and reverted — SVG d3-geo is the decision), live award-availability claims, fare-basis input, OG image worker, "Copy as FlyerTalk post" button (cut per eng review OV7), aria-live on totals, locale-zoom, mobile drag-edit, codeshare auto-resolution, MPM.
+See `README.md`'s "Current Limits" section. Standing cuts: deck.gl (spiked and reverted — SVG d3-geo is the decision), live award-availability claims, fare-basis input, OG image worker, "Copy as FlyerTalk post" button (cut per eng review OV7), aria-live on totals, locale-zoom, mobile drag-edit, codeshare auto-resolution, MPM, earning/PQM-RDM panel + valuations data, map projection picker / bearing labels / PNG·SVG export, award fee-schedule cards + fee schema/data, zh-CN/ja locales (all cut under `docs/convergence-contract.md` §5).
 
 ## Day 0 prerequisites (status)
 

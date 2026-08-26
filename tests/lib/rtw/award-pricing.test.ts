@@ -2,7 +2,6 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, test } from 'vitest';
 import {
   estimateAwardPrice,
-  getAwardFees,
   getZonePairQuote,
   priceRtwItinerary,
   quoteAwardZone,
@@ -170,22 +169,6 @@ describe('priceRtwItinerary', () => {
 
     expect(estimate?.cabin).toBe('premium-economy');
     expect(estimate?.miles).toBe(120000);
-  });
-});
-
-describe('getAwardFees', () => {
-  test('returns the Cathay fee schedule by object identity', () => {
-    const cathay = catalog.products.find((p) => p.productId === 'cx-asia-miles-oneworld-multi-carrier-award');
-
-    expect(getAwardFees(catalog, 'cx-asia-miles-oneworld-multi-carrier-award')).toBe(cathay?.fees);
-  });
-
-  test('returns undefined for an unknown productId', () => {
-    expect(getAwardFees(catalog, 'no-such-product')).toBeUndefined();
-  });
-
-  test('returns undefined for BR (product carries no fees key)', () => {
-    expect(getAwardFees(catalog, 'br-infinity-star-alliance-world-travel-award')).toBeUndefined();
   });
 });
 

@@ -2,6 +2,12 @@
 
 Design system source of truth for **gcmp** (Great Circle Mapper Reimagined). All UI decisions calibrate against this file. Updates land in the same commit as the code that requires them.
 
+> **2026-08-26 re-alignment:** the v1.4 Apple-HIG token layer had drifted from
+> this file (system-ui fonts, iOS blue on white, pill radii, card shadows —
+> several AI-slop-blacklist violations). The token layer was rewritten back to
+> the editorial system below (recorded in `docs/convergence-contract.md`). This
+> file remains the source of truth; drift from it is a bug.
+
 ## Aesthetic
 
 **Aviation-cartographic, not SaaS-dashboard.** This is a precision tool for mileage runners; it should feel closer to an OFP (operational flight plan) chart than to a marketing landing page. Numbers are the hero, not illustration.
@@ -51,6 +57,32 @@ Contrast:
 - Primary on page: **14:1 (AAA)**
 - Accent on page: **6.4:1 (AA)**
 - Warning on page: **3.9:1** — for icon + label combos only, not body text (WCAG 2.2 Non-text Contrast)
+
+### Dark mode ("night chart") — added 2026-08-26
+
+First-party dark theme, switched by `prefers-color-scheme` only (no toggle).
+The metaphor shifts from daylight paper chart to a night operations chart:
+charcoal-slate paper, parchment-white ink, teal accent brightened to keep AA
+contrast. Same hairline-only separation rules; shadows stay restricted to
+detached layers.
+
+| Token | Hex | Light counterpart |
+|-------|-----|-------------------|
+| `--bg-page` | `#16191D` | `#F4EFE6` |
+| `--bg-map-land` | `#20252B` | `#FAF6EE` |
+| `--bg-map-sea` | `#0F1317` | `#DCE5E8` |
+| `--text-primary` | `#ECE7DD` | `#1F1F1F` |
+| `--text-secondary` | `rgba(236,231,221,.64)` | `#6B6359` |
+| `--accent` | `#5FB9CC` (~7.4:1 on page) | `#0D5C73` |
+| `--accent-hover` | `#8ACBDB` | `#0A4858` |
+| `--warning` | `#D98E54` | `#C97A3F` |
+| `--rule` | `rgba(236,231,221,.18)` | `#E5DECF` |
+
+Type scale is identical in both modes. The canonical five tokens
+(brand 32 / headline 28 / body 16 / chip 14 / detail 12) are joined by an
+explicit auxiliary ladder (`title` 22, `title-3` 20, `subheadline` 15,
+`footnote` 13, `caption` 12) used by the two-panel layout; panel totals use
+`--type-total` = headline size 28px in mono — numbers are the hero.
 
 ## Spacing
 

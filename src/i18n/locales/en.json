@@ -4,10 +4,6 @@
     "tagline": "RTW route planner"
   },
   "lang": {
-    "english": "English",
-    "zhTW": "繁體中文",
-    "zhCN": "简体中文",
-    "ja": "日本語",
     "label": "Language"
   },
   "header": {
@@ -66,19 +62,6 @@
     "grandTotal": "Across all routings",
     "compareHint": "Compare multiple routings on one map. RTW validation uses the active routing."
   },
-  "tier": {
-    "label": "Elite tier",
-    "none": "None",
-    "mid": "Silver",
-    "high": "Gold",
-    "top": "Plat / 1K",
-    "bonusLine": "+{count} elite bonus ({pct}%)",
-    "tip": "Generalized tier — applies a bonus % to Award Miles only. None = 0%, Silver = +25%, Gold = +50%, Plat/1K = +100%."
-  },
-  "revenueBased": {
-    "chip": "estimate",
-    "tip": "This program uses revenue-based earning (you earn miles per dollar spent on the fare, not per distance flown). Numbers shown are a cabin-bucket approximation — verify against your statement."
-  },
   "cabin": {
     "label": "Cabin",
     "economy": "Economy",
@@ -97,36 +80,6 @@
     "fareClassLabel": "Fare class for leg {n}",
     "fareClassTitle": "Single-letter booking code from your ticket — partner credit varies by letter, not just cabin.",
     "fareClassAuto": "—"
-  },
-  "panel": {
-    "emptyHint": "Add 2+ airports to see how much you earn.",
-    "totalDistance": "Total distance",
-    "milesUnit": "nm",
-    "perLegToggle": "Per-leg breakdown",
-    "perLegHidden": "▸ {label}",
-    "perLegShown": "▾ {label}",
-    "warningsLabel": "Warnings",
-    "pqmShort": "PQM",
-    "rdmShort": "RDM",
-    "pqmLong": "Status Miles",
-    "rdmLong": "Award Miles",
-    "confidenceChart": "chart",
-    "confidenceCorrected": "corrected",
-    "confidenceMixed": "mixed",
-    "confidenceChartTip": "Verified against the airline's published partner chart. Actual posted miles may differ.",
-    "confidenceCorrectedTip": "Earning rule corrected against actual statement postings.",
-    "confidenceMixedTip": "Mix of chart-verified and community-corrected rules across legs."
-  },
-  "table": {
-    "leg": "Leg",
-    "distance": "Distance",
-    "missing": "—",
-    "missingTip": "No earning rule for this carrier in this program. PR a rules JSON file to add it."
-  },
-  "warnings": {
-    "polar": "Route crosses polar region — distance accurate, but Mercator map will distort the arc.",
-    "unknownAirport": "Unknown airport in leg {from}→{to}",
-    "carrierNotInRules": "{program} has no earning rules for carrier {carrier}. PR a rule file to add."
   },
   "save": {
     "promptName": "Routing name",
@@ -154,17 +107,6 @@
   "mobile": {
     "banner": "Mobile view — tap a sample to explore. Full editing works best on a larger screen."
   },
-  "projection": {
-    "label": "Map projection",
-    "mercator": "Mercator",
-    "mercatorTip": "Familiar flat-map projection. Distorts polar routes.",
-    "flat": "Flat",
-    "flatTip": "Equirectangular projection. Fastest to render.",
-    "azimuthal": "Azimuthal",
-    "azimuthalTip": "Great-circle distances from the center appear as straight lines (the gcmap classic).",
-    "globe": "Globe",
-    "globeTip": "True 3D globe. Drag to rotate, scroll to zoom."
-  },
   "gcmapImport": {
     "open": "Import from gcmap",
     "label": "Paste a gcmap.com URL or routing string",
@@ -172,51 +114,8 @@
     "invalid": "Could not parse. Expected gcmap.com URL or routing like SFO-NRT,JFK-LHR.",
     "hint": "Examples: SFO-NRT-BKK · SFO-NRT,LAX-HKG · http://www.gcmap.com/mapui?P=SFO-NRT-BKK"
   },
-  "download": {
-    "button": "Download",
-    "png": "PNG",
-    "pngTransparent": "PNG · transparent bg",
-    "svg": "SVG",
-    "svgTransparent": "SVG · transparent bg",
-    "filename": "gcmp-routing"
-  },
-  "bearings": {
-    "show": "Bearings"
-  },
   "distances": {
     "show": "Distances"
-  },
-  "best": {
-    "badge": "Recommended",
-    "label": "Best program for this routing",
-    "creditTo": "Credit to {program}",
-    "delta": "{count} more Award Miles ({pct}% over runner-up)",
-    "cashEquivalent": "≈ {value} cash value",
-    "pill": "Best"
-  },
-  "cashEq": {
-    "atRate": "≈ {rate}¢/mi",
-    "tip": "Cash-equivalent estimate at {source} sticker valuation. Actual redemption value varies by route, cabin, and award availability."
-  },
-  "provenance": {
-    "line": "Rules {version} · verified {date}",
-    "source": "Source chart"
-  },
-  "seats": {
-    "findAwards": "Find award seats",
-    "tip": "Open seats.aero with this route + cabin pre-filled."
-  },
-  "whereToCredit": {
-    "toggle": "Where to credit? — show all 18 programs ranked",
-    "hint": "Programs sorted by value (miles × ¢/mile). Tap + to add one to your selection.",
-    "empty": "No programs have rules for these carriers yet.",
-    "addLabel": "Add {program} to my selection"
-  },
-  "programPicker": {
-    "label": "Crediting programs",
-    "hint": "Pick which loyalty programs this routing credits to. Each one shows its own earning total.",
-    "tooMany": "{count} programs selected — earning panel may get crowded.",
-    "none": "No programs"
   },
   "alliance": {
     "oneworld": "Oneworld",
@@ -235,8 +134,19 @@
     "alliance": "Alliance",
     "type": "Type",
     "carrierSeed": "Carrier seed",
+    "memberCarriers": "Alliance carriers",
+    "explorer": {
+      "title": "Known nonstops",
+      "carrier": "Airline",
+      "origin": "From",
+      "empty": "No schedule-catalog rows for {carrier} yet — coverage is partial by design, not a claim about its network.",
+      "addHint": "Append {origin}→{to} to the route",
+      "startHint": "Start the route at {origin}→{to}",
+      "mismatchHint": "The chain ends at {end}; switch to an origin from {end} to continue",
+      "community": "community-corrected schedule",
+      "otherRegions": "Other regions"
+    },
     "empty": "Add at least one flight segment to start validating RTW rules.",
-    "mileageEstimate": "Mileage estimate",
     "routeLegDetails": "Flight details",
     "inspectorRules": "Rules",
     "inspectorTools": "Tools",
@@ -301,6 +211,36 @@
       "oceania": "Oceania",
       "south-america": "South America"
     },
+    "subregion": {
+      "northeast-asia": "Northeast Asia",
+      "southeast-asia": "Southeast Asia",
+      "south-asia": "South Asia",
+      "central-europe": "Central Europe",
+      "western-europe": "Western Europe"
+    },
+    "country": {
+      "TW": "Taiwan",
+      "CN": "China",
+      "HK": "Hong Kong",
+      "MO": "Macau",
+      "JP": "Japan",
+      "KR": "South Korea",
+      "VN": "Vietnam",
+      "TH": "Thailand",
+      "PH": "Philippines",
+      "MY": "Malaysia",
+      "SG": "Singapore",
+      "ID": "Indonesia",
+      "KH": "Cambodia",
+      "IN": "India",
+      "GB": "United Kingdom",
+      "NL": "Netherlands",
+      "DE": "Germany",
+      "AT": "Austria",
+      "CZ": "Czechia",
+      "US": "United States",
+      "PW": "Palau"
+    },
     "award": {
       "estimate": "Award estimate",
       "miles": "{count} miles",
@@ -327,16 +267,6 @@
         "premiumEconomy": "premium economy",
         "business": "business",
         "first": "first"
-      },
-      "fees": {
-        "title": "Change / reissue / refund fees",
-        "dateChange": "Date change",
-        "reissue": "Reissue",
-        "refund": "Refund",
-        "orPerMiles": "or {miles} mi per sector",
-        "asOf": "Schedule as of {month}",
-        "confidenceChartVerified": "chart-verified",
-        "confidenceCommunityCorrected": "community-corrected"
       }
     },
     "tripDates": {
@@ -427,6 +357,18 @@
       "startEndSameCityFail": "Route starts at {start} and ends at {end}; this product requires the same city.",
       "startEndSameCountryPass": "Route starts and ends in the same country.",
       "startEndSameCountryFail": "Route starts in {start} and ends in {end}; this product requires the same country."
+    },
+    "fix": {
+      "flightSegmentsTooMany": "Fix: drop {drop} flight segment(s) — cut the farthest side trip, or turn its arrivals into same-day transfers (under 24h).",
+      "flightSegmentsTooFew": "Fix: add {add} more flight segment(s) — for example route one long-haul via a connection on an eligible carrier.",
+      "stopoversTooMany": "Fix: convert {convert} stopover(s) into transfers (arrive and depart within 24h), or drop the matching side trip.",
+      "stopoversTooFew": "Fix: extend {promote} transfer(s) past 24h so they count as the required stopover(s).",
+      "maxDistanceNumbered": "Fix: trim about {over} miles — reroute the longest backtrack through a shorter connection or cut the farthest detour.",
+      "maxDistanceGeneric": "Fix: bring total miles under the cap — reroute backtracks through shorter connections or cut distant detours.",
+      "airlineEligibility": "Fix: switch leg(s) {legs} to a carrier eligible under this product's alliance/partner set.",
+      "oceanMissingPacific": "Fix: add a transpacific sector (e.g. TPE–LAX) so the route crosses the Pacific.",
+      "oceanMissingAtlantic": "Fix: add a transatlantic sector so the route crosses the Atlantic.",
+      "oceanMissingBoth": "Fix: extend the route into a true round-the-world shape that crosses both the Pacific and the Atlantic once each."
     }
   },
   "carrierNotes": {
@@ -439,15 +381,5 @@
       "label": "STARLUX COSMILE · watchlist",
       "body": "No STARLUX round-the-world award product exists today, and its published airline-partner redemptions center on Alaska Mileage Plan. Revisit when alliance membership or broader partner rules appear."
     }
-  },
-  "glossary": {
-    "pqm": "Premier Qualifying Miles — counts toward elite status (Gold, Platinum, etc.). Not the same as redeemable miles.",
-    "rdm": "Redeemable Miles — what you spend to book award flights.",
-    "cabin": "Class of service: Economy (Y), Premium Economy (W), Business (J), or First (F).",
-    "fareClass": "Single-letter booking code (J, C, D, Y, B, K...). Each cabin has multiple letters that earn at different rates.",
-    "operatingCarrier": "The airline that actually flies the plane. Earning usually follows the operating carrier, even for codeshare flights.",
-    "alliance": "Star Alliance, Oneworld, or SkyTeam — groups of airlines that earn on each other's flights.",
-    "credit": "Choosing which loyalty program your flight earns into. Same ticket can earn different miles depending on your choice.",
-    "mileageRunner": "A traveler who optimizes flights for distance + earning rather than the destination."
   }
 }

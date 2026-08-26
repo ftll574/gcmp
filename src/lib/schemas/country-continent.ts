@@ -38,6 +38,16 @@ export type AirportContinentOverride = z.infer<typeof AirportContinentOverrideSc
 export const CountryContinentEntrySchema = z.object({
   country: z.string().regex(/^[A-Z]{2}$/, 'country must be an ISO 3166-1 alpha-2 code'),
   continent: ContinentSchema,
+  /**
+   * Optional second tier for the destinations explorer (contract §4):
+   * UN-geoscheme-like subregion id, kebab-case (northeast-asia,
+   * southeast-asia, …). Countries without a row simply hang directly
+   * under their continent — the tier is additive, never required.
+   */
+  subregion: z
+    .string()
+    .regex(/^[a-z][a-z-]*$/, 'subregion must be kebab-case')
+    .optional(),
 });
 export type CountryContinentEntry = z.infer<typeof CountryContinentEntrySchema>;
 

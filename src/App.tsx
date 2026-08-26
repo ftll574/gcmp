@@ -3,18 +3,19 @@
  *
  * Workbench app: RTW rule validation is primary — per-leg operating carriers,
  * stopover-vs-transfer flags, surface/open-jaw sectors, rule findings +
- * award-price estimation against the selected RTW product. Mileage earning
- * (PQM/RDM) is a collapsed secondary panel. Multi-group routings on an SVG
- * d3-geo map with 4 projections; state round-trips through hash share-URLs;
- * i18n en/zh-TW/zh-CN/ja. No beginner/pro mode.
+ * award-price estimation against the selected RTW product. Multi-group
+ * routings on an SVG d3-geo map (single default projection; distance labels).
+ * State round-trips through hash share-URLs; i18n en/zh-TW.
+ *
+ * Removed by docs/convergence-contract.md §5: the earning/PQM/RDM panel,
+ * projection picker, bearing labels, PNG/SVG map export, fee-schedule cards,
+ * and the zh-CN/ja locales. URL params p/c/st/fc/proj still PARSE for
+ * backward compatibility with already-shared URLs — they are just inert.
  */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ActionRow } from './components/ActionRow.tsx';
 import { AirportAutocomplete } from './components/AirportAutocomplete.tsx';
-import { CabinSelector } from './components/CabinSelector.tsx';
-import { EarningPanel } from './components/EarningPanel.tsx';
-import { Glossary } from './components/Glossary.tsx';
 import { GroupTabs } from './components/GroupTabs.tsx';
 import { LanguagePicker } from './components/LanguagePicker.tsx';
 import { LegChain } from './components/LegChain.tsx';
@@ -22,10 +23,10 @@ import { MapErrorBoundary } from './components/MapErrorBoundary.tsx';
 import { ImportFromGcmap } from './components/ImportFromGcmap.tsx';
 import { MapView } from './components/MapView.tsx';
 import { MobileBanner } from './components/MobileBanner.tsx';
-import { ProgramPicker } from './components/ProgramPicker.tsx';
-import { ProjectionPicker } from './components/ProjectionPicker.tsx';
 import { RtwLegTable } from './components/RtwLegTable.tsx';
 import { RtwPlanningContext } from './components/RtwPlanningContext.tsx';
+import { DestinationsPanel } from './components/DestinationsPanel.tsx';
+import { allianceMemberCarriers } from './lib/rtw/route-discovery.ts';
 import { RtwTripDates } from './components/RtwTripDates.tsx';
 import { RtwValidationPanel } from './components/RtwValidationPanel.tsx';
 import { SampleRoutings } from './components/SampleRoutings.tsx';
@@ -33,24 +34,19 @@ import { SavedRoutings } from './components/SavedRoutings.tsx';
 import { useLocale } from './i18n/use-locale.ts';
 import { buildAirportIndex } from './lib/airport-index.ts';
 import { computeRouting } from './lib/calc/index.ts';
-import { DEFAULT_PROJECTION, type ProjectionId } from './lib/calc/projections.ts';
+import { DEFAULT_PROJECTION } from './lib/calc/projections.ts';
 import {
   eligibleAirlinesForProduct,
   firstEligibleCarrierForProduct,
   isCarrierEligibleForProduct,
 } from './lib/rtw/eligible-airlines.ts';
 import { preferredCarrierForProduct, sortMileageRedemptionRtwProductsForMarket } from './lib/rtw/products.ts';
-import { downloadBlob, svgToPngBlob, svgToSvgBlob } from './lib/svg-to-png.ts';
 import { parseShareUrl } from './lib/url-schema.ts';
 import {
-  PROGRAM_REGISTRY,
   type AirlineIata,
   type Airport,
-  type CabinId,
-  type EliteTier,
   type Iata,
   type Leg,
-  type ProgramId,
   type RoutingGroup,
   type RoutingRequest,
 } from './lib/types.ts';
@@ -62,7 +58,7 @@ import { useViewportWidth } from './state/use-viewport.ts';
 import './App.css';
 
 const MOBILE_BREAKPOINT = 768;
-type InspectorPanel = 'rules' | 'tools' | 'miles' | 'saved';
+type InspectorPanel = 'rules' | 'tools' | 'saved';
 type ResizeHandle = 'editor' | 'inspector';
 
 export function App(): React.ReactElement {
@@ -153,7 +149,6 @@ function Ready({
 }: ReadyProps): React.ReactElement {
   const { t } = useLocale();
   const [activeGroupIndex, setActiveGroupIndex] = useState(0);
-  const [showBearings, setShowBearings] = useState(false);
   const [showDistances, setShowDistances] = useState(false);
   const [activeInspector, setActiveInspector] = useState<InspectorPanel>('rules');
   const [editorWidth, setEditorWidth] = useState(460);
@@ -163,7 +158,6 @@ function Ready({
     () => sortMileageRedemptionRtwProductsForMarket(data.rtwRuleCatalog.products, data.marketProfile),
     [data.rtwRuleCatalog.products, data.marketProfile],
   );
-  const svgRef = useRef<SVGSVGElement | null>(null);
 
   // Per-group pending first airport. A leg requires 2+ airports, so the very
   // first airport added to an empty group lives in this in-memory buffer
@@ -184,6 +178,16 @@ function Ready({
     () => eligibleAirlinesForProduct(selectedRtwProduct, data.airlines, data.allianceCatalog),
     [selectedRtwProduct, data.airlines, data.allianceCatalog],
   );
+  // Two-step selection step 2 + destinations panel pool: member carriers of
+  // the selected product's alliance; products without an alliance fall back
+  // to their product-eligible airline list so discovery still works there.
+  const explorerCarriers = useMemo(
+    () =>
+      selectedRtwProduct?.alliance !== undefined
+        ? allianceMemberCarriers(data.allianceCatalog.memberships, selectedRtwProduct.alliance)
+        : eligibleAirlines.map((airline) => ({ code: airline.iata, name: airline.name })),
+    [selectedRtwProduct, data.allianceCatalog, eligibleAirlines],
+  );
   const preferredEligibleCarrier = useMemo(
     () =>
       firstEligibleCarrierForProduct(
@@ -197,13 +201,18 @@ function Ready({
 
   useEffect(() => {
     if (rtwProducts.length === 0) return;
+    // A failed share-URL parse leaves `routingError` set. Defaulting the
+    // product here would call setRouting and wipe that error before the
+    // user ever sees the ⚠ banner — defer to the first real user edit,
+    // which clears the error legitimately.
+    if (routingError !== null) return;
     if (routing.rtwProductId !== undefined && rtwProducts.some((product) => product.id === routing.rtwProductId)) {
       return;
     }
     const firstProduct = rtwProducts[0];
     if (!firstProduct) return;
     setRouting({ ...routing, rtwProductId: firstProduct.id });
-  }, [routing, rtwProducts, setRouting]);
+  }, [routing, rtwProducts, routingError, setRouting]);
 
   function changeRtwProduct(productId: string): void {
     const nextProduct = rtwProducts.find((product) => product.id === productId);
@@ -303,19 +312,6 @@ function Ready({
     });
   }, [routing, airportIndex, data.programs]);
 
-  // "Where to credit?" — run the engine against EVERY program in the
-  // registry, not just the user's selection. Used by the inverse-view
-  // panel that ranks all 18+ programs for this exact routing. Memoized
-  // separately so toggling the picker doesn't recompute this.
-  const allProgramsResult = useMemo(() => {
-    if (routing.groups.every((g) => g.legs.length === 0)) return null;
-    const allIds = PROGRAM_REGISTRY.map((p) => p.id);
-    return computeRouting(
-      { ...routing, programs: allIds },
-      { airports: airportIndex.byIata, programs: data.programs },
-    );
-  }, [routing, airportIndex, data.programs]);
-
   // ── Mutators ──
 
   function updateActiveGroup(updater: (g: RoutingGroup) => RoutingGroup): void {
@@ -413,6 +409,24 @@ function Ready({
     }));
   }
 
+  /**
+   * Destinations-panel click-through. The panel only enables chips that can
+   * legally attach (fresh chain / matching pending airport / chain end), so
+   * this trusts its caller: empty group starts at from→to directly, any
+   * other enabled case appends `to` through the normal airport path.
+   */
+  function addExplorerPair(from: Iata, to: Iata): void {
+    if (activeGroup.legs.length === 0) {
+      updateActiveGroup(() => ({
+        legs: [{ from, to, operatingCarrier: preferredEligibleCarrier }],
+      }));
+      setPendingFor(safeActiveIndex, undefined);
+      return;
+    }
+    const destination = airportIndex.lookup(to);
+    if (destination) addAirport(destination);
+  }
+
   function changeFareClass(legIndex: number, fareClass: string | undefined): void {
     updateActiveGroup((group) => ({
       legs: group.legs.map((leg, i) => {
@@ -488,33 +502,6 @@ function Ready({
     }));
   }
 
-  function changeCabin(cabin: CabinId): void {
-    setRouting({ ...routing, cabin });
-  }
-
-  function changeProjection(projection: ProjectionId): void {
-    setRouting({ ...routing, projection });
-  }
-
-  function changeTier(tier: EliteTier): void {
-    if (tier === 'none') {
-      // Drop the field to keep URL clean (encoder also omits 'none').
-      const next: RoutingRequest = {
-        groups: routing.groups,
-        cabin: routing.cabin,
-        programs: routing.programs,
-        ...(routing.rulesVersion !== undefined ? { rulesVersion: routing.rulesVersion } : {}),
-        ...(routing.projection !== undefined ? { projection: routing.projection } : {}),
-        ...(routing.startDate !== undefined ? { startDate: routing.startDate } : {}),
-        ...(routing.endDate !== undefined ? { endDate: routing.endDate } : {}),
-        ...(routing.rtwProductId !== undefined ? { rtwProductId: routing.rtwProductId } : {}),
-      };
-      setRouting(next);
-    } else {
-      setRouting({ ...routing, tier });
-    }
-  }
-
   function changeTripDates(dates: { startDate?: string; endDate?: string }): void {
     const next: RoutingRequest = {
       ...routing,
@@ -528,14 +515,6 @@ function Ready({
       delete (next as { endDate?: string }).endDate;
     }
     setRouting(next);
-  }
-
-  function toggleProgram(programId: ProgramId): void {
-    const set = new Set(routing.programs);
-    if (set.has(programId)) set.delete(programId);
-    else set.add(programId);
-    if (set.size === 0) return;
-    setRouting({ ...routing, programs: [...set] });
   }
 
   function loadSaved(url: string): void {
@@ -565,45 +544,6 @@ function Ready({
     setRouting({ ...routing, groups: [{ legs: [] }] });
     setActiveGroupIndex(0);
     setPendingByGroup(new Map());
-  }
-
-  function routingChain(): string {
-    return routing.groups
-      .map((g) => g.legs.map((l) => l.from).concat([g.legs[g.legs.length - 1]?.to ?? '']).filter(Boolean).join('-'))
-      .filter(Boolean)
-      .join('_');
-  }
-
-  async function downloadPng(transparent = false): Promise<void> {
-    const svg = svgRef.current;
-    if (!svg) return;
-    try {
-      const blob = await svgToPngBlob(svg, { pixelRatio: 2, transparent });
-      const chain = routingChain();
-      const suffix = transparent ? '-transparent' : '';
-      const filename = chain
-        ? `${t('download.filename')}-${chain}${suffix}.png`
-        : `${t('download.filename')}${suffix}.png`;
-      downloadBlob(blob, filename);
-    } catch (e) {
-      console.error('PNG export failed:', e);
-    }
-  }
-
-  function downloadSvg(transparent = false): void {
-    const svg = svgRef.current;
-    if (!svg) return;
-    try {
-      const blob = svgToSvgBlob(svg, { transparent });
-      const chain = routingChain();
-      const suffix = transparent ? '-transparent' : '';
-      const filename = chain
-        ? `${t('download.filename')}-${chain}${suffix}.svg`
-        : `${t('download.filename')}${suffix}.svg`;
-      downloadBlob(blob, filename);
-    } catch (e) {
-      console.error('SVG export failed:', e);
-    }
   }
 
   function addGroup(): void {
@@ -678,6 +618,9 @@ function Ready({
                 selectedProductId={selectedRtwProductId}
                 marketProfile={data.marketProfile}
                 onProductChange={changeRtwProduct}
+                cabin={routing.cabin}
+                onCabinChange={(cabin) => setRouting({ ...routing, cabin })}
+                allianceCarriers={explorerCarriers}
               />
             </details>
             {!isMobile && (
@@ -703,6 +646,22 @@ function Ready({
               onFareClassChange={changeFareClass}
               onStopoverChange={changeStopover}
               onSurfaceChange={changeSurface}
+            />
+            <DestinationsPanel
+              key={selectedRtwProductId}
+              schedules={data.schedules ?? []}
+              carriers={explorerCarriers}
+              defaultCarrier={preferredEligibleCarrier}
+              chainEnd={
+                activeChainAirports.length > 0
+                  ? activeChainAirports[activeChainAirports.length - 1]?.iata
+                  : undefined
+              }
+              pendingIata={pendingAirport?.iata}
+              lookupAirport={(iata) => airportIndex.lookup(iata)}
+              countryContinents={data.countryContinents ?? undefined}
+              countrySubregions={data.countrySubregions ?? undefined}
+              onAddPair={addExplorerPair}
             />
             <div className="route-editor-secondary">
               {hasAnyLegs && (
@@ -749,19 +708,7 @@ function Ready({
         />
         <div ref={mapRef} className="app-map-wrap">
           <div className="app-map-toolbar">
-            <ProjectionPicker
-              value={routing.projection ?? DEFAULT_PROJECTION}
-              onChange={changeProjection}
-            />
-            <label className="bearings-toggle">
-              <input
-                type="checkbox"
-                checked={showBearings}
-                onChange={(e) => setShowBearings(e.target.checked)}
-              />
-              {t('bearings.show')}
-            </label>
-            <label className="bearings-toggle">
+            <label className="map-toggle">
               <input
                 type="checkbox"
                 checked={showDistances}
@@ -769,14 +716,6 @@ function Ready({
               />
               {t('distances.show')}
             </label>
-            {hasAnyLegs && (
-              <DownloadMenu
-                onPng={() => { void downloadPng(false); }}
-                onPngTransparent={() => { void downloadPng(true); }}
-                onSvg={() => { downloadSvg(false); }}
-                onSvgTransparent={() => { downloadSvg(true); }}
-              />
-            )}
           </div>
           <MapErrorBoundary groups={routing.groups}>
             <MapView
@@ -789,12 +728,8 @@ function Ready({
               width={mapSize.width}
               height={mapSize.height}
               projection={routing.projection ?? DEFAULT_PROJECTION}
-              showBearings={showBearings}
               showDistances={showDistances}
               onAirportCommit={addAirport}
-              onSvgReady={(el) => {
-                svgRef.current = el;
-              }}
             />
           </MapErrorBoundary>
         </div>
@@ -812,7 +747,6 @@ function Ready({
             {([
               ['rules', '✓', t('rtw.inspectorRules')],
               ['tools', '＋', t('rtw.inspectorTools')],
-              ['miles', '◌', t('rtw.mileageEstimate')],
               ['saved', '□', t('rtw.inspectorSaved')],
             ] as const).map(([id, icon, label]) => (
               <button
@@ -851,46 +785,6 @@ function Ready({
                 <ImportFromGcmap onImport={loadExternalRouting} />
               </div>
             )}
-            {activeInspector === 'miles' && (
-              <section className="mileage-estimate">
-                <div className="mileage-estimate-body visible">
-                  <div className="mileage-estimate-controls">
-                    <div className="app-controls-group">
-                      <span className="app-controls-label">
-                        <Glossary term="cabin">
-                          {t('cabin.label')}
-                        </Glossary>
-                      </span>
-                      <CabinSelector value={routing.cabin} onChange={changeCabin} />
-                    </div>
-                    <div className="app-controls-group">
-                      <span className="app-controls-label">
-                        <Glossary term="credit">
-                          {t('panel.pqmLong')} / {t('panel.rdmLong')}
-                        </Glossary>
-                      </span>
-                      <ProgramPicker active={routing.programs} onToggle={toggleProgram} />
-                    </div>
-                    <div className="app-controls-group">
-                      <span className="app-controls-label">{t('tier.label')}</span>
-                      <TierSelector value={routing.tier ?? 'none'} onChange={changeTier} />
-                    </div>
-                  </div>
-                  <EarningPanel
-                    result={result}
-                    programOrder={routing.programs}
-                    cabin={routing.cabin}
-                    valuations={data.valuations}
-                    allProgramsResult={allProgramsResult}
-                    onAddProgram={(id) => {
-                      if (!routing.programs.includes(id)) {
-                        setRouting({ ...routing, programs: [...routing.programs, id] });
-                      }
-                    }}
-                  />
-                </div>
-              </section>
-            )}
             {activeInspector === 'saved' && (
               <SavedRoutings saved={saved} onLoad={loadSaved} onDelete={remove} />
             )}
@@ -906,108 +800,6 @@ function Ready({
         </span>
         <span className="app-footer-note">{t('footer.disclaimer')}</span>
       </footer>
-    </div>
-  );
-}
-
-interface TierSelectorProps {
-  value: EliteTier;
-  onChange: (tier: EliteTier) => void;
-}
-
-function TierSelector({ value, onChange }: TierSelectorProps): React.ReactElement {
-  const { t } = useLocale();
-  const tiers: ReadonlyArray<{ id: EliteTier; key: string }> = [
-    { id: 'none', key: 'tier.none' },
-    { id: 'mid', key: 'tier.mid' },
-    { id: 'high', key: 'tier.high' },
-    { id: 'top', key: 'tier.top' },
-  ];
-  return (
-    <div className="tier-selector" role="radiogroup" aria-label={t('tier.label')}>
-      {tiers.map((tt) => (
-        <button
-          key={tt.id}
-          type="button"
-          role="radio"
-          aria-checked={value === tt.id}
-          className={`tier-tab${value === tt.id ? ' selected' : ''}`}
-          onClick={() => onChange(tt.id)}
-        >
-          {t(tt.key)}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-interface DownloadMenuProps {
-  onPng: () => void;
-  onPngTransparent: () => void;
-  onSvg: () => void;
-  onSvgTransparent: () => void;
-}
-
-function DownloadMenu({
-  onPng,
-  onPngTransparent,
-  onSvg,
-  onSvgTransparent,
-}: DownloadMenuProps): React.ReactElement {
-  const { t } = useLocale();
-  const [open, setOpen] = useState(false);
-  const rootRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    function onDown(e: MouseEvent): void {
-      if (rootRef.current && e.target instanceof Node && !rootRef.current.contains(e.target)) {
-        setOpen(false);
-      }
-    }
-    function onKey(e: KeyboardEvent): void {
-      if (e.key === 'Escape') setOpen(false);
-    }
-    document.addEventListener('mousedown', onDown);
-    document.addEventListener('keydown', onKey);
-    return () => {
-      document.removeEventListener('mousedown', onDown);
-      document.removeEventListener('keydown', onKey);
-    };
-  }, [open]);
-
-  function pick(fn: () => void): void {
-    fn();
-    setOpen(false);
-  }
-
-  return (
-    <div className="download-menu" ref={rootRef}>
-      <button
-        type="button"
-        className="map-download"
-        aria-expanded={open}
-        aria-haspopup="menu"
-        onClick={() => setOpen((x) => !x)}
-      >
-        {t('download.button')} {open ? '▴' : '▾'}
-      </button>
-      {open && (
-        <div className="download-menu-popover" role="menu">
-          <button type="button" role="menuitem" onClick={() => pick(onPng)}>
-            {t('download.png')}
-          </button>
-          <button type="button" role="menuitem" onClick={() => pick(onPngTransparent)}>
-            {t('download.pngTransparent')}
-          </button>
-          <button type="button" role="menuitem" onClick={() => pick(onSvg)}>
-            {t('download.svg')}
-          </button>
-          <button type="button" role="menuitem" onClick={() => pick(onSvgTransparent)}>
-            {t('download.svgTransparent')}
-          </button>
-        </div>
-      )}
     </div>
   );
 }

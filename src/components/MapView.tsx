@@ -18,10 +18,10 @@
  *   - **Azimuthal Equidistant**: same as flat — pan SVG, zoom SVG.
  */
 
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { geoGraticule, geoPath, type GeoPath, type GeoProjection } from 'd3-geo';
 import { groupColor } from '../lib/group-colors.ts';
-import { bearingDeg, distanceNm } from '../lib/calc/haversine.ts';
+import { distanceNm } from '../lib/calc/haversine.ts';
 import { greatCircleSvgPathProjected } from '../lib/calc/svg-arc.ts';
 import {
   buildProjection,
@@ -40,7 +40,6 @@ interface Props {
   width: number;
   height: number;
   projection: ProjectionId;
-  showBearings?: boolean;
   /**
    * Show "N nm" distance labels at each arc midpoint. v1.8 — gcmap forces
    * mileage runners into a sidebar table to see distances; this puts them
@@ -48,7 +47,6 @@ interface Props {
    */
   showDistances?: boolean;
   onAirportCommit?: (airport: Airport) => void;
-  onSvgReady?: (svg: SVGSVGElement | null) => void;
 }
 
 /** Pan/zoom state for flat projections — applied as an SVG transform. */
@@ -110,10 +108,8 @@ export function MapView({
   width,
   height,
   projection,
-  showBearings = false,
   showDistances = false,
   onAirportCommit,
-  onSvgReady,
 }: Props): React.ReactElement {
   const { features, error: worldError } = useWorldMap();
 
@@ -152,13 +148,6 @@ export function MapView({
     originGlobe: GlobeState;
   } | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
-  const svgRefCallback = useCallback(
-    (el: SVGSVGElement | null) => {
-      svgRef.current = el;
-      onSvgReady?.(el);
-    },
-    [onSvgReady],
-  );
 
   const proj = useMemo<GeoProjection>(() => {
     if (isGlobe) {
@@ -218,7 +207,6 @@ export function MapView({
         const midLat = (from.lat + to.lat) / 2;
         const midLon = (from.lon + to.lon) / 2;
         const midProj = proj([midLon, midLat]);
-        const bearing = Math.round(bearingDeg(from, to));
         const distNm = Math.round(distanceNm(from, to));
         return {
           d,
@@ -229,7 +217,6 @@ export function MapView({
             midProj && Number.isFinite(midProj[0]) && Number.isFinite(midProj[1])
               ? { x: midProj[0], y: midProj[1] }
               : null,
-          bearing,
           distanceNm: distNm,
         };
       });
@@ -447,7 +434,7 @@ export function MapView({
 
   return (
     <svg
-      ref={svgRefCallback}
+      ref={svgRef}
       className={`map-view${isGlobe ? ' map-view-globe' : ''}${wrapping ? ' map-view-wrapping' : ''}`}
       viewBox={`0 0 ${width} ${height}`}
       width={width}
@@ -512,25 +499,6 @@ export function MapView({
                     ),
                 ),
               )}
-              {showBearings &&
-                arcsByGroup.map((arcs) =>
-                  arcs.map((arc) =>
-                    arc && arc.mid ? (
-                      <text
-                        key={`bearing-${arc.key}-${offsetX}`}
-                        x={arc.mid.x}
-                        y={arc.mid.y}
-                        className="map-bearing-label"
-                        style={{
-                          fontSize: `${10 / labelInvScale}px`,
-                          fill: arc.color,
-                        }}
-                      >
-                        {arc.bearing}°
-                      </text>
-                    ) : null,
-                  ),
-                )}
               {showDistances &&
                 arcsByGroup.map((arcs) =>
                   arcs.map((arc) =>
@@ -538,7 +506,7 @@ export function MapView({
                       <text
                         key={`dist-${arc.key}-${offsetX}`}
                         x={arc.mid.x}
-                        y={arc.mid.y + (showBearings ? 12 / labelInvScale : 0)}
+                        y={arc.mid.y}
                         className="map-distance-label"
                         style={{
                           fontSize: `${11 / labelInvScale}px`,
