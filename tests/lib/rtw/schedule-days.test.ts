@@ -46,8 +46,14 @@ describe('isoWeekday', () => {
 });
 
 describe('todayIso', () => {
-  test('returns a YYYY-MM-DD UTC string', () => {
+  test('returns a YYYY-MM-DD local calendar string', () => {
     expect(todayIso()).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  });
+
+  test('does not fall back to the prior UTC day around Taipei midnight', () => {
+    const instant = new Date('2026-09-07T20:00:00Z');
+    expect(todayIso(instant, 'Asia/Taipei')).toBe('2026-09-08');
+    expect(todayIso(instant, 'UTC')).toBe('2026-09-07');
   });
 });
 

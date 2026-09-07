@@ -70,14 +70,20 @@ export function isoWeekday(iso: string): number {
   return ((new Date(Date.UTC(y, m - 1, d)).getUTCDay() + 6) % 7) + 1;
 }
 
-/** Today as YYYY-MM-DD in UTC (matches the ISO-string domain). */
-export function todayIso(): string {
-  const now = new Date();
-  const y = now.getUTCFullYear();
-  const m = now.getUTCMonth() + 1;
-  const d = now.getUTCDate();
-  const pad = (n: number): string => (n < 10 ? `0${n}` : `${n}`);
-  return `${y}-${pad(m)}-${pad(d)}`;
+/** Today as a YYYY-MM-DD *local calendar date* for UI date pickers.
+ *
+ * Flight dates are local departure-calendar dates, so using UTC here makes
+ * users east/west of Greenwich see yesterday/tomorrow around local midnight.
+ * `timeZone` is injectable only to make the boundary semantics deterministic
+ * in tests; browser callers omit it and therefore use the browser timezone. */
+export function todayIso(now: Date = new Date(), timeZone?: string): string {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    ...(timeZone ? { timeZone } : {}),
+  }).formatToParts(now);
+  const value = (type: 'year' | 'month' | 'day'): string =>
+    parts.find((part) => part.type === type)?.value ?? '';
+  return `${value('year')}-${value('month')}-${value('day')}`;
 }
 
 function monthDayOf(iso: string): string {
