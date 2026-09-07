@@ -1,0 +1,287 @@
+/*
+ * Left planner workflow hierarchy.
+ *
+ * This layer deliberately leaves the planner state machine and component
+ * structure alone. It only gives the existing stages distinct visual jobs:
+ * plan context -> route setup -> active next-leg task. Keeping this isolated
+ * also prevents the UX pass from entangling the larger App.css worktree diff.
+ */
+
+/* The left editor is a grouped work surface. Individual workflow stages sit
+ * on the parchment instead of visually running together as one long form. */
+.route-editor {
+  background: var(--grouped-background);
+}
+
+.route-editor-scroll {
+  gap: var(--space-4);
+  scrollbar-gutter: stable;
+}
+
+/* Current product is context, not a task. Keep it compact and quiet. */
+.route-plan-bar {
+  min-height: 58px;
+  padding: 10px var(--space-3);
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-control);
+  background: var(--secondary-grouped-background);
+}
+
+.route-plan-bar span {
+  letter-spacing: 0.055em;
+}
+
+.route-plan-bar strong {
+  font-size: var(--type-chip);
+  line-height: 1.35;
+}
+
+.route-plan-bar button {
+  background: var(--system-background);
+}
+
+/* Route construction is stage one. Expanded state reads as a real work area;
+ * once collapsed it becomes a compact completed-route summary. */
+.route-setup-stage {
+  position: relative;
+  padding: var(--space-4);
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-card);
+  background: var(--secondary-system-background);
+}
+
+.route-setup-stage.is-expanded .route-editor-step {
+  align-items: flex-start;
+  padding: 0 0 var(--space-3);
+  border-bottom: 1px solid var(--separator);
+}
+
+.route-setup-stage.is-expanded .route-editor-step > div {
+  min-width: 0;
+}
+
+.route-setup-stage.is-expanded .route-editor-step > p {
+  padding-top: 2px;
+}
+
+.route-setup-stage .autocomplete {
+  max-width: none;
+}
+
+.route-setup-stage.is-collapsed {
+  padding: 0;
+  background: var(--secondary-grouped-background);
+}
+
+.route-setup-stage.is-collapsed .route-setup-summary {
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+}
+
+.route-setup-stage.is-collapsed .route-setup-summary:hover,
+.route-setup-stage.is-collapsed .route-setup-summary:focus-visible {
+  background: color-mix(in srgb, var(--tint) 5%, var(--secondary-grouped-background));
+}
+
+.route-setup-summary-copy small {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+
+.route-setup-continue {
+  align-self: stretch;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-color: color-mix(in srgb, var(--tint) 32%, var(--separator));
+  background: color-mix(in srgb, var(--tint) 5%, transparent);
+}
+
+.route-setup-continue:hover,
+.route-setup-continue:focus-visible {
+  background: var(--tint-fill-soft);
+}
+
+/* Optional flight/date editing is subordinate to the physical route. */
+.route-setup-stage .route-editor-details {
+  border-color: color-mix(in srgb, var(--separator) 78%, transparent);
+  background: var(--system-background);
+}
+
+.route-setup-stage .route-editor-details > summary {
+  background: var(--grouped-background);
+}
+
+.route-setup-stage .route-detail-stack {
+  background: var(--system-background);
+}
+
+/* The route list itself is one grouped object rather than another free-floating
+ * block in the editor. */
+.route-setup-stage .leg-chain {
+  border-color: var(--opaque-separator);
+}
+
+/* Next leg is the primary active task. It gets the only tinted workflow
+ * container in the left rail so the eye immediately lands on "what now?". */
+.route-next-step {
+  margin-top: 0;
+  padding: var(--space-4);
+  border: 1px solid color-mix(in srgb, var(--tint) 42%, var(--separator));
+  border-radius: var(--radius-card);
+  background: color-mix(in srgb, var(--tint) 4%, var(--secondary-system-background));
+  scroll-margin-top: var(--space-3);
+  outline: none;
+}
+
+.route-next-step:focus,
+.route-next-step:focus-within {
+  border-color: var(--tint);
+}
+
+/* App.css historically gives the explorer its own top divider. Inside the new
+ * workflow card that divider becomes duplicate chrome, so remove it only in
+ * this scoped context. */
+.route-next-step > .rtw-explorer {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.route-next-step .rtw-explorer-head {
+  align-items: flex-start;
+  padding: 0 0 var(--space-3) var(--space-3);
+  border-left: 3px solid var(--tint);
+  border-bottom: 1px solid color-mix(in srgb, var(--tint) 18%, var(--separator));
+}
+
+.route-next-step .rtw-explorer-head h3 {
+  margin: 0;
+  color: var(--label);
+  font-size: var(--type-callout);
+  line-height: 1.25;
+}
+
+.route-next-step .rtw-explorer-head p {
+  max-width: 38ch;
+}
+
+/* Current endpoint is context inside the task, not another competing card. */
+.route-next-step .rtw-next-origin {
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--grouped-background);
+}
+
+.route-next-step .rtw-next-search input {
+  min-height: 42px;
+  border-color: color-mix(in srgb, var(--tint) 20%, var(--separator));
+  background: var(--system-background);
+}
+
+.route-next-step .rtw-next-search input:focus {
+  border-color: var(--tint);
+  box-shadow: 0 0 0 3px var(--tint-fill-soft);
+  outline: none;
+}
+
+/* Treat destination choices as a single scan-friendly list instead of many
+ * visually equal little cards. */
+.route-next-step .rtw-next-list {
+  gap: 0;
+  padding-right: 0;
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-control);
+  background: var(--system-background);
+}
+
+.route-next-step .rtw-next-destination {
+  border: 0;
+  border-bottom: 1px solid var(--separator);
+  background: transparent;
+}
+
+.route-next-step .rtw-next-destination:last-child {
+  border-bottom: 0;
+}
+
+.route-next-step .rtw-next-pair {
+  min-height: 54px;
+}
+
+.route-next-step .rtw-next-count {
+  margin: 0;
+  color: var(--tertiary-label);
+}
+
+/* Advanced/manual/evidence controls are available but intentionally quieter
+ * than the destination and flight-selection path. */
+.route-next-step .rtw-next-advanced,
+.route-next-step .rtw-next-manual,
+.route-next-step .rtw-next-selected-evidence {
+  background: color-mix(in srgb, var(--system-background) 72%, transparent);
+}
+
+.route-next-step .rtw-next-advanced {
+  border: 0;
+  border-top: 1px solid var(--separator);
+  border-bottom: 1px solid var(--separator);
+  padding: var(--space-2) 0;
+}
+
+.route-next-step .rtw-next-manual {
+  border-color: color-mix(in srgb, var(--separator) 82%, transparent);
+}
+
+/* A selected route is already the focus inside the active next-step stage;
+ * soften the nested fill so the hierarchy does not become card-inside-card. */
+.route-next-step .rtw-next-selected-route {
+  border-color: color-mix(in srgb, var(--tint) 58%, var(--separator));
+  border-radius: var(--radius-control);
+  background: var(--system-background);
+}
+
+.route-next-step .rtw-next-flight-number,
+.route-next-step .rtw-next-flight-unknown {
+  background: var(--secondary-grouped-background);
+}
+
+.route-next-step .rtw-next-flight-number.selected,
+.route-next-step .rtw-next-flight-unknown.selected {
+  background: var(--tint-fill-soft);
+}
+
+/* Footer is a persistent action strip and should not visually merge into the
+ * scrolling workflow cards. */
+.route-editor-footer {
+  border-top-color: var(--opaque-separator);
+  background: var(--material-thick);
+}
+
+@media (max-width: 600px) {
+  .route-editor-scroll {
+    padding: var(--space-3);
+    gap: var(--space-3);
+  }
+
+  .route-setup-stage,
+  .route-next-step {
+    padding: var(--space-3);
+  }
+
+  .route-setup-stage.is-collapsed {
+    padding: 0;
+  }
+
+  .route-next-step .rtw-explorer-head {
+    padding-left: var(--space-2);
+  }
+
+  .route-next-step .rtw-next-flight-numbers,
+  .route-next-step .rtw-next-same-city-options,
+  .route-next-step .rtw-next-manual-results {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
