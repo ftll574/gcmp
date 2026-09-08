@@ -29,6 +29,18 @@
   text-rendering: geometricPrecision;
 }
 
+.map-view[data-map-detail='overview'] .map-grid {
+  opacity: 0.42;
+}
+
+.map-view[data-map-detail='regional'] .map-grid {
+  opacity: 0.58;
+}
+
+.map-view[data-map-detail='local'] .map-grid {
+  opacity: 0.3;
+}
+
 .map-sea {
   fill: var(--map-polish-sea);
 }
@@ -294,6 +306,43 @@
   fill: var(--tint);
   stroke: var(--map-polish-label-surface);
   stroke-width: 1.8;
+}
+
+.map-next-stop-clusters {
+  pointer-events: none;
+}
+
+.map-next-stop-cluster {
+  pointer-events: auto;
+  cursor: zoom-in;
+  outline: none;
+}
+
+.map-next-stop-cluster-ring {
+  fill: color-mix(in srgb, var(--map-polish-label-surface) 90%, var(--tint-fill-soft));
+  stroke: color-mix(in srgb, var(--tint) 78%, var(--map-polish-label-border));
+  stroke-width: 1.5;
+  filter: drop-shadow(0 2px 5px color-mix(in srgb, var(--label) 16%, transparent));
+}
+
+.map-next-stop-cluster-count {
+  fill: var(--tint);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.map-next-stop-cluster:hover .map-next-stop-cluster-ring,
+.map-next-stop-cluster:focus-visible .map-next-stop-cluster-ring {
+  fill: var(--tint);
+  stroke: var(--map-polish-label-surface);
+  stroke-width: 2;
+}
+
+.map-next-stop-cluster:hover .map-next-stop-cluster-count,
+.map-next-stop-cluster:focus-visible .map-next-stop-cluster-count {
+  fill: var(--secondary-system-background);
 }
 
 /* Dense destination maps become unreadable if every IATA code is persistent.
