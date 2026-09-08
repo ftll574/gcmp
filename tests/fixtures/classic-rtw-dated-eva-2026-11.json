@@ -1,0 +1,172 @@
+{
+  "version": 1,
+  "checkedOn": "2026-09-08",
+  "itineraryId": "eva-official-example-2026-11",
+  "productId": "br-infinity-star-alliance-world-travel-award",
+  "tripStart": "2026-11-02",
+  "tripEnd": "2026-11-18",
+  "sources": [
+    {
+      "id": "eva-nrt-official",
+      "kind": "airline-publication",
+      "url": "https://www.evaair.com/zh-tw/plan-and-book/special-offers/promotions/flight/26NRTSUM.html",
+      "note": "EVA publishes TPE-NRT BR184/BR198/BR196 as daily service; seasonal exact timing is cross-checked below."
+    },
+    {
+      "id": "ana-w26-official",
+      "kind": "airline-publication",
+      "url": "https://www.ana.co.jp/en/tw/plan-book/routes/international-route-information/",
+      "note": "ANA's Winter 2026/27 international route table publishes NRT-LAX NH6 as daily from 2026-10-25 through 2027-03-27."
+    },
+    {
+      "id": "lh-lhr-fra-official",
+      "kind": "airline-publication",
+      "url": "https://www.lufthansa.com/lhg/de/en/o-d/cy-cy/london-frankfurt",
+      "note": "Lufthansa's route flightplan publishes LHR-FRA LH901 as daily service."
+    },
+    {
+      "id": "lh-fra-sin-official",
+      "kind": "airline-publication",
+      "url": "https://www.lufthansa.com/lhg/de/en/o-d/cy-cy/frankfurt-singapore",
+      "note": "Lufthansa's route flightplan publishes FRA-SIN LH780 as daily service."
+    },
+    {
+      "id": "eva-bkk-tpe-official",
+      "kind": "airline-publication",
+      "url": "https://flights.evaair.com/en/flights-from-bangkok-to-taipei",
+      "note": "EVA's booking surface confirms BKK-TPE sales in the selected travel period; exact BR202 seasonal operation is cross-checked below."
+    },
+    {
+      "id": "flightinfo-br198-w26",
+      "kind": "industry-timetable",
+      "url": "https://www.flight.info/BR198",
+      "note": "BR198 TPE-NRT winter schedule: 08:50-12:55, daily, effective 2026-10-25 through 2027-03-27."
+    },
+    {
+      "id": "flightinfo-nh6-w26",
+      "kind": "industry-timetable",
+      "url": "https://www.flight.info/NH6",
+      "note": "NH6 NRT-LAX winter schedule: 17:00-09:50 local, daily, effective 2026-11-01 through 2027-03-13."
+    },
+    {
+      "id": "flightinfo-ua2743-nov26",
+      "kind": "industry-timetable",
+      "url": "https://www.flight.info/UA2743",
+      "note": "UA2743 LAX-EWR: 07:10-15:29 local on weekdays, effective 2026-11-01 through 2026-11-24."
+    },
+    {
+      "id": "flightinfo-ua14-nov26",
+      "kind": "industry-timetable",
+      "url": "https://www.flight.info/UA14",
+      "note": "UA14 EWR-LHR: 20:00-08:25 next day, daily except Saturday, effective 2026-11-01 through 2026-11-22."
+    },
+    {
+      "id": "flightinfo-lh780-w26",
+      "kind": "industry-timetable",
+      "url": "https://www.flight.info/LH780",
+      "note": "LH780 FRA-SIN winter schedule: 21:40-17:05 next day, daily, effective 2026-10-25 through 2027-03-27."
+    },
+    {
+      "id": "flightinfo-tg404-current",
+      "kind": "industry-timetable",
+      "url": "https://www.flight.info/TG404",
+      "note": "TG404 SIN-BKK: 12:25-13:45 local, daily through the selected November 2026 date."
+    },
+    {
+      "id": "flightinfo-br202-w26",
+      "kind": "industry-timetable",
+      "url": "https://www.flight.info/BR202",
+      "note": "BR202 BKK-TPE winter schedule: 14:40-19:15 on Monday/Wednesday/Thursday/Saturday, effective 2026-10-26 through 2027-03-27."
+    }
+  ],
+  "flights": [
+    {
+      "date": "2026-11-02",
+      "carrier": "BR",
+      "flightNumber": "198",
+      "from": "TPE",
+      "to": "NRT",
+      "departureTime": "08:50",
+      "arrivalTime": "12:55",
+      "arrivalDate": "2026-11-02",
+      "sourceIds": ["eva-nrt-official", "flightinfo-br198-w26"]
+    },
+    {
+      "date": "2026-11-04",
+      "carrier": "NH",
+      "flightNumber": "6",
+      "from": "NRT",
+      "to": "LAX",
+      "departureTime": "17:00",
+      "arrivalTime": "09:50",
+      "arrivalDate": "2026-11-04",
+      "sourceIds": ["ana-w26-official", "flightinfo-nh6-w26"]
+    },
+    {
+      "date": "2026-11-06",
+      "carrier": "UA",
+      "flightNumber": "2743",
+      "from": "LAX",
+      "to": "EWR",
+      "departureTime": "07:10",
+      "arrivalTime": "15:29",
+      "arrivalDate": "2026-11-06",
+      "sourceIds": ["flightinfo-ua2743-nov26"]
+    },
+    {
+      "date": "2026-11-08",
+      "carrier": "UA",
+      "flightNumber": "14",
+      "from": "EWR",
+      "to": "LHR",
+      "departureTime": "20:00",
+      "arrivalTime": "08:25",
+      "arrivalDate": "2026-11-09",
+      "sourceIds": ["flightinfo-ua14-nov26"]
+    },
+    {
+      "date": "2026-11-10",
+      "carrier": "LH",
+      "flightNumber": "901",
+      "from": "LHR",
+      "to": "FRA",
+      "departureTime": "09:30",
+      "arrivalTime": "12:05",
+      "arrivalDate": "2026-11-10",
+      "sourceIds": ["lh-lhr-fra-official"]
+    },
+    {
+      "date": "2026-11-12",
+      "carrier": "LH",
+      "flightNumber": "780",
+      "from": "FRA",
+      "to": "SIN",
+      "departureTime": "21:40",
+      "arrivalTime": "17:05",
+      "arrivalDate": "2026-11-13",
+      "sourceIds": ["lh-fra-sin-official", "flightinfo-lh780-w26"]
+    },
+    {
+      "date": "2026-11-15",
+      "carrier": "TG",
+      "flightNumber": "404",
+      "from": "SIN",
+      "to": "BKK",
+      "departureTime": "12:25",
+      "arrivalTime": "13:45",
+      "arrivalDate": "2026-11-15",
+      "sourceIds": ["flightinfo-tg404-current"]
+    },
+    {
+      "date": "2026-11-18",
+      "carrier": "BR",
+      "flightNumber": "202",
+      "from": "BKK",
+      "to": "TPE",
+      "departureTime": "14:40",
+      "arrivalTime": "19:15",
+      "arrivalDate": "2026-11-18",
+      "sourceIds": ["eva-bkk-tpe-official", "flightinfo-br202-w26"]
+    }
+  ]
+}
