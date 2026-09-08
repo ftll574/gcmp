@@ -1,0 +1,3292 @@
+{
+  "version": "2026.3",
+  "coverage": "curated-not-complete",
+  "sources": [
+    {
+      "id": "cx-tpe-hkg",
+      "url": "https://flights.cathaypacific.com/destinations/en_TW/flights-from-taipei-to-hong-kong",
+      "checkedOn": "2026-09-05",
+      "note": "The route-information section identifies Cathay-operated direct TPE to HKG service; no date-specific timetable is inferred."
+    },
+    {
+      "id": "cx-hkg-tpe",
+      "url": "https://flights.cathaypacific.com/destinations/en_HK/flights-from-hong-kong-to-taipei",
+      "checkedOn": "2026-09-05",
+      "note": "Direct HKG to TPE service is explicitly described separately from the reverse route."
+    },
+    {
+      "id": "cx-hkg-lhr",
+      "url": "https://flights.cathaypacific.com/destinations/en_HK/flights-from-hong-kong-to-london",
+      "checkedOn": "2026-09-05",
+      "note": "Route information explicitly identifies direct Hong Kong to London Heathrow service, not other London airports."
+    },
+    {
+      "id": "cx-lhr-hkg",
+      "url": "https://flights.cathaypacific.com/destinations/en_GB/flights-from-london-to-hong-kong",
+      "checkedOn": "2026-09-05",
+      "note": "The reverse direction is separately supported by the direct LHR to HKG route description."
+    },
+    {
+      "id": "cx-north-america",
+      "url": "https://news.cathaypacific.com/cathay-pacific-connects-hong-kong-and-seattle-with-a-five-times-weekly-direct-service",
+      "publishedOn": "2026-03-30",
+      "checkedOn": "2026-09-05",
+      "note": "Return passenger services include Seattle, Dallas-Fort Worth, Los Angeles, New York and San Francisco. This catalog does not copy the article's weekly frequencies."
+    },
+    {
+      "id": "cx-lax",
+      "url": "https://news.cathaypacific.com/cathay-pacific-introduces-new-award-winning-aria-suite-business-class-new-premium-economy-and-refreshed-economy-experiences-to-los-angeles-rf82ie",
+      "publishedOn": "2026-03-21",
+      "checkedOn": "2026-09-05",
+      "note": "Names both HKG to LAX and LAX to HKG services. Aircraft-deployment frequency is not a complete route timetable."
+    },
+    {
+      "id": "cx-sfo",
+      "url": "https://news.cathaypacific.com/where-artistry-takes-flight-cathay-pacific-launches-the-first-aria-suite-experience-between-the-united-states-and-hong-kong",
+      "publishedOn": "2025-12-03",
+      "checkedOn": "2026-09-05",
+      "note": "Explicit nonstop return SFO/HKG service and flight directions; cabin-deployment days are not used as all operating days."
+    },
+    {
+      "id": "cx-jfk",
+      "url": "https://news.cathaypacific.com/cathay-pacific-launches-nonstop-passenger-flight-service-between-seattle-and-hong-kong",
+      "publishedOn": "2026-03-30",
+      "checkedOn": "2026-09-05",
+      "note": "The North America service announcement identifies Cathay's New York gateway as JFK; no EWR edge is inferred."
+    },
+    {
+      "id": "cx-dfw",
+      "url": "https://news.cathaypacific.com/cathay-pacific-returns-to-seattle-with-five-non-stop-return-flights-per-week-l84x5b",
+      "publishedOn": "2025-09-22",
+      "checkedOn": "2026-09-05",
+      "note": "Specifically describes nonstop Hong Kong/Dallas-Fort Worth passenger service and return North America routes."
+    },
+    {
+      "id": "cx-mad",
+      "url": "https://news.cathaypacific.com/cathay-pacific-expands-its-latin-america-coverage-via-madrid-with-new-iberia-codeshares-pw1qjh",
+      "publishedOn": "2026-07-15",
+      "checkedOn": "2026-09-05",
+      "note": "HKG/MAD is explicitly nonstop and both directions are listed. Iberia codeshares beyond Madrid are excluded, as is seasonal Barcelona."
+    },
+    {
+      "id": "cx-europe-return",
+      "url": "https://news.cathaypacific.com/cathay-pacific-s-non-stop-hong-kong-brussels-flights-are-back-ovgu5f",
+      "publishedOn": "2025-08-04",
+      "checkedOn": "2026-09-05",
+      "note": "Return Europe services support the reverse edges below; airport identities are cross-checked against the separate route pages. Historical frequencies are not promoted to current schedules."
+    },
+    {
+      "id": "cx-cdg",
+      "url": "https://flights.cathaypacific.com/destinations/en_HK/flights-from-hong-kong-to-paris",
+      "checkedOn": "2026-09-05",
+      "note": "Direct Paris service uses CDG. Do not expand this city-level route to Orly."
+    },
+    {
+      "id": "cx-fra",
+      "url": "https://flights.cathaypacific.com/destinations/en_HK/flights-from-hong-kong-to-frankfurt",
+      "checkedOn": "2026-09-05",
+      "note": "The direct-flight route page identifies HKG and FRA; it is route evidence rather than a dated schedule."
+    },
+    {
+      "id": "cx-ams",
+      "url": "https://flights.cathaypacific.com/destinations/en_HK/flights-from-hong-kong-to-amsterdam",
+      "checkedOn": "2026-09-05",
+      "note": "The direct-flight route page identifies HKG and AMS; no weekly days are transcribed."
+    },
+    {
+      "id": "cx-zrh",
+      "url": "https://flights.cathaypacific.com/destinations/en_HK/flights-from-hong-kong-to-zurich",
+      "checkedOn": "2026-09-05",
+      "note": "The direct-flight route page identifies HKG and ZRH; no award availability is established."
+    },
+    {
+      "id": "ay-hkg-hel",
+      "url": "https://www.finnair.com/hk-en/flights/city-to-city/hkg/hel/vol-Hong%C2%A0Kong-Helsinki",
+      "checkedOn": "2026-09-05",
+      "note": "Explicit Finnair nonstop HKG to HEL service. Only this evidenced direction is seeded; generic frequency and elapsed-time text is not used."
+    },
+    {
+      "id": "ay-hel-lhr",
+      "url": "https://www.finnair.com/en/destinations/europe/united-kingdom/london",
+      "checkedOn": "2026-09-05",
+      "note": "The direct-flights section says Finnair operates Helsinki to London Heathrow. No reverse direction or Gatwick edge is inferred."
+    },
+    {
+      "id": "ba-new-york",
+      "url": "https://www.britishairways.com/content/flights/usa/new-york",
+      "checkedOn": "2026-09-05",
+      "note": "Direct British Airways service to New York is described. The separate schedule announcement disambiguates LHR/JFK; do not create every London/New York airport combination."
+    },
+    {
+      "id": "ba-lhr-jfk",
+      "url": "https://mediacentre.britishairways.com/news/17022022/british-airways-announces-new-daytime-flight-from-newark-to-london-heathrow",
+      "publishedOn": "2022-02-17",
+      "checkedOn": "2026-09-05",
+      "note": "Historical announcement explicitly distinguishes JFK/Heathrow service and the reverse daylight flight. Current destination page corroborates route service; historical frequency is not reused."
+    },
+    {
+      "id": "aa-transcon",
+      "url": "https://news.aa.com/news/news-details/2025/A-suite-first-flight-Americans-new-Airbus-A321XLR-debuts-on-transcontinental-route-FLT-12/",
+      "checkedOn": "2026-09-05",
+      "note": "Names American-operated routes between JFK/LAX, JFK/SFO and BOS/LAX. Equipment-introduction dates are not route start dates and are not stored as service validity."
+    },
+    {
+      "id": "lh-sfo-fra",
+      "url": "https://www.lufthansa.com/lhg/us/en/o-d/cy-cy/san-francisco-frankfurt",
+      "checkedOn": "2026-09-05",
+      "note": "Flightplan lists Lufthansa-operated flights both ways and separately labels UA-operated flights both ways. Only the stated operating airline is indexed, not the marketing number."
+    },
+    {
+      "id": "lh-lax-fra",
+      "url": "https://www.lufthansa.com/lhg/us/en/o-d/cy-cy/los-angeles-frankfurt",
+      "checkedOn": "2026-09-05",
+      "note": "Flightplan explicitly lists LH-operated LAX/FRA services in both directions, without a dated validity window."
+    },
+    {
+      "id": "lh-fra-muc",
+      "url": "https://www.lufthansa.com/lhg/de/en/o-d/cy-cy/frankfurt-munich",
+      "checkedOn": "2026-09-05",
+      "note": "Retain only LH-operated FRA/MUC flight rows. Exclude Munich rail station ZMU, train operator XX and separately operated 4Y entries."
+    },
+    {
+      "id": "ana-international-routes",
+      "url": "https://www.ana.co.jp/en/kr/plan-book/routes/international-route-information/",
+      "checkedOn": "2026-09-06",
+      "note": "ANA official international operations publication. It separately lists operated and suspended routes; NRT-TPE is explicitly suspended for 2026-03-29..2026-10-24 while HND-TSA is operated. Do not infer a route from an ANA city/destination listing."
+    },
+    {
+      "id": "jal-route-map",
+      "url": "https://www.jal.com/en-jp/about/air/route.html",
+      "checkedOn": "2026-09-06",
+      "note": "JAL Group route publication distinguishes code-sharing airports with (c) and states that only JAL Group nonstop flights are shown on the map. It identifies New York as JF Kennedy; map presence alone does not establish a current origin pair."
+    },
+    {
+      "id": "jal-s26-north-america",
+      "url": "https://www.jal.co.jp/jp/en/info/2026/inter/north-america/",
+      "publishedOn": "2026-06-18",
+      "checkedOn": "2026-09-06",
+      "note": "JAL official Summer-2026 North America timetable. Exact route + flight-number evidence; New York airport identity is cross-checked against the JAL Group route publication rather than inferred from the city name."
+    },
+    {
+      "id": "sq-tpe-sin",
+      "url": "https://www.singaporeair.com/sg/en/plan-travel/destinations/flights-from-taipei-to-singapore/",
+      "checkedOn": "2026-09-06",
+      "note": "Singapore Airlines explicitly states it operates nonstop Taipei (TPE) to Singapore (SIN) services. This is route/operator evidence only; generic multiple-daily frequency text is not converted into flight numbers or weekdays."
+    },
+    {
+      "id": "sq-sin-network",
+      "url": "https://www.singaporeair.com/en_UK/sg/plan-travel/destinations/details/",
+      "checkedOn": "2026-09-06",
+      "note": "Singapore Airlines states Taipei is served nonstop from its Singapore hub. Used only for the SIN-TPE directional route; no exact flight identity is inferred."
+    },
+    {
+      "id": "sq-current-sin-nonstop-network-2026-09-06",
+      "url": "https://www.singaporeair.com/sg/en/plan-travel/destinations/",
+      "checkedOn": "2026-09-06",
+      "note": "Singapore Airlines' current Singapore-origin page explicitly names selected cities as direct/non-stop from SIN and exposes airport identities on the same destination surface. GCMP retains only those individually named non-stop examples that resolve to one exact airport IATA code. Multi-airport city aggregates including Beijing, Tokyo, London, Kuala Lumpur and Sydney are withheld; destinations not individually listed in the explicit non-stop examples are also withheld even if branded SQ elsewhere. Cape Town is an explicit negative control because its route page says SIN-CPT operates one-stop via JNB. No reverse direction is inferred."
+    },
+    {
+      "id": "sq-sin-cpt-one-stop-negative",
+      "url": "https://www.singaporeair.com/sg/en/plan-travel/destinations/flights-from-singapore-to-cape-town/",
+      "checkedOn": "2026-09-06",
+      "note": "Singapore Airlines' current SIN-CPT route page explicitly says the journey is one-stop via Johannesburg and that SQ does not operate SIN-CPT nonstop. This prevents the broader SQ destination label from being misread as nonstop route evidence."
+    },
+    {
+      "id": "qr-doh-hkg",
+      "url": "https://www.qatarairways.com/en-in/destinations/flights-to-hong-kong/from-doha.html",
+      "checkedOn": "2026-09-06",
+      "note": "Qatar Airways' route page identifies Doha (DOH) to Hong Kong (HKG) as a Qatar Airways flight. Route/operator evidence only; no weekday or flight-number inference."
+    },
+    {
+      "id": "qr-hkg-doh",
+      "url": "https://www.qatarairways.com/en-in/destinations/flights-to-doha/from-hong-kong.html",
+      "checkedOn": "2026-09-06",
+      "note": "Qatar Airways' route page identifies Hong Kong (HKG) to Doha (DOH) separately. This independently supports the reverse direction rather than inferring it."
+    },
+    {
+      "id": "qr-doh-nrt",
+      "url": "https://www.qatarairways.com/en/destinations/flights-to-tokyo/from-doha.html/",
+      "checkedOn": "2026-09-06",
+      "note": "Current Qatar Airways route page identifies Doha (DOH) to Tokyo Narita (NRT). Route/operator evidence only."
+    },
+    {
+      "id": "qr-nrt-doh",
+      "url": "https://www.qatarairways.com/en/destinations/flights-to-doha/from-tokyo-narita.html",
+      "checkedOn": "2026-09-06",
+      "note": "Current Qatar Airways route page explicitly states Qatar Airways operates Tokyo Narita to Doha. No reverse-direction inference."
+    },
+    {
+      "id": "qr-doh-lhr",
+      "url": "https://www.qatarairways.com/en-fi/destinations/flights-to-london/from-doha.html",
+      "checkedOn": "2026-09-06",
+      "note": "Qatar Airways route page identifies DOH to London Heathrow (LHR). It does not justify other London airports."
+    },
+    {
+      "id": "qr-lhr-doh",
+      "url": "https://www.qatarairways.com/en/destinations/flights-to-doha/from-london.html",
+      "checkedOn": "2026-09-06",
+      "note": "Qatar Airways separately states it operates London to Doha; airport identity is LHR from the route page. Route evidence only."
+    },
+    {
+      "id": "qr-doh-jfk",
+      "url": "https://www.qatarairways.com/en/destinations/flights-to-new-york/from-doha.html",
+      "checkedOn": "2026-09-06",
+      "note": "Qatar Airways explicitly states it operates Doha to New York City and the route page identifies JFK. No schedule is invented."
+    },
+    {
+      "id": "qr-jfk-doh",
+      "url": "https://www.qatarairways.com/en/destinations/flights-to-doha/from-new-york.html",
+      "checkedOn": "2026-09-06",
+      "note": "Qatar Airways explicitly states it operates New York City (JFK) to Doha. Separate directional evidence."
+    },
+    {
+      "id": "qf-international-network",
+      "url": "https://www.qantas.com/content/qantas/au/en/qantas-experience/international-flight-network.html",
+      "checkedOn": "2026-09-06",
+      "note": "Qantas' current international flight network lists active bidirectional 'Between' routes and explicitly labels one-stop services with 'via'. Only pairs listed without 'via' are used as nonstop route evidence; no codeshare, QantasLink or domestic denominator is inferred."
+    },
+    {
+      "id": "ib-mad-ewr",
+      "url": "https://www.iberia.com/es/news-updates/newark/",
+      "publishedOn": "2026-04-09",
+      "checkedOn": "2026-09-06",
+      "note": "Iberia states it operates direct Madrid-Newark service and describes the Madrid-New York operation. Used only for the explicitly named MAD-EWR route pair; no broader Iberia network is inferred."
+    },
+    {
+      "id": "ac-s26-expansion",
+      "url": "https://www.aircanada.com/media/going-global---new-destinations-take-flight-as-air-canada-expands-network-for-summer-2026/",
+      "checkedOn": "2026-09-06",
+      "note": "Air Canada official Summer-2026 network announcement with exact route, flight number, weekdays and seasonal validity for selected services. Year-round rows are route evidence here unless a finite timetable window is independently established."
+    },
+    {
+      "id": "tk-tpe-ist",
+      "url": "https://www.turkishairlines.com/en-tw/flights-from-taipei-to-istanbul",
+      "checkedOn": "2026-09-06",
+      "note": "Current Turkish Airlines city-pair page for Taipei (TPE) to Istanbul (IST). Route evidence only; fare dates do not establish a complete operating schedule."
+    },
+    {
+      "id": "tk-ist-tpe",
+      "url": "https://www.turkishairlines.com/en/flights-from-istanbul-to-taipei",
+      "checkedOn": "2026-09-06",
+      "note": "Separate Turkish Airlines city-pair page for Istanbul (IST) to Taipei (TPE), avoiding reverse-direction inference."
+    },
+    {
+      "id": "tk-ist-jfk",
+      "url": "https://www.turkishairlines.com/en/flights-from-istanbul-to-new-york",
+      "checkedOn": "2026-09-06",
+      "note": "Current Turkish Airlines page identifies Istanbul (IST) to New York JFK. Route evidence only; fare inventory is not converted to operating weekdays."
+    },
+    {
+      "id": "tk-jfk-ist",
+      "url": "https://www.turkishairlines.com/en/flights-from-new-york-to-istanbul",
+      "checkedOn": "2026-09-06",
+      "note": "Turkish Airlines separately describes direct New York to Istanbul service. Used as separate directional evidence for JFK-IST."
+    },
+    {
+      "id": "mh-operated-selected-routes",
+      "url": "https://www.malaysiaairlines.com/uk/en/experience/in-flight-offerings/dining-experience.html",
+      "checkedOn": "2026-09-06",
+      "note": "Malaysia Airlines' current Chef-on-Call terms explicitly call the listed sectors selected Malaysia Airlines-operated flights and enumerate outbound KUL destinations with IATA codes. Only selected KUL outbound routes transcribed below are used; the page is not an exhaustive MH network and no reverse edge is inferred."
+    },
+    {
+      "id": "nz-sydney-nonstop",
+      "url": "https://www.airnewzealand.com/en-nz/destination-sydney",
+      "checkedOn": "2026-09-06",
+      "note": "Air New Zealand states that it flies nonstop to Sydney Kingsford Smith (SYD) from Auckland, Wellington, Christchurch and Queenstown. Only those stated directions are used."
+    },
+    {
+      "id": "nz-perth-nonstop",
+      "url": "https://www.airnewzealand.com/en-nz/destination-perth",
+      "checkedOn": "2026-09-06",
+      "note": "Air New Zealand states it offers nonstop Auckland-Perth service and separately labels Christchurch-Perth as a future December-2026 route. Only current AKL-PER is used."
+    },
+    {
+      "id": "nz-taipei-nonstop",
+      "url": "https://www.airnewzealand.com/en-nz/destination-taipei",
+      "checkedOn": "2026-09-06",
+      "note": "Air New Zealand states it flies nonstop from Auckland to Taipei and the same page identifies arrival at Taoyuan Airport, resolving the airport as TPE without city-level airport expansion."
+    },
+    {
+      "id": "nz-tokyo-nonstop",
+      "url": "https://www.airnewzealand.com/en-nz/destination-tokyo",
+      "checkedOn": "2026-09-06",
+      "note": "Air New Zealand states it offers daily nonstop Auckland to Narita service. Future Christchurch-Tokyo service is not counted on 2026-09-06."
+    },
+    {
+      "id": "nz-cairns-seasonal",
+      "url": "https://www.airnewzealand.com/destination-cairns",
+      "checkedOn": "2026-09-06",
+      "note": "Air New Zealand publishes AKL-CNS as nonstop with a 2026 seasonal window of March 29 through October 13. This finite current-season window is retained on the route row."
+    },
+    {
+      "id": "nz-auckland-inbound",
+      "url": "https://www.airnewzealand.com/en-nz/destination-auckland",
+      "checkedOn": "2026-09-06",
+      "note": "Air New Zealand's Auckland page publishes exact-code nonstop inbound routes from WLG, CHC, ZQN, DUD and IVC and also identifies current inbound international nonstop service. These directions are used independently rather than inferred from outbound services."
+    },
+    {
+      "id": "nz-current-australia-network",
+      "url": "https://www.airnewzealand.com/en-nz/destination-australia",
+      "checkedOn": "2026-09-06",
+      "note": "Current Air New Zealand Australia network page explicitly lists nonstop origin-destination pairs and distinguishes now-flying, seasonal and future routes. GCMP keeps current 2026-09-06 directions as route evidence only; no operating weekdays are inferred."
+    },
+    {
+      "id": "nz-current-asia-network",
+      "url": "https://www.airnewzealand.com/en-nz/destination-asia",
+      "checkedOn": "2026-09-06",
+      "note": "Current Air New Zealand Asia page explicitly states nonstop Auckland service to Bali, Hong Kong, Shanghai, Singapore, Taipei and Tokyo. Future Christchurch services are not counted before their announced start."
+    },
+    {
+      "id": "nz-current-pacific-network",
+      "url": "https://www.airnewzealand.com/en-nz/destination-the-islands",
+      "checkedOn": "2026-09-06",
+      "note": "Current Air New Zealand Pacific page lists nonstop Auckland routes to Rarotonga, Nadi, Niue, Apia, Nuku'alofa, Noumea and Papeete, plus seasonal Christchurch-Rarotonga. Route-only evidence does not become a dated timetable."
+    },
+    {
+      "id": "nz-current-usa-network",
+      "url": "https://www.airnewzealand.com/en-nz/destination-usa",
+      "checkedOn": "2026-09-06",
+      "note": "Current Air New Zealand USA page states nonstop Auckland service to LAX, SFO, HNL, IAH and New York. JFK is resolved by Air New Zealand's New York/Auckland pages; partner connections beyond those gateways are excluded."
+    },
+    {
+      "id": "nz-current-vancouver",
+      "url": "https://www.airnewzealand.com/en-nz/destination-vancouver",
+      "checkedOn": "2026-09-06",
+      "note": "Air New Zealand currently states it flies nonstop between Auckland and Vancouver. Used as bidirectional route evidence without inventing operating dates."
+    },
+    {
+      "id": "nz-current-new-york",
+      "url": "https://www.airnewzealand.com/new-york-to-new-zealand",
+      "checkedOn": "2026-09-06",
+      "note": "Air New Zealand publishes NZ1 JFK-AKL and NZ2 AKL-JFK as Air New Zealand-operated nonstop services. Used here as exact directional route/operator evidence; the legacy weekly pattern is not promoted into GCMP's dated schedule catalog."
+    },
+    {
+      "id": "ai-international-route-map-2026-02",
+      "url": "https://www.airindia.com/content/dam/air-india/newsroom/press-kits/pdfs/Air-India-International-Route-Map-March-2026.pdf",
+      "publishedOn": "2026-02-13",
+      "checkedOn": "2026-09-06",
+      "note": "Air India official international connectivity map says it flies nonstop to 41 destinations and draws bidirectional arrows between each listed overseas airport and the named Indian airport(s). It is a broad route-universe snapshot, not a current dated timetable; later current advisories and route launches override it where applicable."
+    },
+    {
+      "id": "ai-current-international-network",
+      "url": "https://www.airindia.com/en-in/book-flights/international-flights",
+      "checkedOn": "2026-09-06",
+      "note": "Current Air India international page describes its direct/nonstop international network and displays live-fare examples for multiple September/October 2026 sectors. It is supporting freshness evidence for the broad map, not proof that every map route operates every day."
+    },
+    {
+      "id": "ai-2026-asia-expansion",
+      "url": "https://www.airindia.com/in/en/newsroom/press-release/Air-India-expands-Asia-footprint-with-new-routes-to-Vietnam-and-Japan.html",
+      "publishedOn": "2026-03-05",
+      "checkedOn": "2026-09-06",
+      "note": "Air India official release adds DEL-HAN/HAN-DEL from 2026-05-01 and BOM-HND/HND-BOM from 2026-06-15 with exact Air India flight identities. These pairs postdate the February route-map snapshot."
+    },
+    {
+      "id": "ai-current-middle-east-suspension",
+      "url": "https://www.airindia.com/",
+      "checkedOn": "2026-09-06",
+      "note": "Current Air India homepage advisory states all Air India flights to all Middle East destinations are suspended. Middle East pairs shown on the February route map are therefore not inserted as current positive route evidence in this round."
+    },
+    {
+      "id": "lx-zrh-hkg-flightplan",
+      "url": "https://www.swiss.com/lhg/ch/en/o-d/cy-cy/zurich-hong-kong",
+      "checkedOn": "2026-09-06",
+      "note": "SWISS' current flightplan lists LX138 ZRH-HKG and LX139 HKG-ZRH without a partner-operator label, while separately labeling LX9514/LX9515 as operated by CX. Only the SWISS-operated directional route pair is retained; no finite schedule validity is invented."
+    },
+    {
+      "id": "lx-zrh-nrt-flightplan",
+      "url": "https://www.swiss.com/lhg/ch/en/o-d/cy-cy/zurich-tokyo",
+      "checkedOn": "2026-09-06",
+      "note": "SWISS' current nonstop flightplan identifies Narita and lists LX160 ZRH-NRT plus LX161 NRT-ZRH. The page warns schedules change regularly, so this is route/operator evidence rather than a synthetic dated schedule horizon."
+    },
+    {
+      "id": "lx-zrh-sin-flightplan",
+      "url": "https://www.swiss.com/lhg/ch/en/o-d/cy-cy/zurich-singapore",
+      "checkedOn": "2026-09-06",
+      "note": "SWISS' current nonstop flightplan lists LX176 ZRH-SIN and LX177 SIN-ZRH without a partner-operator label, while separately marking LX9000 as operated by SQ. Only the SWISS-operated directional pair is retained."
+    },
+    {
+      "id": "lx-zrh-gva-flightplan",
+      "url": "https://www.swiss.com/lhg/ch/en/o-d/cy-cy/zurich-geneva",
+      "checkedOn": "2026-09-06",
+      "note": "SWISS' current flightplan lists multiple unmarked LX-operated flights in both directions between ZRH and GVA. The same page also exposes SBB rail-marketed LX rows, which are explicitly excluded from the air-route catalog."
+    },
+    {
+      "id": "lx-zrh-nyc-flightplan",
+      "url": "https://www.swiss.com/lhg/ch/en/o-d/cy-cy/zurich-new-york",
+      "checkedOn": "2026-09-06",
+      "note": "SWISS' current New York flightplan resolves exact JFK and EWR airports. Unmarked LX14/15/16/17 operate ZRH-JFK/JFK-ZRH and LX18/19 operate ZRH-EWR/EWR-ZRH, while LX3218/3219 are explicitly labeled operated by UA and are excluded."
+    },
+    {
+      "id": "lx-zrh-mia-flightplan",
+      "url": "https://www.swiss.com/lhg/ch/en/o-d/cy-cy/zurich-miami",
+      "checkedOn": "2026-09-06",
+      "note": "SWISS' current nonstop flightplan lists LX64 ZRH-MIA and LX65 MIA-ZRH without a partner-operator label. No recurring dated validity horizon is inferred from the live flightplan."
+    },
+    {
+      "id": "lx-zrh-bos-flightplan",
+      "url": "https://www.swiss.com/lhg/ch/en/o-d/cy-cy/zurich-boston",
+      "checkedOn": "2026-09-06",
+      "note": "SWISS' current nonstop flightplan lists LX52/LX54 ZRH-BOS and LX53/LX55 BOS-ZRH without a partner-operator label. The exact airport pair is retained as current route/operator evidence only."
+    },
+    {
+      "id": "lx-gva-jfk-flightplan",
+      "url": "https://www.swiss.com/lhg/ch/en/o-d/cy-cy/geneva-new-york",
+      "checkedOn": "2026-09-06",
+      "note": "SWISS' current Geneva-New York flightplan lists LX22 GVA-JFK and LX23 JFK-GVA without a partner-operator label while separately marking EWR marketing rows LX3216/3217 as operated by UA. Only the JFK pair is retained for LX."
+    },
+    {
+      "id": "os-vie-nrt-flightplan",
+      "url": "https://www.austrian.com/lhg/at/en/o-d/cy-cy/vienna-tokyo",
+      "checkedOn": "2026-09-06",
+      "note": "Austrian's current flightplan lists OS25 VIE-NRT and OS26 NRT-VIE, while explicitly marking HND marketing rows OS8563/OS8564 as operated by NH. The HND pair is therefore a negative control, not OS route evidence."
+    },
+    {
+      "id": "os-vie-bkk-flightplan",
+      "url": "https://www.austrian.com/lhg/at/en/o-d/cy-cy/vienna-bangkok",
+      "checkedOn": "2026-09-06",
+      "note": "Austrian's current nonstop flightplan identifies OS7 VIE-BKK and the paired BKK-VIE service; the reverse Austrian page independently identifies that service as OS8. No route-wide schedule horizon is inferred."
+    },
+    {
+      "id": "os-vie-bos-flightplan",
+      "url": "https://www.austrian.com/lhg/at/en/o-d/cy-cy/vienna-boston",
+      "checkedOn": "2026-09-07",
+      "note": "Austrian's current nonstop flightplan identifies OS31 VIE-BOS and OS32 BOS-VIE on the exact airport pair. The live pair page is used as current route/operator evidence only; no recurring schedule horizon is inferred."
+    },
+    {
+      "id": "os-vie-ord-flightplan",
+      "url": "https://www.austrian.com/lhg/at/en/o-d/cy-cy/vienna-chicago",
+      "checkedOn": "2026-09-07",
+      "note": "Austrian's current nonstop flightplan resolves Chicago to ORD and identifies OS45 VIE-ORD and OS46 ORD-VIE. No city-level Chicago airport expansion or finite schedule window is inferred."
+    },
+    {
+      "id": "os-vie-iad-flightplan",
+      "url": "https://www.austrian.com/lhg/at/en/o-d/cy-cy/vienna-washington",
+      "checkedOn": "2026-09-07",
+      "note": "Austrian's current nonstop flightplan resolves the Washington city label to exact OS41 VIE-IAD and OS42 IAD-VIE rows. Only IAD is retained; the city label itself is never expanded into other Washington airports."
+    },
+    {
+      "id": "os-vie-nyc-flightplan",
+      "url": "https://www.austrian.com/lhg/at/en/o-d/cy-cy/vienna-new-york",
+      "checkedOn": "2026-09-07",
+      "note": "Austrian's current nonstop New York flightplan separately identifies OS35 VIE-JFK / OS36 JFK-VIE and OS37 VIE-EWR / OS38 EWR-VIE. GCMP retains only those exact airport pairs and never creates a generic NYC route."
+    },
+    {
+      "id": "tg-bkk-ams-schedule",
+      "url": "https://www.thaiairways.com/en-tw/content/offers-Promotions/special-offers/Introduction-ams/",
+      "checkedOn": "2026-09-06",
+      "note": "Thai Airways' Amsterdam route publication gives exact TG936 BKK-AMS and TG937 AMS-BKK identities and a Sep-Nov 2026 travel period; its terms restrict the promotion to TG flights operated by THAI. Used as current route/operator evidence, not as a complete dated timetable."
+    },
+    {
+      "id": "tg-bkk-nonstop-promo",
+      "url": "https://www.thaiairways.com/en-th/content/offers-Promotions/special-offers/getaway-for-less/",
+      "checkedOn": "2026-09-06",
+      "note": "The Bangkok-origin THAI promotion lists Taipei among destinations and describes the promoted Bangkok services as nonstop; its terms limit flight availability to TG flights operated by THAI. Only BKK-TPE is combined with a separate exact-airport route page below; other city names are not expanded into airports."
+    },
+    {
+      "id": "tg-bkk-tpe-airports",
+      "url": "https://www.thaiairways.com/flights/en-th/flights-from-bangkok-to-taipei",
+      "checkedOn": "2026-09-06",
+      "note": "Current Thai Airways fare page resolves the Bangkok-Taipei city pair as BKK-TPE. It is used only to resolve the airport pair alongside the separate nonstop/operating-carrier publication, never as standalone operator evidence."
+    },
+    {
+      "id": "tg-early-escape-2026-operated-nonstop",
+      "url": "https://www.thaiairways.com/en-th/content/offers-Promotions/special-offers/early-escape/",
+      "checkedOn": "2026-09-06",
+      "note": "THAI's Early Escape 2026 page explicitly says the listed Bangkok services are non-stop and limits eligibility to TG 3-digit operating flights only for travel 2026-09-01 through 2026-11-30. City labels are accepted only where the separate current Bangkok route surface resolves the exact airport code; no reverse direction is inferred."
+    },
+    {
+      "id": "tg-bkk-current-airport-pairs",
+      "url": "https://www.thaiairways.com/flights/en-th/flights-from-bangkok",
+      "checkedOn": "2026-09-06",
+      "note": "Current THAI Bangkok-origin inventory resolves exact airport pairs including ICN, NRT, HND, KIX, PVG, HKG, SIN, LHR, CTS, PEK and CAN. Combined with the separate operated-nonstop promotion only; fare inventory by itself is not operator/nonstop evidence."
+    },
+    {
+      "id": "as-sea-nrt-hawaiian-operator",
+      "url": "https://news.alaskaair.com/destinations/alaska-airlines-launches-new-era-of-widebody-international-flying-in-seattle/",
+      "publishedOn": "2025-05-12",
+      "checkedOn": "2026-09-06",
+      "note": "Alaska Air Group explicitly states the Seattle-Narita nonstop is operated by Hawaiian Airlines and identifies HA823/HA824. This is a negative operator control: no AS-operated SEA-NRT route is created from Alaska marketing or group-network pages."
+    },
+    {
+      "id": "as-823-2026-09-05-hawaiian-operator",
+      "url": "https://www.alaskaair.com/status/823/2026-09-05",
+      "checkedOn": "2026-09-06",
+      "note": "Alaska's own flight-status page for flight 823 on 2026-09-05 identifies SEA-NRT and explicitly says it is operated by Hawaiian Airlines. This current exact-date control corroborates that Alaska branding/designator display must not be promoted to AS operating-route evidence."
+    },
+    {
+      "id": "as-824-2026-09-06-hawaiian-operator",
+      "url": "https://www.alaskaair.com/status/0824/2026-09-06",
+      "checkedOn": "2026-09-06",
+      "note": "Alaska's own flight-status page for flight 824 on 2026-09-06 identifies NRT-SEA and explicitly says it is operated by Hawaiian Airlines. This current exact-date reverse-direction control prevents a marketing-carrier inference for AS."
+    },
+    {
+      "id": "lo-waw-direct-connections",
+      "url": "https://www.lot.com/pl/en/flights/flights-from-poland/flights-from-warsaw",
+      "checkedOn": "2026-09-06",
+      "note": "LOT's current Warsaw-origin page states flights from Warsaw Chopin Airport are direct connections. Only destinations whose airport identity is independently unambiguous or separately confirmed are inserted; reverse directions are not inferred."
+    },
+    {
+      "id": "lo-waw-sfo-2026",
+      "url": "https://pressoffice.lot.com/456943-another-step-across-the-atlantic-lot-polish-airlines-inaugurates-direct-flights-to-san-francisco",
+      "publishedOn": "2026-05-06",
+      "checkedOn": "2026-09-07",
+      "note": "LOT confirms direct WAW-SFO-WAW service from 2026-05-06 through 2026-10-22 and explicitly gives outbound LO35/LO37 plus return LO36/LO38. Both directions retain that finite published validity window."
+    },
+    {
+      "id": "lo-waw-opo-2026",
+      "url": "https://pressoffice.lot.com/459304-lot-polish-airlines-kicked-off-its-new-destination-to-the-heart-of-northern-portugal-direct-flights-to-porto-are-now-ready-for-takeoff",
+      "publishedOn": "2026-05-25",
+      "checkedOn": "2026-09-06",
+      "note": "LOT states the WAW-OPO route launched on 2026-05-25 and is year-round. Both outbound and return services are described, but route rows remain direction-specific."
+    },
+    {
+      "id": "lo-waw-blq-2026",
+      "url": "https://pressoffice.lot.com/452290-lot-polish-airlines-launches-a-new-connection-to-bologna",
+      "publishedOn": "2026-03-31",
+      "checkedOn": "2026-09-06",
+      "note": "LOT confirms Warsaw-Bologna service launched 2026-03-31 with outbound and return flights. Used as exact current route evidence."
+    },
+    {
+      "id": "lo-new-routes-first-flight",
+      "url": "https://www.lot.com/pl/en/explore/loyalty-programmes/miles-and-more/first-flight",
+      "checkedOn": "2026-09-07",
+      "note": "LOT's current first-flight page explicitly calls the listed services inaugural LOT Polish Airlines flights and gives directional LOT flight identities for WAW-ALA / ALA-WAW, WAW-SFO / SFO-WAW, GDN-BRU / BRU-GDN, GDN-OSL / OSL-GDN, and KRK-ROME/MAD/BCN with their returns. Exact airport codes are accepted only where the additional airline-owned sources below resolve them."
+    },
+    {
+      "id": "lo-mixed-route-map-negative",
+      "url": "https://www.lot.com/pl/en/explore/inspirations/route-map",
+      "checkedOn": "2026-09-07",
+      "note": "LOT's current interactive route map explicitly includes LOT and partner-airline codeshare connections and allows up to two stops. It is retained as a negative control only: it is not bulk-imported and cannot establish a LOT-operated nonstop denominator."
+    },
+    {
+      "id": "lo-waw-ala-current",
+      "url": "https://www.lot.com/al/en/flights/flights-to-asia/flights-to-kazakhstan/flights-to-almaty",
+      "checkedOn": "2026-09-07",
+      "note": "LOT's current Almaty page explicitly identifies the year-round Warsaw (WAW)-Almaty (ALA) connection launched 2026-05-31. Combined with the directional LOT flight identities on the first-flight page; no broader Kazakhstan inference is made."
+    },
+    {
+      "id": "lo-gdn-regional-2026",
+      "url": "https://pressoffice.lot.com/456339-direct-lot-polish-airlines-flights-connecting-gdansk-with-brussels-oslo-and-bergen-are-available-now",
+      "publishedOn": "2026-04-30",
+      "checkedOn": "2026-09-07",
+      "note": "LOT confirms direct LOT Polish Airlines flights from Gdansk to Brussels, Oslo and Bergen are operating and explicitly describes return flights. GCMP only imports destinations whose exact airport identity is independently resolved below; Bergen is withheld in this tranche."
+    },
+    {
+      "id": "lo-gdn-osl-current",
+      "url": "https://www.lot.com/pl/en/flights/flights-to-europe/flights-to-norway/flights-to-oslo/flights-from-gdansk-to-oslo",
+      "checkedOn": "2026-09-07",
+      "note": "LOT's current direct Gdansk-Oslo route page resolves the exact pair as GDN-OSL (Oslo-Gardermoen). Used only with the separate LOT-operated/direct publication and directional flight identities."
+    },
+    {
+      "id": "lo-gdn-bru-current",
+      "url": "https://www.lot.com/pl/en/flights/flights-to-europe/flights-to-belgium/flights-to-brussels/flights-from-gdansk-to-brussels",
+      "checkedOn": "2026-09-07",
+      "note": "LOT's current direct Gdansk-Brussels route page resolves the destination as Brussels Airport (BRU). Used only with the separate LOT-operated/direct publication and directional flight identities."
+    },
+    {
+      "id": "lo-krk-regional-2026",
+      "url": "https://pressoffice.lot.com/452291-new-destinations-from-krakow-lot-launches-flights-to-rome-barcelona-and-madrid",
+      "publishedOn": "2026-03-30",
+      "checkedOn": "2026-09-07",
+      "note": "LOT confirms its three new direct Krakow routes to Rome, Barcelona and Madrid launched 2026-03-30 and are part of its year-round network. Reverse directions are accepted only because the separate current first-flight page explicitly publishes return LOT flight identities."
+    },
+    {
+      "id": "lo-krk-current-direct",
+      "url": "https://www.lot.com/pl/en/flights/flights-from-poland/flights-from-krakow",
+      "checkedOn": "2026-09-07",
+      "note": "LOT's current Krakow-origin page identifies Krakow-Balice Airport (KRK) and separately lists direct flights to Rome, Barcelona and Madrid. It is used as current direct-route corroboration, not as a complete LOT network index."
+    },
+    {
+      "id": "lo-rome-fco-airport",
+      "url": "https://www.lot.com/pl/en/flights/flights-to-europe/flights-to-italy/flights-to-rome",
+      "checkedOn": "2026-09-07",
+      "note": "LOT's current Rome destination surface resolves Rome to Fiumicino Leonardo da Vinci Airport (FCO). It supplies airport identity only alongside the separate KRK direct/operator and directional evidence."
+    },
+    {
+      "id": "lo-barcelona-bcn-airport",
+      "url": "https://www.lot.com/pl/en/flights/flights-to-europe/flights-to-spain/flights-to-barcelona",
+      "checkedOn": "2026-09-07",
+      "note": "LOT's current Barcelona destination surface resolves Barcelona to El Prat Airport (BCN). It supplies airport identity only alongside the separate KRK direct/operator and directional evidence."
+    },
+    {
+      "id": "lo-madrid-mad-airport",
+      "url": "https://www.lot.com/pl/en/flights/flights-to-europe/flights-to-spain/flights-to-madrid",
+      "checkedOn": "2026-09-07",
+      "note": "LOT's current Madrid surface resolves Madrid to Barajas Airport (MAD) and explicitly says LOT offers direct Krakow-Madrid flights. Used with the separate directional LOT flight identities; it is not a network denominator."
+    },
+    {
+      "id": "et-add-mru-2026",
+      "url": "https://corporate.ethiopianairlines.com/eaa/home/ethiopian-airlines-to-launch-direct-flights-to-mauritius-boosting-regional-connectivity",
+      "publishedOn": "2026-06-01",
+      "checkedOn": "2026-09-06",
+      "note": "Ethiopian Airlines publishes direct ADD-MRU and MRU-ADD passenger service effective 2026-07-12 with exact ET887/ET886 identities."
+    },
+    {
+      "id": "et-add-atl-2026",
+      "url": "https://corporate.ethiopianairlines.com/Press-release-open-page/ethiopian-airlines-to-resume-direct-flights-to-atlanta-beginning-may-21-2026",
+      "publishedOn": "2026-03-17",
+      "checkedOn": "2026-09-06",
+      "note": "Ethiopian Airlines confirms direct passenger service between ADD and ATL resumed on 2026-05-21. Used as current directional route evidence without inventing a dated schedule horizon."
+    },
+    {
+      "id": "tp-lis-current-routes",
+      "url": "https://www.flytap.com/en_us/flights-from-lisbon",
+      "checkedOn": "2026-09-06",
+      "note": "TAP's current Lisbon-origin page identifies LIS as a major TAP hub and exposes recent fare rows for exact airport pairs including LIS-GRU, LIS-FNC, LIS-MAD, LIS-BCN and LIS-LHR. These are route-only observations; reverse directions and operating dates are not inferred."
+    },
+    {
+      "id": "tp-current-nonstop-pairs",
+      "url": "https://www.flytap.com/en_tn/non-stop-flights",
+      "checkedOn": "2026-09-06",
+      "note": "TAP's current page is explicitly titled direct non-stop flights and displays exact airport-coded directional pairs. GCMP retains only directions visible on that current non-stop surface; the page is not treated as a complete carrier denominator."
+    },
+    {
+      "id": "ca-szx-fra-operated",
+      "url": "https://et.airchina.com.cn/en/service/check-in/domestic/domestic_cities.shtml",
+      "checkedOn": "2026-09-06",
+      "note": "Air China's current check-in guidance explicitly identifies Air China-operated international flights from Shenzhen to Frankfurt. Used as exact SZX-FRA operating-route evidence only; city-level Beijing/Shanghai examples are not expanded because of multi-airport ambiguity."
+    },
+    {
+      "id": "a3-ath-lhr-current-pass",
+      "url": "https://en.aegeanair.com/flight-deals/aegean-pass/",
+      "checkedOn": "2026-09-06",
+      "note": "Current AEGEAN Pass route inventory includes Athens to London-Heathrow as a bookable AEGEAN route. Combined with the airline's own Heathrow operations publication below to establish current route/operator evidence without inferring schedule days."
+    },
+    {
+      "id": "a3-ath-lhr-operator",
+      "url": "https://en.about.aegeanair.com/media-center/press-releases/2024/additional-routes-and-destinations/",
+      "publishedOn": "2024-01-19",
+      "checkedOn": "2026-09-06",
+      "note": "AEGEAN states it operates daily flights to London Heathrow from Athens. The current AEGEAN Pass page keeps the route live in 2026; only ATH-LHR is inserted here, with no reverse-direction inference."
+    },
+    {
+      "id": "a3-current-flight-status-2026-09-06",
+      "url": "https://en.aegeanair.com/travel-info/travelling-with-aegean/at-the-airport/flight-status/",
+      "checkedOn": "2026-09-06",
+      "note": "AEGEAN's current flight-status board exposes exact airport pairs and distinguishes rows labeled Aegean Airlines from OlympicAir. GCMP retains only directions explicitly shown as Aegean Airlines on the reviewed current board; OA rows are excluded and no reverse direction is inferred unless separately shown."
+    },
+    {
+      "id": "rj-amm-vie-2026",
+      "url": "https://www.rj.com/en/meet-rj/our-media-center/news/2026/june/24/amm-vie-route",
+      "publishedOn": "2026-06-24",
+      "checkedOn": "2026-09-06",
+      "note": "Royal Jordanian announces a new direct route connecting Amman and Vienna effective 2026-06-24, with departures from Queen Alia International Airport. Used as current AMM-VIE directional route evidence."
+    },
+    {
+      "id": "rj-current-september-timetable-index",
+      "url": "https://www.rj.com/en/plan-and-book/track-flights/rjs-timetable",
+      "checkedOn": "2026-09-06",
+      "note": "Royal Jordanian's current timetable landing page links the September timetable and describes the downloadable timetable as the latest departures, arrivals, available flight days, flight details and up-to-date scheduled times. Used to pin the monthly PDF below as the carrier's current quick-reference publication."
+    },
+    {
+      "id": "rj-september-2026-quick-reference",
+      "url": "https://www.rj.com/-/media/RJ---September-Timetable.pdf?rev=21dc1d037cc94a4f87adab7b52e9381a&hash=FC3BED6114909F0531D7A95EF07196FE",
+      "checkedOn": "2026-09-06",
+      "note": "Royal Jordanian's Quick Reference Timetable No.473 is explicitly valid 01Sep-30Sep 2026 and publishes exact airport codes, directional flight identities and special From/To AQJ/ADJ rows. Its legend marks one-stop services with * and RO/GF/WY-operated codeshare aircraft with #; the reviewed September flight rows contain no # marker and YYZ is the only * one-stop city row. GCMP retains only exact direct legs that can be represented without decomposing the YYZ through service."
+    },
+    {
+      "id": "rj-alexandria-code-transition",
+      "url": "https://www.aegeanhub.com/en/",
+      "checkedOn": "2026-09-06",
+      "note": "AEGEAN's current airline trade notice states Alexandria International Airport uses HBE for travel 2026-08-08 through 2026-09-15 and changes to ALY for flights on or after 2026-09-16, with no change to flight times or flight numbers. This resolves the current airport identity for RJ515/516 without treating the September PDF's ALY label as valid for the entire month."
+    },
+    {
+      "id": "at-passenger-network-cmn",
+      "url": "https://royalairmaroc.com/ae-en/destinations/our-network",
+      "checkedOn": "2026-09-06",
+      "note": "Royal Air Maroc's passenger network page lists worldwide destinations served from Casablanca. It is intersected with the airline-owned direct-flight IATA list below so only passenger destinations that are also explicitly direct are retained."
+    },
+    {
+      "id": "at-direct-airport-network",
+      "url": "https://cargo.royalairmaroc.com/nl/web/guest/destinations",
+      "checkedOn": "2026-09-06",
+      "note": "Royal Air Maroc Cargo states its direct-flight network covers the listed IATA airports and separates interline/trucking coverage. GCMP uses this only as a directness/airport-code cross-check against the passenger network page, not as standalone passenger-route evidence."
+    },
+    {
+      "id": "wy-mus-sin-2026",
+      "url": "https://services.omanair.com/om/en/PressRelease/oman-air-launches-direct-flights-between-muscat-and-singapore-starting-july-2026",
+      "publishedOn": "2025-12-16",
+      "checkedOn": "2026-09-06",
+      "note": "Oman Air announces direct Muscat-Singapore service starting 2026-07-02. Both directions are retained as current route-only evidence."
+    },
+    {
+      "id": "wy-mus-tas-2026",
+      "url": "https://services.omanair.com/om/en/PressRelease/oman-air-enters-central-asia-with-twice-weekly-muscat-tashkent-flights",
+      "publishedOn": "2026-02-23",
+      "checkedOn": "2026-09-06",
+      "note": "Oman Air announces direct flights between Muscat and Tashkent starting 2026-06-01. Used as bidirectional current route evidence; weekday schedule is not copied into the dated catalog here."
+    },
+    {
+      "id": "wy-mus-auh-2026",
+      "url": "https://services.omanair.com/tr/en/PressRelease/oman-air-further-expands-gcc-network-with-launch-of-muscat-abu-dhabi-service-starting-9th-july",
+      "publishedOn": "2026-06-25",
+      "checkedOn": "2026-09-06",
+      "note": "Oman Air announces a new direct Muscat-Abu Dhabi service starting 2026-07-09. Both directional route rows are retained without inventing a dated timetable horizon."
+    },
+    {
+      "id": "wy-mus-tif-2026",
+      "url": "https://services.omanair.com/tz/en/PressRelease/taking-you-to-taif-oman-air-launches-its-fifth-destination-in-saudi",
+      "publishedOn": "2025-12-09",
+      "checkedOn": "2026-09-07",
+      "note": "Oman Air announces direct Muscat-Taif service starting 2026-01-31 and explicitly describes guests flying between Muscat and Taif on Oman Air aircraft. Exact TIF airport identity is resolved by the current Oman Air schedule selector below."
+    },
+    {
+      "id": "wy-tif-airport-code-current",
+      "url": "https://services.omanair.com/om/en/flight-schedule",
+      "checkedOn": "2026-09-07",
+      "note": "Oman Air's current flight-schedule selector identifies Taif, Saudi Arabia as TIF. It is used only to resolve exact airport identity for the separately published direct Oman Air route, never as a complete route denominator."
+    },
+    {
+      "id": "wy-mus-aer-2026",
+      "url": "https://services.omanair.com/fr/en/PressRelease/oman-air-expands-russia-connectivity-with-launch-of-new-sochi-service",
+      "publishedOn": "2026-02-17",
+      "checkedOn": "2026-09-07",
+      "note": "Oman Air announces a new direct Muscat-Sochi service starting 2026-07-02, operated year-round by Oman Air Boeing 737-8 MAX aircraft. Exact directions are corroborated by the two current airport-coded route pages below."
+    },
+    {
+      "id": "wy-mus-aer-current",
+      "url": "https://services.omanair.com/gbl/en/flights/flights-from-Muscat-to-Sochi",
+      "checkedOn": "2026-09-07",
+      "note": "Oman Air's current route surface explicitly resolves Muscat (MCT) to Sochi (AER). Combined with the airline-owned direct/operator launch publication; fare inventory alone is not treated as operator evidence."
+    },
+    {
+      "id": "wy-aer-mus-current",
+      "url": "https://services.omanair.com/om/en/flights/flights-from-Sochi-to-Muscat",
+      "checkedOn": "2026-09-07",
+      "note": "Oman Air's current reverse-direction surface explicitly resolves Sochi (AER) to Muscat (MCT). Combined with the airline-owned direct/operator launch publication rather than inferred from the outbound direction."
+    },
+    {
+      "id": "wy-2026-network-expansion",
+      "url": "https://services.omanair.com/gbl/en/PressRelease/oman-air-celebrates-network-expansion-with-inauguration-of-five-new-routes-in-landmark-month",
+      "publishedOn": "2026-07-01",
+      "checkedOn": "2026-09-07",
+      "note": "Oman Air's current 2026 network-expansion release corroborates direct Sochi service from 2026-07-02 and describes a network of up to 49 destinations. The 49-destination marketing count is explicitly not used as a directional route denominator."
+    },
+    {
+      "id": "cm-pty-dav-direct",
+      "url": "https://www.copaair.com/en-pa/flights-from-panama-city",
+      "checkedOn": "2026-09-06",
+      "note": "Copa Airlines' current Panama page states that Copa offers direct flights between Tocumen (PTY) and David (DAV), and shows current fare inventory from PTY. Only the explicitly direct PTY-DAV pair is retained from this page."
+    },
+    {
+      "id": "as-sfo-sea-2026",
+      "url": "https://www.alaskaair.com/status/68/2026-09-05",
+      "checkedOn": "2026-09-06",
+      "note": "Alaska's exact-date status for flight 68 identifies SFO-SEA and explicitly says Operated by Alaska Airlines. Used as current AS operating-route evidence."
+    },
+    {
+      "id": "as-sea-sfo-2026",
+      "url": "https://www.alaskaair.com/status/680/2026-09-05",
+      "checkedOn": "2026-09-06",
+      "note": "Alaska's exact-date status for flight 680 identifies SEA-SFO and explicitly says Operated by Alaska Airlines. Used independently for the reverse directional route."
+    },
+    {
+      "id": "ha-hnl-hnd-2026",
+      "url": "https://www.alaskaair.com/status/831/2026-09-05",
+      "checkedOn": "2026-09-06",
+      "note": "Alaska/Hawaiian exact-date status identifies HNL-HND and explicitly says Operated by Hawaiian Airlines. The Alaska-facing flight number/branding is not treated as AS operator evidence."
+    },
+    {
+      "id": "ha-hnd-hnl-2026",
+      "url": "https://www.alaskaair.com/status/0864/2026-08-31",
+      "checkedOn": "2026-09-06",
+      "note": "Alaska/Hawaiian exact-date status identifies HND-HNL and explicitly says Operated by Hawaiian Airlines. Used as current HA reverse-direction operator evidence."
+    },
+    {
+      "id": "ul-cmb-lhr-current",
+      "url": "https://www.srilankan.com/en/flights-from-colombo-to-london",
+      "checkedOn": "2026-09-06",
+      "note": "SriLankan Airlines currently sells September 2026 CMB-London itineraries under its own route page. Exact LHR airport identity/directness is cross-checked against the airline-owned nonstop London-Colombo source below."
+    },
+    {
+      "id": "ul-lhr-cmb-nonstop",
+      "url": "https://www.srilankan.com/ja_jp/Corporate/code-shares-france",
+      "checkedOn": "2026-09-06",
+      "note": "SriLankan's own codeshare information distinguishes partner connections from its nonstop London-Colombo service. Combined with current fare inventory to establish LHR-CMB/CMB-LHR route-only evidence."
+    },
+    {
+      "id": "sn-bru-jfk-flightplan",
+      "url": "https://www.brusselsairlines.com/lhg/us/en/o-d/cy-cy/brussels-new-york",
+      "checkedOn": "2026-09-06",
+      "note": "Current Brussels Airlines flightplan lists SN501 BRU-JFK and SN502 JFK-BRU, while separately marking EWR marketing rows as operated by UA. Only the SN-operated JFK pair is retained."
+    },
+    {
+      "id": "ou-lhr-zag-2026",
+      "url": "https://www.croatiaairlines.com/offers/Flights-from-London",
+      "checkedOn": "2026-09-06",
+      "note": "Croatia Airlines publishes a current 2026/27 London timetable with direct LHR-ZAG, LHR-SPU and LGW-SPU rows while separately labeling LHR-DBV as via Zagreb. Only the explicitly direct directional rows are retained."
+    },
+    {
+      "id": "ou-current-operated-checkin",
+      "url": "https://www.croatiaairlines.com/check-in",
+      "checkedOn": "2026-09-06",
+      "note": "Croatia Airlines states web check-in applies to scheduled flights operated by Croatia Airlines and lists exact OU identities including OU380 SPU-FCO, OU384 DBV-FCO, OU300 DBV-ATH and OU4352 SPU-IST. Used as operator-boundary corroboration alongside current direct-route timetable pages."
+    },
+    {
+      "id": "ou-athens-from-2026",
+      "url": "https://www.croatiaairlines.com/offers/Flights-from-Athens",
+      "checkedOn": "2026-09-06",
+      "note": "Croatia Airlines' current Summer-2026 timetable explicitly labels ATH-DBV and ATH-SPU as direct flights with finite operating windows, while ATH-ZAG is labeled via Dubrovnik and is excluded."
+    },
+    {
+      "id": "ou-athens-to-2026",
+      "url": "https://www.croatiaairlines.com/hr/Prodaja-aviokarte/Ponude-letova/Povoljni-letovi-za-Atenu",
+      "checkedOn": "2026-09-06",
+      "note": "Croatia Airlines' current Croatian-language Athens timetable separately labels DBV-ATH and SPU-ATH as direct while ZAG-ATH is via Dubrovnik. Used for independently directional reverse-route evidence."
+    },
+    {
+      "id": "ou-copenhagen-from-2026",
+      "url": "https://www.croatiaairlines.com/offers/Flights-from-Copenhagen",
+      "checkedOn": "2026-09-06",
+      "note": "Croatia Airlines' current 2026/27 Copenhagen timetable lists CPH-ZAG and CPH-SPU as direct services and separately labels CPH-DBV as via Zagreb."
+    },
+    {
+      "id": "ou-copenhagen-to-2026",
+      "url": "https://www.croatiaairlines.com/hr/ponude/Povoljni-letovi-za-Kopenhagen",
+      "checkedOn": "2026-09-06",
+      "note": "Croatia Airlines' current Croatian-language Copenhagen timetable lists ZAG-CPH and SPU-CPH as direct services and separately labels DBV-CPH as via Zagreb."
+    },
+    {
+      "id": "ou-london-to-2026",
+      "url": "https://www.croatiaairlines.com/hr/ponude/Povoljni-letovi-za-London",
+      "checkedOn": "2026-09-06",
+      "note": "Croatia Airlines' current London-bound timetable publishes direct ZAG-LHR, SPU-LHR, SPU-LGW, PUY-LHR and ZAD-LHR services with 2026 seasonal bounds where applicable; DBV-LHR is explicitly via Zagreb and excluded."
+    },
+    {
+      "id": "ou-dublin-from-2026",
+      "url": "https://www.croatiaairlines.com/offers/Flights-from-Dublin",
+      "checkedOn": "2026-09-06",
+      "note": "Croatia Airlines' current Summer-2026 timetable publishes DUB-SPU for 2026-05-10 through 2026-10-11."
+    },
+    {
+      "id": "ou-dublin-to-2026",
+      "url": "https://www.croatiaairlines.com/hr/ponude/Povoljni-letovi-za-Dublin",
+      "checkedOn": "2026-09-06",
+      "note": "Croatia Airlines' current Croatian-language timetable independently publishes SPU-DUB for 2026-05-10 through 2026-10-11."
+    },
+    {
+      "id": "ou-rome-from-2026",
+      "url": "https://www.croatiaairlines.com/it/offerte/Voli-da-Roma",
+      "checkedOn": "2026-09-06",
+      "note": "Croatia Airlines' current Italian-language Rome timetable explicitly labels FCO-SPU and FCO-DBV as direct services. The Zagreb relationship is not retained because the Croatia-origin timetable identifies ZAG-FCO as via Split/Dubrovnik."
+    },
+    {
+      "id": "ou-rome-to-2026",
+      "url": "https://www.croatiaairlines.com/hr/ponude/Povoljni-letovi-za-Rim",
+      "checkedOn": "2026-09-06",
+      "note": "Croatia Airlines' current Rome-bound timetable explicitly labels SPU-FCO and DBV-FCO as direct and ZAG-FCO as via Split/Dubrovnik. Exact OU380/OU384 operator identities are independently corroborated by the current operated-flight check-in source."
+    },
+    {
+      "id": "az-fco-jfk-current",
+      "url": "https://www.ita-airways.com/lhg/it/en/o-d/cy-cy/rome-new-york",
+      "checkedOn": "2026-09-06",
+      "note": "Current ITA Airways flightplan lists AZ-operated FCO-JFK services and the return direction. The page labels the connection non-stop; partner-operated rows are not used."
+    },
+    {
+      "id": "av-mad-sal-2026",
+      "url": "https://www.avianca.com/es/sobre-nosotros/noticias-corporativas/2026/mayo-25",
+      "publishedOn": "2026-05-25",
+      "checkedOn": "2026-09-06",
+      "note": "Avianca's Summer-2026 transatlantic announcement states Madrid-San Salvador operates four weekly direct frequencies. Used as route-only directional evidence without inventing a dated schedule horizon."
+    },
+    {
+      "id": "oz-us-icn-current-schedule",
+      "url": "https://flyasiana.com/C/US/EN/customer/notice/detail?id=CM202410140002522590",
+      "checkedOn": "2026-09-06",
+      "note": "Asiana's operational-routes notice lists current 2026 ICN-JFK/LAX/SFO/SEA services with exact OZ flight identities. GCMP retains selected directional route evidence only; detailed date exceptions remain outside this route-first tranche."
+    },
+    {
+      "id": "oz-current-network-schedule-2026-09",
+      "url": "https://flyasiana.com/C/KR/KO/customer/notice/detail?dispCt=all&id=CM202309150001942944&page=1&searchOption=0",
+      "publishedOn": "2026-03-06",
+      "checkedOn": "2026-09-06",
+      "note": "Asiana's current operating-schedule notice lists exact OZ flight-number pairs for a broad 2026 network. GCMP retains only airport pairs whose IATA identity is explicit in the notice. The page itself says other routes may exist and points users to schedule search, so this source is deliberately partial and cannot establish an OZ denominator."
+    },
+    {
+      "id": "sa-jnb-acc-current",
+      "url": "https://www.flysaa.com/about-us/leading-carrier/about-saa/brief-history",
+      "checkedOn": "2026-09-06",
+      "note": "South African Airways' current corporate history says SAA flies between Johannesburg and Accra; the current fare page independently shows September 2026 JNB-ACC inventory. Used as route-only evidence."
+    },
+    {
+      "id": "sa-jnb-acc-fares",
+      "url": "https://www.flysaa.com/en-za/flights-from-johannesburg-to-accra",
+      "checkedOn": "2026-09-06",
+      "note": "Current SAA fare page shows exact JNB-ACC September 2026 inventory. Combined with the airline network statement above; no reverse direction is inferred from fares alone."
+    },
+    {
+      "id": "ms-cairo-current-routes",
+      "url": "https://www.egyptair.com/en/about-egyptair/news-and-press/Pages/EGYPTAIR%20Enhances%20the%20Business%20Class%20Experience%20with%20Complimentary%20London%20Cab%20Service%20on%20Selected%20International%20Routes.aspx",
+      "publishedOn": "2026-06-10",
+      "checkedOn": "2026-09-06",
+      "note": "EGYPTAIR's June-2026 publication identifies selected routes to and from Cairo including Washington. Historical exact nonstop IAD evidence below resolves the airport/nonstop relationship."
+    },
+    {
+      "id": "ms-cai-iad-nonstop",
+      "url": "https://www.egyptair.com/en/about-egyptair/news-and-press/Pages/THE%20WAY%20WE%20INSPIRE%20YOU%20.aspx",
+      "publishedOn": "2019-02-12",
+      "checkedOn": "2026-09-06",
+      "note": "EGYPTAIR's airline-owned launch record identifies CAI-IAD/IAD-CAI as direct non-stop MS981/MS982. Combined with the 2026 Cairo-route publication only to establish current route identity, not historical frequencies."
+    },
+    {
+      "id": "zh-current-operated-international-routes",
+      "url": "https://global.shenzhenair.com/zhair/ibe/coupon/couponCenter.do",
+      "checkedOn": "2026-09-06",
+      "note": "Shenzhen Airlines' current 2026 international coupon terms require flights sold by ZH and actually operated by ZH, explicitly exclude codeshares, and enumerate applicable directional international routes for 2026-08-23..09-23 and 2026-10-04..12-31. GCMP retains the exact airport-resolved routes only; coupon dates do not become recurring schedule evidence."
+    },
+    {
+      "id": "fj-dfw-nan-direct",
+      "url": "https://vacancy.fijiairways.com/2024/08/08/dallas-get-ready-to-say-bula/",
+      "publishedOn": "2024-08-08",
+      "checkedOn": "2026-09-06",
+      "note": "Fiji Airways announces direct flights between DFW and NAN and identifies the service as Fiji Airways. Current route presence is independently confirmed by the DFW Airport source below rather than assumed from the launch announcement."
+    },
+    {
+      "id": "fj-dfw-current-status",
+      "url": "https://dfwairport-prd-dfw-vip.dfwairport.com/flights/index.php",
+      "checkedOn": "2026-09-06",
+      "note": "DFW Airport's current flight board lists Fiji Airways FJ890 arriving from Nadi and FJ891 departing to Nadi. Used as current cross-source corroboration for the airline-owned DFW-NAN direct-route announcement."
+    },
+    {
+      "id": "br-tpe-bkk-current",
+      "url": "https://flights.evaair.com/zh-tw/%E8%88%AA%E7%8F%AD-%E5%BE%9E-%E5%8F%B0%E5%8C%97-%E5%89%8D%E5%BE%80-%E6%9B%BC%E8%B0%B7",
+      "checkedOn": "2026-09-08",
+      "note": "EVA Air's current airline-owned fare surface lists TPE-BKK throughout September 2026, including 2026-09-08. Used only as current directional route evidence; fare inventory is not promoted to an exact flight number or recurring timetable."
+    },
+    {
+      "id": "br-bkk-tpe-current",
+      "url": "https://flights.evaair.com/en/flights-from-bangkok-to-taipei",
+      "checkedOn": "2026-09-08",
+      "note": "EVA Air's current airline-owned fare surface lists BKK-TPE throughout September 2026, including 2026-09-08. Used only as current directional route evidence; fare inventory is not promoted to an exact flight number or recurring timetable."
+    }
+  ],
+  "carrierUniverses": [
+    {
+      "carrier": "JL",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": [
+        "jal-route-map",
+        "jal-s26-north-america"
+      ],
+      "note": "Partial JAL universe only. HND-JFK has exact seasonal schedule evidence, but a complete directional JAL-operated domestic + international route denominator has not been established."
+    },
+    {
+      "carrier": "NH",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": [
+        "ana-international-routes"
+      ],
+      "note": "Partial ANA universe only. The checked seasonal international publication establishes selected exact operated/suspended routes, but not a complete ANA domestic + international directional route denominator."
+    },
+    {
+      "carrier": "SQ",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": [
+        "sq-tpe-sin",
+        "sq-sin-network",
+        "sq-current-sin-nonstop-network-2026-09-06",
+        "sq-sin-cpt-one-stop-negative"
+      ],
+      "note": "Partial Singapore Airlines universe only. The current Singapore-origin FAQ explicitly names a useful subset of cities as direct/non-stop and exact airport identities are retained only where unambiguous. The broader destination surface is not treated as a nonstop universe: SIN-CPT is explicitly one-stop via JNB, multi-airport city aggregates are withheld, and reverse/fifth-freedom operated sectors are not exhaustively enumerated. No complete SQ directional denominator is claimed."
+    },
+    {
+      "carrier": "QR",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": [
+        "qr-doh-hkg",
+        "qr-hkg-doh",
+        "qr-doh-nrt",
+        "qr-nrt-doh",
+        "qr-doh-lhr",
+        "qr-lhr-doh",
+        "qr-doh-jfk",
+        "qr-jfk-doh"
+      ],
+      "note": "Partial Qatar Airways universe only. Current airline-owned route pages establish selected high-value DOH hub spokes in both directions. The separate April network map expired on 2026-06-15 and the summer network publication states 150+ destinations without exposing a complete operator-resolved airport list here, so QR is not marked complete."
+    },
+    {
+      "carrier": "QF",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": [
+        "qf-international-network"
+      ],
+      "note": "Partial Qantas universe only. The official international network supports selected current nonstop international pairs, but it does not establish the complete QF-operated domestic + international directional denominator and separately contains one-stop 'via' services that are intentionally excluded."
+    },
+    {
+      "carrier": "IB",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": [
+        "ib-mad-ewr"
+      ],
+      "note": "Partial Iberia universe only. The checked official publication establishes Madrid-Newark direct service, but does not provide a complete directional Iberia-operated network denominator."
+    },
+    {
+      "carrier": "AC",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": [
+        "ac-s26-expansion"
+      ],
+      "note": "Partial Air Canada universe only. The airline publication gives exact schedules for selected Summer-2026 routes and additional year-round route evidence, but not the complete AC-operated domestic + international denominator."
+    },
+    {
+      "carrier": "TK",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": [
+        "tk-tpe-ist",
+        "tk-ist-tpe",
+        "tk-ist-jfk",
+        "tk-jfk-ist"
+      ],
+      "note": "Partial Turkish Airlines universe only. Current city-pair pages establish selected high-value nonstop hub pairs; the broader city-to-city sitemap includes connecting itineraries and is not a nonstop denominator."
+    },
+    {
+      "carrier": "MH",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": [
+        "mh-operated-selected-routes"
+      ],
+      "note": "Partial Malaysia Airlines universe only. The airline explicitly identifies the selected KUL outbound sectors below as Malaysia Airlines-operated, but the meal-eligible list is intentionally selected rather than exhaustive and does not establish reverse directions or the full MH denominator."
+    },
+    {
+      "carrier": "NZ",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": [
+        "nz-sydney-nonstop",
+        "nz-perth-nonstop",
+        "nz-taipei-nonstop",
+        "nz-tokyo-nonstop",
+        "nz-cairns-seasonal",
+        "nz-auckland-inbound",
+        "nz-current-australia-network",
+        "nz-current-asia-network",
+        "nz-current-pacific-network",
+        "nz-current-usa-network",
+        "nz-current-vancouver",
+        "nz-current-new-york"
+      ],
+      "note": "Partial Air New Zealand universe only. The current airline network pages now establish a broad set of domestic, Australia, Asia, Pacific and North America nonstop directions, while explicitly separating future, seasonal and paused routes. The full directional matrix and recurring seasonal windows are not yet fully represented, so NZ remains partial."
+    },
+    {
+      "carrier": "LX",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": [
+        "lx-zrh-hkg-flightplan",
+        "lx-zrh-nrt-flightplan",
+        "lx-zrh-sin-flightplan",
+        "lx-zrh-gva-flightplan",
+        "lx-zrh-nyc-flightplan",
+        "lx-zrh-mia-flightplan",
+        "lx-zrh-bos-flightplan",
+        "lx-gva-jfk-flightplan"
+      ],
+      "note": "Partial SWISS universe only. Current airline flightplans now establish a broader operator-safe set across ZRH/GVA and Asia/North America while explicitly distinguishing SQ/UA/SBB partner-operated marketing rows. The live pair pages are still not a complete LX directional route denominator."
+    },
+    {
+      "carrier": "OS",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": [
+        "os-vie-nrt-flightplan",
+        "os-vie-bkk-flightplan",
+        "os-vie-bos-flightplan",
+        "os-vie-ord-flightplan",
+        "os-vie-iad-flightplan",
+        "os-vie-nyc-flightplan"
+      ],
+      "note": "Partial Austrian universe only. Current Lufthansa Group flightplans establish a broader exact-airport OS-operated subset across Asia and North America, while the Tokyo page still exposes NH-operated codeshare rows as a negative control. Pair flightplans are not an exhaustive carrier-wide denominator."
+    },
+    {
+      "carrier": "TG",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": [
+        "tg-bkk-ams-schedule",
+        "tg-bkk-nonstop-promo",
+        "tg-bkk-tpe-airports"
+      ],
+      "note": "Partial Thai Airways universe only. Airline-owned publications establish BKK-AMS/AMS-BKK exact identities and BKK-TPE through combined nonstop/operator plus exact-airport evidence. THAI destination/fare pages that can include connections are not treated as a complete nonstop universe."
+    },
+    {
+      "carrier": "AI",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": [
+        "ai-international-route-map-2026-02",
+        "ai-current-international-network",
+        "ai-2026-asia-expansion",
+        "ai-current-middle-east-suspension"
+      ],
+      "note": "Partial Air India universe. The official February international map supplies a broad bidirectional nonstop snapshot and later official releases add Hanoi and Mumbai-Haneda. Current Middle East suspensions are excluded. Because the map is not a complete current domestic+international denominator and recent operational advisories can change availability, AI remains partial and route-only rows without schedule evidence remain date-unknown."
+    },
+    {
+      "carrier": "LO",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": [
+        "lo-waw-direct-connections",
+        "lo-waw-sfo-2026",
+        "lo-waw-opo-2026",
+        "lo-waw-blq-2026",
+        "lo-new-routes-first-flight",
+        "lo-mixed-route-map-negative",
+        "lo-waw-ala-current",
+        "lo-gdn-regional-2026",
+        "lo-gdn-osl-current",
+        "lo-gdn-bru-current",
+        "lo-krk-regional-2026",
+        "lo-krk-current-direct",
+        "lo-rome-fco-airport",
+        "lo-barcelona-bcn-airport",
+        "lo-madrid-mad-airport"
+      ],
+      "note": "Partial LOT universe. Current airline-owned direct-route publications plus directional inaugural-flight identities now establish selected Warsaw, Gdansk and Krakow routes with exact airports. The interactive route map explicitly mixes LOT and codeshare/partner options and up to two stops, so it remains a negative control rather than a carrier-wide denominator."
+    },
+    {
+      "carrier": "ET",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": [
+        "et-add-mru-2026",
+        "et-add-atl-2026"
+      ],
+      "note": "Partial Ethiopian universe. Exact current direct ADD-MRU and ADD-ATL route evidence is established from airline-owned releases; the broader network map was not promoted wholesale because complete operator-resolved directional extraction is still pending."
+    },
+    {
+      "carrier": "TP",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": ["tp-lis-current-routes"],
+      "note": "Partial TAP universe. Current Lisbon-origin fare rows establish selected exact airport pairs, but they are not a complete TAP-operated directional denominator and do not establish recurring schedule days."
+    },
+    {
+      "carrier": "CA",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": ["ca-szx-fra-operated"],
+      "note": "Partial Air China universe. Exact SZX-FRA operator evidence is established; broader product tables use multi-airport city buckets and therefore are not expanded into airport-level routes without additional evidence."
+    },
+    {
+      "carrier": "A3",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": ["a3-ath-lhr-current-pass", "a3-ath-lhr-operator", "a3-current-flight-status-2026-09-06"],
+      "note": "Partial AEGEAN universe. The current flight-status board now provides many exact Aegean Airlines-labeled directions while separately labeling OlympicAir rows, so operator-safe route coverage is substantially broader. The board is a dated operational snapshot rather than a complete carrier network denominator, and the interactive route map still mixes AEGEAN, Olympic Air and codeshare options."
+    },
+    {
+      "carrier": "RJ",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": [
+        "rj-amm-vie-2026",
+        "rj-current-september-timetable-index",
+        "rj-september-2026-quick-reference",
+        "rj-alexandria-code-transition"
+      ],
+      "note": "Partial Royal Jordanian universe. The current September quick-reference timetable provides a broad exact-airport directional set with explicit one-stop and codeshare-aircraft markers, and the HBE/ALY transition is independently date-resolved. It is not promoted to complete because the YYZ one-stop through service would need exact physical-leg decomposition and the quick-reference remains framed primarily as FROM/TO AMMAN rather than an explicit exhaustive physical-segment denominator."
+    },
+    {
+      "carrier": "AT",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": ["at-passenger-network-cmn", "at-direct-airport-network"],
+      "note": "Partial Royal Air Maroc universe. Passenger destinations served from Casablanca are intersected with the airline-owned direct-flight IATA list. Reverse directions and the full domestic network are not inferred."
+    },
+    {
+      "carrier": "WY",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": ["wy-mus-sin-2026", "wy-mus-tas-2026", "wy-mus-auh-2026", "wy-mus-tif-2026", "wy-tif-airport-code-current", "wy-mus-aer-2026", "wy-mus-aer-current", "wy-aer-mus-current", "wy-2026-network-expansion"],
+      "note": "Partial Oman Air universe. Airline-owned direct-route launches plus current exact-airport surfaces establish selected 2026 Muscat spokes in both directions. The current network-expansion publication's up-to-49-destinations count is not a directional route matrix and cannot establish a denominator."
+    },
+    {
+      "carrier": "CM",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": ["cm-pty-dav-direct"],
+      "note": "Partial Copa Airlines universe. The current airline page explicitly establishes PTY-DAV direct service, but broader Panama hub fare lists are not treated as a complete nonstop/operator denominator without direct-route evidence."
+    },
+    {
+      "carrier": "AS",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": ["as-sfo-sea-2026", "as-sea-sfo-2026", "as-sea-nrt-hawaiian-operator"],
+      "note": "Partial Alaska Airlines universe. Exact current SFO-SEA/SEA-SFO flights are explicitly Alaska-operated, while SEA-NRT remains a Hawaiian-operated negative control."
+    },
+    {
+      "carrier": "HA",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": ["ha-hnl-hnd-2026", "ha-hnd-hnl-2026"],
+      "note": "Partial Hawaiian Airlines universe. Exact current HNL-HND/HND-HNL flights are explicitly Hawaiian-operated in the combined Alaska/Hawaiian status system."
+    },
+    {
+      "carrier": "UL",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": ["ul-cmb-lhr-current", "ul-lhr-cmb-nonstop"],
+      "note": "Partial SriLankan universe. Current CMB-London inventory plus the airline-owned nonstop London-Colombo statement establish the LHR-CMB pair; broader network extraction remains pending."
+    },
+    {
+      "carrier": "SN",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": ["sn-bru-jfk-flightplan"],
+      "note": "Partial Brussels Airlines universe. Current flightplan establishes SN-operated BRU-JFK/JFK-BRU and exposes UA-operated EWR codeshares as negative controls."
+    },
+    {
+      "carrier": "OU",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": [
+        "ou-lhr-zag-2026",
+        "ou-current-operated-checkin",
+        "ou-athens-from-2026",
+        "ou-athens-to-2026",
+        "ou-copenhagen-from-2026",
+        "ou-copenhagen-to-2026",
+        "ou-london-to-2026",
+        "ou-dublin-from-2026",
+        "ou-dublin-to-2026",
+        "ou-rome-from-2026",
+        "ou-rome-to-2026"
+      ],
+      "note": "Partial Croatia Airlines universe. Current 2026/27 airline timetables provide a broad set of explicitly direct directional routes and separately label via services; the operated-flight check-in page supplies exact OU operator controls for selected routes. The complete OU network denominator is still unresolved."
+    },
+    {
+      "carrier": "AZ",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": ["az-fco-jfk-current"],
+      "note": "Partial ITA Airways universe. Current flightplan establishes AZ-operated FCO-JFK/JFK-FCO nonstop service; complete directional network remains unresolved."
+    },
+    {
+      "carrier": "AV",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": ["av-mad-sal-2026"],
+      "note": "Partial Avianca universe. Current Summer-2026 publication establishes direct Madrid-San Salvador service; full AV network denominator is not yet extracted."
+    },
+    {
+      "carrier": "OZ",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": ["oz-us-icn-current-schedule", "oz-current-network-schedule-2026-09"],
+      "note": "Partial Asiana universe. The current operating-schedule notice expands exact OZ route evidence across North America, Europe and Asia with explicit flight-number pairs. Only airport identities explicitly resolved by the source are retained. The notice explicitly says other routes exist and points to schedule search, so OZ remains partial and no directional denominator is claimed."
+    },
+    {
+      "carrier": "SA",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": ["sa-jnb-acc-current", "sa-jnb-acc-fares"],
+      "note": "Partial South African Airways universe. Current airline materials establish Johannesburg-Accra service and 2026 fare inventory; complete directional network remains unresolved."
+    },
+    {
+      "carrier": "MS",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": ["ms-cairo-current-routes", "ms-cai-iad-nonstop"],
+      "note": "Partial EGYPTAIR universe. Current Cairo route publication plus airline-owned exact nonstop CAI-IAD evidence establish the Washington pair; historical frequency is not reused."
+    },
+    {
+      "carrier": "ZH",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": ["zh-current-operated-international-routes"],
+      "note": "Partial Shenzhen Airlines universe. Current 2026 airline terms enumerate selected international routes and require ZH actual operation while excluding codeshares. The complete domestic+international directional denominator remains unresolved."
+    },
+    {
+      "carrier": "FJ",
+      "scope": "partial",
+      "asOf": "2026-09-06",
+      "sourceIds": ["fj-dfw-nan-direct", "fj-dfw-current-status"],
+      "note": "Partial Fiji Airways universe. Airline-owned direct DFW-NAN route evidence is corroborated by the current DFW Airport board showing FJ890/FJ891. The full Fiji Airways directional denominator remains unresolved."
+    },
+    {
+      "carrier": "BR",
+      "scope": "partial",
+      "asOf": "2026-09-08",
+      "sourceIds": ["br-tpe-bkk-current", "br-bkk-tpe-current"],
+      "note": "Partial EVA Air universe. Current airline-owned booking surfaces establish TPE-BKK and BKK-TPE, while the separate legacy schedule catalog contains additional researched BR routes. A complete EVA-operated directional route denominator has not yet been established, so BR coverage must not be reported as complete."
+    }
+  ],
+  "routes": [
+    {
+      "carrier": "CX",
+      "pair": [
+        "TPE",
+        "HKG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "cx-tpe-hkg"
+      ]
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "HKG",
+        "TPE"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "cx-hkg-tpe"
+      ]
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "HKG",
+        "LHR"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "cx-hkg-lhr"
+      ]
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "LHR",
+        "HKG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "cx-lhr-hkg"
+      ]
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "HKG",
+        "LAX"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "cx-lax",
+        "cx-north-america"
+      ]
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "LAX",
+        "HKG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "cx-lax",
+        "cx-north-america"
+      ]
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "HKG",
+        "SFO"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "cx-sfo",
+        "cx-north-america"
+      ]
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "SFO",
+        "HKG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "cx-sfo",
+        "cx-north-america"
+      ]
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "HKG",
+        "SEA"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "cx-north-america"
+      ],
+      "effectiveFrom": "2026-03-30"
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "SEA",
+        "HKG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "cx-north-america"
+      ],
+      "effectiveFrom": "2026-03-30"
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "HKG",
+        "JFK"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "cx-north-america",
+        "cx-jfk"
+      ]
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "JFK",
+        "HKG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "cx-north-america",
+        "cx-jfk"
+      ]
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "HKG",
+        "DFW"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "cx-dfw",
+        "cx-north-america"
+      ]
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "DFW",
+        "HKG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "cx-dfw",
+        "cx-north-america"
+      ]
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "HKG",
+        "MAD"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "cx-mad"
+      ]
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "MAD",
+        "HKG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "cx-mad"
+      ]
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "HKG",
+        "CDG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "cx-cdg",
+        "cx-europe-return"
+      ]
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "CDG",
+        "HKG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "cx-cdg",
+        "cx-europe-return"
+      ]
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "HKG",
+        "FRA"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "cx-fra",
+        "cx-europe-return"
+      ]
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "FRA",
+        "HKG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "cx-fra",
+        "cx-europe-return"
+      ]
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "HKG",
+        "AMS"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "cx-ams",
+        "cx-europe-return"
+      ]
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "AMS",
+        "HKG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "cx-ams",
+        "cx-europe-return"
+      ]
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "HKG",
+        "ZRH"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "cx-zrh",
+        "cx-europe-return"
+      ]
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "ZRH",
+        "HKG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "cx-zrh",
+        "cx-europe-return"
+      ]
+    },
+    {
+      "carrier": "AY",
+      "pair": [
+        "HKG",
+        "HEL"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "ay-hkg-hel"
+      ]
+    },
+    {
+      "carrier": "AY",
+      "pair": [
+        "HEL",
+        "LHR"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "ay-hel-lhr"
+      ]
+    },
+    {
+      "carrier": "BA",
+      "pair": [
+        "LHR",
+        "JFK"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "ba-new-york",
+        "ba-lhr-jfk"
+      ]
+    },
+    {
+      "carrier": "BA",
+      "pair": [
+        "JFK",
+        "LHR"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "ba-new-york",
+        "ba-lhr-jfk"
+      ]
+    },
+    {
+      "carrier": "AA",
+      "pair": [
+        "JFK",
+        "LAX"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "aa-transcon"
+      ]
+    },
+    {
+      "carrier": "AA",
+      "pair": [
+        "LAX",
+        "JFK"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "aa-transcon"
+      ]
+    },
+    {
+      "carrier": "AA",
+      "pair": [
+        "JFK",
+        "SFO"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "aa-transcon"
+      ]
+    },
+    {
+      "carrier": "AA",
+      "pair": [
+        "SFO",
+        "JFK"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "aa-transcon"
+      ]
+    },
+    {
+      "carrier": "AA",
+      "pair": [
+        "BOS",
+        "LAX"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "aa-transcon"
+      ]
+    },
+    {
+      "carrier": "AA",
+      "pair": [
+        "LAX",
+        "BOS"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "aa-transcon"
+      ]
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "SFO",
+        "FRA"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "lh-sfo-fra"
+      ]
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "FRA",
+        "SFO"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "lh-sfo-fra"
+      ]
+    },
+    {
+      "carrier": "UA",
+      "pair": [
+        "SFO",
+        "FRA"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "lh-sfo-fra"
+      ]
+    },
+    {
+      "carrier": "UA",
+      "pair": [
+        "FRA",
+        "SFO"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "lh-sfo-fra"
+      ]
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "LAX",
+        "FRA"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "lh-lax-fra"
+      ]
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "FRA",
+        "LAX"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "lh-lax-fra"
+      ]
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "FRA",
+        "MUC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "lh-fra-muc"
+      ]
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "MUC",
+        "FRA"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "lh-fra-muc"
+      ]
+    },
+    {
+      "carrier": "NH",
+      "pair": [
+        "TPE",
+        "NRT"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "ana-international-routes"
+      ],
+      "effectiveFrom": "2026-03-29",
+      "effectiveUntil": "2026-10-24"
+    },
+    {
+      "carrier": "NH",
+      "pair": [
+        "NRT",
+        "TPE"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "ana-international-routes"
+      ],
+      "effectiveFrom": "2026-03-29",
+      "effectiveUntil": "2026-10-24"
+    },
+    {
+      "carrier": "NH",
+      "pair": [
+        "HND",
+        "LHR"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "ana-international-routes"
+      ]
+    },
+    {
+      "carrier": "NH",
+      "pair": [
+        "LHR",
+        "HND"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "ana-international-routes"
+      ]
+    },
+    {
+      "carrier": "JL",
+      "pair": [
+        "HND",
+        "JFK"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "jal-route-map",
+        "jal-s26-north-america"
+      ],
+      "effectiveFrom": "2026-03-29",
+      "effectiveUntil": "2026-10-24"
+    },
+    {
+      "carrier": "JL",
+      "pair": [
+        "JFK",
+        "HND"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "jal-route-map",
+        "jal-s26-north-america"
+      ],
+      "effectiveFrom": "2026-03-29",
+      "effectiveUntil": "2026-10-24"
+    },
+    {
+      "carrier": "SQ",
+      "pair": [
+        "TPE",
+        "SIN"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "sq-tpe-sin"
+      ]
+    },
+    {
+      "carrier": "SQ",
+      "pair": [
+        "SIN",
+        "TPE"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "sq-sin-network"
+      ]
+    },
+    {"carrier":"SQ","pair":["SIN","CAN"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","PVG"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","HKG"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","KIX"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","ICN"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","KTI"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","DPS"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","CGK"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","KNO"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","SUB"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","PEN"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","RGN"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","MNL"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","BKK"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","HKT"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","DAD"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","HAN"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","SGN"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","CDG"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","FRA"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","MXP"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","BLR"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","MAA"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","DEL"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","HYD"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","COK"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","BOM"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","MLE"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","JNB"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","CMB"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","ADL"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","BNE"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","MEL"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {"carrier":"SQ","pair":["SIN","PER"],"service":"nonstop","status":"published","sourceIds":["sq-current-sin-nonstop-network-2026-09-06"]},
+    {
+      "carrier": "QR",
+      "pair": [
+        "DOH",
+        "HKG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "qr-doh-hkg"
+      ]
+    },
+    {
+      "carrier": "QR",
+      "pair": [
+        "HKG",
+        "DOH"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "qr-hkg-doh"
+      ]
+    },
+    {
+      "carrier": "QR",
+      "pair": [
+        "DOH",
+        "NRT"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "qr-doh-nrt"
+      ]
+    },
+    {
+      "carrier": "QR",
+      "pair": [
+        "NRT",
+        "DOH"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "qr-nrt-doh"
+      ]
+    },
+    {
+      "carrier": "QR",
+      "pair": [
+        "DOH",
+        "LHR"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "qr-doh-lhr"
+      ]
+    },
+    {
+      "carrier": "QR",
+      "pair": [
+        "LHR",
+        "DOH"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "qr-lhr-doh"
+      ]
+    },
+    {
+      "carrier": "QR",
+      "pair": [
+        "DOH",
+        "JFK"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "qr-doh-jfk"
+      ]
+    },
+    {
+      "carrier": "QR",
+      "pair": [
+        "JFK",
+        "DOH"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "qr-jfk-doh"
+      ]
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "SYD",
+        "LAX"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "qf-international-network"
+      ]
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "LAX",
+        "SYD"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "qf-international-network"
+      ]
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "SYD",
+        "SIN"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "qf-international-network"
+      ]
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "SIN",
+        "SYD"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "qf-international-network"
+      ]
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "SYD",
+        "HND"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "qf-international-network"
+      ]
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "HND",
+        "SYD"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "qf-international-network"
+      ]
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "SYD",
+        "HKG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "qf-international-network"
+      ]
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "HKG",
+        "SYD"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "qf-international-network"
+      ]
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "SYD",
+        "SFO"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "qf-international-network"
+      ]
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "SFO",
+        "SYD"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "qf-international-network"
+      ]
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "SYD",
+        "JNB"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "qf-international-network"
+      ]
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "JNB",
+        "SYD"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "qf-international-network"
+      ]
+    },
+    {
+      "carrier": "IB",
+      "pair": [
+        "MAD",
+        "EWR"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "ib-mad-ewr"
+      ]
+    },
+    {
+      "carrier": "IB",
+      "pair": [
+        "EWR",
+        "MAD"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "ib-mad-ewr"
+      ]
+    },
+    {
+      "carrier": "AC",
+      "pair": [
+        "YUL",
+        "CTA"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "ac-s26-expansion"
+      ]
+    },
+    {
+      "carrier": "AC",
+      "pair": [
+        "CTA",
+        "YUL"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "ac-s26-expansion"
+      ]
+    },
+    {
+      "carrier": "AC",
+      "pair": [
+        "YUL",
+        "PMI"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "ac-s26-expansion"
+      ]
+    },
+    {
+      "carrier": "AC",
+      "pair": [
+        "PMI",
+        "YUL"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "ac-s26-expansion"
+      ]
+    },
+    {
+      "carrier": "AC",
+      "pair": [
+        "YYZ",
+        "BUD"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "ac-s26-expansion"
+      ]
+    },
+    {
+      "carrier": "AC",
+      "pair": [
+        "BUD",
+        "YYZ"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "ac-s26-expansion"
+      ]
+    },
+    {
+      "carrier": "AC",
+      "pair": [
+        "YYZ",
+        "PVG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "ac-s26-expansion"
+      ]
+    },
+    {
+      "carrier": "AC",
+      "pair": [
+        "PVG",
+        "YYZ"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "ac-s26-expansion"
+      ]
+    },
+    {
+      "carrier": "AC",
+      "pair": [
+        "YVR",
+        "BKK"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "ac-s26-expansion"
+      ]
+    },
+    {
+      "carrier": "AC",
+      "pair": [
+        "BKK",
+        "YVR"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "ac-s26-expansion"
+      ]
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "TPE",
+        "IST"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "tk-tpe-ist"
+      ]
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "IST",
+        "TPE"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "tk-ist-tpe"
+      ]
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "IST",
+        "JFK"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "tk-ist-jfk"
+      ]
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "JFK",
+        "IST"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": [
+        "tk-jfk-ist"
+      ]
+    },
+    {
+      "carrier": "MH",
+      "pair": ["KUL", "AKL"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["mh-operated-selected-routes"]
+    },
+    {
+      "carrier": "MH",
+      "pair": ["KUL", "ADL"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["mh-operated-selected-routes"]
+    },
+    {
+      "carrier": "MH",
+      "pair": ["KUL", "MEL"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["mh-operated-selected-routes"]
+    },
+    {
+      "carrier": "MH",
+      "pair": ["KUL", "PER"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["mh-operated-selected-routes"]
+    },
+    {
+      "carrier": "MH",
+      "pair": ["KUL", "SYD"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["mh-operated-selected-routes"]
+    },
+    {
+      "carrier": "MH",
+      "pair": ["KUL", "BNE"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["mh-operated-selected-routes"]
+    },
+    {
+      "carrier": "MH",
+      "pair": ["KUL", "KIX"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["mh-operated-selected-routes"]
+    },
+    {
+      "carrier": "MH",
+      "pair": ["KUL", "NRT"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["mh-operated-selected-routes"]
+    },
+    {
+      "carrier": "MH",
+      "pair": ["KUL", "ICN"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["mh-operated-selected-routes"]
+    },
+    {
+      "carrier": "MH",
+      "pair": ["KUL", "LHR"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["mh-operated-selected-routes"]
+    },
+    {
+      "carrier": "MH",
+      "pair": ["KUL", "CDG"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["mh-operated-selected-routes"]
+    },
+    {
+      "carrier": "MH",
+      "pair": ["KUL", "DOH"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["mh-operated-selected-routes"]
+    },
+    {
+      "carrier": "MH",
+      "pair": ["KUL", "BKK"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["mh-operated-selected-routes"]
+    },
+    {
+      "carrier": "MH",
+      "pair": ["KUL", "DPS"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["mh-operated-selected-routes"]
+    },
+    {
+      "carrier": "MH",
+      "pair": ["KUL", "SGN"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["mh-operated-selected-routes"]
+    },
+    {
+      "carrier": "MH",
+      "pair": ["KUL", "BOM"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["mh-operated-selected-routes"]
+    },
+    {
+      "carrier": "MH",
+      "pair": ["KUL", "DEL"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["mh-operated-selected-routes"]
+    },
+    {
+      "carrier": "MH",
+      "pair": ["KUL", "PVG"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["mh-operated-selected-routes"]
+    },
+    {
+      "carrier": "MH",
+      "pair": ["KUL", "TPE"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["mh-operated-selected-routes"]
+    },
+    {
+      "carrier": "MH",
+      "pair": ["KUL", "HKG"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["mh-operated-selected-routes"]
+    },
+    {
+      "carrier": "NZ",
+      "pair": ["AKL", "SYD"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["nz-sydney-nonstop"]
+    },
+    {
+      "carrier": "NZ",
+      "pair": ["WLG", "SYD"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["nz-sydney-nonstop"]
+    },
+    {
+      "carrier": "NZ",
+      "pair": ["CHC", "SYD"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["nz-sydney-nonstop"]
+    },
+    {
+      "carrier": "NZ",
+      "pair": ["ZQN", "SYD"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["nz-sydney-nonstop"]
+    },
+    {
+      "carrier": "NZ",
+      "pair": ["AKL", "PER"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["nz-perth-nonstop"]
+    },
+    {
+      "carrier": "NZ",
+      "pair": ["AKL", "TPE"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["nz-taipei-nonstop"]
+    },
+    {
+      "carrier": "NZ",
+      "pair": ["AKL", "NRT"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["nz-tokyo-nonstop"]
+    },
+    {
+      "carrier": "NZ",
+      "pair": ["AKL", "CNS"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["nz-cairns-seasonal"],
+      "effectiveFrom": "2026-03-29",
+      "effectiveUntil": "2026-10-13"
+    },
+    {
+      "carrier": "NZ",
+      "pair": ["WLG", "AKL"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["nz-auckland-inbound"]
+    },
+    {
+      "carrier": "NZ",
+      "pair": ["CHC", "AKL"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["nz-auckland-inbound"]
+    },
+    {
+      "carrier": "NZ",
+      "pair": ["ZQN", "AKL"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["nz-auckland-inbound"]
+    },
+    {
+      "carrier": "NZ",
+      "pair": ["DUD", "AKL"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["nz-auckland-inbound"]
+    },
+    {
+      "carrier": "NZ",
+      "pair": ["IVC", "AKL"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["nz-auckland-inbound"]
+    },
+    {
+      "carrier": "LX",
+      "pair": ["ZRH", "HKG"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["lx-zrh-hkg-flightplan"]
+    },
+    {
+      "carrier": "LX",
+      "pair": ["HKG", "ZRH"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["lx-zrh-hkg-flightplan"]
+    },
+    {
+      "carrier": "LX",
+      "pair": ["ZRH", "NRT"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["lx-zrh-nrt-flightplan"]
+    },
+    {
+      "carrier": "LX",
+      "pair": ["NRT", "ZRH"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["lx-zrh-nrt-flightplan"]
+    },
+    {"carrier":"LX","pair":["ZRH","SIN"],"service":"nonstop","status":"published","sourceIds":["lx-zrh-sin-flightplan"]},
+    {"carrier":"LX","pair":["SIN","ZRH"],"service":"nonstop","status":"published","sourceIds":["lx-zrh-sin-flightplan"]},
+    {"carrier":"LX","pair":["ZRH","GVA"],"service":"nonstop","status":"published","sourceIds":["lx-zrh-gva-flightplan"]},
+    {"carrier":"LX","pair":["GVA","ZRH"],"service":"nonstop","status":"published","sourceIds":["lx-zrh-gva-flightplan"]},
+    {"carrier":"LX","pair":["ZRH","JFK"],"service":"nonstop","status":"published","sourceIds":["lx-zrh-nyc-flightplan"]},
+    {"carrier":"LX","pair":["JFK","ZRH"],"service":"nonstop","status":"published","sourceIds":["lx-zrh-nyc-flightplan"]},
+    {"carrier":"LX","pair":["ZRH","EWR"],"service":"nonstop","status":"published","sourceIds":["lx-zrh-nyc-flightplan"]},
+    {"carrier":"LX","pair":["EWR","ZRH"],"service":"nonstop","status":"published","sourceIds":["lx-zrh-nyc-flightplan"]},
+    {"carrier":"LX","pair":["ZRH","MIA"],"service":"nonstop","status":"published","sourceIds":["lx-zrh-mia-flightplan"]},
+    {"carrier":"LX","pair":["MIA","ZRH"],"service":"nonstop","status":"published","sourceIds":["lx-zrh-mia-flightplan"]},
+    {"carrier":"LX","pair":["ZRH","BOS"],"service":"nonstop","status":"published","sourceIds":["lx-zrh-bos-flightplan"]},
+    {"carrier":"LX","pair":["BOS","ZRH"],"service":"nonstop","status":"published","sourceIds":["lx-zrh-bos-flightplan"]},
+    {"carrier":"LX","pair":["GVA","JFK"],"service":"nonstop","status":"published","sourceIds":["lx-gva-jfk-flightplan"]},
+    {"carrier":"LX","pair":["JFK","GVA"],"service":"nonstop","status":"published","sourceIds":["lx-gva-jfk-flightplan"]},
+    {
+      "carrier": "OS",
+      "pair": ["VIE", "NRT"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["os-vie-nrt-flightplan"]
+    },
+    {
+      "carrier": "OS",
+      "pair": ["NRT", "VIE"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["os-vie-nrt-flightplan"]
+    },
+    {
+      "carrier": "OS",
+      "pair": ["VIE", "BKK"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["os-vie-bkk-flightplan"]
+    },
+    {
+      "carrier": "OS",
+      "pair": ["BKK", "VIE"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["os-vie-bkk-flightplan"]
+    },
+    {"carrier":"OS","pair":["VIE","BOS"],"service":"nonstop","status":"published","sourceIds":["os-vie-bos-flightplan"]},
+    {"carrier":"OS","pair":["BOS","VIE"],"service":"nonstop","status":"published","sourceIds":["os-vie-bos-flightplan"]},
+    {"carrier":"OS","pair":["VIE","ORD"],"service":"nonstop","status":"published","sourceIds":["os-vie-ord-flightplan"]},
+    {"carrier":"OS","pair":["ORD","VIE"],"service":"nonstop","status":"published","sourceIds":["os-vie-ord-flightplan"]},
+    {"carrier":"OS","pair":["VIE","IAD"],"service":"nonstop","status":"published","sourceIds":["os-vie-iad-flightplan"]},
+    {"carrier":"OS","pair":["IAD","VIE"],"service":"nonstop","status":"published","sourceIds":["os-vie-iad-flightplan"]},
+    {"carrier":"OS","pair":["VIE","JFK"],"service":"nonstop","status":"published","sourceIds":["os-vie-nyc-flightplan"]},
+    {"carrier":"OS","pair":["JFK","VIE"],"service":"nonstop","status":"published","sourceIds":["os-vie-nyc-flightplan"]},
+    {"carrier":"OS","pair":["VIE","EWR"],"service":"nonstop","status":"published","sourceIds":["os-vie-nyc-flightplan"]},
+    {"carrier":"OS","pair":["EWR","VIE"],"service":"nonstop","status":"published","sourceIds":["os-vie-nyc-flightplan"]},
+    {
+      "carrier": "TG",
+      "pair": ["BKK", "AMS"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["tg-bkk-ams-schedule"]
+    },
+    {
+      "carrier": "TG",
+      "pair": ["AMS", "BKK"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["tg-bkk-ams-schedule"]
+    },
+    {
+      "carrier": "TG",
+      "pair": ["BKK", "TPE"],
+      "service": "nonstop",
+      "status": "published",
+      "sourceIds": ["tg-bkk-nonstop-promo", "tg-bkk-tpe-airports"]
+    },
+    {"carrier":"TG","pair":["BKK","ICN"],"service":"nonstop","status":"published","sourceIds":["tg-early-escape-2026-operated-nonstop","tg-bkk-current-airport-pairs"]},
+    {"carrier":"TG","pair":["BKK","NRT"],"service":"nonstop","status":"published","sourceIds":["tg-early-escape-2026-operated-nonstop","tg-bkk-current-airport-pairs"]},
+    {"carrier":"TG","pair":["BKK","HND"],"service":"nonstop","status":"published","sourceIds":["tg-early-escape-2026-operated-nonstop","tg-bkk-current-airport-pairs"]},
+    {"carrier":"TG","pair":["BKK","KIX"],"service":"nonstop","status":"published","sourceIds":["tg-early-escape-2026-operated-nonstop","tg-bkk-current-airport-pairs"]},
+    {"carrier":"TG","pair":["BKK","PVG"],"service":"nonstop","status":"published","sourceIds":["tg-early-escape-2026-operated-nonstop","tg-bkk-current-airport-pairs"]},
+    {"carrier":"TG","pair":["BKK","HKG"],"service":"nonstop","status":"published","sourceIds":["tg-early-escape-2026-operated-nonstop","tg-bkk-current-airport-pairs"]},
+    {"carrier":"TG","pair":["BKK","SIN"],"service":"nonstop","status":"published","sourceIds":["tg-early-escape-2026-operated-nonstop","tg-bkk-current-airport-pairs"]},
+    {"carrier":"TG","pair":["BKK","LHR"],"service":"nonstop","status":"published","sourceIds":["tg-early-escape-2026-operated-nonstop","tg-bkk-current-airport-pairs"]},
+    {"carrier":"TG","pair":["BKK","CTS"],"service":"nonstop","status":"published","sourceIds":["tg-early-escape-2026-operated-nonstop","tg-bkk-current-airport-pairs"]},
+    {"carrier":"TG","pair":["BKK","PEK"],"service":"nonstop","status":"published","sourceIds":["tg-early-escape-2026-operated-nonstop","tg-bkk-current-airport-pairs"]},
+    {"carrier":"TG","pair":["BKK","CAN"],"service":"nonstop","status":"published","sourceIds":["tg-early-escape-2026-operated-nonstop","tg-bkk-current-airport-pairs"]},
+    {"carrier":"NZ","pair":["AKL","MEL"],"service":"nonstop","status":"published","sourceIds":["nz-current-australia-network"]},
+    {"carrier":"NZ","pair":["AKL","BNE"],"service":"nonstop","status":"published","sourceIds":["nz-current-australia-network"]},
+    {"carrier":"NZ","pair":["AKL","OOL"],"service":"nonstop","status":"published","sourceIds":["nz-current-australia-network"]},
+    {"carrier":"NZ","pair":["AKL","ADL"],"service":"nonstop","status":"published","sourceIds":["nz-current-australia-network"]},
+    {"carrier":"NZ","pair":["WLG","BNE"],"service":"nonstop","status":"published","sourceIds":["nz-current-australia-network"]},
+    {"carrier":"NZ","pair":["WLG","MEL"],"service":"nonstop","status":"published","sourceIds":["nz-current-australia-network"]},
+    {"carrier":"NZ","pair":["CHC","BNE"],"service":"nonstop","status":"published","sourceIds":["nz-current-australia-network"]},
+    {"carrier":"NZ","pair":["CHC","MEL"],"service":"nonstop","status":"published","sourceIds":["nz-current-australia-network"]},
+    {"carrier":"NZ","pair":["CHC","OOL"],"service":"nonstop","status":"published","sourceIds":["nz-current-australia-network"]},
+    {"carrier":"NZ","pair":["CHC","ADL"],"service":"nonstop","status":"published","sourceIds":["nz-current-australia-network"]},
+    {"carrier":"NZ","pair":["ZQN","MEL"],"service":"nonstop","status":"published","sourceIds":["nz-current-australia-network"]},
+    {"carrier":"NZ","pair":["ZQN","BNE"],"service":"nonstop","status":"published","sourceIds":["nz-current-australia-network"]},
+    {"carrier":"NZ","pair":["AKL","MCY"],"service":"nonstop","status":"published","sourceIds":["nz-current-australia-network"]},
+    {"carrier":"NZ","pair":["AKL","HBA"],"service":"nonstop","status":"published","sourceIds":["nz-current-australia-network"]},
+    {"carrier":"NZ","pair":["AKL","WSI"],"service":"nonstop","status":"published","sourceIds":["nz-current-australia-network"],"effectiveFrom":"2026-11-01"},
+    {"carrier":"NZ","pair":["CHC","PER"],"service":"nonstop","status":"published","sourceIds":["nz-current-australia-network"],"effectiveFrom":"2026-12-01"},
+    {"carrier":"NZ","pair":["AKL","DPS"],"service":"nonstop","status":"published","sourceIds":["nz-current-asia-network"]},
+    {"carrier":"NZ","pair":["AKL","HKG"],"service":"nonstop","status":"published","sourceIds":["nz-current-asia-network"]},
+    {"carrier":"NZ","pair":["AKL","PVG"],"service":"nonstop","status":"published","sourceIds":["nz-current-asia-network"]},
+    {"carrier":"NZ","pair":["AKL","SIN"],"service":"nonstop","status":"published","sourceIds":["nz-current-asia-network"]},
+    {"carrier":"NZ","pair":["CHC","SIN"],"service":"nonstop","status":"published","sourceIds":["nz-current-asia-network"],"effectiveFrom":"2026-11-01"},
+    {"carrier":"NZ","pair":["CHC","NRT"],"service":"nonstop","status":"published","sourceIds":["nz-current-asia-network"],"effectiveFrom":"2026-12-01"},
+    {"carrier":"NZ","pair":["AKL","RAR"],"service":"nonstop","status":"published","sourceIds":["nz-current-pacific-network"]},
+    {"carrier":"NZ","pair":["AKL","NAN"],"service":"nonstop","status":"published","sourceIds":["nz-current-pacific-network"]},
+    {"carrier":"NZ","pair":["AKL","IUE"],"service":"nonstop","status":"published","sourceIds":["nz-current-pacific-network"]},
+    {"carrier":"NZ","pair":["AKL","APW"],"service":"nonstop","status":"published","sourceIds":["nz-current-pacific-network"]},
+    {"carrier":"NZ","pair":["AKL","TBU"],"service":"nonstop","status":"published","sourceIds":["nz-current-pacific-network"]},
+    {"carrier":"NZ","pair":["AKL","NOU"],"service":"nonstop","status":"published","sourceIds":["nz-current-pacific-network"]},
+    {"carrier":"NZ","pair":["AKL","PPT"],"service":"nonstop","status":"published","sourceIds":["nz-current-pacific-network"]},
+    {"carrier":"NZ","pair":["CHC","RAR"],"service":"nonstop","status":"published","sourceIds":["nz-current-pacific-network"]},
+    {"carrier":"NZ","pair":["AKL","LAX"],"service":"nonstop","status":"published","sourceIds":["nz-current-usa-network"]},
+    {"carrier":"NZ","pair":["AKL","SFO"],"service":"nonstop","status":"published","sourceIds":["nz-current-usa-network"]},
+    {"carrier":"NZ","pair":["AKL","HNL"],"service":"nonstop","status":"published","sourceIds":["nz-current-usa-network"]},
+    {"carrier":"NZ","pair":["AKL","IAH"],"service":"nonstop","status":"published","sourceIds":["nz-current-usa-network"]},
+    {"carrier":"NZ","pair":["AKL","JFK"],"service":"nonstop","status":"published","sourceIds":["nz-current-usa-network","nz-current-new-york"]},
+    {"carrier":"NZ","pair":["LAX","AKL"],"service":"nonstop","status":"published","sourceIds":["nz-auckland-inbound"]},
+    {"carrier":"NZ","pair":["SFO","AKL"],"service":"nonstop","status":"published","sourceIds":["nz-auckland-inbound"]},
+    {"carrier":"NZ","pair":["HNL","AKL"],"service":"nonstop","status":"published","sourceIds":["nz-auckland-inbound"]},
+    {"carrier":"NZ","pair":["IAH","AKL"],"service":"nonstop","status":"published","sourceIds":["nz-auckland-inbound"]},
+    {"carrier":"NZ","pair":["JFK","AKL"],"service":"nonstop","status":"published","sourceIds":["nz-auckland-inbound","nz-current-new-york"]},
+    {"carrier":"NZ","pair":["AKL","YVR"],"service":"nonstop","status":"published","sourceIds":["nz-current-vancouver"]},
+    {"carrier":"NZ","pair":["YVR","AKL"],"service":"nonstop","status":"published","sourceIds":["nz-current-vancouver"]},
+    {"carrier":"NZ","pair":["SIN","AKL"],"service":"nonstop","status":"published","sourceIds":["nz-auckland-inbound","nz-current-asia-network"]},
+    {"carrier":"NZ","pair":["DPS","AKL"],"service":"nonstop","status":"published","sourceIds":["nz-auckland-inbound","nz-current-asia-network"]},
+    {"carrier":"NZ","pair":["NRT","AKL"],"service":"nonstop","status":"published","sourceIds":["nz-auckland-inbound","nz-tokyo-nonstop"]},
+    {"carrier":"NZ","pair":["PVG","AKL"],"service":"nonstop","status":"published","sourceIds":["nz-auckland-inbound","nz-current-asia-network"]},
+    {"carrier":"NZ","pair":["HKG","AKL"],"service":"nonstop","status":"published","sourceIds":["nz-auckland-inbound","nz-current-asia-network"]},
+    {"carrier":"NZ","pair":["TPE","AKL"],"service":"nonstop","status":"published","sourceIds":["nz-auckland-inbound","nz-taipei-nonstop"]},
+    {"carrier":"NZ","pair":["RAR","AKL"],"service":"nonstop","status":"published","sourceIds":["nz-auckland-inbound","nz-current-pacific-network"]},
+    {"carrier":"NZ","pair":["NAN","AKL"],"service":"nonstop","status":"published","sourceIds":["nz-auckland-inbound","nz-current-pacific-network"]},
+    {"carrier":"NZ","pair":["IUE","AKL"],"service":"nonstop","status":"published","sourceIds":["nz-auckland-inbound","nz-current-pacific-network"]},
+    {"carrier":"NZ","pair":["APW","AKL"],"service":"nonstop","status":"published","sourceIds":["nz-auckland-inbound","nz-current-pacific-network"]},
+    {"carrier":"NZ","pair":["TBU","AKL"],"service":"nonstop","status":"published","sourceIds":["nz-auckland-inbound","nz-current-pacific-network"]},
+    {"carrier":"NZ","pair":["NOU","AKL"],"service":"nonstop","status":"published","sourceIds":["nz-auckland-inbound","nz-current-pacific-network"]},
+    {"carrier":"NZ","pair":["PPT","AKL"],"service":"nonstop","status":"published","sourceIds":["nz-auckland-inbound","nz-current-pacific-network"]},
+    {"carrier":"AI","pair":["DEL","AMS"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["AMS","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","CPH"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["CPH","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","FRA"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["FRA","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["BOM","FRA"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["FRA","BOM"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","MXP"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["MXP","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","CDG"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["CDG","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","FCO"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["FCO","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","VIE"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["VIE","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","ZRH"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["ZRH","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","BHX"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["BHX","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["ATQ","BHX"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["BHX","ATQ"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","LHR"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["LHR","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["BOM","LHR"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["LHR","BOM"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["BLR","LHR"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["LHR","BLR"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["ATQ","LGW"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["LGW","ATQ"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["AMD","LGW"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["LGW","AMD"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","ORD"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["ORD","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","EWR"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["EWR","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["BOM","EWR"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["EWR","BOM"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","JFK"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["JFK","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["BOM","JFK"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["JFK","BOM"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","SFO"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["SFO","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","YYZ"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["YYZ","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","YVR"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["YVR","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","HKG"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["HKG","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","ICN"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["ICN","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","PVG"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["PVG","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","HND"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["HND","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","DPS"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DPS","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","BKK"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["BKK","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["BOM","BKK"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["BKK","BOM"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","SGN"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["SGN","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","KUL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["KUL","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","MNL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["MNL","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","HKT"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["HKT","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","SIN"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["SIN","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["BOM","SIN"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["SIN","BOM"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["MAA","SIN"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["SIN","MAA"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","MEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["MEL","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","SYD"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["SYD","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","CMB"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["CMB","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["BOM","CMB"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["CMB","BOM"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","DAC"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DAC","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["BOM","DAC"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DAC","BOM"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","KTM"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["KTM","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","MLE"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["MLE","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","RGN"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["RGN","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["BOM","MRU"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["MRU","BOM"],"service":"nonstop","status":"published","sourceIds":["ai-international-route-map-2026-02"]},
+    {"carrier":"AI","pair":["DEL","HAN"],"service":"nonstop","status":"published","sourceIds":["ai-2026-asia-expansion"]},
+    {"carrier":"AI","pair":["HAN","DEL"],"service":"nonstop","status":"published","sourceIds":["ai-2026-asia-expansion"]},
+    {"carrier":"AI","pair":["BOM","HND"],"service":"nonstop","status":"published","sourceIds":["ai-2026-asia-expansion"]},
+    {"carrier":"AI","pair":["HND","BOM"],"service":"nonstop","status":"published","sourceIds":["ai-2026-asia-expansion"]},
+    {"carrier":"AI","pair":["BOM","DMM"],"service":"nonstop","status":"suspended","sourceIds":["ai-international-route-map-2026-02","ai-current-middle-east-suspension"]},
+    {"carrier":"AI","pair":["DMM","BOM"],"service":"nonstop","status":"suspended","sourceIds":["ai-international-route-map-2026-02","ai-current-middle-east-suspension"]},
+    {"carrier":"AI","pair":["DEL","DOH"],"service":"nonstop","status":"suspended","sourceIds":["ai-international-route-map-2026-02","ai-current-middle-east-suspension"]},
+    {"carrier":"AI","pair":["DOH","DEL"],"service":"nonstop","status":"suspended","sourceIds":["ai-international-route-map-2026-02","ai-current-middle-east-suspension"]},
+    {"carrier":"AI","pair":["BOM","DOH"],"service":"nonstop","status":"suspended","sourceIds":["ai-international-route-map-2026-02","ai-current-middle-east-suspension"]},
+    {"carrier":"AI","pair":["DOH","BOM"],"service":"nonstop","status":"suspended","sourceIds":["ai-international-route-map-2026-02","ai-current-middle-east-suspension"]},
+    {"carrier":"AI","pair":["DEL","DXB"],"service":"nonstop","status":"suspended","sourceIds":["ai-international-route-map-2026-02","ai-current-middle-east-suspension"]},
+    {"carrier":"AI","pair":["DXB","DEL"],"service":"nonstop","status":"suspended","sourceIds":["ai-international-route-map-2026-02","ai-current-middle-east-suspension"]},
+    {"carrier":"AI","pair":["BOM","DXB"],"service":"nonstop","status":"suspended","sourceIds":["ai-international-route-map-2026-02","ai-current-middle-east-suspension"]},
+    {"carrier":"AI","pair":["DXB","BOM"],"service":"nonstop","status":"suspended","sourceIds":["ai-international-route-map-2026-02","ai-current-middle-east-suspension"]},
+    {"carrier":"AI","pair":["COK","DXB"],"service":"nonstop","status":"suspended","sourceIds":["ai-international-route-map-2026-02","ai-current-middle-east-suspension"]},
+    {"carrier":"AI","pair":["DXB","COK"],"service":"nonstop","status":"suspended","sourceIds":["ai-international-route-map-2026-02","ai-current-middle-east-suspension"]},
+    {"carrier":"AI","pair":["HYD","DXB"],"service":"nonstop","status":"suspended","sourceIds":["ai-international-route-map-2026-02","ai-current-middle-east-suspension"]},
+    {"carrier":"AI","pair":["DXB","HYD"],"service":"nonstop","status":"suspended","sourceIds":["ai-international-route-map-2026-02","ai-current-middle-east-suspension"]},
+    {"carrier":"AI","pair":["MAA","DXB"],"service":"nonstop","status":"suspended","sourceIds":["ai-international-route-map-2026-02","ai-current-middle-east-suspension"]},
+    {"carrier":"AI","pair":["DXB","MAA"],"service":"nonstop","status":"suspended","sourceIds":["ai-international-route-map-2026-02","ai-current-middle-east-suspension"]},
+    {"carrier":"AI","pair":["DEL","JED"],"service":"nonstop","status":"suspended","sourceIds":["ai-international-route-map-2026-02","ai-current-middle-east-suspension"]},
+    {"carrier":"AI","pair":["JED","DEL"],"service":"nonstop","status":"suspended","sourceIds":["ai-international-route-map-2026-02","ai-current-middle-east-suspension"]},
+    {"carrier":"AI","pair":["BOM","JED"],"service":"nonstop","status":"suspended","sourceIds":["ai-international-route-map-2026-02","ai-current-middle-east-suspension"]},
+    {"carrier":"AI","pair":["JED","BOM"],"service":"nonstop","status":"suspended","sourceIds":["ai-international-route-map-2026-02","ai-current-middle-east-suspension"]},
+    {"carrier":"AI","pair":["DEL","RUH"],"service":"nonstop","status":"suspended","sourceIds":["ai-international-route-map-2026-02","ai-current-middle-east-suspension"]},
+    {"carrier":"AI","pair":["RUH","DEL"],"service":"nonstop","status":"suspended","sourceIds":["ai-international-route-map-2026-02","ai-current-middle-east-suspension"]},
+    {"carrier":"AI","pair":["BOM","RUH"],"service":"nonstop","status":"suspended","sourceIds":["ai-international-route-map-2026-02","ai-current-middle-east-suspension"]},
+    {"carrier":"AI","pair":["RUH","BOM"],"service":"nonstop","status":"suspended","sourceIds":["ai-international-route-map-2026-02","ai-current-middle-east-suspension"]},
+    {"carrier":"AI","pair":["DEL","TLV"],"service":"nonstop","status":"suspended","sourceIds":["ai-international-route-map-2026-02","ai-current-middle-east-suspension"]},
+    {"carrier":"AI","pair":["TLV","DEL"],"service":"nonstop","status":"suspended","sourceIds":["ai-international-route-map-2026-02","ai-current-middle-east-suspension"]},
+    {"carrier":"LO","pair":["WAW","SFO"],"service":"nonstop","status":"published","sourceIds":["lo-waw-sfo-2026"],"effectiveFrom":"2026-05-06","effectiveUntil":"2026-10-22"},
+    {"carrier":"LO","pair":["SFO","WAW"],"service":"nonstop","status":"published","sourceIds":["lo-waw-sfo-2026","lo-new-routes-first-flight"],"effectiveFrom":"2026-05-06","effectiveUntil":"2026-10-22"},
+    {"carrier":"LO","pair":["WAW","ALA"],"service":"nonstop","status":"published","sourceIds":["lo-new-routes-first-flight","lo-waw-ala-current"],"effectiveFrom":"2026-05-31"},
+    {"carrier":"LO","pair":["ALA","WAW"],"service":"nonstop","status":"published","sourceIds":["lo-new-routes-first-flight","lo-waw-ala-current"],"effectiveFrom":"2026-05-31"},
+    {"carrier":"LO","pair":["GDN","BRU"],"service":"nonstop","status":"published","sourceIds":["lo-new-routes-first-flight","lo-gdn-regional-2026","lo-gdn-bru-current"],"effectiveFrom":"2026-04-29"},
+    {"carrier":"LO","pair":["BRU","GDN"],"service":"nonstop","status":"published","sourceIds":["lo-new-routes-first-flight","lo-gdn-regional-2026","lo-gdn-bru-current"],"effectiveFrom":"2026-04-29"},
+    {"carrier":"LO","pair":["GDN","OSL"],"service":"nonstop","status":"published","sourceIds":["lo-new-routes-first-flight","lo-gdn-regional-2026","lo-gdn-osl-current"],"effectiveFrom":"2026-04-29"},
+    {"carrier":"LO","pair":["OSL","GDN"],"service":"nonstop","status":"published","sourceIds":["lo-new-routes-first-flight","lo-gdn-regional-2026","lo-gdn-osl-current"],"effectiveFrom":"2026-04-29"},
+    {"carrier":"LO","pair":["KRK","FCO"],"service":"nonstop","status":"published","sourceIds":["lo-new-routes-first-flight","lo-krk-regional-2026","lo-krk-current-direct","lo-rome-fco-airport"],"effectiveFrom":"2026-03-30"},
+    {"carrier":"LO","pair":["FCO","KRK"],"service":"nonstop","status":"published","sourceIds":["lo-new-routes-first-flight","lo-krk-regional-2026","lo-krk-current-direct","lo-rome-fco-airport"],"effectiveFrom":"2026-03-30"},
+    {"carrier":"LO","pair":["KRK","BCN"],"service":"nonstop","status":"published","sourceIds":["lo-new-routes-first-flight","lo-krk-regional-2026","lo-krk-current-direct","lo-barcelona-bcn-airport"],"effectiveFrom":"2026-03-30"},
+    {"carrier":"LO","pair":["BCN","KRK"],"service":"nonstop","status":"published","sourceIds":["lo-new-routes-first-flight","lo-krk-regional-2026","lo-krk-current-direct","lo-barcelona-bcn-airport"],"effectiveFrom":"2026-03-30"},
+    {"carrier":"LO","pair":["KRK","MAD"],"service":"nonstop","status":"published","sourceIds":["lo-new-routes-first-flight","lo-krk-regional-2026","lo-krk-current-direct","lo-madrid-mad-airport"],"effectiveFrom":"2026-03-30"},
+    {"carrier":"LO","pair":["MAD","KRK"],"service":"nonstop","status":"published","sourceIds":["lo-new-routes-first-flight","lo-krk-regional-2026","lo-krk-current-direct","lo-madrid-mad-airport"],"effectiveFrom":"2026-03-30"},
+    {"carrier":"LO","pair":["WAW","OPO"],"service":"nonstop","status":"published","sourceIds":["lo-waw-opo-2026"]},
+    {"carrier":"LO","pair":["OPO","WAW"],"service":"nonstop","status":"published","sourceIds":["lo-waw-opo-2026"]},
+    {"carrier":"LO","pair":["WAW","BLQ"],"service":"nonstop","status":"published","sourceIds":["lo-waw-blq-2026"]},
+    {"carrier":"LO","pair":["BLQ","WAW"],"service":"nonstop","status":"published","sourceIds":["lo-waw-blq-2026"]},
+    {"carrier":"ET","pair":["ADD","MRU"],"service":"nonstop","status":"published","sourceIds":["et-add-mru-2026"],"effectiveFrom":"2026-07-12"},
+    {"carrier":"ET","pair":["MRU","ADD"],"service":"nonstop","status":"published","sourceIds":["et-add-mru-2026"],"effectiveFrom":"2026-07-12"},
+    {"carrier":"ET","pair":["ADD","ATL"],"service":"nonstop","status":"published","sourceIds":["et-add-atl-2026"],"effectiveFrom":"2026-05-21"},
+    {"carrier":"ET","pair":["ATL","ADD"],"service":"nonstop","status":"published","sourceIds":["et-add-atl-2026"],"effectiveFrom":"2026-05-21"},
+    {"carrier":"TP","pair":["LIS","GRU"],"service":"nonstop","status":"published","sourceIds":["tp-lis-current-routes"]},
+    {"carrier":"TP","pair":["LIS","FNC"],"service":"nonstop","status":"published","sourceIds":["tp-lis-current-routes"]},
+    {"carrier":"TP","pair":["LIS","MAD"],"service":"nonstop","status":"published","sourceIds":["tp-lis-current-routes"]},
+    {"carrier":"TP","pair":["LIS","BCN"],"service":"nonstop","status":"published","sourceIds":["tp-lis-current-routes"]},
+    {"carrier":"TP","pair":["LIS","LHR"],"service":"nonstop","status":"published","sourceIds":["tp-lis-current-routes"]},
+    {"carrier":"TP","pair":["GRU","LIS"],"service":"nonstop","status":"published","sourceIds":["tp-current-nonstop-pairs"]},
+    {"carrier":"TP","pair":["FNC","LIS"],"service":"nonstop","status":"published","sourceIds":["tp-current-nonstop-pairs"]},
+    {"carrier":"TP","pair":["GIG","LIS"],"service":"nonstop","status":"published","sourceIds":["tp-current-nonstop-pairs"]},
+    {"carrier":"TP","pair":["NBJ","LIS"],"service":"nonstop","status":"published","sourceIds":["tp-current-nonstop-pairs"]},
+    {"carrier":"TP","pair":["MAD","LIS"],"service":"nonstop","status":"published","sourceIds":["tp-current-nonstop-pairs"]},
+    {"carrier":"TP","pair":["LIS","GIG"],"service":"nonstop","status":"published","sourceIds":["tp-current-nonstop-pairs"]},
+    {"carrier":"TP","pair":["LIS","ORY"],"service":"nonstop","status":"published","sourceIds":["tp-current-nonstop-pairs"]},
+    {"carrier":"CA","pair":["SZX","FRA"],"service":"nonstop","status":"published","sourceIds":["ca-szx-fra-operated"]},
+    {"carrier":"A3","pair":["ATH","LHR"],"service":"nonstop","status":"published","sourceIds":["a3-ath-lhr-current-pass","a3-ath-lhr-operator"]},
+    {"carrier":"A3","pair":["MAD","ATH"],"service":"nonstop","status":"published","sourceIds":["a3-current-flight-status-2026-09-06"]},
+    {"carrier":"A3","pair":["ATH","MAD"],"service":"nonstop","status":"published","sourceIds":["a3-current-flight-status-2026-09-06"]},
+    {"carrier":"A3","pair":["ATH","LCA"],"service":"nonstop","status":"published","sourceIds":["a3-current-flight-status-2026-09-06"]},
+    {"carrier":"A3","pair":["ATH","BCN"],"service":"nonstop","status":"published","sourceIds":["a3-current-flight-status-2026-09-06"]},
+    {"carrier":"A3","pair":["BCN","ATH"],"service":"nonstop","status":"published","sourceIds":["a3-current-flight-status-2026-09-06"]},
+    {"carrier":"A3","pair":["ATH","VIE"],"service":"nonstop","status":"published","sourceIds":["a3-current-flight-status-2026-09-06"]},
+    {"carrier":"A3","pair":["ATH","AMM"],"service":"nonstop","status":"published","sourceIds":["a3-current-flight-status-2026-09-06"]},
+    {"carrier":"A3","pair":["ATH","TLV"],"service":"nonstop","status":"published","sourceIds":["a3-current-flight-status-2026-09-06"]},
+    {"carrier":"A3","pair":["ATH","CAI"],"service":"nonstop","status":"published","sourceIds":["a3-current-flight-status-2026-09-06"]},
+    {"carrier":"A3","pair":["ATH","BEY"],"service":"nonstop","status":"published","sourceIds":["a3-current-flight-status-2026-09-06"]},
+    {"carrier":"A3","pair":["OPO","ATH"],"service":"nonstop","status":"published","sourceIds":["a3-current-flight-status-2026-09-06"]},
+    {"carrier":"A3","pair":["ATH","OPO"],"service":"nonstop","status":"published","sourceIds":["a3-current-flight-status-2026-09-06"]},
+    {"carrier":"A3","pair":["LIS","ATH"],"service":"nonstop","status":"published","sourceIds":["a3-current-flight-status-2026-09-06"]},
+    {"carrier":"A3","pair":["DUB","ATH"],"service":"nonstop","status":"published","sourceIds":["a3-current-flight-status-2026-09-06"]},
+    {"carrier":"A3","pair":["ATH","IST"],"service":"nonstop","status":"published","sourceIds":["a3-current-flight-status-2026-09-06"]},
+    {"carrier":"A3","pair":["RUH","ATH"],"service":"nonstop","status":"published","sourceIds":["a3-current-flight-status-2026-09-06"]},
+    {"carrier":"A3","pair":["ATH","TBS"],"service":"nonstop","status":"published","sourceIds":["a3-current-flight-status-2026-09-06"]},
+    {"carrier":"A3","pair":["BRI","ATH"],"service":"nonstop","status":"published","sourceIds":["a3-current-flight-status-2026-09-06"]},
+    {"carrier":"A3","pair":["GVA","ATH"],"service":"nonstop","status":"published","sourceIds":["a3-current-flight-status-2026-09-06"]},
+    {"carrier":"A3","pair":["LJU","ATH"],"service":"nonstop","status":"published","sourceIds":["a3-current-flight-status-2026-09-06"]},
+    {"carrier":"A3","pair":["BER","ATH"],"service":"nonstop","status":"published","sourceIds":["a3-current-flight-status-2026-09-06"]},
+    {"carrier":"A3","pair":["STR","ATH"],"service":"nonstop","status":"published","sourceIds":["a3-current-flight-status-2026-09-06"]},
+    {"carrier":"A3","pair":["MUC","SKG"],"service":"nonstop","status":"published","sourceIds":["a3-current-flight-status-2026-09-06"]},
+    {"carrier":"A3","pair":["FRA","SKG"],"service":"nonstop","status":"published","sourceIds":["a3-current-flight-status-2026-09-06"]},
+    {"carrier":"RJ","pair":["AMM","AUH"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AUH","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","ALP"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["ALP","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","HBE"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference","rj-alexandria-code-transition"],"effectiveUntil":"2026-09-15"},
+    {"carrier":"RJ","pair":["HBE","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference","rj-alexandria-code-transition"],"effectiveUntil":"2026-09-15"},
+    {"carrier":"RJ","pair":["AMM","ALG"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["ALG","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","AMS"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMS","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","AQJ"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AQJ","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","ATH"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["ATH","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","BGW"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["BGW","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","BAH"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["BAH","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","BKK"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["BKK","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","BCN"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["BCN","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","BSR"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["BSR","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","BEY"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["BEY","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","BEN"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["BEN","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","BER"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["BER","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","BRU"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["BRU","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","CAI"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["CAI","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","CMN"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["CMN","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","ORD"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["ORD","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","DFW"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["DFW","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","DAM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["DAM","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","DMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["DMM","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","DTW"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["DTW","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","DOH"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["DOH","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","DXB"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["DXB","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","DUS"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["DUS","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","EBL"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["EBL","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","FRA"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["FRA","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","GVA"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["GVA","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","HAM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["HAM","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","IST"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["IST","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","JED"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["JED","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","KWI"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["KWI","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","LCA"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["LCA","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","LHR"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["LHR","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","LYS"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["LYS","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","MAD"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["MAD","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","MAN"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["MAN","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","MED"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["MED","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","MXP"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["MXP","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","MJI"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["MJI","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","YUL"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["YUL","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","DME"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["DME","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","BOM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["BOM","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","MUC"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["MUC","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","NJF"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["NJF","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","JFK"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["JFK","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","CDG"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["CDG","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","RUH"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["RUH","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","FCO"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["FCO","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","SHJ"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"],"effectiveUntil":"2026-09-15"},
+    {"carrier":"RJ","pair":["SHJ","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"],"effectiveUntil":"2026-09-15"},
+    {"carrier":"RJ","pair":["AMM","STN"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["STN","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","ARN"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["ARN","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","ISU"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["ISU","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","TUN"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["TUN","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","VIE"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference","rj-amm-vie-2026"],"effectiveFrom":"2026-06-24"},
+    {"carrier":"RJ","pair":["VIE","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AMM","ZRH"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["ZRH","AMM"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["AQJ","CAI"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["CAI","AQJ"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["ADJ","IST"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["ADJ","SSH"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["SSH","ADJ"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["ADJ","TZX"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"RJ","pair":["TZX","ADJ"],"service":"nonstop","status":"published","sourceIds":["rj-september-2026-quick-reference"]},
+    {"carrier":"AT","pair":["CMN","ABJ"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","ACC"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","ALG"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","AMS"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","BCN"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","BJL"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","BKO"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","BLQ"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","BOD"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","BRU"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","BZV"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","CAI"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","CKY"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","COO"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","DLA"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","DSS"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","FCO"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","FIH"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","FNA"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","FRA"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","GVA"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","IAD"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","IST"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","JED"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","JFK"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","LBV"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","LFW"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","LIS"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","LOS"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","LPA"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","LYS"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","MAD"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","MED"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","MPL"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","MRS"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","MXP"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","NCE"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","NIM"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","NKC"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","NTE"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","OUA"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","RAI"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","ROB"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","RUH"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","SSG"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","SXB"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","TLS"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","TLV"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","TRN"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","TUN"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","VCE"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","VLC"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","YUL"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"AT","pair":["CMN","ZRH"],"service":"nonstop","status":"published","sourceIds":["at-passenger-network-cmn","at-direct-airport-network"]},
+    {"carrier":"WY","pair":["MCT","SIN"],"service":"nonstop","status":"published","sourceIds":["wy-mus-sin-2026"],"effectiveFrom":"2026-07-02"},
+    {"carrier":"WY","pair":["SIN","MCT"],"service":"nonstop","status":"published","sourceIds":["wy-mus-sin-2026"],"effectiveFrom":"2026-07-02"},
+    {"carrier":"WY","pair":["MCT","TAS"],"service":"nonstop","status":"published","sourceIds":["wy-mus-tas-2026"],"effectiveFrom":"2026-06-01"},
+    {"carrier":"WY","pair":["TAS","MCT"],"service":"nonstop","status":"published","sourceIds":["wy-mus-tas-2026"],"effectiveFrom":"2026-06-01"},
+    {"carrier":"WY","pair":["MCT","AUH"],"service":"nonstop","status":"published","sourceIds":["wy-mus-auh-2026"],"effectiveFrom":"2026-07-09"},
+    {"carrier":"WY","pair":["AUH","MCT"],"service":"nonstop","status":"published","sourceIds":["wy-mus-auh-2026"],"effectiveFrom":"2026-07-09"},
+    {"carrier":"WY","pair":["MCT","TIF"],"service":"nonstop","status":"published","sourceIds":["wy-mus-tif-2026","wy-tif-airport-code-current"],"effectiveFrom":"2026-01-31"},
+    {"carrier":"WY","pair":["TIF","MCT"],"service":"nonstop","status":"published","sourceIds":["wy-mus-tif-2026","wy-tif-airport-code-current"],"effectiveFrom":"2026-01-31"},
+    {"carrier":"WY","pair":["MCT","AER"],"service":"nonstop","status":"published","sourceIds":["wy-mus-aer-2026","wy-mus-aer-current","wy-2026-network-expansion"],"effectiveFrom":"2026-07-02"},
+    {"carrier":"WY","pair":["AER","MCT"],"service":"nonstop","status":"published","sourceIds":["wy-mus-aer-2026","wy-aer-mus-current","wy-2026-network-expansion"],"effectiveFrom":"2026-07-02"},
+    {"carrier":"CM","pair":["PTY","DAV"],"service":"nonstop","status":"published","sourceIds":["cm-pty-dav-direct"]},
+    {"carrier":"CM","pair":["DAV","PTY"],"service":"nonstop","status":"published","sourceIds":["cm-pty-dav-direct"]},
+    {"carrier":"AS","pair":["SFO","SEA"],"service":"nonstop","status":"published","sourceIds":["as-sfo-sea-2026"]},
+    {"carrier":"AS","pair":["SEA","SFO"],"service":"nonstop","status":"published","sourceIds":["as-sea-sfo-2026"]},
+    {"carrier":"HA","pair":["HNL","HND"],"service":"nonstop","status":"published","sourceIds":["ha-hnl-hnd-2026"]},
+    {"carrier":"HA","pair":["HND","HNL"],"service":"nonstop","status":"published","sourceIds":["ha-hnd-hnl-2026"]},
+    {"carrier":"UL","pair":["CMB","LHR"],"service":"nonstop","status":"published","sourceIds":["ul-cmb-lhr-current","ul-lhr-cmb-nonstop"]},
+    {"carrier":"UL","pair":["LHR","CMB"],"service":"nonstop","status":"published","sourceIds":["ul-lhr-cmb-nonstop"]},
+    {"carrier":"SN","pair":["BRU","JFK"],"service":"nonstop","status":"published","sourceIds":["sn-bru-jfk-flightplan"]},
+    {"carrier":"SN","pair":["JFK","BRU"],"service":"nonstop","status":"published","sourceIds":["sn-bru-jfk-flightplan"]},
+    {"carrier":"OU","pair":["LHR","ZAG"],"service":"nonstop","status":"published","sourceIds":["ou-lhr-zag-2026"]},
+    {"carrier":"OU","pair":["ATH","DBV"],"service":"nonstop","status":"published","sourceIds":["ou-athens-from-2026"],"effectiveFrom":"2026-04-09","effectiveUntil":"2026-10-22"},
+    {"carrier":"OU","pair":["ATH","SPU"],"service":"nonstop","status":"published","sourceIds":["ou-athens-from-2026"],"effectiveFrom":"2026-05-09","effectiveUntil":"2026-10-17"},
+    {"carrier":"OU","pair":["DBV","ATH"],"service":"nonstop","status":"published","sourceIds":["ou-athens-to-2026","ou-current-operated-checkin"],"effectiveFrom":"2026-04-09","effectiveUntil":"2026-10-22"},
+    {"carrier":"OU","pair":["SPU","ATH"],"service":"nonstop","status":"published","sourceIds":["ou-athens-to-2026"],"effectiveFrom":"2026-05-09","effectiveUntil":"2026-10-17"},
+    {"carrier":"OU","pair":["CPH","ZAG"],"service":"nonstop","status":"published","sourceIds":["ou-copenhagen-from-2026"]},
+    {"carrier":"OU","pair":["CPH","SPU"],"service":"nonstop","status":"published","sourceIds":["ou-copenhagen-from-2026"],"effectiveFrom":"2026-05-09","effectiveUntil":"2026-10-10"},
+    {"carrier":"OU","pair":["ZAG","CPH"],"service":"nonstop","status":"published","sourceIds":["ou-copenhagen-to-2026"]},
+    {"carrier":"OU","pair":["SPU","CPH"],"service":"nonstop","status":"published","sourceIds":["ou-copenhagen-to-2026"],"effectiveFrom":"2026-05-09","effectiveUntil":"2026-10-10"},
+    {"carrier":"OU","pair":["DUB","SPU"],"service":"nonstop","status":"published","sourceIds":["ou-dublin-from-2026"],"effectiveFrom":"2026-05-10","effectiveUntil":"2026-10-11"},
+    {"carrier":"OU","pair":["SPU","DUB"],"service":"nonstop","status":"published","sourceIds":["ou-dublin-to-2026"],"effectiveFrom":"2026-05-10","effectiveUntil":"2026-10-11"},
+    {"carrier":"OU","pair":["LHR","SPU"],"service":"nonstop","status":"published","sourceIds":["ou-lhr-zag-2026"],"effectiveFrom":"2026-04-04","effectiveUntil":"2026-10-24"},
+    {"carrier":"OU","pair":["LGW","SPU"],"service":"nonstop","status":"published","sourceIds":["ou-lhr-zag-2026"],"effectiveFrom":"2026-04-20","effectiveUntil":"2026-10-29"},
+    {"carrier":"OU","pair":["ZAG","LHR"],"service":"nonstop","status":"published","sourceIds":["ou-london-to-2026"]},
+    {"carrier":"OU","pair":["SPU","LHR"],"service":"nonstop","status":"published","sourceIds":["ou-london-to-2026"],"effectiveFrom":"2026-04-04","effectiveUntil":"2026-10-24"},
+    {"carrier":"OU","pair":["SPU","LGW"],"service":"nonstop","status":"published","sourceIds":["ou-london-to-2026"],"effectiveFrom":"2026-04-20","effectiveUntil":"2026-10-19"},
+    {"carrier":"OU","pair":["PUY","LHR"],"service":"nonstop","status":"published","sourceIds":["ou-london-to-2026"],"effectiveFrom":"2026-03-30","effectiveUntil":"2026-10-23"},
+    {"carrier":"OU","pair":["ZAD","LHR"],"service":"nonstop","status":"published","sourceIds":["ou-london-to-2026"],"effectiveFrom":"2026-03-30","effectiveUntil":"2026-10-23"},
+    {"carrier":"OU","pair":["FCO","SPU"],"service":"nonstop","status":"published","sourceIds":["ou-rome-from-2026"]},
+    {"carrier":"OU","pair":["FCO","DBV"],"service":"nonstop","status":"published","sourceIds":["ou-rome-from-2026"]},
+    {"carrier":"OU","pair":["SPU","FCO"],"service":"nonstop","status":"published","sourceIds":["ou-rome-to-2026","ou-current-operated-checkin"]},
+    {"carrier":"OU","pair":["DBV","FCO"],"service":"nonstop","status":"published","sourceIds":["ou-rome-to-2026","ou-current-operated-checkin"]},
+    {"carrier":"AZ","pair":["FCO","JFK"],"service":"nonstop","status":"published","sourceIds":["az-fco-jfk-current"]},
+    {"carrier":"AZ","pair":["JFK","FCO"],"service":"nonstop","status":"published","sourceIds":["az-fco-jfk-current"]},
+    {"carrier":"AV","pair":["MAD","SAL"],"service":"nonstop","status":"published","sourceIds":["av-mad-sal-2026"]},
+    {"carrier":"OZ","pair":["JFK","ICN"],"service":"nonstop","status":"published","sourceIds":["oz-us-icn-current-schedule"]},
+    {"carrier":"OZ","pair":["ICN","JFK"],"service":"nonstop","status":"published","sourceIds":["oz-us-icn-current-schedule"]},
+    {"carrier":"OZ","pair":["LAX","ICN"],"service":"nonstop","status":"published","sourceIds":["oz-us-icn-current-schedule"]},
+    {"carrier":"OZ","pair":["ICN","LAX"],"service":"nonstop","status":"published","sourceIds":["oz-us-icn-current-schedule"]},
+    {"carrier":"OZ","pair":["SFO","ICN"],"service":"nonstop","status":"published","sourceIds":["oz-us-icn-current-schedule"]},
+    {"carrier":"OZ","pair":["ICN","SFO"],"service":"nonstop","status":"published","sourceIds":["oz-us-icn-current-schedule"]},
+    {"carrier":"OZ","pair":["SEA","ICN"],"service":"nonstop","status":"published","sourceIds":["oz-us-icn-current-schedule"]},
+    {"carrier":"OZ","pair":["ICN","SEA"],"service":"nonstop","status":"published","sourceIds":["oz-us-icn-current-schedule"]},
+    {"carrier":"OZ","pair":["ICN","MXP"],"service":"nonstop","status":"published","sourceIds":["oz-current-network-schedule-2026-09"]},
+    {"carrier":"OZ","pair":["MXP","ICN"],"service":"nonstop","status":"published","sourceIds":["oz-current-network-schedule-2026-09"]},
+    {"carrier":"OZ","pair":["ICN","NRT"],"service":"nonstop","status":"published","sourceIds":["oz-current-network-schedule-2026-09"]},
+    {"carrier":"OZ","pair":["NRT","ICN"],"service":"nonstop","status":"published","sourceIds":["oz-current-network-schedule-2026-09"]},
+    {"carrier":"OZ","pair":["ICN","HND"],"service":"nonstop","status":"published","sourceIds":["oz-current-network-schedule-2026-09"]},
+    {"carrier":"OZ","pair":["HND","ICN"],"service":"nonstop","status":"published","sourceIds":["oz-current-network-schedule-2026-09"]},
+    {"carrier":"OZ","pair":["GMP","HND"],"service":"nonstop","status":"published","sourceIds":["oz-current-network-schedule-2026-09"]},
+    {"carrier":"OZ","pair":["HND","GMP"],"service":"nonstop","status":"published","sourceIds":["oz-current-network-schedule-2026-09"]},
+    {"carrier":"OZ","pair":["ICN","KIX"],"service":"nonstop","status":"published","sourceIds":["oz-current-network-schedule-2026-09"]},
+    {"carrier":"OZ","pair":["KIX","ICN"],"service":"nonstop","status":"published","sourceIds":["oz-current-network-schedule-2026-09"]},
+    {"carrier":"OZ","pair":["GMP","KIX"],"service":"nonstop","status":"published","sourceIds":["oz-current-network-schedule-2026-09"]},
+    {"carrier":"OZ","pair":["KIX","GMP"],"service":"nonstop","status":"published","sourceIds":["oz-current-network-schedule-2026-09"]},
+    {"carrier":"OZ","pair":["ICN","CTS"],"service":"nonstop","status":"published","sourceIds":["oz-current-network-schedule-2026-09"]},
+    {"carrier":"OZ","pair":["CTS","ICN"],"service":"nonstop","status":"published","sourceIds":["oz-current-network-schedule-2026-09"]},
+    {"carrier":"OZ","pair":["ICN","PVG"],"service":"nonstop","status":"published","sourceIds":["oz-current-network-schedule-2026-09"]},
+    {"carrier":"OZ","pair":["PVG","ICN"],"service":"nonstop","status":"published","sourceIds":["oz-current-network-schedule-2026-09"]},
+    {"carrier":"OZ","pair":["GMP","SHA"],"service":"nonstop","status":"published","sourceIds":["oz-current-network-schedule-2026-09"]},
+    {"carrier":"OZ","pair":["SHA","GMP"],"service":"nonstop","status":"published","sourceIds":["oz-current-network-schedule-2026-09"]},
+    {"carrier":"OZ","pair":["ICN","TFU"],"service":"nonstop","status":"published","sourceIds":["oz-current-network-schedule-2026-09"]},
+    {"carrier":"OZ","pair":["TFU","ICN"],"service":"nonstop","status":"published","sourceIds":["oz-current-network-schedule-2026-09"]},
+    {"carrier":"OZ","pair":["ICN","TPE"],"service":"nonstop","status":"published","sourceIds":["oz-current-network-schedule-2026-09"]},
+    {"carrier":"OZ","pair":["TPE","ICN"],"service":"nonstop","status":"published","sourceIds":["oz-current-network-schedule-2026-09"]},
+    {"carrier":"OZ","pair":["ICN","KTI"],"service":"nonstop","status":"published","sourceIds":["oz-current-network-schedule-2026-09"]},
+    {"carrier":"OZ","pair":["KTI","ICN"],"service":"nonstop","status":"published","sourceIds":["oz-current-network-schedule-2026-09"]},
+    {"carrier":"SA","pair":["JNB","ACC"],"service":"nonstop","status":"published","sourceIds":["sa-jnb-acc-current","sa-jnb-acc-fares"]},
+    {"carrier":"MS","pair":["CAI","IAD"],"service":"nonstop","status":"published","sourceIds":["ms-cairo-current-routes","ms-cai-iad-nonstop"]},
+    {"carrier":"MS","pair":["IAD","CAI"],"service":"nonstop","status":"published","sourceIds":["ms-cairo-current-routes","ms-cai-iad-nonstop"]},
+    {"carrier":"ZH","pair":["SZX","HAN"],"service":"nonstop","status":"published","sourceIds":["zh-current-operated-international-routes"]},
+    {"carrier":"ZH","pair":["HAN","SZX"],"service":"nonstop","status":"published","sourceIds":["zh-current-operated-international-routes"]},
+    {"carrier":"ZH","pair":["SZX","KUL"],"service":"nonstop","status":"published","sourceIds":["zh-current-operated-international-routes"]},
+    {"carrier":"ZH","pair":["KUL","SZX"],"service":"nonstop","status":"published","sourceIds":["zh-current-operated-international-routes"]},
+    {"carrier":"ZH","pair":["SZX","BKK"],"service":"nonstop","status":"published","sourceIds":["zh-current-operated-international-routes"]},
+    {"carrier":"ZH","pair":["BKK","SZX"],"service":"nonstop","status":"published","sourceIds":["zh-current-operated-international-routes"]},
+    {"carrier":"ZH","pair":["SZX","MNL"],"service":"nonstop","status":"published","sourceIds":["zh-current-operated-international-routes"]},
+    {"carrier":"ZH","pair":["MNL","SZX"],"service":"nonstop","status":"published","sourceIds":["zh-current-operated-international-routes"]},
+    {"carrier":"ZH","pair":["SZX","SGN"],"service":"nonstop","status":"published","sourceIds":["zh-current-operated-international-routes"]},
+    {"carrier":"ZH","pair":["SGN","SZX"],"service":"nonstop","status":"published","sourceIds":["zh-current-operated-international-routes"]},
+    {"carrier":"ZH","pair":["SZX","SIN"],"service":"nonstop","status":"published","sourceIds":["zh-current-operated-international-routes"]},
+    {"carrier":"ZH","pair":["SIN","SZX"],"service":"nonstop","status":"published","sourceIds":["zh-current-operated-international-routes"]},
+    {"carrier":"ZH","pair":["SZX","PEN"],"service":"nonstop","status":"published","sourceIds":["zh-current-operated-international-routes"]},
+    {"carrier":"ZH","pair":["PEN","SZX"],"service":"nonstop","status":"published","sourceIds":["zh-current-operated-international-routes"]},
+    {"carrier":"ZH","pair":["SZX","BCN"],"service":"nonstop","status":"published","sourceIds":["zh-current-operated-international-routes"]},
+    {"carrier":"ZH","pair":["BCN","SZX"],"service":"nonstop","status":"published","sourceIds":["zh-current-operated-international-routes"]},
+    {"carrier":"ZH","pair":["SZX","LHR"],"service":"nonstop","status":"published","sourceIds":["zh-current-operated-international-routes"]},
+    {"carrier":"ZH","pair":["LHR","SZX"],"service":"nonstop","status":"published","sourceIds":["zh-current-operated-international-routes"]},
+    {"carrier":"ZH","pair":["SZX","ICN"],"service":"nonstop","status":"published","sourceIds":["zh-current-operated-international-routes"]},
+    {"carrier":"ZH","pair":["ICN","SZX"],"service":"nonstop","status":"published","sourceIds":["zh-current-operated-international-routes"]},
+    {"carrier":"ZH","pair":["SZX","CJU"],"service":"nonstop","status":"published","sourceIds":["zh-current-operated-international-routes"]},
+    {"carrier":"ZH","pair":["CJU","SZX"],"service":"nonstop","status":"published","sourceIds":["zh-current-operated-international-routes"]},
+    {"carrier":"ZH","pair":["SZX","TPE"],"service":"nonstop","status":"published","sourceIds":["zh-current-operated-international-routes"]},
+    {"carrier":"ZH","pair":["TPE","SZX"],"service":"nonstop","status":"published","sourceIds":["zh-current-operated-international-routes"]},
+    {"carrier":"ZH","pair":["WUX","ICN"],"service":"nonstop","status":"published","sourceIds":["zh-current-operated-international-routes"]},
+    {"carrier":"ZH","pair":["ICN","WUX"],"service":"nonstop","status":"published","sourceIds":["zh-current-operated-international-routes"]},
+    {"carrier":"FJ","pair":["NAN","DFW"],"service":"nonstop","status":"published","sourceIds":["fj-dfw-nan-direct","fj-dfw-current-status"]},
+    {"carrier":"FJ","pair":["DFW","NAN"],"service":"nonstop","status":"published","sourceIds":["fj-dfw-nan-direct","fj-dfw-current-status"]},
+    {"carrier":"BR","pair":["TPE","BKK"],"service":"nonstop","status":"published","sourceIds":["br-tpe-bkk-current"],"effectiveFrom":"2026-09-08"},
+    {"carrier":"BR","pair":["BKK","TPE"],"service":"nonstop","status":"published","sourceIds":["br-bkk-tpe-current"],"effectiveFrom":"2026-09-08"}
+  ]
+}

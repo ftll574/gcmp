@@ -1,0 +1,105 @@
+import { createHash } from 'node:crypto';
+import { mkdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
+import { parseRouteNetworkCatalog, type RouteNetworkCatalog } from '../src/lib/schemas/route-network.ts';
+import { mergeRouteNetworkCatalogs } from '../src/lib/rtw/route-network-merge.ts';
+
+const INPUTS = [
+  'current.json',
+  'recent-current.json',
+  'observed-current.json',
+  'affiliate-current.json',
+  'bts-marketing-current.json',
+  'standing-current.json',
+] as const;
+
+const root = 'public/data/route-network';
+const airportCodes = new Set<string>(
+  (JSON.parse(readFileSync('public/data/airports.json', 'utf8')) as Array<{ iata: string }>).map((row) => row.iata),
+);
+
+function sha256(text: string): string {
+  return createHash('sha256').update(text.replace(/\r\n/g, '\n')).digest('hex');
+}
+
+function normalizedBytes(text: string): number {
+  return Buffer.byteLength(text.replace(/\r\n/g, '\n'));
+}
+
+const rawByFile = new Map<string, string>();
+const catalogs = INPUTS.map((file) => {
+  const raw = readFileSync(`${root}/${file}`, 'utf8');
+  rawByFile.set(file, raw);
+  return parseRouteNetworkCatalog(JSON.parse(raw), airportCodes);
+});
+
+const runtime = catalogs.slice(1).reduce<RouteNetworkCatalog>(
+  (network, layer) => mergeRouteNetworkCatalogs(network, layer),
+  catalogs[0]!,
+);
+
+// This artifact is fetched on every app startup. Keep it compact; the source
+// layers remain human-reviewable and the tiny meta file carries diagnostics.
+const runtimeText = `${JSON.stringify(runtime)}\n`;
+writeFileSync(`${root}/runtime-current.json`, runtimeText);
+
+const publishedRoutes = runtime.routes.filter((route) => route.status === 'published');
+const confirmedOperatingRoutes = publishedRoutes.filter((route) => route.carrierIdentity !== 'provider-listed').length;
+const providerListedRoutes = publishedRoutes.length - confirmedOperatingRoutes;
+const routeCountByCarrier = new Map<string, number>();
+const confirmedOperatingCountByCarrier = new Map<string, number>();
+const providerListedCountByCarrier = new Map<string, number>();
+for (const route of runtime.routes) {
+  if (route.status !== 'published') continue;
+  routeCountByCarrier.set(route.carrier, (routeCountByCarrier.get(route.carrier) ?? 0) + 1);
+  const identityCounts = route.carrierIdentity === 'provider-listed'
+    ? providerListedCountByCarrier
+    : confirmedOperatingCountByCarrier;
+  identityCounts.set(route.carrier, (identityCounts.get(route.carrier) ?? 0) + 1);
+}
+
+const shardRoot = `${root}/runtime-origins`;
+mkdirSync(shardRoot, { recursive: true });
+const originShards: Record<string, { routes: number; bytes: number; sha256: string }> = {};
+for (const letter of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') {
+  const routes = runtime.routes.filter((route) => route.pair[0].startsWith(letter));
+  const path = `${shardRoot}/${letter}.json`;
+  if (routes.length === 0) {
+    try { unlinkSync(path); } catch { /* no stale shard */ }
+    continue;
+  }
+  const sourceIds = new Set(routes.flatMap((route) => route.sourceIds));
+  const shard: RouteNetworkCatalog = {
+    version: runtime.version,
+    coverage: runtime.coverage,
+    sources: runtime.sources.filter((source) => sourceIds.has(source.id)),
+    carrierUniverses: [],
+    routes,
+  };
+  parseRouteNetworkCatalog(shard, airportCodes);
+  const text = `${JSON.stringify(shard)}\n`;
+  writeFileSync(path, text);
+  originShards[letter] = { routes: routes.length, bytes: normalizedBytes(text), sha256: sha256(text) };
+}
+
+const meta = {
+  version: 1,
+  builtOn: '2026-09-08',
+  inputs: Object.fromEntries(INPUTS.map((file) => [file, sha256(rawByFile.get(file)!)])),
+  outputSha256: sha256(runtimeText),
+  routes: runtime.routes.length,
+  publishedRoutes: publishedRoutes.length,
+  carriers: new Set(runtime.routes.map((route) => route.carrier)).size,
+  confirmedOperatingRoutes,
+  providerListedRoutes,
+  routeCountByCarrier: Object.fromEntries([...routeCountByCarrier.entries()].sort(([a], [b]) => a.localeCompare(b))),
+  confirmedOperatingCountByCarrier: Object.fromEntries(
+    [...confirmedOperatingCountByCarrier.entries()].sort(([a], [b]) => a.localeCompare(b)),
+  ),
+  providerListedCountByCarrier: Object.fromEntries(
+    [...providerListedCountByCarrier.entries()].sort(([a], [b]) => a.localeCompare(b)),
+  ),
+  originShards,
+};
+writeFileSync(`${root}/runtime-current.meta.json`, `${JSON.stringify(meta, null, 2)}\n`);
+
+console.log(JSON.stringify(meta, null, 2));
