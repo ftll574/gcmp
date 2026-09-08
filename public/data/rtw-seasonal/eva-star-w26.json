@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "id": "eva-star-official-example-w26",
+  "label": "EVA official Star Alliance RTW example — Winter 2026/27",
+  "productId": "br-infinity-star-alliance-world-travel-award",
+  "checkedOn": "2026-09-09",
+  "searchStart": "2026-11-01",
+  "searchEnd": "2027-03-27",
+  "minimumFullDaysAtStop": 1,
+  "sources": [
+    { "id": "eva-br198", "name": "EVA Air TPE-NRT timetable", "url": "https://www.evaair.com/zh-tw/plan-and-book/special-offers/promotions/flight/26NRTSUM.html", "kind": "airline-publication", "checkedOn": "2026-09-09" },
+    { "id": "flightinfo-br198", "name": "Flight.info BR198 winter schedule", "url": "https://www.flight.info/BR198", "kind": "industry-timetable", "checkedOn": "2026-09-09" },
+    { "id": "ana-nh6", "name": "ANA Winter 2026/27 international operations", "url": "https://www.ana.co.jp/en/tw/plan-book/routes/international-route-information/", "kind": "airline-publication", "checkedOn": "2026-09-09" },
+    { "id": "flightinfo-nh6", "name": "Flight.info NH6 winter schedule", "url": "https://www.flight.info/NH6", "kind": "industry-timetable", "checkedOn": "2026-09-09" },
+    { "id": "flightinfo-ua2743", "name": "Flight.info UA2743 November 2026 schedule", "url": "https://www.flight.info/UA2743", "kind": "industry-timetable", "checkedOn": "2026-09-09" },
+    { "id": "flightinfo-ua2303", "name": "Flight.info UA2303 winter schedule", "url": "https://www.flight.info/UA2303", "kind": "industry-timetable", "checkedOn": "2026-09-09" },
+    { "id": "flightinfo-ua14", "name": "Flight.info UA14 winter schedule", "url": "https://www.flight.info/UA14", "kind": "industry-timetable", "checkedOn": "2026-09-09" },
+    { "id": "lufthansa-lhr-fra", "name": "Lufthansa LHR-FRA flightplan", "url": "https://www.lufthansa.com/lhg/de/en/o-d/cy-cy/london-frankfurt", "kind": "airline-publication", "checkedOn": "2026-09-09" },
+    { "id": "flightinfo-lh901", "name": "Flight.info LH901 winter schedule", "url": "https://www.flight.info/LH901", "kind": "industry-timetable", "checkedOn": "2026-09-09" },
+    { "id": "flightinfo-lh915", "name": "Flight.info LH915 winter schedule", "url": "https://www.flight.info/LH915", "kind": "industry-timetable", "checkedOn": "2026-09-09" },
+    { "id": "lufthansa-fra-sin", "name": "Lufthansa FRA-SIN flightplan", "url": "https://www.lufthansa.com/lhg/de/en/o-d/cy-cy/frankfurt-singapore", "kind": "airline-publication", "checkedOn": "2026-09-09" },
+    { "id": "flightinfo-lh780", "name": "Flight.info LH780 winter schedule", "url": "https://www.flight.info/LH780", "kind": "industry-timetable", "checkedOn": "2026-09-09" },
+    { "id": "flightinfo-tg404", "name": "Flight.info TG404 schedule", "url": "https://www.flight.info/TG404", "kind": "industry-timetable", "checkedOn": "2026-09-09" },
+    { "id": "eva-bkk-tpe", "name": "EVA Air BKK-TPE booking surface", "url": "https://flights.evaair.com/en/flights-from-bangkok-to-taipei", "kind": "airline-publication", "checkedOn": "2026-09-09" },
+    { "id": "flightinfo-br202", "name": "Flight.info BR202 winter schedule", "url": "https://www.flight.info/BR202", "kind": "industry-timetable", "checkedOn": "2026-09-09" }
+  ],
+  "patterns": [
+    { "id": "br198-w26", "carrier": "BR", "flightNumber": "198", "from": "TPE", "to": "NRT", "effectiveFrom": "2026-11-01", "effectiveUntil": "2027-03-27", "daysOfWeek": [1,2,3,4,5,6,7], "departureTime": "08:50", "arrivalTime": "12:55", "arrivalDayOffset": 0, "sourceIds": ["eva-br198", "flightinfo-br198"] },
+    { "id": "nh6-w26", "carrier": "NH", "flightNumber": "6", "from": "NRT", "to": "LAX", "effectiveFrom": "2026-11-01", "effectiveUntil": "2027-03-13", "daysOfWeek": [1,2,3,4,5,6,7], "departureTime": "17:00", "arrivalTime": "09:50", "arrivalDayOffset": 0, "sourceIds": ["ana-nh6", "flightinfo-nh6"] },
+    { "id": "ua2743-20261106", "carrier": "UA", "flightNumber": "2743", "from": "LAX", "to": "EWR", "effectiveFrom": "2026-11-06", "effectiveUntil": "2026-11-06", "daysOfWeek": [5], "departureTime": "07:10", "arrivalTime": "15:29", "arrivalDayOffset": 0, "sourceIds": ["flightinfo-ua2743"] },
+    { "id": "ua2303-nov26", "carrier": "UA", "flightNumber": "2303", "from": "LAX", "to": "EWR", "effectiveFrom": "2026-11-01", "effectiveUntil": "2026-11-30", "daysOfWeek": [1,2,3,4,5,6,7], "departureTime": "23:00", "arrivalTime": "07:05", "arrivalDayOffset": 1, "sourceIds": ["flightinfo-ua2303"] },
+    { "id": "ua2303-dec-a", "carrier": "UA", "flightNumber": "2303", "from": "LAX", "to": "EWR", "effectiveFrom": "2026-12-01", "effectiveUntil": "2026-12-16", "daysOfWeek": [1,2,3,4,5,6,7], "departureTime": "23:15", "arrivalTime": "07:12", "arrivalDayOffset": 1, "sourceIds": ["flightinfo-ua2303"] },
+    { "id": "ua2303-dec-b", "carrier": "UA", "flightNumber": "2303", "from": "LAX", "to": "EWR", "effectiveFrom": "2026-12-17", "effectiveUntil": "2027-01-04", "daysOfWeek": [1,2,3,4,5,6,7], "departureTime": "22:45", "arrivalTime": "06:54", "arrivalDayOffset": 1, "sourceIds": ["flightinfo-ua2303"] },
+    { "id": "ua2303-w27", "carrier": "UA", "flightNumber": "2303", "from": "LAX", "to": "EWR", "effectiveFrom": "2027-01-05", "effectiveUntil": "2027-03-12", "daysOfWeek": [1,2,3,4,5,6,7], "departureTime": "23:15", "arrivalTime": "07:12", "arrivalDayOffset": 1, "sourceIds": ["flightinfo-ua2303"] },
+    { "id": "ua14-w26", "carrier": "UA", "flightNumber": "14", "from": "EWR", "to": "LHR", "effectiveFrom": "2026-11-01", "effectiveUntil": "2027-03-12", "daysOfWeek": [1,2,3,4,5,7], "departureTime": "20:00", "arrivalTime": "08:25", "arrivalDayOffset": 1, "sourceIds": ["flightinfo-ua14"] },
+    { "id": "lh901-early-w26", "carrier": "LH", "flightNumber": "901", "from": "LHR", "to": "FRA", "effectiveFrom": "2026-11-01", "effectiveUntil": "2026-12-24", "daysOfWeek": [1,2,3,4,5,6,7], "departureTime": "09:30", "arrivalTime": "12:05", "arrivalDayOffset": 0, "sourceIds": ["lufthansa-lhr-fra", "flightinfo-lh901"] },
+    { "id": "lh915-w26", "carrier": "LH", "flightNumber": "915", "from": "LHR", "to": "FRA", "effectiveFrom": "2026-11-01", "effectiveUntil": "2027-03-27", "daysOfWeek": [1,2,3,4,5,6,7], "departureTime": "17:30", "arrivalTime": "20:05", "arrivalDayOffset": 0, "sourceIds": ["lufthansa-lhr-fra", "flightinfo-lh915"] },
+    { "id": "lh780-w26", "carrier": "LH", "flightNumber": "780", "from": "FRA", "to": "SIN", "effectiveFrom": "2026-11-01", "effectiveUntil": "2027-03-27", "daysOfWeek": [1,2,3,4,5,6,7], "departureTime": "21:40", "arrivalTime": "17:05", "arrivalDayOffset": 1, "sourceIds": ["lufthansa-fra-sin", "flightinfo-lh780"] },
+    { "id": "tg404-w26", "carrier": "TG", "flightNumber": "404", "from": "SIN", "to": "BKK", "effectiveFrom": "2026-11-01", "effectiveUntil": "2027-03-27", "daysOfWeek": [1,2,3,4,5,6,7], "departureTime": "12:25", "arrivalTime": "13:45", "arrivalDayOffset": 0, "sourceIds": ["flightinfo-tg404"] },
+    { "id": "br202-w26", "carrier": "BR", "flightNumber": "202", "from": "BKK", "to": "TPE", "effectiveFrom": "2026-11-01", "effectiveUntil": "2027-03-27", "daysOfWeek": [1,3,4,6], "departureTime": "14:40", "arrivalTime": "19:15", "arrivalDayOffset": 0, "sourceIds": ["eva-bkk-tpe", "flightinfo-br202"] }
+  ],
+  "segments": [
+    { "from": "TPE", "to": "NRT", "patternIds": ["br198-w26"] },
+    { "from": "NRT", "to": "LAX", "patternIds": ["nh6-w26"] },
+    { "from": "LAX", "to": "EWR", "patternIds": ["ua2743-20261106", "ua2303-nov26", "ua2303-dec-a", "ua2303-dec-b", "ua2303-w27"] },
+    { "from": "EWR", "to": "LHR", "patternIds": ["ua14-w26"] },
+    { "from": "LHR", "to": "FRA", "patternIds": ["lh901-early-w26", "lh915-w26"] },
+    { "from": "FRA", "to": "SIN", "patternIds": ["lh780-w26"] },
+    { "from": "SIN", "to": "BKK", "patternIds": ["tg404-w26"] },
+    { "from": "BKK", "to": "TPE", "patternIds": ["br202-w26"] }
+  ]
+}

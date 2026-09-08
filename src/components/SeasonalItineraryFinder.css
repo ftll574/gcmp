@@ -1,0 +1,68 @@
+.seasonal-itinerary-finder {
+  border: 1px solid color-mix(in srgb, var(--border) 72%, var(--accent));
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 94%, var(--accent) 6%);
+  overflow: clip;
+}
+
+.seasonal-itinerary-finder > summary {
+  cursor: pointer;
+  padding: 12px 14px;
+  list-style: none;
+}
+
+.seasonal-itinerary-finder > summary::-webkit-details-marker { display: none; }
+.seasonal-itinerary-finder > summary span { display: grid; gap: 3px; }
+.seasonal-itinerary-finder > summary strong { font-size: 0.92rem; }
+.seasonal-itinerary-finder > summary small { color: var(--text-muted); line-height: 1.4; }
+
+.seasonal-itinerary-body {
+  display: grid;
+  gap: 12px;
+  padding: 0 14px 14px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.seasonal-itinerary-body > p { margin: 12px 0 0; color: var(--text-muted); line-height: 1.5; }
+.seasonal-itinerary-start { display: grid; gap: 6px; }
+.seasonal-itinerary-start span { font-size: 0.78rem; color: var(--text-muted); }
+.seasonal-itinerary-start input { min-height: 38px; }
+.seasonal-itinerary-find,
+.seasonal-itinerary-apply { min-height: 40px; font-weight: 700; }
+.seasonal-itinerary-window { color: var(--text-muted); }
+
+.seasonal-itinerary-result {
+  display: grid;
+  gap: 12px;
+  padding-top: 2px;
+}
+
+.seasonal-itinerary-result > header { display: grid; gap: 4px; }
+.seasonal-itinerary-result > header span { color: var(--text-muted); font-size: 0.76rem; }
+.seasonal-itinerary-result ol { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
+.seasonal-itinerary-result li {
+  display: grid;
+  grid-template-columns: 84px 58px minmax(0, 1fr);
+  gap: 4px 8px;
+  align-items: baseline;
+  padding: 9px 10px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.seasonal-itinerary-result li time,
+.seasonal-itinerary-result li small { color: var(--text-muted); font-size: 0.72rem; }
+.seasonal-itinerary-result li small { grid-column: 2 / -1; }
+.seasonal-itinerary-result li details { grid-column: 1 / -1; }
+.seasonal-itinerary-result li details > summary { cursor: pointer; color: var(--text-muted); font-size: 0.72rem; }
+.seasonal-itinerary-result li details a { display: block; margin-top: 5px; font-size: 0.72rem; overflow-wrap: anywhere; }
+.seasonal-itinerary-warning { margin: 0 !important; padding: 9px 10px; border-radius: 9px; background: var(--warning-soft, rgba(189, 129, 36, 0.1)); }
+.seasonal-itinerary-failure { display: grid; gap: 4px; padding: 10px; border-radius: 9px; background: var(--warning-soft, rgba(189, 129, 36, 0.1)); }
+.seasonal-itinerary-failure span { color: var(--text-muted); font-size: 0.76rem; }
+
+@media (max-width: 560px) {
+  .seasonal-itinerary-result li { grid-template-columns: 1fr auto; }
+  .seasonal-itinerary-result li span { grid-column: 1 / -1; }
+  .seasonal-itinerary-result li small { grid-column: 1 / -1; }
+}
