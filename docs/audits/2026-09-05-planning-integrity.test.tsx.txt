@@ -1,0 +1,138 @@
+/** Archived takeover probes: all 8 intended-integrity assertions failed on
+ * a591a96 on 2026-09-05. This text file is NOT part of the normal test suite.
+ * To reproduce, copy to tests/components/Takeover.audit.test.tsx and run:
+ * npm run test -- tests/components/Takeover.audit.test.tsx --reporter=verbose
+ * Promote these to permanent regression tests when implementing the fixes.
+ * See docs/takeover-audit-2026-09-05.md for observations and scope. */
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { cleanup, fireEvent, render, waitFor } from '@testing-library/react';
+import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { App } from '../../src/App.tsx';
+import { parseShareUrl } from '../../src/lib/url-schema.ts';
+import * as validator from '../../src/lib/rtw/validate.ts';
+
+const BR = 'br-infinity-star-alliance-world-travel-award';
+const CX = 'cx-asia-miles-oneworld-multi-carrier-award';
+const PUBLIC = join(process.cwd(), 'public');
+let injectExplorerFixture = false;
+
+beforeEach(() => {
+  injectExplorerFixture = false;
+  window.history.replaceState({}, '', '/');
+  vi.stubGlobal('ResizeObserver', class {
+    observe(): void {}
+    unobserve(): void {}
+    disconnect(): void {}
+  });
+  vi.stubGlobal('fetch', vi.fn(async (input: RequestInfo | URL) => {
+    const path = String(input).split('?')[0] ?? '';
+    const file = join(PUBLIC, path);
+    if (!path.startsWith('/data/') || !path.endsWith('.json') || !existsSync(file)) {
+      return { ok: false, status: 404, json: async () => undefined };
+    }
+    const data = JSON.parse(readFileSync(file, 'utf8'));
+    if (injectExplorerFixture && path.endsWith('/schedules/current.json')) {
+      // Controlled UI fixture, NOT a claim about a current airline route;
+      // never written to the production catalog.
+      data.entries.push({ ...data.entries[0], carrier: 'UA', pair: ['NRT', 'LAX'] });
+    }
+    return { ok: true, status: 200, json: async () => data };
+  }));
+});
+
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
+  vi.unstubAllGlobals();
+  window.localStorage.clear();
+  window.history.replaceState({}, '', '/');
+});
+
+async function mount(hash: string): Promise<void> {
+  window.history.replaceState({}, '', '/' + hash);
+  render(<App />);
+  await waitFor(() => expect(document.querySelector('.rtw-product-picker select')).not.toBeNull());
+}
+
+function request() {
+  const parsed = parseShareUrl(window.location.hash);
+  if (!parsed.ok) throw new Error(parsed.message);
+  return parsed.request;
+}
+
+function select(selector: string): HTMLSelectElement {
+  const element = document.querySelector<HTMLSelectElement>(selector);
+  if (!element) throw new Error('Control missing: ' + selector);
+  return element;
+}
+
+const DATED = `#/r/v1/TPE-NRT-LAX?op=BR,UA&p=BR&c=J&stp=1,0&fc=J,J&d=2026-11-02,2026-11-06&rtw=${BR}`;
+
+test('clearing the stopover marker preserves the departure date', async () => {
+  await mount(DATED);
+  expect(request().groups[0]?.legs[0]?.departsOn).toBe('2026-11-02');
+  fireEvent.change(select('.leg-chip-stopover'), { target: { value: '' } });
+  expect(request().groups[0]?.legs[0]?.departsOn).toBe('2026-11-02');
+});
+
+test('clearing the legacy fare class preserves the departure date', async () => {
+  await mount(DATED);
+  fireEvent.change(select('.leg-chip-fareclass'), { target: { value: '' } });
+  expect(request().groups[0]?.legs[0]?.departsOn).toBe('2026-11-02');
+});
+
+test('switching surface back to flight preserves the departure date', async () => {
+  await mount(DATED + '&surf=1,0');
+  const checkbox = document.querySelector<HTMLInputElement>('.leg-chip-surface input');
+  if (!checkbox) throw new Error('Surface checkbox missing');
+  expect(checkbox.checked).toBe(true);
+  fireEvent.click(checkbox);
+  expect(request().groups[0]?.legs[0]?.departsOn).toBe('2026-11-02');
+});
+
+test('removing the first airport preserves an unchanged downstream leg', async () => {
+  await mount(DATED);
+  const remainingLeg = request().groups[0]?.legs[1];
+  const remove = document.querySelector<HTMLButtonElement>('.leg-chip-remove');
+  if (!remove) throw new Error('Remove control missing');
+  fireEvent.click(remove);
+  expect(request().groups[0]?.legs[0]).toEqual(remainingLeg);
+});
+
+test('importing an incompatible carrier preserves input for validation', async () => {
+  await mount(`#/r/v1/TPE-HKG?op=CX&p=BR&c=J&d=2026-11-02&rtw=${BR}`);
+  expect(request().groups[0]?.legs[0]?.operatingCarrier).toBe('CX');
+});
+
+test('switching the redemption product does not silently replace flight operators', async () => {
+  await mount(DATED);
+  fireEvent.change(select('.rtw-product-picker select'), { target: { value: CX } });
+  expect(request().groups[0]?.legs.map(leg => leg.operatingCarrier)).toEqual(['BR', 'UA']);
+});
+
+test('the explorer passes its selected operator through to the added leg', async () => {
+  injectExplorerFixture = true;
+  await mount(`#/r/v1/TPE-NRT?op=BR&p=BR&c=J&rtw=${BR}`);
+  fireEvent.change(select('.rtw-explorer-carrier select'), { target: { value: 'UA' } });
+  const destination = document.querySelector<HTMLButtonElement>('button[aria-label^="NRT→LAX"]');
+  if (!destination) throw new Error('Controlled explorer destination missing');
+  expect(destination.disabled).toBe(false);
+  fireEvent.click(destination);
+  expect(request().groups[0]?.legs[1]?.operatingCarrier).toBe('UA');
+});
+
+test('the App passes loaded schedules to its actual validation-engine call', async () => {
+  const spy = vi.spyOn(validator, 'validateRtwRoute');
+  await mount(`#/r/v1/TPE-MUC?op=BR&p=BR&c=J&d=2026-09-05&rtw=${BR}`);
+  const invocation = spy.mock.calls.at(-1);
+  if (!invocation) throw new Error('App did not run validation');
+  const schedules = JSON.parse(readFileSync(join(PUBLIC, 'data/schedules/current.json'), 'utf8')).entries;
+  // Positive control: the same real rule engine finds a schedule mismatch
+  // for this date as soon as the missing catalog is supplied.
+  const control = validator.validateRtwRoute(invocation[0], invocation[1], {
+    ...invocation[2], schedules,
+  }, invocation[3]);
+  expect(control.findings.some(finding => finding.ruleId === 'schedule-day-mismatch')).toBe(true);
+  expect(invocation[2].schedules).toBeDefined();
+});

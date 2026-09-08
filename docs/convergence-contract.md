@@ -1,5 +1,13 @@
 # Convergence Contract
 
+> **2026-09-05 official timetable authorization:** user approved TDX + current official seasonal publications as the next date-data path. `docs/decisions/official-timetable-dates.md` explicitly allows validity-/exception-bounded `published` dates, never live confirmation or route-wide negative inference. Paid suppliers require explicit selection; TDX real-account validation remains open. Implementation and evidence: `docs/official-timetable-2026-09-05.md`.
+
+> **2026-09-05 dated-flight direction:** the user explicitly requested knowing which dates have scheduled flights, leaving award seats to customer service. `docs/decisions/dated-flight-search.md` records the promoted scope, optional server-side gateway and scheduled/none/unknown evidence boundary. `docs/dated-flight-search-2026-09-05.md` distinguishes implemented software from the still-unconfigured licensed data source. This does not revive award inventory or ticket booking.
+
+> **2026-09-05 explorer follow-up C:** after the integrity repair round, the user asked to continue with the next item: source-backed BR/CX partner continuation. `docs/decisions/route-network-discovery.md` records the bounded exception to the earlier schedule-only explorer: a separate optional static route-observation catalog, not invented weekly schedules. `docs/network-discovery-2026-09-05.md` records 42 directional entries, endpoint-first/product-eligible discovery and real-App blank-start tests for BR and CX. No automatic full-itinerary generation, live seats, new URL schema or complete-network claim.
+
+> **2026-09-05 repair authorization:** following the takeover audit, the user asked to begin optimization and fixes. The bounded implementation and decisions are recorded in `docs/takeover-repairs-2026-09-05.md`: preserve user-entered operators/metadata, repair existing integrations and planning entry points, correct the current Qantas chart while freezing historical fixtures. This does not authorize or claim a new live-availability system or complete global network.
+
 Date: 2026-08-26
 Origin: three-round scope grill (user + agent), transcribed decisions below.
 Status: **acceptance demonstrated 2026-08-26** — the §4 freeze is lifted and §7 retires with it; scope changes still go through an explicit recorded decision.

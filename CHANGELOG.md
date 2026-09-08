@@ -4,6 +4,34 @@ All notable changes to this project will be documented in this file. Format foll
 
 ## [Unreleased]
 
+- TDX live activation review: preserve successful HTTP report separately from data-quality acceptance. Normalize documented CodeShare AirlineID + numeric FlightNumber, compare zero-padded identifiers, and scope alias suppression to the active ordered route/date. Accept documented nullable clocks without inventing times. Diagnostic v2 adds whitelisted source-shape examples and per-carrier counts without extra upstream calls; prior report is preserved when the user reruns. Added 25 synthetic regressions; live post-fix acceptance pending. See `docs/tdx-live-review-2026-09-05.md`.
+
+### Official timetable dates / TDX (2026-09-05)
+
+- Added 37 official ANA seasonal service records with validity, source review deadlines and date exceptions; the static calendar can select date-only flights without API keys and without fabricating times.
+- Added server-only TDX OIDC adapter, bounded route-snapshot pagination/cache and budgets. No TDX credentials/live acceptance yet. The gateway defaults to TDX; Cirium is explicit opt-in, not automatic paid failover.
+- Added publication-state source labels, primary/fallback precedence, share/reload checks and real isolated Edge checks at 1440/1024/390px. Full scope and limitations: `docs/official-timetable-2026-09-05.md`.
+
+### Date-specific schedule layer — 2026-09-05
+
+- Added an explicit-query month calendar and daily operating-flight list, dated flight selection and airline-enquiry copy. Fresh complete responses are required for no-flight conclusions; errors, expired/partial responses and missing credentials remain unknown. Legacy weekly data cannot populate confirmed daily results.
+- Added an optional loopback Node gateway with documented Cirium FlightStats route/date adapter, server-only header credentials, bounded cache/concurrency/size/time/rate/call budgets. No live supplier credential or deployment exists in this checkout; synthetic tests do not demonstrate actual airline schedules.
+- Added optional `fn=` share references and invalidation on operator/date/surface changes, plus existing-leg re-query. Fixed the mobile grid minimum-width leak found by isolated Edge checks at 1440/1024/390px. See `docs/dated-flight-search-2026-09-05.md`.
+
+### Next-leg discovery — 2026-09-05
+
+- Added 42 directional CX/AY/BA/AA/LH/UA operating-route observations from 23 primary sources, distinct from the unchanged 138 weekly schedule rows. Source inspection dates do not overwrite publication dates or create service validity.
+- Explorer defaults to all product-eligible operators and the current endpoint, with destination search, separate operator-specific buttons, coverage states, per-option evidence, and honest missing-data fallback. No inferred reverse routes, rail sectors, fake weekdays or award inventory.
+- Added task-level BR/CX tests starting from an empty App through real catalog additions, date/stopover entry and share/reload. All 585 tests pass; actual-browser visual QA remains open. Changes remain local until explicitly deployed.
+
+### 2026-09-05 — Planning integrity and usability repairs
+
+- Fixed all eight takeover-audit integration failures: preserve dates and other metadata on field clearing, preserve repeated-leg identity through route edits, stop silently replacing operators on import/product changes, carry the explorer's chosen operator, and wire schedules into the main validation panel.
+- Restored catalog-eligible airlines missing from the legacy master file, fixed navigation after clearing a route, and removed the fatal dependency on optional earning datasets.
+- Opened core planning/date controls, moved samples to the main empty editor, exposed affected-leg details and incomplete/warning verdicts, added schedule evidence/date coverage, and reduced narrow-desktop overflow.
+- Updated Qantas oneworld new-booking pricing from the official 2025-08-05 table: all ten bands/four cabins, correctly labeled Qantas Points. Frozen historical 318,000-point tests remain separate and unchanged in meaning.
+- Added 49 tests; 541 total pass, including all 24 calibration cases. Details and remaining limits: `docs/takeover-repairs-2026-09-05.md`. No live award-seat search, complete partner network, deployment or real-browser visual sign-off is implied.
+
 Product reset: per `docs/rtw-pivot-plan.md`, gcmp pivoted after v1.9 from a mileage earning calculator to a **Taiwan-first RTW award route planner** — itineraries are validated against RTW / multi-carrier mileage-redemption award rules, with PQM/RDM earning first demoted to a secondary panel and later removed entirely under `docs/convergence-contract.md`. Scope details: `docs/taiwan-first-scope.md`.
 
 ### Removed

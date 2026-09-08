@@ -37,3 +37,7 @@ public/airline/
 # Tooling workspace artifacts (not project source)
 .dsh-vision-toolkit/
 design/
+
+# Local research scratch files
+.tmp-*.html
+.tmp-clean-index/
