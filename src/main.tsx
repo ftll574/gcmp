@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { App } from './App.tsx';
 import './index.css';
 import './left-panel-ux.css';
+import './map-polish.css';
 
 const rootEl = document.getElementById('root');
 if (!rootEl) {

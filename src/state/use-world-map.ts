@@ -1,5 +1,5 @@
 /**
- * Lazy-loads the world-countries TopoJSON (~25KB gzipped) and converts it
+ * Lazy-loads the higher-detail world-countries TopoJSON and converts it
  * to GeoJSON FeatureCollection ready for d3-geoPath rendering.
  *
  * Fetched once on first map render in the user's session. Cached in module
@@ -29,7 +29,7 @@ function startLoad(baseUrl: string): void {
   if (snapshot.features || inFlight) return;
   inFlight = (async () => {
     try {
-      const res = await fetch(`${baseUrl}/data/world-countries-110m.json`);
+      const res = await fetch(`${baseUrl}/data/world-countries-50m.json`);
       if (!res.ok) throw new Error(`World atlas fetch failed: HTTP ${res.status}`);
       const topo = (await res.json()) as unknown;
       const topoTyped = topo as Parameters<typeof feature>[0];

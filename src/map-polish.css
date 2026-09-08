@@ -1,0 +1,361 @@
+/* Map visual pass — keep the existing SVG/d3 interaction model, but make the
+   cartography read like a finished route product rather than a debug layer. */
+
+.app-map-wrap {
+  --map-polish-sea: color-mix(in srgb, var(--map-sea) 88%, #d6e4e7);
+  --map-polish-land: color-mix(in srgb, var(--map-land) 88%, #ffffff);
+  --map-polish-coast: color-mix(in srgb, var(--secondary-label) 30%, transparent);
+  --map-polish-grid: color-mix(in srgb, var(--secondary-label) 13%, transparent);
+  --map-polish-label-surface: color-mix(in srgb, var(--secondary-system-background) 94%, transparent);
+  --map-polish-label-border: color-mix(in srgb, var(--secondary-label) 20%, transparent);
+  --map-polish-route-halo: color-mix(in srgb, var(--map-polish-sea) 88%, transparent);
+  --map-polish-control: color-mix(in srgb, var(--secondary-system-background) 92%, transparent);
+  --map-polish-control-border: color-mix(in srgb, var(--secondary-label) 20%, transparent);
+  background: var(--map-polish-sea);
+  isolation: isolate;
+}
+
+.app-map-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  border: 1px solid color-mix(in srgb, var(--secondary-label) 12%, transparent);
+  pointer-events: none;
+}
+
+.map-view {
+  shape-rendering: geometricPrecision;
+  text-rendering: geometricPrecision;
+}
+
+.map-sea {
+  fill: var(--map-polish-sea);
+}
+
+.map-land {
+  fill: var(--map-polish-land) !important;
+  stroke: var(--map-polish-coast);
+  stroke-width: 0.58;
+  vector-effect: non-scaling-stroke;
+}
+
+.map-grid {
+  stroke: var(--map-polish-grid);
+  stroke-width: 0.55;
+  opacity: 0.68;
+  vector-effect: non-scaling-stroke;
+}
+
+.map-view-globe .map-grid {
+  opacity: 0.5;
+}
+
+.map-sphere-rim {
+  stroke: color-mix(in srgb, var(--secondary-label) 30%, transparent);
+  stroke-width: 1;
+  stroke-opacity: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Great-circle hierarchy: crisp route line, soft neutral separation, and no
+   stroke inflation when the user zooms the projected world. */
+.map-arc,
+.map-arc-halo,
+.map-arc-surface,
+.map-next-stop-preview {
+  vector-effect: non-scaling-stroke;
+}
+
+.map-arc-inactive {
+  stroke-width: 1.05;
+  stroke-dasharray: none;
+  opacity: 0.2;
+}
+
+.map-arc-halo {
+  stroke: var(--map-polish-route-halo);
+  stroke-width: 5;
+  opacity: 0.92;
+}
+
+.map-arc-active {
+  stroke-width: 2.35;
+  opacity: 0.98;
+  filter: drop-shadow(0 1px 1px color-mix(in srgb, var(--label) 14%, transparent));
+}
+
+.map-arc-surface {
+  stroke-width: 1.7;
+  stroke-dasharray: 4 4;
+  opacity: 0.78;
+}
+
+.map-arc-surface.inactive {
+  stroke-width: 1;
+  opacity: 0.22;
+}
+
+/* Route airports are the visual anchors. The global airport cloud stays
+   deliberately quiet even when detail zoom reveals it. */
+.map-airport-dots {
+  fill: color-mix(in srgb, var(--secondary-label) 42%, transparent);
+  opacity: 0.2;
+}
+
+.map-airport-dot {
+  fill: color-mix(in srgb, var(--secondary-label) 55%, transparent);
+  stroke: var(--map-polish-land);
+  stroke-width: 1.25;
+  opacity: 0.36;
+  vector-effect: non-scaling-stroke;
+}
+
+.map-airport:hover .map-airport-dot,
+.map-airport:focus-visible .map-airport-dot {
+  fill: var(--label);
+  stroke: var(--map-polish-label-surface);
+  stroke-width: 2;
+  opacity: 1;
+  filter: drop-shadow(0 1px 3px color-mix(in srgb, var(--label) 22%, transparent));
+}
+
+.map-airport.is-in-route .map-airport-dot {
+  fill: var(--secondary-label);
+  stroke: var(--map-polish-label-surface);
+  opacity: 0.62;
+}
+
+.map-airport.is-active .map-airport-dot {
+  fill: var(--tint);
+  stroke: var(--map-polish-label-surface);
+  stroke-width: 2.4;
+  opacity: 1;
+  filter: drop-shadow(0 1px 3px color-mix(in srgb, var(--tint) 32%, transparent));
+}
+
+.map-waypoint-label {
+  filter: drop-shadow(0 1px 2px color-mix(in srgb, var(--label) 14%, transparent));
+}
+
+.map-waypoint-label-bg {
+  fill: var(--map-polish-label-surface);
+  stroke: var(--map-polish-label-border);
+  stroke-width: 0.7;
+}
+
+.map-airport-label-active {
+  fill: var(--label);
+  font-weight: 700;
+  letter-spacing: 0.025em;
+}
+
+.map-airport-label-secondary {
+  fill: color-mix(in srgb, var(--secondary-label) 82%, transparent);
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: var(--map-polish-sea);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+.map-distance-label-bg {
+  fill: color-mix(in srgb, var(--map-polish-label-surface) 96%, transparent);
+  stroke: var(--map-polish-label-border);
+  stroke-width: 0.65;
+}
+
+.map-distance-badge {
+  filter: drop-shadow(0 1px 2px color-mix(in srgb, var(--label) 10%, transparent));
+}
+
+.map-distance-label {
+  font-weight: 600;
+  letter-spacing: 0.015em;
+}
+
+/* Detached map UI — small, quiet controls with one shared material surface. */
+.app-map-toolbar {
+  top: 14px;
+  left: 14px;
+  gap: 6px;
+}
+
+.map-toggle,
+.map-panel-button {
+  border-color: var(--map-polish-control-border);
+  border-radius: 6px;
+  background: var(--map-polish-control);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--label) 10%, transparent),
+    0 5px 14px color-mix(in srgb, var(--label) 7%, transparent);
+  backdrop-filter: blur(12px) saturate(115%);
+  -webkit-backdrop-filter: blur(12px) saturate(115%);
+}
+
+.map-toggle:hover,
+.map-panel-button:hover,
+.map-panel-button.active {
+  border-color: color-mix(in srgb, var(--tint) 48%, var(--map-polish-control-border));
+  background: color-mix(in srgb, var(--map-polish-control) 92%, var(--tint-fill-soft));
+}
+
+.map-panel-button.active {
+  color: var(--tint);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--label) 8%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--tint) 16%, transparent);
+}
+
+.map-reset-btn-bg {
+  fill: var(--map-polish-control);
+  stroke: var(--map-polish-control-border);
+  stroke-width: 1;
+  filter: drop-shadow(0 2px 5px color-mix(in srgb, var(--label) 16%, transparent));
+}
+
+.map-reset-btn-text {
+  fill: var(--label);
+  font-weight: 600;
+}
+
+.map-reset-btn-group:hover .map-reset-btn-bg {
+  fill: var(--tint);
+  stroke: var(--tint);
+}
+
+.map-reset-btn-group:hover .map-reset-btn-text {
+  fill: var(--secondary-system-background);
+}
+
+/* Airport and next-leg popovers read as one floating information layer rather
+   than a collection of unrelated SVG rectangles. */
+.map-airport-popover,
+.map-next-stop-popover {
+  filter: drop-shadow(0 8px 22px color-mix(in srgb, #000 20%, transparent));
+}
+
+.map-airport-popover-bg,
+.map-next-stop-popover-bg {
+  fill: color-mix(in srgb, var(--secondary-system-background) 97%, transparent);
+  stroke: var(--map-polish-control-border);
+  stroke-width: 0.9;
+}
+
+.map-airport-popover-route,
+.map-airport-popover-muted,
+.map-next-stop-popover-city,
+.map-next-stop-popover-hint {
+  fill: var(--secondary-label);
+}
+
+.map-airport-popover-button-bg {
+  fill: var(--tint);
+}
+
+.map-next-leg-veil {
+  fill: var(--map-polish-sea);
+  opacity: 0.24;
+}
+
+.map-next-origin-ring {
+  fill: color-mix(in srgb, var(--map-polish-label-surface) 86%, transparent);
+  stroke: var(--label);
+  stroke-width: 2;
+}
+
+.map-next-origin-dot {
+  fill: var(--label);
+  stroke: var(--map-polish-label-surface);
+  stroke-width: 2;
+}
+
+.map-next-origin-label-bg,
+.map-next-stop-label-bg,
+.map-next-leg-guide-label-bg {
+  fill: color-mix(in srgb, var(--secondary-system-background) 95%, transparent);
+  stroke: var(--map-polish-control-border);
+  stroke-width: 0.8;
+}
+
+.map-next-stop-preview {
+  stroke-width: 2.2;
+  stroke-dasharray: 7 5;
+  opacity: 0.9;
+  filter: drop-shadow(0 1px 2px color-mix(in srgb, var(--tint) 28%, transparent));
+}
+
+.map-next-stop-ring {
+  fill: color-mix(in srgb, var(--map-polish-label-surface) 80%, transparent);
+  stroke: var(--tint);
+  stroke-width: 1.4;
+  opacity: 0.62;
+}
+
+.map-next-stop-dot {
+  fill: var(--tint);
+  stroke: var(--map-polish-label-surface);
+  stroke-width: 1.8;
+}
+
+/* Dense destination maps become unreadable if every IATA code is persistent.
+   Keep the network visible as nodes; reveal labels only for the point the user
+   is actually inspecting. This preserves all hit targets and ARIA labels. */
+.map-next-stop-label-bg,
+.map-next-stop-label {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--motion-fast) var(--ease-standard);
+}
+
+.map-next-stop:hover .map-next-stop-label-bg,
+.map-next-stop:hover .map-next-stop-label,
+.map-next-stop:focus-visible .map-next-stop-label-bg,
+.map-next-stop:focus-visible .map-next-stop-label,
+.map-next-stop.selected .map-next-stop-label-bg,
+.map-next-stop.selected .map-next-stop-label {
+  opacity: 1;
+}
+
+.map-next-stop:hover .map-next-stop-ring,
+.map-next-stop:focus-visible .map-next-stop-ring,
+.map-next-stop.selected .map-next-stop-ring {
+  fill: color-mix(in srgb, var(--tint) 15%, var(--map-polish-label-surface));
+  stroke-width: 2.2;
+  opacity: 1;
+  filter: drop-shadow(0 1px 4px color-mix(in srgb, var(--tint) 30%, transparent));
+}
+
+.map-next-stop.selected .map-next-stop-dot {
+  stroke-width: 2.4;
+}
+
+.map-next-stop.needs-check .map-next-stop-ring {
+  opacity: 0.72;
+}
+
+.map-next-stop-flight-bg {
+  fill: color-mix(in srgb, var(--system-background) 72%, var(--secondary-system-background));
+  stroke: var(--map-polish-label-border);
+  stroke-width: 0.7;
+}
+
+@media (prefers-color-scheme: dark) {
+  .app-map-wrap {
+    --map-polish-sea: color-mix(in srgb, var(--map-sea) 92%, #172127);
+    --map-polish-land: color-mix(in srgb, var(--map-land) 88%, #29343a);
+    --map-polish-coast: color-mix(in srgb, var(--secondary-label) 34%, transparent);
+    --map-polish-grid: color-mix(in srgb, var(--secondary-label) 11%, transparent);
+    --map-polish-label-surface: color-mix(in srgb, var(--secondary-system-background) 92%, transparent);
+    --map-polish-label-border: color-mix(in srgb, var(--label) 16%, transparent);
+    --map-polish-route-halo: color-mix(in srgb, var(--map-polish-sea) 86%, transparent);
+    --map-polish-control: color-mix(in srgb, var(--secondary-system-background) 90%, transparent);
+    --map-polish-control-border: color-mix(in srgb, var(--label) 16%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map-airport-dot,
+  .map-toggle,
+  .map-panel-button {
+    transition: none;
+  }
+}
