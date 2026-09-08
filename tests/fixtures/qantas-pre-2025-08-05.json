@@ -1,0 +1,14 @@
+{
+  "version": "2025.2",
+  "lastVerified": "2026-08-24",
+  "products": [{
+    "productId": "qantas-oneworld-classic-flight-reward",
+    "label": "Qantas oneworld Classic Flight Reward",
+    "pricingModel": "distance-band",
+    "confidence": "reference-recheck",
+    "currency": "miles",
+    "sourceUrls": ["https://community.pointhacks.com/t/need-help-with-one-world-classic-flight-reward-melbourne-to-europe-aug-sept-2025/24765"],
+    "notes": ["Frozen partial historical fixture from a591a96. Applies to the pre-2025-08-05 booking era, not current new bookings. Retains the old confidence, unit spelling and partial coverage for regression compatibility."],
+    "bands": [{ "minMiles": 19201, "maxMiles": 35000, "prices": { "business": 318000 } }]
+  }]
+}

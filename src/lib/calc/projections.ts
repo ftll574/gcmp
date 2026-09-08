@@ -57,10 +57,10 @@ export function buildProjection(
   let p: GeoProjection;
   switch (id) {
     case 'mercator':
-      p = geoMercator();
+      p = geoMercator().rotate([-centerLon, 0]);
       break;
     case 'equirectangular':
-      p = geoEquirectangular();
+      p = geoEquirectangular().rotate([-centerLon, 0]);
       break;
     case 'azimuthal-equidistant':
       p = geoAzimuthalEquidistant().rotate([-centerLon, -centerLat]);

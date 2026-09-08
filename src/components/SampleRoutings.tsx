@@ -21,8 +21,8 @@ const SAMPLES: ReadonlyArray<Sample> = [
       groups: [
         {
           legs: [
-            { from: 'SFO', to: 'NRT', operatingCarrier: 'AA' },
-            { from: 'NRT', to: 'BKK', operatingCarrier: 'JL' },
+            { from: 'SFO', to: 'NRT', operatingCarrier: 'AA', cabin: 'business' },
+            { from: 'NRT', to: 'BKK', operatingCarrier: 'JL', cabin: 'business' },
           ],
         },
       ],
@@ -36,8 +36,8 @@ const SAMPLES: ReadonlyArray<Sample> = [
       groups: [
         {
           legs: [
-            { from: 'JFK', to: 'LHR', operatingCarrier: 'BA' },
-            { from: 'LHR', to: 'CDG', operatingCarrier: 'BA' },
+            { from: 'JFK', to: 'LHR', operatingCarrier: 'BA', cabin: 'business' },
+            { from: 'LHR', to: 'CDG', operatingCarrier: 'BA', cabin: 'business' },
           ],
         },
       ],
@@ -51,8 +51,8 @@ const SAMPLES: ReadonlyArray<Sample> = [
       groups: [
         {
           legs: [
-            { from: 'LAX', to: 'NRT', operatingCarrier: 'JL' },
-            { from: 'NRT', to: 'KIX', operatingCarrier: 'JL' },
+            { from: 'LAX', to: 'NRT', operatingCarrier: 'JL', cabin: 'economy' },
+            { from: 'NRT', to: 'KIX', operatingCarrier: 'JL', cabin: 'economy' },
           ],
         },
       ],
@@ -66,8 +66,8 @@ const SAMPLES: ReadonlyArray<Sample> = [
       groups: [
         {
           legs: [
-            { from: 'TPE', to: 'BKK', operatingCarrier: 'CX' },
-            { from: 'BKK', to: 'HKG', operatingCarrier: 'CX' },
+            { from: 'TPE', to: 'BKK', operatingCarrier: 'CX', cabin: 'business' },
+            { from: 'BKK', to: 'HKG', operatingCarrier: 'CX', cabin: 'business' },
           ],
         },
       ],
@@ -79,11 +79,11 @@ const SAMPLES: ReadonlyArray<Sample> = [
     id: 'compareAaAs',
     request: {
       groups: [
-        { legs: [{ from: 'SFO', to: 'HKG', operatingCarrier: 'CX' }] },
+        { legs: [{ from: 'SFO', to: 'HKG', operatingCarrier: 'CX', cabin: 'business' }] },
         {
           legs: [
-            { from: 'SFO', to: 'NRT', operatingCarrier: 'JL' },
-            { from: 'NRT', to: 'HKG', operatingCarrier: 'CX' },
+            { from: 'SFO', to: 'NRT', operatingCarrier: 'JL', cabin: 'business' },
+            { from: 'NRT', to: 'HKG', operatingCarrier: 'CX', cabin: 'business' },
           ],
         },
       ],

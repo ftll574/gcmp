@@ -272,6 +272,60 @@ describe('parseShareUrl (multi-group)', () => {
   });
 });
 
+describe('per-leg cabin (mixed-cabin planner)', () => {
+  test('current links encode an explicit cabin shape even when cabins are undecided', () => {
+    const url = encodeShareUrl(SINGLE_GROUP);
+    expect(url).toContain('cab=%2C%2C');
+    const parsed = parseShareUrl(url);
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.request.groups[0]?.legs.map((leg) => leg.cabin)).toEqual([undefined, undefined, undefined]);
+    }
+  });
+
+  test('mixed cabins round-trip per leg', () => {
+    const req: RoutingRequest = {
+      ...SINGLE_GROUP,
+      cabin: 'first',
+      groups: [{ legs: [
+        { from: 'SFO', to: 'NRT', operatingCarrier: 'AA', cabin: 'economy' },
+        { from: 'NRT', to: 'BKK', operatingCarrier: 'JL', cabin: 'business' },
+        { from: 'BKK', to: 'HKG', operatingCarrier: 'CX', cabin: 'first' },
+      ] }],
+    };
+    const url = encodeShareUrl(req);
+    expect(url).toContain('cab=Y%2CJ%2CF');
+    const parsed = parseShareUrl(url);
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.request.groups[0]?.legs.map((leg) => leg.cabin)).toEqual(['economy', 'business', 'first']);
+    }
+  });
+
+  test('present cab keeps empty cells undecided instead of inheriting global c', () => {
+    const parsed = parseShareUrl('/r/v1/SFO-NRT-BKK?op=AA,JL&p=AA&c=F&cab=Y,');
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.request.groups[0]?.legs[0]?.cabin).toBe('economy');
+      expect(parsed.request.groups[0]?.legs[1]?.cabin).toBeUndefined();
+    }
+  });
+
+  test('legacy links without cab inherit their global cabin on every leg', () => {
+    const parsed = parseShareUrl('/r/v1/SFO-NRT-BKK?op=AA,JL&p=AA&c=J');
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.request.groups[0]?.legs.map((leg) => leg.cabin)).toEqual(['business', 'business']);
+    }
+  });
+
+  test('rejects malformed per-leg cabin codes', () => {
+    const parsed = parseShareUrl('/r/v1/SFO-NRT?op=AA&p=AA&c=J&cab=Z');
+    expect(parsed.ok).toBe(false);
+    if (!parsed.ok) expect(parsed.kind).toBe('unknown-cabin');
+  });
+});
+
 describe('per-leg fare class (v1.5)', () => {
   test('encode omits fc when no leg has a fare class — preserves v0-v1.4 URLs', () => {
     const url = encodeShareUrl(SINGLE_GROUP);
@@ -449,7 +503,7 @@ describe('RTW metadata (stopover + surface)', () => {
           legs: [
             { from: 'SFO', to: 'NRT', operatingCarrier: 'AA', stopover: true },
             { from: 'NRT', to: 'BKK', operatingCarrier: 'JL', stopover: false },
-            { from: 'BKK', to: 'HKG', operatingCarrier: 'CX', surface: true },
+            { from: 'BKK', to: 'HKG', surface: true },
           ],
         },
       ],
@@ -463,6 +517,51 @@ describe('RTW metadata (stopover + surface)', () => {
       expect(parsed.request.groups[0]?.legs[1]?.stopover).toBe(false);
       expect(parsed.request.groups[0]?.legs[2]?.surface).toBe(true);
     }
+  });
+
+  test('round-trips sparse manual flight provenance beside a true surface sector', () => {
+    const req: RoutingRequest = {
+      ...SINGLE_GROUP,
+      groups: [{ legs: [
+        { from: 'SFO', to: 'NRT', operatingCarrier: 'AA', manual: true },
+        { from: 'NRT', to: 'BKK', operatingCarrier: 'JL' },
+        { from: 'BKK', to: 'HKG', surface: true },
+      ] }],
+    };
+    const url = encodeShareUrl(req);
+    expect(url).toContain('man=1%2C%2C');
+    const parsed = parseShareUrl(url);
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.request.groups[0]?.legs[0]?.manual).toBe(true);
+      expect(parsed.request.groups[0]?.legs[1]?.manual).toBeUndefined();
+      expect(parsed.request.groups[0]?.legs[2]?.manual).toBeUndefined();
+    }
+  });
+
+  test('normalizes legacy surface placeholders and flight-only metadata away', () => {
+    const parsed = parseShareUrl('/r/v1/SFO-NRT-BKK-HKG?op=AA,JL,ZZ&p=AA&c=J&cab=J,J,J&fc=J,C,D&d=2026-01-01,2026-01-02,2026-01-03&stp=,,0&surf=,,1&man=,,1');
+    expect(parsed.ok).toBe(true);
+    if (!parsed.ok) return;
+    expect(parsed.request.groups[0]?.legs[2]).toEqual({
+      from: 'BKK', to: 'HKG', surface: true, stopover: false,
+    });
+    const encoded = encodeShareUrl(parsed.request);
+    expect(encoded).toContain('op=AA%2CJL%2C');
+    expect(encoded).not.toContain('ZZ');
+    expect(parseShareUrl(encoded)).toEqual(parsed);
+  });
+
+  test('an all-surface group uses an empty op cell and still round-trips', () => {
+    const req: RoutingRequest = {
+      ...SINGLE_GROUP,
+      groups: [{ legs: [{ from: 'NRT', to: 'HND', surface: true, stopover: false }] }],
+    };
+    const url = encodeShareUrl(req);
+    expect(url).toContain('op=&');
+    const parsed = parseShareUrl(url);
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) expect(parsed.request.groups[0]?.legs[0]).toEqual({ from: 'NRT', to: 'HND', surface: true, stopover: false });
   });
 
   test('rejects malformed stopover flag', () => {

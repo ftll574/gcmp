@@ -1,0 +1,102 @@
+{
+  "version": 1,
+  "checkedOn": "2026-09-08",
+  "captureMethod": "manual-search-index-review",
+  "termsUrl": "https://www.flightconnections.com/terms-of-service/",
+  "automationPolicy": "No automated access, scraping, bulk extraction, or downloader is used. This file is a manually reviewed QA benchmark only.",
+  "alliances": {
+    "oneworld": {
+      "sourceUrl": "https://www.flightconnections.com/route-map-oneworld",
+      "sourceLastUpdated": "2026-09-07",
+      "destinationAirportCount": 925,
+      "carriers": {
+        "AA": { "listedDestinationCount": 372 },
+        "BA": { "listedDestinationCount": 214 },
+        "QR": { "listedDestinationCount": 184 },
+        "AS": { "listedDestinationCount": 143 },
+        "IB": { "listedDestinationCount": 137 },
+        "AY": { "listedDestinationCount": 116 },
+        "AT": { "listedDestinationCount": 103 },
+        "QF": { "listedDestinationCount": 102 },
+        "JL": { "listedDestinationCount": 89 },
+        "CX": { "listedDestinationCount": 82 },
+        "MH": { "listedDestinationCount": 72 },
+        "RJ": { "listedDestinationCount": 69 },
+        "WY": { "listedDestinationCount": 46 },
+        "FJ": { "listedDestinationCount": 38 },
+        "UL": { "listedDestinationCount": 34 },
+        "NU": { "listedDestinationCount": 11 }
+      }
+    },
+    "star": {
+      "sourceUrl": "https://www.flightconnections.com/route-map-star-alliance",
+      "sourceLastUpdated": "2026-09-07",
+      "destinationAirportCount": 1193,
+      "carriers": {
+        "UA": { "listedDestinationCount": 389 },
+        "TK": { "listedDestinationCount": 290 },
+        "CA": { "listedDestinationCount": 216 },
+        "AC": { "listedDestinationCount": 203 },
+        "LH": { "listedDestinationCount": 191 },
+        "ET": { "listedDestinationCount": 167 },
+        "OS": { "listedDestinationCount": 133 },
+        "A3": { "listedDestinationCount": 117 },
+        "LX": { "listedDestinationCount": 111 },
+        "LO": { "listedDestinationCount": 105 },
+        "MS": { "listedDestinationCount": 97 },
+        "TP": { "listedDestinationCount": 95 },
+        "NH": { "listedDestinationCount": 91 },
+        "ZH": { "listedDestinationCount": 91 },
+        "SN": { "listedDestinationCount": 90 },
+        "CM": { "listedDestinationCount": 87 },
+        "AI": { "listedDestinationCount": 86 },
+        "AV": { "listedDestinationCount": 85 },
+        "SQ": { "listedDestinationCount": 83 },
+        "AZ": { "listedDestinationCount": 78 },
+        "TG": { "listedDestinationCount": 67 },
+        "OZ": { "listedDestinationCount": 64 },
+        "BR": {
+          "listedDestinationCount": 56,
+          "sourceUrl": "https://www.flightconnections.com/route-map-eva-air-br",
+          "listedAirports": ["BNE","VIE","KTI","YYZ","YVR","PEK","CTU","CAN","HGH","PVG","SHA","CDG","MUC","HKG","DEL","DPS","CGK","MXP","AOJ","FUK","UKB","KMQ","MYJ","OKA","KIX","CTS","SDJ","NRT","HND","MFM","KUL","AMS","CRK","CEB","MNL","SIN","PUS","GMP","ICN","KHH","TPE","TSA","BKK","CNX","LHR","ORD","DFW","IAH","LAX","JFK","SFO","SEA","IAD","DAD","HAN","SGN"],
+          "routePairsComplete": false,
+          "routePairs": [["TPE","BKK"],["BKK","TPE"],["LHR","BKK"],["BKK","LHR"],["VIE","BKK"],["BKK","VIE"],["AMS","BKK"],["BKK","AMS"],["TPE","IAD"],["IAD","TPE"]]
+        },
+        "NZ": { "listedDestinationCount": 49 },
+        "OU": { "listedDestinationCount": 37 },
+        "SA": { "listedDestinationCount": 18 }
+      }
+    },
+    "skyteam": {
+      "sourceUrl": "https://www.flightconnections.com/route-map-skyteam",
+      "sourceLastUpdated": "2026-09-07",
+      "destinationAirportCount": 970,
+      "carriers": {
+        "DL": { "listedDestinationCount": 318 },
+        "MU": { "listedDestinationCount": 228 },
+        "AF": { "listedDestinationCount": 190 },
+        "KL": { "listedDestinationCount": 171 },
+        "SK": { "listedDestinationCount": 152 },
+        "AM": { "listedDestinationCount": 103 },
+        "MF": { "listedDestinationCount": 101 },
+        "KE": { "listedDestinationCount": 101 },
+        "SV": { "listedDestinationCount": 101 },
+        "VN": { "listedDestinationCount": 66 },
+        "UX": { "listedDestinationCount": 63 },
+        "AR": { "listedDestinationCount": 62 },
+        "CI": {
+          "listedDestinationCount": 59,
+          "sourceUrl": "https://www.flightconnections.com/route-map-china-airlines-ci",
+          "listedAirports": ["SHA","PVG","PEK","CAN","CTU","SZX","CKG","YVR","DPS","CGK","RMQ","TSA","TPE","KHH","VIE","ROR","FRA","FCO","PRG","SIN","AKL","NRT","HND","OKA","NGO","KIX","TOY","HIJ","CTS","KMJ","FUK","TAK","KOJ","KTI","BKK","CNX","MEL","BNE","SYD","RGN","ONT","SFO","LAX","JFK","PHX","SEA","LHR","AMS","CEB","MNL","DAD","HAN","SGN","PUS","GMP","ICN","HKG","KUL","PEN"],
+          "routePairsComplete": false,
+          "routePairs": [["TPE","BKK"],["BKK","TPE"],["KHH","BKK"],["BKK","KHH"],["AKL","BNE"],["BNE","AKL"],["TPE","PHX"],["PHX","TPE"],["TPE","FCO"],["FCO","TPE"],["KHH","GMP"],["GMP","KHH"]]
+        },
+        "GA": { "listedDestinationCount": 49 },
+        "KQ": { "listedDestinationCount": 44 },
+        "ME": { "listedDestinationCount": 35 },
+        "VS": { "listedDestinationCount": 30 },
+        "RO": { "listedDestinationCount": 28 }
+      }
+    }
+  }
+}

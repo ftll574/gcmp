@@ -2,20 +2,20 @@ import { z } from 'zod';
 import type { Airport } from '../types.ts';
 
 /**
- * airports.json — the global airport reference table (~4.6k rows).
+ * airports.json — the global airport reference table (~5.1k rows).
  *
  * CORE dataset: parsed strictly at load time with NO degrade path — a bad
  * row must fail loudly rather than silently shrink lookups. Every rule
  * below is measured against the current file (profiled via a throwaway
  * node script), not guessed from scripts/build-airports.ts:
  *
- *   - iata     always present and alpha-only ^[A-Z]{3}$ (4563/4563 rows).
- *   - icao     OPTIONAL — omitted entirely (never emptied) on 63/4563 rows
+ *   - iata     always present and alpha-only ^[A-Z]{3}$ (5097/5097 rows).
+ *   - icao     OPTIONAL — omitted entirely (never emptied) on 125/5097 rows
  *              where OurAirports ident isn't 4 chars; digits DO occur
- *              (12/4500, e.g. OCA→"07FA", RDL→"HE36") → ^[A-Z0-9]{4}$.
+ *              (e.g. OCA→"07FA", RDL→"HE36") → ^[A-Z0-9]{4}$.
  *   - name     never empty in reality (generator's `?? ''` never fires);
  *              enforced min(1) — a nameless row is corrupt data.
- *   - city     MAY be '' — 121/4563 rows have an empty OurAirports
+ *   - city     MAY be '' — 132/5097 rows have an empty OurAirports
  *              municipality (e.g. AXR Arutua); consumers only use it for
  *              prefix search, so empty is harmless. Deliberate looseness.
  *   - country  ISO 3166-1 alpha-2 — continents completeness test depends

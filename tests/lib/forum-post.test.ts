@@ -12,8 +12,8 @@ const REQUEST: RoutingRequest = {
   groups: [
     {
       legs: [
-        { from: 'SFO', to: 'NRT', operatingCarrier: 'AA', fareClass: 'J' },
-        { from: 'NRT', to: 'BKK', operatingCarrier: 'JL', fareClass: 'D' },
+        { from: 'SFO', to: 'NRT', operatingCarrier: 'AA', cabin: 'business', fareClass: 'J' },
+        { from: 'NRT', to: 'BKK', operatingCarrier: 'JL', cabin: 'business', fareClass: 'D' },
       ],
     },
   ],
@@ -91,6 +91,7 @@ describe('formatForumPost', () => {
 
   test('includes cabin label', () => {
     expect(out).toContain('Business');
+    expect(out).toContain('CAB');
   });
 
   test('includes the share URL on its own line', () => {
@@ -132,5 +133,33 @@ describe('formatForumPost', () => {
   test('does not contain NaN or undefined', () => {
     expect(out).not.toContain('NaN');
     expect(out).not.toContain('undefined');
+  });
+
+  test('mixed-cabin itinerary is labeled and prints each leg cabin', () => {
+    const mixed: RoutingRequest = {
+      ...REQUEST,
+      cabin: 'first',
+      groups: [{ legs: [
+        { from: 'SFO', to: 'NRT', operatingCarrier: 'AA', cabin: 'economy', fareClass: 'Y' },
+        { from: 'NRT', to: 'BKK', operatingCarrier: 'JL', cabin: 'first', fareClass: 'F' },
+      ] }],
+    };
+    const text = formatForumPost({ request: mixed, result: RESULT, shareUrl: 'https://gcmp.app/mixed' });
+    expect(text).toContain('Mixed cabin');
+    expect(text).toMatch(/SFO→NRT\s+AA\s+Y/);
+    expect(text).toMatch(/NRT→BKK\s+JL\s+F/);
+  });
+
+  test('surface sectors export as SURF and never leak the internal carrier placeholder', () => {
+    const surface: RoutingRequest = {
+      ...REQUEST,
+      groups: [{ legs: [
+        { from: 'SFO', to: 'NRT', operatingCarrier: 'AA', cabin: 'business', fareClass: 'J' },
+        { from: 'NRT', to: 'BKK', surface: true, stopover: false },
+      ] }],
+    };
+    const text = formatForumPost({ request: surface, result: RESULT, shareUrl: 'https://gcmp.app/surface' });
+    expect(text).toMatch(/NRT→BKK\s+SURF\s+—\s+—/);
+    expect(text).not.toMatch(/NRT→BKK\s+JL/);
   });
 });

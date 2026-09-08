@@ -1,6 +1,7 @@
-import type { Airport, Leg, RoutingRequest } from '../types.ts';
+import { isFlightLeg, type Airport, type FlightLeg, type Leg, type RoutingRequest } from '../types.ts';
 import type { AllianceCatalog } from '../schemas/alliance.ts';
 import type { RtwRuleSet, RtwSurfaceDistancePolicy } from '../schemas/rtw-rule.ts';
+import { cityCodeForAirport, cityCodeLabel } from '../city-codes.ts';
 import type { NetworkGapEntry } from '../schemas/network-gaps.ts';
 import type { ScheduleEntry } from '../schemas/flight-schedules.ts';
 import type { ContinentId } from '../schemas/country-continent.ts';
@@ -150,7 +151,13 @@ function airportFor(code: string, inputs: RtwValidationInputs): Airport | undefi
 }
 
 function sameCity(a: Airport, b: Airport): boolean {
-  return a.iata === b.iata;
+  if (a.iata === b.iata) return true;
+  const aMetro = cityCodeForAirport(a.iata);
+  const bMetro = cityCodeForAirport(b.iata);
+  if (aMetro !== null && aMetro === bMetro) return true;
+  return a.country === b.country
+    && a.city.trim() !== ''
+    && a.city.trim().toUpperCase() === b.city.trim().toUpperCase();
 }
 
 function sameCountry(a: Airport, b: Airport): boolean {
@@ -208,8 +215,10 @@ function surfaceSectorCount(legs: ReadonlyArray<Leg>): number {
   return legs.filter((leg) => leg.surface === true).length;
 }
 
-function knownStopoverCount(legs: ReadonlyArray<Leg>): number {
-  return legs.filter((leg) => leg.stopover === true).length;
+function knownStopoverCount(legs: ReadonlyArray<Leg>, surfaceCountsAsStopover: boolean): number {
+  return legs.filter((leg) =>
+    leg.surface === true ? surfaceCountsAsStopover : leg.stopover === true,
+  ).length;
 }
 
 function knownTransferCount(legs: ReadonlyArray<Leg>): number {
@@ -305,6 +314,55 @@ function routeDirection(
   return 'mixed';
 }
 
+type IataTrafficArea = 1 | 2 | 3;
+
+// IATA Traffic Conference Area 2 = Europe / Africa / Middle East. The base
+// geo catalog deliberately classifies Middle East countries under Asia, so
+// the RTW rule needs a product-specific override instead of mutating neutral
+// geography. This list is only used to separate Area 2 from Area 3.
+const IATA_AREA_2_MIDDLE_EAST = new Set([
+  'AE', 'BH', 'CY', 'IR', 'IQ', 'IL', 'JO', 'KW', 'LB', 'OM', 'QA', 'SA', 'SY', 'TR', 'YE',
+]);
+
+function continentForAirport(airport: Airport, inputs: RtwValidationInputs): ContinentId | undefined {
+  return inputs.airportContinentOverrides?.get(airport.iata) ?? inputs.countryContinents?.get(airport.country);
+}
+
+function iataTrafficArea(airport: Airport, inputs: RtwValidationInputs): IataTrafficArea | undefined {
+  const continent = continentForAirport(airport, inputs);
+  if (continent === 'north-america' || continent === 'south-america') return 1;
+  if (continent === 'europe' || continent === 'africa' || IATA_AREA_2_MIDDLE_EAST.has(airport.country)) return 2;
+  if (continent === 'asia' || continent === 'oceania') return 3;
+  return undefined;
+}
+
+/**
+ * Asiana's published RTW rule allows backtracking INSIDE an IATA traffic
+ * area but forbids reversing direction BETWEEN areas. Therefore same-area
+ * legs are intentionally ignored here; only cross-area movements establish
+ * the global direction.
+ */
+function routeDirectionAcrossIataAreas(
+  legs: ReadonlyArray<Leg>,
+  inputs: RtwValidationInputs,
+): RtwValidationSummary['direction'] {
+  const deltas = resolvedLegAirports(legs, inputs)
+    .filter(({ leg }) => leg.surface !== true)
+    .flatMap(({ from, to }) => {
+      const fromArea = iataTrafficArea(from, inputs);
+      const toArea = iataTrafficArea(to, inputs);
+      if (fromArea === undefined || toArea === undefined || fromArea === toArea) return [];
+      const delta = shortestLongitudeDelta(from.lon, to.lon);
+      return Math.abs(delta) < 5 ? [] : [delta];
+    });
+  if (deltas.length === 0) return 'unknown';
+  const east = deltas.some((delta) => delta > 0);
+  const west = deltas.some((delta) => delta < 0);
+  if (east && !west) return 'eastbound';
+  if (west && !east) return 'westbound';
+  return 'mixed';
+}
+
 function regionForOcean(airport: Airport): 'americas' | 'eurafrica' | 'asiaPacific' {
   if (airport.lon <= -30) return 'americas';
   if (airport.lon >= -30 && airport.lon <= 60) return 'eurafrica';
@@ -312,7 +370,14 @@ function regionForOcean(airport: Airport): 'americas' | 'eurafrica' | 'asiaPacif
 }
 
 function cityKey(airport: Airport): string {
+  const metro = cityCodeForAirport(airport.iata);
+  if (metro) return `METRO:${metro}|${airport.country.toUpperCase()}`;
   return `${airport.city.toUpperCase()}|${airport.country.toUpperCase()}`;
+}
+
+function cityLabel(airport: Airport): string {
+  const metro = cityCodeForAirport(airport.iata);
+  return `${metro ? (cityCodeLabel(metro) ?? metro) : airport.city}, ${airport.country}`;
 }
 
 function repeatedCities(
@@ -334,9 +399,86 @@ function stopoverCityCounts(
     if (leg.stopover !== true) continue;
     const key = cityKey(to);
     const prev = counts.get(key);
-    counts.set(key, { label: `${to.city}, ${to.country}`, count: (prev?.count ?? 0) + 1 });
+    counts.set(key, { label: cityLabel(to), count: (prev?.count ?? 0) + 1 });
   }
   return counts;
+}
+
+function stopoverCountryCounts(
+  legs: ReadonlyArray<Leg>,
+  inputs: RtwValidationInputs,
+): ReadonlyMap<string, { label: string; count: number }> {
+  const counts = new Map<string, { label: string; count: number }>();
+  for (const { leg, to } of resolvedLegAirports(legs, inputs)) {
+    if (leg.stopover !== true) continue;
+    const prev = counts.get(to.country);
+    counts.set(to.country, { label: to.country, count: (prev?.count ?? 0) + 1 });
+  }
+  return counts;
+}
+
+function cityVisitCounts(
+  legs: ReadonlyArray<Leg>,
+  inputs: RtwValidationInputs,
+): ReadonlyMap<string, { label: string; count: number }> {
+  const counts = new Map<string, { label: string; count: number }>();
+  const first = legs[0] ? airportFor(legs[0].from, inputs) : undefined;
+  const airportsInOrder = [
+    ...(first ? [first] : []),
+    ...resolvedLegAirports(legs, inputs).map(({ to }) => to),
+  ];
+  for (const airport of airportsInOrder) {
+    const key = cityKey(airport);
+    const prev = counts.get(key);
+    counts.set(key, { label: cityLabel(airport), count: (prev?.count ?? 0) + 1 });
+  }
+  return counts;
+}
+
+function originCountryTerminalViolation(
+  legs: ReadonlyArray<Leg>,
+  inputs: RtwValidationInputs,
+): { returnLeg: number; onwardLeg: number; originCountry: string } | null {
+  const resolved = resolvedLegAirports(legs, inputs);
+  const originCountry = resolved[0]?.from.country;
+  if (!originCountry) return null;
+  let hasLeftOrigin = false;
+  let returnLeg: number | null = null;
+  for (const item of resolved) {
+    if (item.to.country !== originCountry) {
+      if (returnLeg !== null) {
+        return { returnLeg, onwardLeg: item.index, originCountry };
+      }
+      hasLeftOrigin = true;
+      continue;
+    }
+    if (hasLeftOrigin && returnLeg === null) returnLeg = item.index;
+  }
+  return null;
+}
+
+function originCityTerminalViolation(
+  legs: ReadonlyArray<Leg>,
+  inputs: RtwValidationInputs,
+): { returnLeg: number; onwardLeg: number; originCity: string } | null {
+  const resolved = resolvedLegAirports(legs, inputs);
+  const origin = resolved[0]?.from;
+  if (!origin) return null;
+  const originKey = cityKey(origin);
+  let hasLeftOrigin = false;
+  let returnLeg: number | null = null;
+  for (const item of resolved) {
+    const toOrigin = cityKey(item.to) === originKey;
+    if (!toOrigin) {
+      if (returnLeg !== null) {
+        return { returnLeg, onwardLeg: item.index, originCity: cityLabel(origin) };
+      }
+      hasLeftOrigin = true;
+      continue;
+    }
+    if (hasLeftOrigin && returnLeg === null) returnLeg = item.index;
+  }
+  return null;
 }
 
 /**
@@ -382,7 +524,7 @@ function transferCityCounts(
     }
     const prev = counts.get(key);
     if (visitCount > (prev?.count ?? 0)) {
-      counts.set(key, { label: `${to.city}, ${to.country}`, count: visitCount });
+      counts.set(key, { label: cityLabel(to), count: visitCount });
     }
   }
   return counts;
@@ -398,7 +540,7 @@ function surfaceCityCounts(
     for (const airport of [from, to]) {
       const key = cityKey(airport);
       const prev = counts.get(key);
-      counts.set(key, { label: `${airport.city}, ${airport.country}`, count: (prev?.count ?? 0) + 1 });
+      counts.set(key, { label: cityLabel(airport), count: (prev?.count ?? 0) + 1 });
     }
   }
   return counts;
@@ -439,7 +581,7 @@ export function validateRtwRoute(
   const sourceUrl = source(ruleSet);
   const segmentCount = flightSegmentCount(legs);
   const surfaceCount = surfaceSectorCount(legs);
-  const stopoverCount = knownStopoverCount(legs);
+  const stopoverCount = knownStopoverCount(legs, ruleSet.surfaceSectorsCountAsStopovers);
   const transferCount = knownTransferCount(legs);
   const unknownStops = unknownStopoverCount(legs);
   // Open-jaw distance policy (docs/decisions/open-jaw-distance.md D3):
@@ -456,7 +598,10 @@ export function validateRtwRoute(
       : 0);
   const crossedOceans = oceansCrossed(legs, inputs);
   const visitedContinents = continentsVisited(legs, inputs);
-  const direction = routeDirection(legs, inputs);
+  const rawDirection = routeDirection(legs, inputs);
+  const direction = ruleSet.geography.directionPolicy === 'iata-area-continuous'
+    ? routeDirectionAcrossIataAreas(legs, inputs)
+    : rawDirection;
 
   if (ruleSet.status !== 'active') {
     findings.push({
@@ -473,6 +618,52 @@ export function validateRtwRoute(
     });
   }
 
+  const manualFlightIndexes = legs
+    .map((leg, index) => ({ leg, index }))
+    .filter(({ leg }) => isFlightLeg(leg) && leg.manual === true)
+    .map(({ index }) => index);
+  if (manualFlightIndexes.length > 0) {
+    findings.push(localizedFinding(
+      {
+        ruleId: 'manual-route-evidence',
+        severity: 'warning',
+        message: `Manually entered flight leg(s) ${manualFlightIndexes.map((index) => index + 1).join(', ')} have no GCMP route-evidence claim; verify nonstop service and operating carrier.`,
+        affectedLegIndexes: manualFlightIndexes,
+      },
+      'rtw.findings.manualRouteEvidence',
+      { legs: manualFlightIndexes.map((index) => index + 1).join(', ') },
+    ));
+  }
+
+  if (ruleSet.travelEffectiveUntil !== undefined) {
+    const datedFlights = legs
+      .map((leg, index) => ({ leg, index }))
+      .filter((item): item is { leg: FlightLeg; index: number } => isFlightLeg(item.leg) && item.leg.departsOn !== undefined);
+    const lateFlights = datedFlights
+      .filter(({ leg }) => (leg.departsOn as string) > ruleSet.travelEffectiveUntil!)
+      .map(({ index }) => index);
+    const undatedFlights = legs.filter((leg) => isFlightLeg(leg) && leg.departsOn === undefined).length;
+    findings.push(localizedFinding(
+      {
+        ruleId: 'product-travel-window',
+        severity: lateFlights.length > 0 ? 'fail' : undatedFlights > 0 ? 'unknown' : 'pass',
+        message: lateFlights.length > 0
+          ? `One or more flights depart after this product's travel cutoff (${ruleSet.travelEffectiveUntil}).`
+          : undatedFlights > 0
+            ? `Travel cutoff is ${ruleSet.travelEffectiveUntil}; add all flight dates to complete this check.`
+            : `All dated flights depart on or before ${ruleSet.travelEffectiveUntil}.`,
+        ...(lateFlights.length > 0 ? { affectedLegIndexes: lateFlights } : {}),
+        ...(sourceUrl ? { sourceUrl } : {}),
+      },
+      lateFlights.length > 0
+        ? 'rtw.findings.productTravelWindowFail'
+        : undatedFlights > 0
+          ? 'rtw.findings.productTravelWindowUnknown'
+          : 'rtw.findings.productTravelWindowPass',
+      { date: ruleSet.travelEffectiveUntil },
+    ));
+  }
+
   // Per-leg chronology (docs/decisions/flight-schedule-model.md S2). Runs
   // PRODUCT-INDEPENDENT: consecutive legs that are BOTH dated must not go
   // backwards in time — ISO dates sort lexicographically, so string
@@ -481,7 +672,7 @@ export function validateRtwRoute(
   for (let i = 0; i < legs.length - 1; i++) {
     const prev = legs[i];
     const next = legs[i + 1];
-    if (!prev || !next) continue;
+    if (!prev || !next || !isFlightLeg(prev) || !isFlightLeg(next)) continue;
     if (prev.departsOn === undefined || next.departsOn === undefined) continue;
     if (next.departsOn >= prev.departsOn) continue;
     findings.push(localizedFinding(
@@ -500,16 +691,18 @@ export function validateRtwRoute(
   // set AND a boundary flight leg is dated, disagreement is surfaced as a
   // WARNING naming all four values — never silently reconciled. Surface
   // sectors are not flights and never anchor a boundary.
-  const firstFlightIndex = legs.findIndex((leg) => leg.surface !== true);
+  const firstFlightIndex = legs.findIndex(isFlightLeg);
   const lastFlightIndex = (() => {
     for (let i = legs.length - 1; i >= 0; i--) {
       const leg = legs[i];
-      if (leg && leg.surface !== true) return i;
+      if (leg && isFlightLeg(leg)) return i;
     }
     return -1;
   })();
-  const firstFlight = firstFlightIndex >= 0 ? legs[firstFlightIndex] : undefined;
-  const lastFlight = lastFlightIndex >= 0 ? legs[lastFlightIndex] : undefined;
+  const firstCandidate = firstFlightIndex >= 0 ? legs[firstFlightIndex] : undefined;
+  const lastCandidate = lastFlightIndex >= 0 ? legs[lastFlightIndex] : undefined;
+  const firstFlight = firstCandidate && isFlightLeg(firstCandidate) ? firstCandidate : undefined;
+  const lastFlight = lastCandidate && isFlightLeg(lastCandidate) ? lastCandidate : undefined;
   const startMismatch =
     request?.startDate !== undefined &&
     firstFlight?.departsOn !== undefined &&
@@ -545,13 +738,13 @@ export function validateRtwRoute(
   const members = activeAllianceMembers(ruleSet, inputs.allianceCatalog);
   const ineligibleLegIndexes = legs
     .map((leg, index) => ({ leg, index }))
-    .filter(({ leg }) => leg.surface !== true)
+    .filter((item): item is { leg: FlightLeg; index: number } => isFlightLeg(item.leg))
     .filter(({ leg }) => !members.has(leg.operatingCarrier))
     .map(({ index }) => index);
 
   const flownCarriers = new Set(
     legs
-      .filter((leg) => leg.surface !== true)
+      .filter(isFlightLeg)
       .map((leg) => leg.operatingCarrier),
   );
 
@@ -580,7 +773,7 @@ export function validateRtwRoute(
     const tripStartYm = request?.startDate?.slice(0, 7);
     const gapMatches = new Map<string, { gap: NetworkGapEntry; legIndexes: number[] }>();
     for (const [index, leg] of legs.entries()) {
-      if (leg.surface === true) continue;
+      if (!isFlightLeg(leg)) continue;
       for (const gap of inputs.networkGaps) {
         const [a, b] = gap.pair;
         const matchesPair =
@@ -670,7 +863,7 @@ export function validateRtwRoute(
   // schedules input produces zero findings (degrade-to-null loader contract).
   if (inputs.schedules !== undefined && inputs.schedules.length > 0) {
     for (const [index, leg] of legs.entries()) {
-      if (leg.surface === true) continue;
+      if (!isFlightLeg(leg)) continue;
       if (leg.departsOn === undefined) continue;
       const entry = inputs.schedules.find(
         (candidate) =>
@@ -710,8 +903,13 @@ export function validateRtwRoute(
     maxTransfersPerCity,
     maxSurfaceSectors,
     maxStopoversPerCity,
+    maxStopoversPerCountry,
+    maxVisitsPerCity,
+    maxOpenJaws,
   } = ruleSet.limits;
   const stopoverCountsByCity = stopoverCityCounts(legs, inputs);
+  const stopoverCountsByCountry = stopoverCountryCounts(legs, inputs);
+  const visitsByCity = cityVisitCounts(legs, inputs);
   const surfaceCountsByCity = surfaceCityCounts(legs, inputs);
   const transferCountsByCity = transferCityCounts(legs, inputs);
   const repeatedStopoverCities = maxStopoversPerCity === undefined
@@ -723,6 +921,13 @@ export function validateRtwRoute(
   const repeatedTransferCities = maxTransfersPerCity === undefined
     ? []
     : repeatedCities(transferCountsByCity, maxTransfersPerCity);
+  const repeatedStopoverCountries = maxStopoversPerCountry === undefined
+    ? []
+    : repeatedCities(stopoverCountsByCountry, maxStopoversPerCountry);
+  const repeatedVisitCities = maxVisitsPerCity === undefined
+    ? []
+    : repeatedCities(visitsByCity, maxVisitsPerCity);
+  const openJawCount = surfaceCount + (inputs.openJawSectors?.length ?? 0);
   const days = tripDays(request?.startDate, request?.endDate);
   if (minFlights !== undefined || maxFlights !== undefined) {
     const tooFew = minFlights !== undefined && segmentCount < minFlights;
@@ -872,6 +1077,130 @@ export function validateRtwRoute(
     ));
   }
 
+  if (maxStopoversPerCountry !== undefined) {
+    findings.push(localizedFinding(
+      {
+        ruleId: 'stopovers-per-country',
+        severity: repeatedStopoverCountries.length === 0 ? 'pass' : 'fail',
+        message:
+          repeatedStopoverCountries.length === 0
+            ? `No country exceeds the ${maxStopoversPerCountry} stopover-per-country cap.`
+            : `Stopovers repeated too many times in country/countries: ${repeatedStopoverCountries.join(', ')}.`,
+        ...(sourceUrl ? { sourceUrl } : {}),
+      },
+      repeatedStopoverCountries.length === 0
+        ? 'rtw.findings.stopoversPerCountryPass'
+        : 'rtw.findings.stopoversPerCountryFail',
+      { max: maxStopoversPerCountry, countries: repeatedStopoverCountries.join(', ') },
+    ));
+  }
+
+  if (maxVisitsPerCity !== undefined) {
+    findings.push(localizedFinding(
+      {
+        ruleId: 'visits-per-city',
+        severity: repeatedVisitCities.length === 0 ? 'pass' : 'fail',
+        message:
+          repeatedVisitCities.length === 0
+            ? `No city appears more than ${maxVisitsPerCity} times in the itinerary.`
+            : `City appears too many times in: ${repeatedVisitCities.join(', ')}.`,
+        ...(sourceUrl ? { sourceUrl } : {}),
+      },
+      repeatedVisitCities.length === 0
+        ? 'rtw.findings.visitsPerCityPass'
+        : 'rtw.findings.visitsPerCityFail',
+      { max: maxVisitsPerCity, cities: repeatedVisitCities.join(', ') },
+    ));
+  }
+
+  if (maxOpenJaws !== undefined) {
+    findings.push(localizedFinding(
+      {
+        ruleId: 'open-jaws',
+        severity: openJawCount <= maxOpenJaws ? 'pass' : 'fail',
+        message: openJawCount <= maxOpenJaws
+          ? `Route has ${openJawCount} open-jaw/surface gap(s), within the ${maxOpenJaws} cap.`
+          : `Route has ${openJawCount} open-jaw/surface gap(s); maximum is ${maxOpenJaws}.`,
+        ...(sourceUrl ? { sourceUrl } : {}),
+      },
+      openJawCount <= maxOpenJaws ? 'rtw.findings.openJawsPass' : 'rtw.findings.openJawsFail',
+      { count: openJawCount, max: maxOpenJaws },
+    ));
+  }
+
+  const conditionalOriginStopoverCountries = new Set(
+    ruleSet.geography.forbidOriginCountryStopoversWhenOriginIn ?? [],
+  );
+  const routeOriginCountry = startAirport(legs, inputs)?.country;
+  const checksOriginCountryStopovers =
+    ruleSet.geography.forbidOriginCountryStopovers === true ||
+    (routeOriginCountry !== undefined && conditionalOriginStopoverCountries.has(routeOriginCountry));
+  if (checksOriginCountryStopovers) {
+    const originCountry = routeOriginCountry;
+    const violating = originCountry === undefined
+      ? []
+      : resolvedLegAirports(legs, inputs)
+          .filter(({ leg, to }) => leg.stopover === true && to.country === originCountry)
+          .map(({ index }) => index);
+    findings.push(localizedFinding(
+      {
+        ruleId: 'origin-country-stopover',
+        severity: originCountry === undefined ? 'unknown' : violating.length === 0 ? 'pass' : 'fail',
+        message: originCountry === undefined
+          ? 'Origin-country stopover rule cannot be checked because the origin is unknown.'
+          : violating.length === 0
+            ? `No stopover is marked in the origin country (${originCountry}).`
+            : `Stopover in origin country ${originCountry} is not permitted.`,
+        ...(violating.length > 0 ? { affectedLegIndexes: violating } : {}),
+        ...(sourceUrl ? { sourceUrl } : {}),
+      },
+      originCountry === undefined
+        ? 'rtw.findings.originCountryStopoverUnknown'
+        : violating.length === 0
+          ? 'rtw.findings.originCountryStopoverPass'
+          : 'rtw.findings.originCountryStopoverFail',
+      { country: originCountry ?? '' },
+    ));
+  }
+
+  if (ruleSet.geography.originCountryTerminalOnly === true) {
+    const violation = originCountryTerminalViolation(legs, inputs);
+    findings.push(localizedFinding(
+      {
+        ruleId: 'origin-country-terminal',
+        severity: violation === null ? 'pass' : 'fail',
+        message: violation === null
+          ? 'The itinerary does not leave the origin country again after returning to it.'
+          : `After returning to origin country ${violation.originCountry}, the itinerary continues to another country.`,
+        ...(violation ? { affectedLegIndexes: [violation.returnLeg, violation.onwardLeg] } : {}),
+        ...(sourceUrl ? { sourceUrl } : {}),
+      },
+      violation === null
+        ? 'rtw.findings.originCountryTerminalPass'
+        : 'rtw.findings.originCountryTerminalFail',
+      { country: violation?.originCountry ?? '' },
+    ));
+  }
+
+  if (ruleSet.geography.originCityTerminalOnly === true) {
+    const violation = originCityTerminalViolation(legs, inputs);
+    findings.push(localizedFinding(
+      {
+        ruleId: 'origin-city-terminal',
+        severity: violation === null ? 'pass' : 'fail',
+        message: violation === null
+          ? 'The itinerary does not continue after returning to the origin city.'
+          : `After returning to origin city ${violation.originCity}, the itinerary continues onward.`,
+        ...(violation ? { affectedLegIndexes: [violation.returnLeg, violation.onwardLeg] } : {}),
+        ...(sourceUrl ? { sourceUrl } : {}),
+      },
+      violation === null
+        ? 'rtw.findings.originCityTerminalPass'
+        : 'rtw.findings.originCityTerminalFail',
+      { city: violation?.originCity ?? '' },
+    ));
+  }
+
   if (maxTransfersPerCity !== undefined) {
     findings.push(localizedFinding(
       {
@@ -972,21 +1301,37 @@ export function validateRtwRoute(
   }
 
   if (ruleSet.geography.directionPolicy !== 'flexible') {
+    const networkConditional = ruleSet.geography.directionPolicy === 'network-required-backtracking';
+    const areaAware = ruleSet.geography.directionPolicy === 'iata-area-continuous';
     const key = direction === 'mixed'
-      ? 'rtw.findings.directionMixed'
+      ? networkConditional
+        ? 'rtw.findings.directionNetworkReview'
+        : areaAware
+          ? 'rtw.findings.directionIataAreaMixed'
+          : 'rtw.findings.directionMixed'
       : direction === 'unknown'
         ? 'rtw.findings.directionUnknown'
-        : 'rtw.findings.directionPass';
+        : areaAware
+          ? 'rtw.findings.directionIataAreaPass'
+          : 'rtw.findings.directionPass';
     findings.push(localizedFinding(
       {
         ruleId: 'direction',
-        severity: direction === 'mixed' ? 'fail' : direction === 'unknown' ? 'unknown' : 'pass',
+        severity: direction === 'mixed'
+          ? networkConditional ? 'warning' : 'fail'
+          : direction === 'unknown' ? 'unknown' : 'pass',
         message:
           direction === 'mixed'
-            ? 'Route mixes eastbound and westbound movement; this product requires one continuous global direction.'
+            ? networkConditional
+              ? 'Route backtracks. This product permits backtracking only when required by the alliance network; confirm necessity manually.'
+              : areaAware
+                ? 'Route reverses direction between IATA traffic areas; same-area backtracking is allowed, cross-area reversal is not.'
+                : 'Route mixes eastbound and westbound movement; this product requires one continuous global direction.'
             : direction === 'unknown'
               ? 'Route direction could not be determined.'
-              : `Route is ${direction}.`,
+              : areaAware
+                ? `Cross-IATA-area route direction is ${direction}; same-area reversals are ignored.`
+                : `Route is ${direction}.`,
         ...(sourceUrl ? { sourceUrl } : {}),
       },
       key,

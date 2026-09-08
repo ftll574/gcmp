@@ -36,9 +36,16 @@ export function eligibleAirlinesForProduct(
   if (eligibleCodes.size === 0) return airlines;
 
   const airlineByCode = new Map(airlines.map((airline) => [airline.iata, airline]));
+  const membershipByCode = new Map(allianceCatalog.memberships.map((membership) => [membership.airline, membership]));
   return [...eligibleCodes]
-    .map((code) => airlineByCode.get(code))
-    .filter((airline): airline is Airline => airline !== undefined)
+    .map((code): Airline => airlineByCode.get(code) ?? {
+      iata: code,
+      name: membershipByCode.get(code)?.airlineName ?? code,
+      // The alliance catalog already supplies the authoritative name. Do not
+      // invent country/ICAO data or drop valid members missing from the old
+      // earning-oriented master file. Source metadata stays in that catalog.
+      country: '',
+    })
     .sort((a, b) => a.iata.localeCompare(b.iata));
 }
 

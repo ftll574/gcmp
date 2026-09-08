@@ -4,9 +4,10 @@ import type {
   AwardPricingCatalog,
   AwardPricingProduct,
 } from '../schemas/award-pricing.ts';
-import type { CabinId, Leg } from '../types.ts';
+import { isFlightLeg, type CabinId, type Leg } from '../types.ts';
 
 export interface AwardPriceEstimate {
+  readonly currency?: 'miles' | 'points';
   readonly productId: string;
   readonly label: string;
   readonly miles: number;
@@ -80,6 +81,7 @@ export function estimateAwardPrice(
     productId,
     label: product.label,
     miles,
+    currency: product.currency,
     cabin,
     confidence: product.confidence,
     band: {
@@ -101,6 +103,7 @@ export type AwardChartPrices = Readonly<
 >;
 
 export interface AwardZoneQuote {
+  readonly currency?: 'miles' | 'points';
   readonly productId: string;
   readonly label: string;
   readonly confidence: 'official-fixed' | 'published-chart' | 'reference-recheck';
@@ -142,6 +145,7 @@ export function quoteAwardZone(
       maxMiles: band.maxMiles,
     },
     prices,
+    currency: product.currency,
     notes: product.notes ?? [],
     sourceUrls: product.sourceUrls,
   };
@@ -243,6 +247,7 @@ export function priceRtwItinerary(
 ): AwardPriceEstimate | null {
   let highest = fallbackCabin;
   for (const leg of legs) {
+    if (!isFlightLeg(leg)) continue;
     const legCabin = leg.cabin;
     if (legCabin !== undefined && RANK_BY_CABIN[legCabin] > RANK_BY_CABIN[highest]) {
       highest = legCabin;

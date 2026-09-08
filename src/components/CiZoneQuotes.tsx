@@ -12,6 +12,7 @@
  */
 import { PRICE_KEY_BY_CABIN, type AwardZonePairQuote } from '../lib/rtw/award-pricing.ts';
 import { useLocale } from '../i18n/use-locale.ts';
+import type { CabinId } from '../lib/types.ts';
 export interface CiZoneQuoteRow {
   readonly from: string;
   readonly to: string;
@@ -23,27 +24,24 @@ export interface CiZoneQuoteRow {
   readonly fromZone: string | null;
   /** Resolved destination region; null when unmapped. */
   readonly toZone: string | null;
+  /** Per-leg cabin. Null means the user has not chosen it yet. */
+  readonly cabin: CabinId | null;
 }
-
-type PricedCabin = keyof typeof PRICE_KEY_BY_CABIN;
 
 export function CiZoneQuotes({
   rows,
-  cabin,
 }: {
   readonly rows: ReadonlyArray<CiZoneQuoteRow>;
-  readonly cabin: PricedCabin;
 }): React.ReactElement {
   const { t } = useLocale();
   const quotedCount = rows.filter((row) => row.quote !== null).length;
   const total = rows.reduce((sum, row) => sum + (row.quote?.miles ?? 0), 0);
-  const cabinLabel = t(`rtw.award.cabin.${PRICE_KEY_BY_CABIN[cabin]}`);
-
   const rowState = (
     row: CiZoneQuoteRow,
-  ): 'quoted' | 'surface' | 'unknown' | 'unpriced' => {
+  ): 'quoted' | 'surface' | 'unknown' | 'cabin-unknown' | 'unpriced' => {
     if (row.surface) return 'surface';
     if (!row.fromZone || !row.toZone) return 'unknown';
+    if (!row.cabin) return 'cabin-unknown';
     if (!row.quote) return 'unpriced';
     return 'quoted';
   };
@@ -81,9 +79,14 @@ export function CiZoneQuotes({
               {state === 'unknown' && (
                 <small className="ci-zone-unknown">{t('rtw.award.ciZone.unknownZone')}</small>
               )}
+              {state === 'cabin-unknown' && (
+                <small className="ci-zone-unknown">{t('rtw.award.ciZone.unknownCabin')}</small>
+              )}
               {state === 'unpriced' && (
                 <small className="ci-zone-unpriced">
-                  {t('rtw.award.ciZone.unpricedCabin', { cabin: cabinLabel })}
+                  {t('rtw.award.ciZone.unpricedCabin', {
+                    cabin: row.cabin ? t(`rtw.award.cabin.${PRICE_KEY_BY_CABIN[row.cabin]}`) : t('rtw.timing.unknown'),
+                  })}
                 </small>
               )}
             </li>

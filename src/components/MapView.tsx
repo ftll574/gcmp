@@ -18,7 +18,7 @@
  *   - **Azimuthal Equidistant**: same as flat — pan SVG, zoom SVG.
  */
 
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { geoGraticule, geoPath, type GeoPath, type GeoProjection } from 'd3-geo';
 import { groupColor } from '../lib/group-colors.ts';
 import { distanceNm } from '../lib/calc/haversine.ts';
@@ -28,6 +28,8 @@ import {
   isWrappingProjection,
   type ProjectionId,
 } from '../lib/calc/projections.ts';
+import { clusterMapPoints, fitProjectedPoints, layoutMapLabels } from '../lib/map-layout.ts';
+import type { NextLegMapGuide } from '../lib/rtw/next-leg-discovery.ts';
 import type { Airport, RoutingGroup } from '../lib/types.ts';
 import { useWorldMap } from '../state/use-world-map.ts';
 
@@ -47,6 +49,11 @@ interface Props {
    */
   showDistances?: boolean;
   onAirportCommit?: (airport: Airport) => void;
+  nextLegGuide?: NextLegMapGuide | null;
+  /** Selected next destination shared with the left route editor. Undefined
+   * keeps MapView usable standalone with local selection state. */
+  selectedNextStop?: string | null | undefined;
+  onNextLegSelect?: (destination: string | null) => void;
 }
 
 /** Pan/zoom state for flat projections — applied as an SVG transform. */
@@ -110,15 +117,14 @@ export function MapView({
   projection,
   showDistances = false,
   onAirportCommit,
+  nextLegGuide = null,
+  selectedNextStop: controlledNextStop,
+  onNextLegSelect,
 }: Props): React.ReactElement {
   const { features, error: worldError } = useWorldMap();
 
   const isGlobe = projection === 'orthographic';
   const wrapping = isWrappingProjection(projection);
-
-  // For wrapping projections, the world width in projected pixels equals the
-  // viewport width after fitSize. For globe, irrelevant.
-  const worldWidth = width;
 
   // Center on first airport in the active chain (initial default for non-globe;
   // initial rotation for globe).
@@ -139,8 +145,10 @@ export function MapView({
   });
   const [dragging, setDragging] = useState(false);
   const [selectedAirportCode, setSelectedAirportCode] = useState<string | null>(null);
+  const [localNextStopCode, setLocalNextStopCode] = useState<string | null>(null);
   const hoverFrameRef = useRef<number | null>(null);
   const lastPointerRef = useRef<{ x: number; y: number } | null>(null);
+  const lastAutoFitKeyRef = useRef<string | null>(null);
   const dragRef = useRef<{
     startX: number;
     startY: number;
@@ -177,6 +185,13 @@ export function MapView({
     initialCenter.lon,
   ]);
 
+  // Cylindrical projections repeat every 360°. Their projected period is
+  // 2π × projection scale — it is NOT necessarily the viewport width.
+  // Mercator in a wide viewport is commonly height-constrained (for example,
+  // an 800×500 viewport has a ~500px world period). Using `width` here leaves
+  // a visible Pacific gap and also breaks antimeridian route unwrapping.
+  const worldWidth = wrapping ? 2 * Math.PI * proj.scale() : width;
+
   const pathBuilder = useMemo<GeoPath>(() => geoPath(proj), [proj]);
 
   const worldPath = useMemo<string>(
@@ -185,7 +200,7 @@ export function MapView({
   );
 
   const graticulePath = useMemo<string>(
-    () => pathBuilder(geoGraticule().step([30, 30])()) ?? '',
+    () => pathBuilder(geoGraticule().step([45, 30])()) ?? '',
     [pathBuilder],
   );
 
@@ -213,6 +228,9 @@ export function MapView({
           key: `${gi}-${leg.from}-${leg.to}-${i}`,
           color: groupColor(gi),
           groupIndex: gi,
+          from: leg.from,
+          to: leg.to,
+          surface: leg.surface === true,
           mid:
             midProj && Number.isFinite(midProj[0]) && Number.isFinite(midProj[1])
               ? { x: midProj[0], y: midProj[1] }
@@ -245,10 +263,39 @@ export function MapView({
     () => new Set(activeAirports.map((airport) => airport.iata)),
     [activeAirports],
   );
+  const activeWaypointLabels = useMemo(() => {
+    const positions = new Map<string, number[]>();
+    activeAirports.forEach((airport, index) => {
+      const rows = positions.get(airport.iata) ?? [];
+      rows.push(index + 1);
+      positions.set(airport.iata, rows);
+    });
+    return new Map(
+      [...positions.entries()].map(([iata, rows]) => [
+        iata,
+        {
+          label: `${rows.join('/')} ${iata}`,
+          firstPosition: rows[0] ?? 1,
+        },
+      ] as const),
+    );
+  }, [activeAirports]);
   const routeAirportCodes = useMemo(
     () => new Set(routeAirports.map((airport) => airport.iata)),
     [routeAirports],
   );
+  const routeEndpoint = activeAirports.at(-1) ?? null;
+  const routeOrigin = activeAirports[0] ?? null;
+  const activeNextLegGuide = nextLegGuide && routeEndpoint?.iata === nextLegGuide.origin
+    ? nextLegGuide
+    : null;
+  const selectedNextStopCode = controlledNextStop !== undefined
+    ? controlledNextStop
+    : localNextStopCode;
+  function chooseNextStop(code: string | null): void {
+    if (controlledNextStop === undefined) setLocalNextStopCode(code);
+    onNextLegSelect?.(code);
+  }
 
   const projectedAirports = useMemo(() => {
     return airports.map((a) => {
@@ -260,10 +307,6 @@ export function MapView({
     });
   }, [airports, proj]);
   const labelInvScale = isGlobe ? Math.max(globe.scale, 1) : Math.max(pz.scale, 1);
-  const airportDotsPath = useMemo(
-    () => airportDotPath(projectedAirports, routeAirportCodes, 1.25 / labelInvScale),
-    [projectedAirports, routeAirportCodes, labelInvScale],
-  );
 
   const selectedAirport = useMemo(() => {
     if (!selectedAirportCode) return null;
@@ -276,9 +319,84 @@ export function MapView({
     if (!coords || !Number.isFinite(coords[0]) || !Number.isFinite(coords[1])) return null;
     return { airport: selectedAirport, x: coords[0], y: coords[1] };
   }, [selectedAirport, proj]);
+  const availableNextStops = useMemo(() => {
+    if (!activeNextLegGuide) return [];
+    return activeNextLegGuide.destinations.flatMap((destination) => {
+      const airport = airportLookup.get(destination.iata);
+      if (!airport) return [];
+      const coords = proj([airport.lon, airport.lat]);
+      if (!coords || !Number.isFinite(coords[0]) || !Number.isFinite(coords[1])) return [];
+      return [{ destination, airport, x: coords[0], y: coords[1] }];
+    });
+  }, [activeNextLegGuide, airportLookup, proj]);
+  const nextLegOrigin = useMemo(() => {
+    if (!activeNextLegGuide) return null;
+    const airport = airportLookup.get(activeNextLegGuide.origin);
+    if (!airport) return null;
+    const coords = proj([airport.lon, airport.lat]);
+    if (!coords || !Number.isFinite(coords[0]) || !Number.isFinite(coords[1])) return null;
+    return { airport, x: coords[0], y: coords[1] };
+  }, [activeNextLegGuide, airportLookup, proj]);
+  const selectedNextStop = useMemo(
+    () => availableNextStops.find((stop) => stop.airport.iata === selectedNextStopCode) ?? null,
+    [availableNextStops, selectedNextStopCode],
+  );
+  const selectedNextStopPreview = useMemo(() => {
+    if (!selectedNextStop || !routeEndpoint) return null;
+    return greatCircleSvgPathProjected(routeEndpoint, selectedNextStop.airport, proj, 96, {
+      ...(wrapping ? { wrapWidth: worldWidth } : {}),
+    });
+  }, [selectedNextStop, routeEndpoint, proj, wrapping, worldWidth]);
+  const autoFitMode = selectedNextStop
+    ? 'selection'
+    : activeNextLegGuide && availableNextStops.length > 12
+      ? 'network'
+      : 'route';
+  const autoFitAirports = useMemo(() => {
+    if (autoFitMode === 'network') return [];
+    const candidates = selectedNextStop
+      ? [...activeAirports, selectedNextStop.airport]
+      : [...activeAirports];
+    const seen = new Set<string>();
+    return candidates.filter((airport) => {
+      if (seen.has(airport.iata)) return false;
+      seen.add(airport.iata);
+      return true;
+    });
+  }, [activeAirports, autoFitMode, selectedNextStop]);
+  const preferredPanZoom = useMemo<PanZoomState>(() => {
+    if (isGlobe || autoFitMode === 'network') return PAN_IDENTITY;
+    const points = autoFitAirports.flatMap((airport) => {
+      const coords = proj([airport.lon, airport.lat]);
+      if (!coords || !Number.isFinite(coords[0]) || !Number.isFinite(coords[1])) return [];
+      return [{ id: airport.iata, x: coords[0], y: coords[1] }];
+    });
+    const fit = fitProjectedPoints(points, { width, height }, {
+      padding: { top: 74, right: 52, bottom: 58, left: 52 },
+      maxScale: autoFitMode === 'selection' ? 4.2 : 3.6,
+      ...(wrapping ? { wrapWidth: worldWidth } : {}),
+    });
+    return fit ?? PAN_IDENTITY;
+  }, [autoFitAirports, autoFitMode, height, isGlobe, proj, width, worldWidth, wrapping]);
+  const autoFitKey = `${projection}:${width}x${height}:${autoFitMode}:${autoFitAirports.map((airport) => airport.iata).join('-')}`;
 
-  const routeEndpoint = activeAirports.at(-1) ?? null;
-  const routeOrigin = activeAirports[0] ?? null;
+  useEffect(() => {
+    if (isGlobe || lastAutoFitKeyRef.current === autoFitKey) return;
+    lastAutoFitKeyRef.current = autoFitKey;
+    setPz(preferredPanZoom);
+  }, [autoFitKey, isGlobe, preferredPanZoom]);
+  const mapDetailScale = isGlobe
+    ? globe.scale
+    : pz.scale / Math.max(0.01, preferredPanZoom.scale);
+  // Auto-fitting a route is still the overview. Reveal the global airport
+  // cloud only after the user zooms materially beyond that fitted view.
+  const showBackgroundAirports = activeNextLegGuide === null && mapDetailScale >= 1.8;
+  const airportDotsPath = useMemo(
+    () => showBackgroundAirports
+      ? airportDotPath(projectedAirports, routeAirportCodes, 1.15 / labelInvScale)
+      : '',
+    [projectedAirports, routeAirportCodes, labelInvScale, showBackgroundAirports],
+  );
 
   function airportActionLabel(airport: Airport): string {
     if (!routeEndpoint) return `Start route at ${airport.iata}`;
@@ -299,6 +417,9 @@ export function MapView({
     let best: { airport: Airport; distSq: number } | null = null;
     for (const { airport, x, y } of projectedAirports) {
       if (x === null || y === null) continue;
+      if (activeNextLegGuide) {
+        if (!routeAirportCodes.has(airport.iata)) continue;
+      } else if (!showBackgroundAirports && !routeAirportCodes.has(airport.iata)) continue;
       for (const offsetX of wrapOffsets) {
         const screenX = isGlobe ? x : (x + offsetX) * pz.scale + pz.tx;
         const screenY = isGlobe ? y : y * pz.scale + pz.ty;
@@ -416,7 +537,7 @@ export function MapView({
     if (isGlobe) {
       setGlobe({ rotateLon: initialCenter.lon, rotateLat: initialCenter.lat, scale: 1 });
     } else {
-      setPz(PAN_IDENTITY);
+      setPz(preferredPanZoom);
     }
   }
 
@@ -426,16 +547,110 @@ export function MapView({
     ? globe.rotateLon !== initialCenter.lon ||
       globe.rotateLat !== initialCenter.lat ||
       globe.scale !== 1
-    : pz.scale !== 1 || pz.tx !== 0 || pz.ty !== 0;
+    : Math.abs(pz.scale - preferredPanZoom.scale) > 0.001 ||
+      Math.abs(pz.tx - preferredPanZoom.tx) > 0.5 ||
+      Math.abs(pz.ty - preferredPanZoom.ty) > 0.5;
 
-  // For wrapping projections render world / graticule / arcs / airports at
-  // 3 horizontal offsets so the seam at ±180° is never visible.
-  const wrapOffsets = wrapping ? [-worldWidth, 0, worldWidth] : [0];
+  // Render enough periodic copies to cover the viewport even at the minimum
+  // zoom. A fixed 3-copy strip is insufficient when the user zooms out because
+  // the on-screen period becomes narrower than the viewport.
+  const wrapOffsets = (() => {
+    if (!wrapping) return [0];
+    const screenPeriod = Math.max(1, worldWidth * pz.scale);
+    const eachSide = Math.max(1, Math.ceil((width / screenPeriod + 1) / 2));
+    return Array.from({ length: eachSide * 2 + 1 }, (_, index) =>
+      (index - eachSide) * worldWidth,
+    );
+  })();
+  function projectedToScreen(x: number, y: number): { x: number; y: number } | null {
+    if (isGlobe) return { x, y };
+    const candidates = wrapOffsets.map((offsetX) => ({
+      x: (x + offsetX) * pz.scale + pz.tx,
+      y: y * pz.scale + pz.ty,
+    }));
+    return candidates
+      .filter((point) => point.x >= -40 && point.x <= width + 40 && point.y >= -40 && point.y <= height + 40)
+      .sort((a, b) => Math.abs(a.x - width / 2) - Math.abs(b.x - width / 2))[0]
+      ?? candidates.sort((a, b) => Math.abs(a.x - width / 2) - Math.abs(b.x - width / 2))[0]
+      ?? null;
+  }
+  const selectedNextStopScreen = selectedNextStop
+    ? projectedToScreen(selectedNextStop.x, selectedNextStop.y)
+    : null;
+  const mapDetailLevel = mapDetailScale >= 2.6 ? 'local' : mapDetailScale >= 1.45 ? 'regional' : 'overview';
+  const labelLayoutScale = isGlobe ? 1 : Math.max(0.01, pz.scale);
+  const waypointLabelLayout = layoutMapLabels(
+    [...activeWaypointLabels.entries()].flatMap(([iata, waypoint]) => {
+      const airport = airportLookup.get(iata);
+      if (!airport) return [];
+      const coords = proj([airport.lon, airport.lat]);
+      if (!coords || !Number.isFinite(coords[0]) || !Number.isFinite(coords[1])) return [];
+      const screen = projectedToScreen(coords[0], coords[1]);
+      if (!screen) return [];
+      const widthPx = Math.max(48, waypoint.label.length * 7 + 16);
+      return [{ id: iata, x: screen.x, y: screen.y, width: widthPx, height: 20 }];
+    }),
+    { width, height },
+    { gap: 9, viewportPadding: 12 },
+  );
+  const nextStopScreenPoints = availableNextStops.flatMap((stop) => {
+    const screen = projectedToScreen(stop.x, stop.y);
+    if (!screen) return [];
+    return [{ id: stop.airport.iata, x: screen.x, y: screen.y, stop }];
+  });
+  const clusterRadius = mapDetailLevel === 'overview' ? 26 : mapDetailLevel === 'regional' ? 17 : 0;
+  const nextStopClusters = activeNextLegGuide
+    ? clusterMapPoints(
+      nextStopScreenPoints.filter((point) => point.id !== selectedNextStopCode),
+      clusterRadius,
+    )
+    : [];
+  const multiStopClusters = nextStopClusters.filter((cluster) => cluster.items.length > 1);
+  const clusteredNextStopCodes = new Set(
+    multiStopClusters.flatMap((cluster) => cluster.items.map((item) => item.id)),
+  );
+
+  function zoomIntoCluster(cluster: (typeof multiStopClusters)[number]): void {
+    if (isGlobe) {
+      const airportsInCluster = cluster.items.map((item) => item.stop.airport);
+      const lon = airportsInCluster.reduce((sum, airport) => sum + airport.lon, 0) / airportsInCluster.length;
+      const lat = airportsInCluster.reduce((sum, airport) => sum + airport.lat, 0) / airportsInCluster.length;
+      setGlobe((previous) => ({
+        rotateLon: lon,
+        rotateLat: lat,
+        scale: Math.min(6, Math.max(previous.scale * 1.7, 1.7)),
+      }));
+      return;
+    }
+    setPz((previous) => {
+      const nextScale = Math.min(6, Math.max(previous.scale * 1.85, 1.85));
+      const worldX = (cluster.x - previous.tx) / previous.scale;
+      const worldY = (cluster.y - previous.ty) / previous.scale;
+      let tx = width / 2 - worldX * nextScale;
+      const ty = height / 2 - worldY * nextScale;
+      if (wrapping) tx = normalizeTx(tx, worldWidth * nextScale);
+      return { scale: nextScale, tx, ty };
+    });
+  }
+  const nextStopPopoverHeight = selectedNextStop
+    ? 66 + selectedNextStop.destination.options.reduce(
+      (sum, option) => sum + Math.max(1, option.flightNumbers.length) * 22,
+      0,
+    )
+    : 0;
+  const nextStopPopoverX = selectedNextStopScreen
+    ? Math.max(12, Math.min(width - 210, selectedNextStopScreen.x + 14))
+    : 0;
+  const nextStopPopoverY = selectedNextStopScreen
+    ? Math.max(12, Math.min(height - nextStopPopoverHeight - 12, selectedNextStopScreen.y - 34))
+    : 0;
 
   return (
     <svg
       ref={svgRef}
       className={`map-view${isGlobe ? ' map-view-globe' : ''}${wrapping ? ' map-view-wrapping' : ''}`}
+      data-map-detail={mapDetailLevel}
+      data-map-fit={autoFitMode}
       viewBox={`0 0 ${width} ${height}`}
       width={width}
       height={height}
@@ -468,7 +683,12 @@ export function MapView({
         <rect x={0} y={0} width={width} height={height} className="map-sea" />
         <g transform={transform}>
           {wrapOffsets.map((offsetX) => (
-            <g key={`world-${offsetX}`} transform={`translate(${offsetX}, 0)`}>
+            <g
+              key={`world-${offsetX}`}
+              data-map-world-copy="true"
+              data-map-wrap-offset={offsetX}
+              transform={`translate(${offsetX}, 0)`}
+            >
               {spherePath && isGlobe && (
                 <path d={spherePath} className="map-sphere" fill="var(--bg-map-sea)" />
               )}
@@ -486,37 +706,72 @@ export function MapView({
                 />
               )}
               {arcsByGroup.map((arcs, gi) =>
-                arcs.map(
-                  (arc) =>
-                    arc && (
-                      <path
-                        key={`${arc.key}-${offsetX}`}
-                        d={arc.d}
-                        className={`map-arc${gi === activeIndex ? ' map-arc-active' : ''}`}
-                        style={{ stroke: arc.color, opacity: gi === activeIndex ? 1 : 0.7 }}
-                        fill="none"
-                      />
-                    ),
+                gi === activeIndex ? null : arcs.map((arc) =>
+                  arc ? (
+                    <path
+                      key={`inactive-${arc.key}-${offsetX}`}
+                      d={arc.d}
+                      className={arc.surface ? 'map-arc-surface inactive' : 'map-arc map-arc-inactive'}
+                      {...(arc.surface ? { 'data-map-surface': `${arc.from}-${arc.to}` } : {})}
+                      style={arc.surface ? undefined : { stroke: arc.color }}
+                      fill="none"
+                    />
+                  ) : null,
                 ),
               )}
+              {(arcsByGroup[activeIndex] ?? []).map((arc) =>
+                arc ? (
+                  arc.surface ? (
+                    <path
+                      key={`active-${arc.key}-${offsetX}`}
+                      d={arc.d}
+                      className="map-arc-surface active"
+                      data-map-surface={`${arc.from}-${arc.to}`}
+                      fill="none"
+                    />
+                  ) : (
+                    <g key={`active-${arc.key}-${offsetX}`}>
+                      <path d={arc.d} className="map-arc-halo" fill="none" />
+                      <path
+                        d={arc.d}
+                        className="map-arc map-arc-active"
+                        style={{ stroke: arc.color }}
+                        fill="none"
+                      />
+                    </g>
+                  )
+                ) : null,
+              )}
               {showDistances &&
-                arcsByGroup.map((arcs) =>
-                  arcs.map((arc) =>
-                    arc && arc.mid ? (
+                (arcsByGroup[activeIndex] ?? []).map((arc) =>
+                  arc && !arc.surface && arc.mid ? (
+                    <g
+                      key={`dist-${arc.key}-${offsetX}`}
+                      className="map-distance-badge"
+                      transform={`translate(${arc.mid.x}, ${arc.mid.y})`}
+                    >
+                      <rect
+                        x={-27 / labelInvScale}
+                        y={-9 / labelInvScale}
+                        width={54 / labelInvScale}
+                        height={18 / labelInvScale}
+                        rx={4 / labelInvScale}
+                        className="map-distance-label-bg"
+                      />
                       <text
-                        key={`dist-${arc.key}-${offsetX}`}
-                        x={arc.mid.x}
-                        y={arc.mid.y}
+                        x={0}
+                        y={4 / labelInvScale}
+                        textAnchor="middle"
                         className="map-distance-label"
                         style={{
-                          fontSize: `${11 / labelInvScale}px`,
+                          fontSize: `${10 / labelInvScale}px`,
                           fill: arc.color,
                         }}
                       >
                         {arc.distanceNm.toLocaleString()} nm
                       </text>
-                    ) : null,
-                  ),
+                    </g>
+                  ) : null,
                 )}
               {airportDotsPath && (
                 <path d={airportDotsPath} className="map-airport-dots" aria-hidden="true" />
@@ -530,6 +785,15 @@ export function MapView({
                 }
                 const inActiveRoute = activeAirportCodes.has(airport.iata);
                 const inAnyRoute = routeAirportCodes.has(airport.iata);
+                const waypoint = activeWaypointLabels.get(airport.iata);
+                const waypointLabel = waypoint?.label;
+                const labelWidth = waypointLabel ? Math.max(48, waypointLabel.length * 7 + 16) : 0;
+                const labelPlacement = waypointLabelLayout.get(airport.iata);
+                const labelOffsetX = (labelPlacement?.dx ?? 9) / labelLayoutScale;
+                // The label rect starts 7 SVG units above its group origin.
+                // Compensate here so the screen-space collision box and the
+                // rendered rectangle share the same top edge.
+                const labelOffsetY = ((labelPlacement?.dy ?? -29) + 7) / labelLayoutScale;
                 return (
                   <g
                     key={`${airport.iata}-${offsetX}`}
@@ -549,17 +813,42 @@ export function MapView({
                     <circle
                       cx={x}
                       cy={y}
-                      r={(inActiveRoute ? 5 : inAnyRoute ? 3.8 : 1.35) / labelInvScale}
+                      r={(inActiveRoute ? 5.5 : inAnyRoute ? 3.4 : 1.35) / labelInvScale}
                       className="map-airport-dot"
                     />
-                    <text
-                      x={x + 8 / labelInvScale}
-                      y={y - 6 / labelInvScale}
-                      className="map-airport-label"
-                      style={{ fontSize: `${12 / labelInvScale}px` }}
-                    >
-                      {airport.iata}
-                    </text>
+                    {inActiveRoute && waypointLabel ? (
+                      <g
+                        className="map-waypoint-label"
+                        data-placement={labelPlacement?.anchor ?? 'ne'}
+                        transform={`translate(${x + labelOffsetX}, ${y + labelOffsetY})`}
+                      >
+                        <rect
+                          x={0}
+                          y={-7 / labelInvScale}
+                          width={labelWidth / labelInvScale}
+                          height={20 / labelInvScale}
+                          rx={4 / labelInvScale}
+                          className="map-waypoint-label-bg"
+                        />
+                        <text
+                          x={8 / labelInvScale}
+                          y={7 / labelInvScale}
+                          className="map-airport-label map-airport-label-active"
+                          style={{ fontSize: `${11 / labelInvScale}px` }}
+                        >
+                          {waypointLabel}
+                        </text>
+                      </g>
+                    ) : showBackgroundAirports && inAnyRoute ? (
+                      <text
+                        x={x + 7 / labelInvScale}
+                        y={y - 5 / labelInvScale}
+                        className="map-airport-label map-airport-label-secondary"
+                        style={{ fontSize: `${10 / labelInvScale}px` }}
+                      >
+                        {airport.iata}
+                      </text>
+                    ) : null}
                   </g>
                 );
               })}
@@ -649,6 +938,188 @@ export function MapView({
             </g>
           ))}
         </g>
+        {activeNextLegGuide && availableNextStops.length > 0 && (
+          <>
+            <rect
+              x={0}
+              y={0}
+              width={width}
+              height={height}
+              className="map-next-leg-veil"
+              aria-hidden="true"
+            />
+            <g className="map-next-leg-overlay" transform={transform}>
+              {wrapOffsets.map((offsetX) => (
+                <g key={`next-stops-${offsetX}`} transform={`translate(${offsetX}, 0)`}>
+                  {nextLegOrigin && (
+                    <g
+                      className="map-next-origin"
+                      data-next-leg-origin={nextLegOrigin.airport.iata}
+                      transform={`translate(${nextLegOrigin.x}, ${nextLegOrigin.y})`}
+                    >
+                      <circle r={13 / labelInvScale} className="map-next-origin-ring" />
+                      <circle r={5 / labelInvScale} className="map-next-origin-dot" />
+                      <g transform={`translate(${10 / labelInvScale}, ${10 / labelInvScale})`}>
+                        <rect
+                          x={0}
+                          y={0}
+                          width={58 / labelInvScale}
+                          height={20 / labelInvScale}
+                          rx={4 / labelInvScale}
+                          className="map-next-origin-label-bg"
+                        />
+                        <text
+                          x={29 / labelInvScale}
+                          y={14 / labelInvScale}
+                          textAnchor="middle"
+                          className="map-next-origin-label"
+                          style={{ fontSize: `${10 / labelInvScale}px` }}
+                        >
+                          FROM {nextLegOrigin.airport.iata}
+                        </text>
+                      </g>
+                    </g>
+                  )}
+                  {selectedNextStopPreview && (
+                    <path
+                      d={selectedNextStopPreview}
+                      className="map-next-stop-preview"
+                      data-next-stop-preview={`${activeNextLegGuide.origin}-${selectedNextStop?.airport.iata ?? ''}`}
+                    />
+                  )}
+                  {availableNextStops.map((stop) => {
+                    if (clusteredNextStopCodes.has(stop.airport.iata)) return null;
+                    const needsCheck = !stop.destination.options.some((option) => option.scheduleStatus === 'covered');
+                    return (
+                      <g
+                        key={`${stop.airport.iata}-${offsetX}`}
+                        className={`map-next-stop${needsCheck ? ' needs-check' : ''}${selectedNextStopCode === stop.airport.iata ? ' selected' : ''}`}
+                        data-next-stop={stop.airport.iata}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`${activeNextLegGuide.origin}→${stop.airport.iata}`}
+                        transform={`translate(${stop.x}, ${stop.y})`}
+                        onPointerDown={(event) => event.stopPropagation()}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          setSelectedAirportCode(null);
+                          chooseNextStop(stop.airport.iata);
+                        }}
+                        onKeyDown={(event) => {
+                          if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                            setSelectedAirportCode(null);
+                            chooseNextStop(stop.airport.iata);
+                          }
+                        }}
+                      >
+                        <circle r={10 / labelInvScale} className="map-next-stop-ring" />
+                        <circle r={4 / labelInvScale} className="map-next-stop-dot" />
+                        <g transform={`translate(${9 / labelInvScale}, ${-15 / labelInvScale})`}>
+                          <rect
+                            x={0}
+                            y={0}
+                            width={38 / labelInvScale}
+                            height={20 / labelInvScale}
+                            rx={4 / labelInvScale}
+                            className="map-next-stop-label-bg"
+                          />
+                          <text
+                            x={19 / labelInvScale}
+                            y={14 / labelInvScale}
+                            textAnchor="middle"
+                            className="map-next-stop-label"
+                            style={{ fontSize: `${10 / labelInvScale}px` }}
+                          >
+                            {stop.airport.iata}
+                          </text>
+                        </g>
+                      </g>
+                    );
+                  })}
+                </g>
+              ))}
+            </g>
+            {multiStopClusters.length > 0 && (
+              <g className="map-next-stop-clusters">
+                {multiStopClusters.map((cluster) => (
+                  <g
+                    key={cluster.id}
+                    className="map-next-stop-cluster"
+                    data-map-cluster-size={cluster.items.length}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`${cluster.items.length} nearby destinations. Zoom in to inspect.`}
+                    transform={`translate(${cluster.x}, ${cluster.y})`}
+                    onPointerDown={(event) => event.stopPropagation()}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      zoomIntoCluster(cluster);
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        zoomIntoCluster(cluster);
+                      }
+                    }}
+                  >
+                    <circle r={15} className="map-next-stop-cluster-ring" />
+                    <text y={4} textAnchor="middle" className="map-next-stop-cluster-count">
+                      {cluster.items.length}
+                    </text>
+                  </g>
+                ))}
+              </g>
+            )}
+            <g className="map-next-leg-guide-label" transform={`translate(12, ${height - 42})`} aria-hidden="true">
+              <rect width={104} height={30} rx={5} className="map-next-leg-guide-label-bg" />
+              <text x={12} y={20} className="map-next-leg-guide-label-text">
+                {activeNextLegGuide.origin} → ? · {availableNextStops.length}
+              </text>
+            </g>
+            {selectedNextStop && selectedNextStopScreen && (
+              <g
+                className="map-next-stop-popover"
+                transform={`translate(${nextStopPopoverX}, ${nextStopPopoverY})`}
+                onPointerDown={(event) => event.stopPropagation()}
+                onClick={(event) => event.stopPropagation()}
+              >
+                <rect
+                  width={198}
+                  height={nextStopPopoverHeight}
+                  rx={7}
+                  className="map-next-stop-popover-bg"
+                />
+                <text x={14} y={21} className="map-next-stop-popover-title">
+                  {activeNextLegGuide.origin} → {selectedNextStop.airport.iata}
+                </text>
+                <text x={14} y={39} className="map-next-stop-popover-city">
+                  {selectedNextStop.airport.city}
+                </text>
+                {(() => {
+                  let row = 0;
+                  return selectedNextStop.destination.options.flatMap((option) => {
+                    const labels = option.flightNumbers.length > 0
+                      ? option.flightNumbers
+                      : [`${option.carrier} · #?`];
+                    return labels.map((label) => {
+                      const y = 50 + row++ * 22;
+                      return (
+                        <g key={`${option.carrier}-${label}`} transform={`translate(12, ${y})`}>
+                          <rect width={174} height={18} rx={4} className="map-next-stop-flight-bg" />
+                          <text x={9} y={13} className="map-next-stop-flight-text">{label}</text>
+                        </g>
+                      );
+                    });
+                  });
+                })()}
+                <text x={14} y={nextStopPopoverHeight - 8} className="map-next-stop-popover-hint">
+                  Select flight number in the route panel
+                </text>
+              </g>
+            )}
+          </>
+        )}
         {isTransformed && (
           <g className="map-reset-btn-group" onClick={resetView} style={{ cursor: 'pointer' }}>
             <rect x={width - 78} y={8} width={70} height={28} rx={6} className="map-reset-btn-bg" />

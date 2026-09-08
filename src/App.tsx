@@ -14,6 +14,8 @@
  */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { isCalendarDate } from './lib/calendar-date.ts';
+import { selectedDepartureDate, type FlightSelection } from './lib/schemas/dated-schedules.ts';
 import { ActionRow } from './components/ActionRow.tsx';
 import { AirportAutocomplete } from './components/AirportAutocomplete.tsx';
 import { GroupTabs } from './components/GroupTabs.tsx';
@@ -24,12 +26,14 @@ import { ImportFromGcmap } from './components/ImportFromGcmap.tsx';
 import { MapView } from './components/MapView.tsx';
 import { MobileBanner } from './components/MobileBanner.tsx';
 import { RtwLegTable } from './components/RtwLegTable.tsx';
-import { RtwPlanningContext } from './components/RtwPlanningContext.tsx';
+import { RtwPlanGate } from './components/RtwPlanGate.tsx';
 import { DestinationsPanel } from './components/DestinationsPanel.tsx';
-import { allianceMemberCarriers } from './lib/rtw/route-discovery.ts';
+import { clearLegField, reindexLegs } from './lib/rtw/itinerary-edit.ts';
+import type { NextLegMapGuide } from './lib/rtw/next-leg-discovery.ts';
 import { RtwTripDates } from './components/RtwTripDates.tsx';
 import { RtwValidationPanel } from './components/RtwValidationPanel.tsx';
 import { SampleRoutings } from './components/SampleRoutings.tsx';
+import { SeasonalItineraryFinder } from './components/SeasonalItineraryFinder.tsx';
 import { SavedRoutings } from './components/SavedRoutings.tsx';
 import { useLocale } from './i18n/use-locale.ts';
 import { buildAirportIndex } from './lib/airport-index.ts';
@@ -41,14 +45,20 @@ import {
   isCarrierEligibleForProduct,
 } from './lib/rtw/eligible-airlines.ts';
 import { preferredCarrierForProduct, sortMileageRedemptionRtwProductsForMarket } from './lib/rtw/products.ts';
+import { seasonalItineraryLegs } from './lib/rtw/seasonal-itinerary.ts';
 import { parseShareUrl } from './lib/url-schema.ts';
 import {
+  isFlightLeg,
+  isSurfaceLeg,
   type AirlineIata,
   type Airport,
+  type CabinId,
+  type FlightLeg,
   type Iata,
   type Leg,
   type RoutingGroup,
   type RoutingRequest,
+  type SurfaceLeg,
 } from './lib/types.ts';
 import type { LoadedData } from './state/use-loaded-data.ts';
 import { useLoadedData } from './state/use-loaded-data.ts';
@@ -59,7 +69,7 @@ import './App.css';
 
 const MOBILE_BREAKPOINT = 768;
 type InspectorPanel = 'rules' | 'tools' | 'saved';
-type ResizeHandle = 'editor' | 'inspector';
+type ResizeHandle = 'editor';
 
 export function App(): React.ReactElement {
   const { t } = useLocale();
@@ -148,12 +158,22 @@ function Ready({
   shareUrl,
 }: ReadyProps): React.ReactElement {
   const { t } = useLocale();
+  const hasAnyLegs = routing.groups.some((g) => g.legs.length > 0);
   const [activeGroupIndex, setActiveGroupIndex] = useState(0);
   const [showDistances, setShowDistances] = useState(false);
   const [activeInspector, setActiveInspector] = useState<InspectorPanel>('rules');
+  const [inspectorOpen, setInspectorOpen] = useState(false);
   const [editorWidth, setEditorWidth] = useState(460);
-  const [inspectorWidth, setInspectorWidth] = useState(360);
   const [resizing, setResizing] = useState<ResizeHandle | null>(null);
+  const [plannerEntered, setPlannerEntered] = useState(hasAnyLegs);
+  const [catalogRequested, setCatalogRequested] = useState(false);
+  const [nextLegMapGuide, setNextLegMapGuide] = useState<NextLegMapGuide | null>(null);
+  const [nextLegSelection, setNextLegSelection] = useState<{ origin: string; to: string } | null>(null);
+  // Existing/shared routes open normally. Guided collapse is triggered only
+  // after the user explicitly chooses/extends the route in this session.
+  const [routeSetupExpanded, setRouteSetupExpanded] = useState(true);
+  const [guidedFocusVersion, setGuidedFocusVersion] = useState(0);
+  const routeNextStepRef = useRef<HTMLElement>(null);
   const rtwProducts = useMemo(
     () => sortMileageRedemptionRtwProductsForMarket(data.rtwRuleCatalog.products, data.marketProfile),
     [data.rtwRuleCatalog.products, data.marketProfile],
@@ -178,15 +198,11 @@ function Ready({
     () => eligibleAirlinesForProduct(selectedRtwProduct, data.airlines, data.allianceCatalog),
     [selectedRtwProduct, data.airlines, data.allianceCatalog],
   );
-  // Two-step selection step 2 + destinations panel pool: member carriers of
-  // the selected product's alliance; products without an alliance fall back
-  // to their product-eligible airline list so discovery still works there.
+  // Discovery must use the actual product's operator pool, not every member
+  // of its alliance. The eligibility helper includes catalog-backed names.
   const explorerCarriers = useMemo(
-    () =>
-      selectedRtwProduct?.alliance !== undefined
-        ? allianceMemberCarriers(data.allianceCatalog.memberships, selectedRtwProduct.alliance)
-        : eligibleAirlines.map((airline) => ({ code: airline.iata, name: airline.name })),
-    [selectedRtwProduct, data.allianceCatalog, eligibleAirlines],
+    () => eligibleAirlines.map((airline) => ({ code: airline.iata, name: airline.name })),
+    [eligibleAirlines],
   );
   const preferredEligibleCarrier = useMemo(
     () =>
@@ -199,41 +215,11 @@ function Ready({
     [selectedRtwProduct, data.airlines, data.allianceCatalog, data.marketProfile],
   );
 
-  useEffect(() => {
-    if (rtwProducts.length === 0) return;
-    // A failed share-URL parse leaves `routingError` set. Defaulting the
-    // product here would call setRouting and wipe that error before the
-    // user ever sees the ⚠ banner — defer to the first real user edit,
-    // which clears the error legitimately.
-    if (routingError !== null) return;
-    if (routing.rtwProductId !== undefined && rtwProducts.some((product) => product.id === routing.rtwProductId)) {
-      return;
-    }
-    const firstProduct = rtwProducts[0];
-    if (!firstProduct) return;
-    setRouting({ ...routing, rtwProductId: firstProduct.id });
-  }, [routing, rtwProducts, routingError, setRouting]);
-
-  function changeRtwProduct(productId: string): void {
-    const nextProduct = rtwProducts.find((product) => product.id === productId);
-    const replacementCarrier = firstEligibleCarrierForProduct(
-      nextProduct,
-      data.airlines,
-      data.allianceCatalog,
-      preferredCarrierForProduct(nextProduct, data.marketProfile),
-    );
-    setRouting({
-      ...routing,
-      rtwProductId: productId,
-      groups: routing.groups.map((group) => ({
-        legs: group.legs.map((leg) =>
-          leg.surface === true ||
-          isCarrierEligibleForProduct(leg.operatingCarrier, nextProduct, data.allianceCatalog)
-            ? leg
-            : { ...leg, operatingCarrier: replacementCarrier },
-        ),
-      })),
-    });
+  function enterPlan(productId: string): void {
+    if (!rtwProducts.some((product) => product.id === productId && product.status === 'active')) return;
+    setRouting({ ...routing, rtwProductId: productId });
+    setCatalogRequested(false);
+    setPlannerEntered(true);
   }
 
   useEffect(() => {
@@ -241,11 +227,7 @@ function Ready({
     function onMove(event: PointerEvent): void {
       const minSide = 340;
       const maxSide = Math.min(560, Math.max(380, window.innerWidth * 0.45));
-      if (resizing === 'editor') {
-        setEditorWidth(Math.min(maxSide, Math.max(minSide, event.clientX)));
-      } else {
-        setInspectorWidth(Math.min(maxSide, Math.max(minSide, window.innerWidth - event.clientX)));
-      }
+      setEditorWidth(Math.min(maxSide, Math.max(minSide, event.clientX)));
     }
     function onUp(): void {
       setResizing(null);
@@ -259,25 +241,6 @@ function Ready({
       window.removeEventListener('pointerup', onUp);
     };
   }, [resizing]);
-
-  useEffect(() => {
-    let changed = false;
-    const nextGroups = routing.groups.map((group) => ({
-      legs: group.legs.map((leg) => {
-        if (
-          leg.surface === true ||
-          isCarrierEligibleForProduct(leg.operatingCarrier, selectedRtwProduct, data.allianceCatalog)
-        ) {
-          return leg;
-        }
-        changed = true;
-        return { ...leg, operatingCarrier: preferredEligibleCarrier };
-      }),
-    }));
-    if (changed) {
-      setRouting({ ...routing, groups: nextGroups });
-    }
-  }, [routing, selectedRtwProduct, data.allianceCatalog, preferredEligibleCarrier, setRouting]);
 
   // Clamp active group when groups change.
   const safeActiveIndex = Math.min(activeGroupIndex, Math.max(0, routing.groups.length - 1));
@@ -328,11 +291,17 @@ function Ready({
     });
   }
 
+  function guideToNextLeg(): void {
+    setRouteSetupExpanded(false);
+    setGuidedFocusVersion((version) => version + 1);
+  }
+
   function addAirport(a: Airport): void {
     // Empty group: buffer the first airport, or promote pending + new → leg.
     if (activeGroup.legs.length === 0) {
       if (!pendingAirport) {
         setPendingFor(safeActiveIndex, a);
+        guideToNextLeg();
         return;
       }
       if (pendingAirport.iata === a.iata) {
@@ -349,19 +318,19 @@ function Ready({
         ],
       }));
       setPendingFor(safeActiveIndex, undefined);
+      guideToNextLeg();
       return;
     }
     // Has legs: append to the end as usual.
     updateActiveGroup((group) => {
-      const codes = activeChainAirports.map((x) => x.iata);
-      const nextCodes = [...codes, a.iata];
-      const nextLegs = buildLegs(
-        nextCodes,
-        group.legs,
-        defaultCarrier(group.legs, selectedRtwProduct, data, preferredEligibleCarrier),
-      );
-      return { legs: nextLegs };
+      const from = group.legs.at(-1)?.to;
+      if (!from || from === a.iata) return group;
+      return { legs: [...group.legs, {
+        from, to: a.iata,
+        operatingCarrier: defaultCarrier(group.legs, selectedRtwProduct, data, preferredEligibleCarrier),
+      }] };
     });
+    guideToNextLeg();
   }
 
   function removeAirport(_iata: Iata, index: number): void {
@@ -382,21 +351,20 @@ function Ready({
         }
         return { legs: [] };
       }
-      const nextLegs = buildLegs(
-        nextCodes,
+      const nextLegs = reindexLegs(
         group.legs,
+        codes.map((_, i) => i).filter((i) => i !== index),
         defaultCarrier(group.legs, selectedRtwProduct, data, preferredEligibleCarrier),
       );
       return { legs: nextLegs };
     });
   }
 
-  function reorder(nextCodes: ReadonlyArray<Iata>): void {
+  function reorder(airportOrder: ReadonlyArray<number>): void {
     updateActiveGroup((group) => {
-      if (nextCodes.length < 2) return { legs: [] };
-      const nextLegs = buildLegs(
-        nextCodes,
+      const nextLegs = reindexLegs(
         group.legs,
+        airportOrder,
         defaultCarrier(group.legs, selectedRtwProduct, data, preferredEligibleCarrier),
       );
       return { legs: nextLegs };
@@ -405,7 +373,10 @@ function Ready({
 
   function changeCarrier(legIndex: number, carrier: AirlineIata): void {
     updateActiveGroup((group) => ({
-      legs: group.legs.map((leg, i) => (i === legIndex ? { ...leg, operatingCarrier: carrier } : leg)),
+      legs: group.legs.map((leg, i) => {
+        if (i !== legIndex || !isFlightLeg(leg) || leg.operatingCarrier === carrier) return leg;
+        return { ...clearLegField(leg, 'flightNumber'), operatingCarrier: carrier };
+      }),
     }));
   }
 
@@ -415,35 +386,93 @@ function Ready({
    * this trusts its caller: empty group starts at from→to directly, any
    * other enabled case appends `to` through the normal airport path.
    */
-  function addExplorerPair(from: Iata, to: Iata): void {
+  function addExplorerPair(from: Iata, to: Iata, carrier: AirlineIata, selection?: {
+    departsOn?: string;
+    flightNumber?: string;
+    cabin?: CabinId;
+    stopover?: boolean;
+    manual?: boolean;
+  }): void {
+    // Validate attachment here as well as disabling incompatible UI chips.
+    const chainEnd = activeGroup.legs.at(-1)?.to ?? pendingAirport?.iata;
+    if (from === to || (chainEnd !== undefined && chainEnd !== from)) return;
+    if (!airportIndex.lookup(from) || !airportIndex.lookup(to)) return;
+    if (!isCarrierEligibleForProduct(carrier, selectedRtwProduct, data.allianceCatalog)) return;
+    if (selection?.departsOn !== undefined && !isCalendarDate(selection.departsOn)) return;
+    if (selection?.flightNumber !== undefined && !/^\d{1,4}[A-Z]?$/.test(selection.flightNumber)) return;
+    const newLeg: FlightLeg = { from, to, operatingCarrier: carrier, ...selection };
     if (activeGroup.legs.length === 0) {
       updateActiveGroup(() => ({
-        legs: [{ from, to, operatingCarrier: preferredEligibleCarrier }],
+        legs: [newLeg],
       }));
       setPendingFor(safeActiveIndex, undefined);
+      setNextLegSelection(null);
+      guideToNextLeg();
       return;
     }
-    const destination = airportIndex.lookup(to);
-    if (destination) addAirport(destination);
+    updateActiveGroup((group) => ({
+      legs: [...group.legs, newLeg],
+    }));
+    setNextLegSelection(null);
+    guideToNextLeg();
+  }
+
+  function addSurfacePair(from: Iata, to: Iata, stopover?: boolean): void {
+    const chainEnd = activeGroup.legs.at(-1)?.to ?? pendingAirport?.iata;
+    if (from === to || (chainEnd !== undefined && chainEnd !== from)) return;
+    if (!airportIndex.lookup(from) || !airportIndex.lookup(to)) return;
+    const newLeg: SurfaceLeg = {
+      from,
+      to,
+      surface: true,
+      ...(stopover !== undefined ? { stopover } : {}),
+    };
+    if (activeGroup.legs.length === 0) {
+      updateActiveGroup(() => ({ legs: [newLeg] }));
+      setPendingFor(safeActiveIndex, undefined);
+    } else {
+      updateActiveGroup((group) => ({ legs: [...group.legs, newLeg] }));
+    }
+    setNextLegSelection(null);
+    guideToNextLeg();
   }
 
   function changeFareClass(legIndex: number, fareClass: string | undefined): void {
     updateActiveGroup((group) => ({
       legs: group.legs.map((leg, i) => {
-        if (i !== legIndex) return leg;
+        if (i !== legIndex || !isFlightLeg(leg)) return leg;
         if (fareClass === undefined) {
           // Strip the field rather than store undefined — keeps URL clean.
-          return {
-            from: leg.from,
-            to: leg.to,
-            operatingCarrier: leg.operatingCarrier,
-            ...(leg.stopover !== undefined ? { stopover: leg.stopover } : {}),
-            ...(leg.surface !== undefined ? { surface: leg.surface } : {}),
-          };
+          return clearLegField(leg, 'fareClass');
         }
         return { ...leg, fareClass };
       }),
     }));
+  }
+
+  function changeCabin(legIndex: number, cabin: CabinId | undefined): void {
+    const nextGroups = routing.groups.map((group, groupIndex) => {
+      if (groupIndex !== safeActiveIndex) return group;
+      return {
+        legs: group.legs.map((leg, i) => {
+          if (i !== legIndex || !isFlightLeg(leg)) return leg;
+          return cabin === undefined ? clearLegField(leg, 'cabin') : { ...leg, cabin };
+        }),
+      };
+    });
+    const rank: Record<CabinId, number> = {
+      economy: 0,
+      'premium-economy': 1,
+      business: 2,
+      first: 3,
+    };
+    const explicitCabins = nextGroups.flatMap((group) => group.legs)
+      .filter(isFlightLeg)
+      .map((leg) => leg.cabin)
+      .filter((value): value is CabinId => value !== undefined);
+    const highest = explicitCabins.reduce<CabinId | undefined>((best, value) =>
+      best === undefined || rank[value] > rank[best] ? value : best, undefined);
+    setRouting({ ...routing, groups: nextGroups, cabin: highest ?? routing.cabin });
   }
 
   function changeStopover(legIndex: number, stopover: boolean | undefined): void {
@@ -451,13 +480,7 @@ function Ready({
       legs: group.legs.map((leg, i) => {
         if (i !== legIndex) return leg;
         if (stopover === undefined) {
-          return {
-            from: leg.from,
-            to: leg.to,
-            operatingCarrier: leg.operatingCarrier,
-            ...(leg.fareClass !== undefined ? { fareClass: leg.fareClass } : {}),
-            ...(leg.surface !== undefined ? { surface: leg.surface } : {}),
-          };
+          return clearLegField(leg, 'stopover');
         }
         return { ...leg, stopover };
       }),
@@ -469,15 +492,21 @@ function Ready({
       legs: group.legs.map((leg, i) => {
         if (i !== legIndex) return leg;
         if (!surface) {
+          if (isFlightLeg(leg)) return leg;
           return {
             from: leg.from,
             to: leg.to,
-            operatingCarrier: leg.operatingCarrier,
-            ...(leg.fareClass !== undefined ? { fareClass: leg.fareClass } : {}),
+            operatingCarrier: defaultCarrier(group.legs, selectedRtwProduct, data, preferredEligibleCarrier),
             ...(leg.stopover !== undefined ? { stopover: leg.stopover } : {}),
-          };
+          } satisfies FlightLeg;
         }
-        return { ...leg, surface: true };
+        if (isSurfaceLeg(leg)) return leg;
+        return {
+          from: leg.from,
+          to: leg.to,
+          surface: true,
+          ...(leg.stopover !== undefined ? { stopover: leg.stopover } : {}),
+        } satisfies SurfaceLeg;
       }),
     }));
   }
@@ -485,21 +514,24 @@ function Ready({
   function changeLegDate(legIndex: number, departsOn: string | undefined): void {
     updateActiveGroup((group) => ({
       legs: group.legs.map((leg, i) => {
-        if (i !== legIndex) return leg;
+        if (i !== legIndex || !isFlightLeg(leg) || departsOn === leg.departsOn) return leg;
         if (departsOn === undefined) {
-          // Strip the field rather than store undefined — keeps URL clean.
-          return {
-            from: leg.from,
-            to: leg.to,
-            operatingCarrier: leg.operatingCarrier,
-            ...(leg.fareClass !== undefined ? { fareClass: leg.fareClass } : {}),
-            ...(leg.stopover !== undefined ? { stopover: leg.stopover } : {}),
-            ...(leg.surface !== undefined ? { surface: leg.surface } : {}),
-          };
+          return clearLegField(leg, 'departsOn');
         }
+        // A flight designator may be selected before the date. Preserve it
+        // here and let the date/time query verify whether that exact flight
+        // operates on the newly chosen date.
         return { ...leg, departsOn };
       }),
     }));
+  }
+
+  function selectExistingFlight(legIndex: number, flight: FlightSelection): void {
+    if (!isCarrierEligibleForProduct(flight.carrier, selectedRtwProduct, data.allianceCatalog)) return;
+    updateActiveGroup((group) => ({ legs: group.legs.map((leg, i) =>
+      i === legIndex && isFlightLeg(leg) && leg.from === flight.from && leg.to === flight.to
+        ? { ...leg, operatingCarrier: flight.carrier, departsOn: selectedDepartureDate(flight), flightNumber: flight.flightNumber }
+        : leg) }));
   }
 
   function changeTripDates(dates: { startDate?: string; endDate?: string }): void {
@@ -527,6 +559,9 @@ function Ready({
       });
       setActiveGroupIndex(0);
       setPendingByGroup(new Map());
+      setCatalogRequested(false);
+      setPlannerEntered(true);
+      setRouteSetupExpanded(false);
     }
   }
 
@@ -538,18 +573,24 @@ function Ready({
     });
     setActiveGroupIndex(0);
     setPendingByGroup(new Map());
+    setCatalogRequested(false);
+    setPlannerEntered(true);
+    setRouteSetupExpanded(false);
   }
 
   function clearAll(): void {
     setRouting({ ...routing, groups: [{ legs: [] }] });
     setActiveGroupIndex(0);
     setPendingByGroup(new Map());
+    setNextLegSelection(null);
+    setRouteSetupExpanded(true);
   }
 
   function addGroup(): void {
     const nextGroups = [...routing.groups, { legs: [] }];
     setRouting({ ...routing, groups: nextGroups });
     setActiveGroupIndex(nextGroups.length - 1);
+    setRouteSetupExpanded(true);
   }
 
   function removeGroup(index: number): void {
@@ -568,8 +609,58 @@ function Ready({
     });
   }
 
-  const hasAnyLegs = routing.groups.some((g) => g.legs.length > 0);
   const showSamples = !hasAnyLegs;
+  const routeSetupSummary = activeChainAirports.map((airport) => airport.iata).join(' → ');
+  const currentRouteEndpoint = activeChainAirports.at(-1)?.iata ?? '';
+  const routeSetupCanCollapse = currentRouteEndpoint !== '';
+
+  useEffect(() => {
+    if (guidedFocusVersion === 0) return;
+    const nextStep = routeNextStepRef.current;
+    nextStep?.focus({ preventScroll: true });
+    nextStep?.scrollIntoView?.({ block: 'start' });
+  }, [guidedFocusVersion]);
+
+  function toggleInspector(panel: InspectorPanel): void {
+    if (inspectorOpen && activeInspector === panel) {
+      setInspectorOpen(false);
+      return;
+    }
+    setActiveInspector(panel);
+    setInspectorOpen(true);
+  }
+
+  const showPlanner = plannerEntered || (hasAnyLegs && !catalogRequested);
+
+  if (!showPlanner) {
+    return (
+      <div className={`app app-gate${isMobile ? ' mobile' : ''}`}>
+        <header className="app-header">
+          <div className="app-brand">
+            <span className="app-brand-name">gcmp</span>
+            <span className="app-brand-tagline">{t('brand.tagline')}</span>
+          </div>
+          <div className="app-header-controls"><LanguagePicker /></div>
+        </header>
+        {routingError && <div className="app-banner app-banner-warn" role="alert">⚠ {routingError}</div>}
+        <RtwPlanGate
+          products={rtwProducts}
+          ticketingPrograms={data.rtwRuleCatalog.ticketingPrograms}
+          allianceCatalog={data.allianceCatalog}
+          routeNetwork={data.routeNetwork}
+          routeCountsByCarrier={data.routeNetworkCounts}
+          routeNetworkDetailsUrl={data.routeNetworkRuntimeUrl}
+          schedules={data.schedules}
+          airportLookup={airportIndex.byIata}
+          countryContinents={data.countryContinents}
+          airportContinentOverrides={data.airportContinentOverrides}
+          marketProfile={data.marketProfile}
+          initialProductId={routing.rtwProductId}
+          onContinue={enterPlan}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className={`app${isMobile ? ' mobile' : ''}`}>
@@ -606,91 +697,170 @@ function Ready({
         className="app-workbench"
         style={{
           '--editor-width': `${editorWidth}px`,
-          '--inspector-width': `${inspectorWidth}px`,
         } as React.CSSProperties}
       >
         <section className="route-editor" aria-label="Routing input">
           <div className="route-editor-scroll">
-            <details className="route-editor-details">
-              <summary>{t('rtw.planningEyebrow')}</summary>
-              <RtwPlanningContext
-                products={rtwProducts}
-                selectedProductId={selectedRtwProductId}
-                marketProfile={data.marketProfile}
-                onProductChange={changeRtwProduct}
-                cabin={routing.cabin}
-                onCabinChange={(cabin) => setRouting({ ...routing, cabin })}
-                allianceCarriers={explorerCarriers}
-              />
-            </details>
-            {!isMobile && (
-              <AirportAutocomplete index={airportIndex} onCommit={addAirport} />
-            )}
-            <GroupTabs
-              groups={routing.groups}
-              activeIndex={safeActiveIndex}
-              onActivate={setActiveGroupIndex}
-              onAdd={addGroup}
-              onRemove={removeGroup}
-            />
-            <LegChain
-              airports={activeChainAirports}
-              operatingCarriers={activeGroup.legs.map((leg) => leg.operatingCarrier)}
-              fareClasses={activeGroup.legs.map((leg) => leg.fareClass)}
-              stopovers={activeGroup.legs.map((leg) => leg.stopover)}
-              surfaces={activeGroup.legs.map((leg) => leg.surface)}
-              airlines={eligibleAirlines}
-              onReorder={reorder}
-              onRemove={removeAirport}
-              onCarrierChange={changeCarrier}
-              onFareClassChange={changeFareClass}
-              onStopoverChange={changeStopover}
-              onSurfaceChange={changeSurface}
-            />
-            <DestinationsPanel
-              key={selectedRtwProductId}
-              schedules={data.schedules ?? []}
-              carriers={explorerCarriers}
-              defaultCarrier={preferredEligibleCarrier}
-              chainEnd={
-                activeChainAirports.length > 0
-                  ? activeChainAirports[activeChainAirports.length - 1]?.iata
-                  : undefined
-              }
-              pendingIata={pendingAirport?.iata}
-              lookupAirport={(iata) => airportIndex.lookup(iata)}
-              countryContinents={data.countryContinents ?? undefined}
-              countrySubregions={data.countrySubregions ?? undefined}
-              onAddPair={addExplorerPair}
-            />
-            <div className="route-editor-secondary">
-              {hasAnyLegs && (
-                <RtwTripDates
-                  startDate={routing.startDate}
-                  endDate={routing.endDate}
-                  onChange={changeTripDates}
-                />
-              )}
-              <details className="route-editor-details">
-                <summary>{t('rtw.routeLegDetails')}</summary>
-                <RtwLegTable
-                  airports={activeChainAirports}
-                  operatingCarriers={activeGroup.legs.map((leg) => leg.operatingCarrier)}
-                  stopovers={activeGroup.legs.map((leg) => leg.stopover)}
-                  surfaces={activeGroup.legs.map((leg) => leg.surface)}
-                  departsOn={activeGroup.legs.map((leg) => leg.departsOn)}
-                  schedules={data.schedules}
-                  airlines={eligibleAirlines}
-                  onCarrierChange={changeCarrier}
-                  onStopoverChange={changeStopover}
-                  onSurfaceChange={changeSurface}
-                  onDateChange={changeLegDate}
-                />
-              </details>
+            <div className="route-plan-bar">
+              <div>
+                <span>{t('rtw.onboarding.currentPlan')}</span>
+                <strong>{selectedRtwProduct?.label ?? t('rtw.noProducts')}</strong>
+              </div>
+              <button type="button" onClick={() => {
+                setInspectorOpen(false);
+                setCatalogRequested(true);
+                setPlannerEntered(false);
+              }}>{t('rtw.onboarding.changePlan')}</button>
             </div>
+            <section className={`route-setup-stage${routeSetupCanCollapse && !routeSetupExpanded ? ' is-collapsed' : ' is-expanded'}`}>
+              {routeSetupCanCollapse && !routeSetupExpanded ? (
+                <button
+                  type="button"
+                  className="route-setup-summary"
+                  data-route-setup-collapsed="true"
+                  onClick={() => setRouteSetupExpanded(true)}
+                >
+                  <span className="route-setup-summary-copy">
+                    <small>{t('rtw.workflow.routeSetupSummary')}</small>
+                    <strong>{routeSetupSummary}</strong>
+                    <em>{t('rtw.workflow.continueFrom', { origin: currentRouteEndpoint })}</em>
+                  </span>
+                  <span className="route-setup-summary-action">{t('rtw.workflow.editRouteSetup')}</span>
+                </button>
+              ) : (
+                <>
+                  <div className="route-editor-step">
+                    <div>
+                      <p className="rtw-eyebrow">{t('rtw.workflow.routeStep')}</p>
+                      <h2>{t('rtw.workflow.routeTitle')}</h2>
+                    </div>
+                    <p>{t('rtw.workflow.routeHint')}</p>
+                  </div>
+                  {!isMobile && (
+                    <AirportAutocomplete index={airportIndex} onCommit={addAirport} />
+                  )}
+                  <SeasonalItineraryFinder
+                    productId={selectedRtwProductId}
+                    templateUrl={`${import.meta.env.BASE_URL}data/rtw-seasonal/eva-star-w26.json`}
+                    initialStartDate={routing.startDate}
+                    onApply={(seasonal) => {
+                      const legs: Leg[] = seasonalItineraryLegs(seasonal);
+                      setRouting({
+                        ...routing,
+                        groups: [{ legs }],
+                        rtwProductId: selectedRtwProductId,
+                        startDate: seasonal.actualStartDate,
+                        endDate: seasonal.endDate,
+                      });
+                      setActiveGroupIndex(0);
+                      setPendingByGroup(new Map());
+                      setNextLegSelection(null);
+                      setNextLegMapGuide(null);
+                      setRouteSetupExpanded(true);
+                    }}
+                  />
+                  {showSamples && (
+                    <details className="route-editor-details route-examples-details">
+                      <summary>{t('rtw.workflow.examples')}</summary>
+                      <div className="route-detail-stack">
+                        <SampleRoutings onSelect={loadExternalRouting} />
+                      </div>
+                    </details>
+                  )}
+                  <GroupTabs
+                    groups={routing.groups}
+                    activeIndex={safeActiveIndex}
+                    onActivate={setActiveGroupIndex}
+                    onAdd={addGroup}
+                    onRemove={removeGroup}
+                  />
+                  <LegChain
+                    airports={activeChainAirports}
+                    legs={activeGroup.legs}
+                    airlines={eligibleAirlines}
+                    onReorder={reorder}
+                    onRemove={removeAirport}
+                    onCarrierChange={changeCarrier}
+                    onCabinChange={changeCabin}
+                    onFareClassChange={changeFareClass}
+                    onStopoverChange={changeStopover}
+                    onSurfaceChange={changeSurface}
+                  />
+                  <div className="route-editor-secondary">
+                    {hasAnyLegs && (
+                      <details className="route-editor-details route-flight-details">
+                        <summary>
+                          <span>{t('rtw.workflow.flightDetails')}</span>
+                          <small>{t('rtw.workflow.flightDetailsHint')}</small>
+                        </summary>
+                        <div className="route-detail-stack">
+                          <RtwTripDates
+                            startDate={routing.startDate}
+                            endDate={routing.endDate}
+                            onChange={changeTripDates}
+                          />
+                          <RtwLegTable
+                            key={safeActiveIndex}
+                            airports={activeChainAirports}
+                            legs={activeGroup.legs}
+                            onFlightSelect={selectExistingFlight}
+                            schedules={data.schedules}
+                            airlines={eligibleAirlines}
+                            onCarrierChange={changeCarrier}
+                            onStopoverChange={changeStopover}
+                            onSurfaceChange={changeSurface}
+                            onDateChange={changeLegDate}
+                          />
+                        </div>
+                      </details>
+                    )}
+                  </div>
+                  {routeSetupCanCollapse && (
+                    <button type="button" className="route-setup-continue" onClick={guideToNextLeg}>
+                      {t('rtw.workflow.collapseAndContinue', { origin: currentRouteEndpoint })}
+                    </button>
+                  )}
+                </>
+              )}
+            </section>
+            <section
+              ref={routeNextStepRef}
+              className="route-next-step"
+              aria-label={t('rtw.workflow.explore')}
+              tabIndex={-1}
+            >
+              <DestinationsPanel
+                key={`${selectedRtwProductId}:${safeActiveIndex}`}
+                airports={data.airports}
+                schedules={data.schedules ?? []}
+                network={data.routeNetwork}
+                runtimeNetworkShardBaseUrl={data.routeNetworkOriginShardBaseUrl}
+                networkGaps={data.networkGaps}
+                carriers={explorerCarriers}
+                chainEnd={activeChainAirports.at(-1)?.iata}
+                pendingIata={pendingAirport?.iata}
+                lookupAirport={airportIndex.lookup}
+                onAddPair={addExplorerPair}
+                onAddSurface={addSurfacePair}
+                onMapGuideChange={setNextLegMapGuide}
+                selectedDestination={
+                  nextLegSelection?.origin === (activeChainAirports.at(-1)?.iata ?? pendingAirport?.iata)
+                    ? nextLegSelection?.to ?? null
+                    : null
+                }
+                onDestinationChange={(to) => {
+                  const origin = activeChainAirports.at(-1)?.iata ?? pendingAirport?.iata;
+                  setNextLegSelection(origin && to ? { origin, to } : null);
+                  if (to) guideToNextLeg();
+                }}
+              />
+            </section>
           </div>
           {hasAnyLegs && (
             <div className="route-editor-footer">
+              <button type="button" className="route-review-button" onClick={() => toggleInspector('rules')}>
+                {t('rtw.workflow.review')}
+              </button>
               <button type="button" className="app-clear" onClick={clearAll}>
                 {t('input.clearAll')}
               </button>
@@ -716,6 +886,23 @@ function Ready({
               />
               {t('distances.show')}
             </label>
+            {([
+              ['rules', '✓', t('rtw.inspectorRules')],
+              ['tools', '＋', t('rtw.inspectorTools')],
+              ['saved', '□', t('rtw.inspectorSaved')],
+            ] as const).map(([id, icon, label]) => (
+              <button
+                key={id}
+                type="button"
+                className={`map-panel-button${inspectorOpen && activeInspector === id ? ' active' : ''}`}
+                aria-expanded={inspectorOpen && activeInspector === id}
+                aria-controls="route-inspector"
+                onClick={() => toggleInspector(id)}
+              >
+                <span aria-hidden="true">{icon}</span>
+                {label}
+              </button>
+            ))}
           </div>
           <MapErrorBoundary groups={routing.groups}>
             <MapView
@@ -730,19 +917,33 @@ function Ready({
               projection={routing.projection ?? DEFAULT_PROJECTION}
               showDistances={showDistances}
               onAirportCommit={addAirport}
+              nextLegGuide={nextLegMapGuide}
+              selectedNextStop={
+                nextLegSelection?.origin === nextLegMapGuide?.origin ? nextLegSelection?.to ?? null : null
+              }
+              onNextLegSelect={(to) => {
+                setNextLegSelection(nextLegMapGuide && to ? { origin: nextLegMapGuide.origin, to } : null);
+              }}
             />
           </MapErrorBoundary>
         </div>
-        <button
-          type="button"
-          className="workbench-resizer inspector-resizer"
-          aria-label={t('rtw.resizeInspector')}
-          onPointerDown={(event) => {
-            event.preventDefault();
-            setResizing('inspector');
-          }}
-        />
-        <aside className="app-panel" aria-label="Route inspector">
+        <aside
+          id="route-inspector"
+          className={`app-panel${inspectorOpen ? ' open' : ''}`}
+          aria-label="Route inspector"
+          aria-hidden={!inspectorOpen}
+        >
+          <div className="inspector-head">
+            <strong>{t('rtw.workflow.review')}</strong>
+            <button
+              type="button"
+              className="inspector-close"
+              aria-label={t('rtw.workflow.closeInspector')}
+              onClick={() => setInspectorOpen(false)}
+            >
+              ×
+            </button>
+          </div>
           <nav className="inspector-tabs" aria-label="Route inspector sections">
             {([
               ['rules', '✓', t('rtw.inspectorRules')],
@@ -774,14 +975,13 @@ function Ready({
                 countryContinents={data.countryContinents}
                 airportContinentOverrides={data.airportContinentOverrides}
                 networkGaps={data.networkGaps}
+                schedules={data.schedules}
                 ciZones={data.ciZones}
                 selectedProductId={selectedRtwProductId}
-                onProductChange={changeRtwProduct}
               />
             )}
             {activeInspector === 'tools' && (
               <div className="inspector-stack">
-                {showSamples && <SampleRoutings onSelect={loadExternalRouting} />}
                 <ImportFromGcmap onImport={loadExternalRouting} />
               </div>
             )}
@@ -810,7 +1010,7 @@ function defaultCarrier(
   data: ReadyProps['data'],
   preferredEligibleCarrier: AirlineIata,
 ): AirlineIata {
-  const firstCarrier = legs[0]?.operatingCarrier;
+  const firstCarrier = legs.find(isFlightLeg)?.operatingCarrier;
   if (
     firstCarrier !== undefined &&
     isCarrierEligibleForProduct(firstCarrier, selectedProduct, data.allianceCatalog)
@@ -818,24 +1018,4 @@ function defaultCarrier(
     return firstCarrier;
   }
   return preferredEligibleCarrier;
-}
-
-function buildLegs(
-  codes: ReadonlyArray<Iata>,
-  existing: ReadonlyArray<Leg>,
-  defaultOp: AirlineIata,
-): Leg[] {
-  const legs: Leg[] = [];
-  for (let i = 0; i < codes.length - 1; i++) {
-    const from = codes[i];
-    const to = codes[i + 1];
-    if (!from || !to) continue;
-    const prev = existing[i];
-    if (prev && prev.from === from && prev.to === to) {
-      legs.push(prev);
-    } else {
-      legs.push({ from, to, operatingCarrier: defaultOp });
-    }
-  }
-  return legs;
 }

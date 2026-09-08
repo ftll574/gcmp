@@ -47,11 +47,12 @@ describe('AirportCatalogSchema', () => {
     const vvo = catalog.find((a) => a.iata === 'VVO');
     expect(vvo?.country).toBe('RU');
     expect(vvo?.icao).toBe('UHWW');
-    // WFR ships with OurAirports' literal "[Duplicate] Wolf's Fang Runway"
-    // name (Antarctica strip) — free-text names tolerate it; only the
-    // country is pinned here so upstream cleanup doesn't wedge this suite.
-    const wfr = catalog.find((a) => a.iata === 'WFR');
-    expect(wfr?.country).toBe('AQ');
+    // The catalog now guarantees every current scheduled-passenger airport
+    // in the inclusion sitemap has metadata. PBI is intentionally pinned
+    // because the current OurAirports daily CSV omits it and the generator
+    // supplies the FAA AIP reference-point override.
+    const pbi = catalog.find((a) => a.iata === 'PBI');
+    expect(pbi).toMatchObject({ country: 'US', icao: 'KPBI', city: 'West Palm Beach' });
   });
 
   test('iata must be 3 uppercase letters (no digits, no other lengths)', () => {

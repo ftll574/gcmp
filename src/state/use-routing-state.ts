@@ -24,7 +24,10 @@ export interface RoutingState {
 
 const DEFAULT_REQUEST: RoutingRequest = {
   groups: [{ legs: [] }],
-  cabin: 'business',
+  // Compatibility fallback only. Fresh planning chooses cabin per leg; this
+  // lowest cabin prevents hidden state from silently raising mixed-cabin
+  // award pricing before any leg choice exists.
+  cabin: 'economy',
   programs: ['aa-aadvantage', 'as-mileage-plan'],
 };
 
@@ -69,7 +72,9 @@ export function useRoutingState(): {
     const hasAnyLeg = next.groups.some((g) => g.legs.length > 0);
     if (!hasAnyLeg) {
       if (window.location.hash !== '') {
-        ignoreNextHashChange.current = true;
+        // replaceState emits no hashchange. Leaving an ignore flag here
+        // would swallow the user's next real back/forward/share navigation.
+        ignoreNextHashChange.current = false;
         // Use replaceState so the empty-state doesn't push a new history entry on every keystroke.
         window.history.replaceState({}, '', window.location.pathname + window.location.search);
       }

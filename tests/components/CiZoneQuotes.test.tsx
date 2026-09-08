@@ -39,6 +39,7 @@ const quoted = (
   },
   fromZone,
   toZone,
+  cabin: 'business',
 });
 
 afterEach(() => {
@@ -50,10 +51,9 @@ describe('CiZoneQuotes', () => {
   it('renders quoted legs with region pairs and active-cabin miles (en)', () => {
     render(
       <CiZoneQuotes
-        cabin="business"
         rows={[
           quoted('TPE', 'HKG', 'NEA', 'SEA', 60000),
-          { from: 'HKG', to: 'LHR', surface: false, quote: null, fromZone: 'SEA', toZone: null },
+          { from: 'HKG', to: 'LHR', surface: false, quote: null, fromZone: 'SEA', toZone: null, cabin: 'business' },
         ]}
       />,
     );
@@ -72,20 +72,19 @@ describe('CiZoneQuotes', () => {
 
   it('shows the sum row only when at least two legs carry quotes', () => {
     const rows = [quoted('TPE', 'HKG', 'NEA', 'SEA', 60000), quoted('HKG', 'BKK', 'SEA', 'SWA', 35000)];
-    const { rerender } = render(<CiZoneQuotes cabin="business" rows={rows} />);
+    const { rerender } = render(<CiZoneQuotes rows={rows} />);
     expect(screen.getByText('Sum of legs')).toBeInTheDocument();
     expect(screen.getByText('95,000')).toBeInTheDocument();
 
-    rerender(<CiZoneQuotes cabin="business" rows={[rows[0] as CiZoneQuoteRow]} />);
+    rerender(<CiZoneQuotes rows={[rows[0] as CiZoneQuoteRow]} />);
     expect(screen.queryByText('Sum of legs')).not.toBeInTheDocument();
   });
 
   it('labels surface sectors without pricing them', () => {
     render(
       <CiZoneQuotes
-        cabin="economy"
         rows={[
-          { from: 'LHR', to: 'CDG', surface: true, quote: null, fromZone: null, toZone: null },
+          { from: 'LHR', to: 'CDG', surface: true, quote: null, fromZone: null, toZone: null, cabin: null },
         ]}
       />,
     );
@@ -98,11 +97,10 @@ describe('CiZoneQuotes', () => {
   it('distinguishes an unpriced CABIN on mapped zones from an unmapped zone', () => {
     render(
       <CiZoneQuotes
-        cabin="economy"
         rows={[
           // NEA-SEA cell is business-only in the fixture: zones resolve but
           // economy has no price — NOT "zone unknown".
-          { from: 'TPE', to: 'HKG', surface: false, quote: null, fromZone: 'NEA', toZone: 'SEA' },
+          { from: 'TPE', to: 'HKG', surface: false, quote: null, fromZone: 'NEA', toZone: 'SEA', cabin: 'economy' },
         ]}
       />,
     );
@@ -111,11 +109,22 @@ describe('CiZoneQuotes', () => {
     expect(screen.queryByText('Zone unknown')).not.toBeInTheDocument();
   });
 
+  it('distinguishes an undecided leg cabin from an unknown zone', () => {
+    render(
+      <CiZoneQuotes
+        rows={[
+          { from: 'TPE', to: 'HKG', surface: false, quote: null, fromZone: 'NEA', toZone: 'SEA', cabin: null },
+        ]}
+      />,
+    );
+    expect(screen.getByText('Cabin not selected')).toBeInTheDocument();
+    expect(screen.queryByText('Zone unknown')).not.toBeInTheDocument();
+  });
+
   it('renders natively in zh-TW', () => {
     setLocale('zh-TW');
     render(
       <CiZoneQuotes
-        cabin="business"
         rows={[
           quoted('TPE', 'HKG', 'NEA', 'SEA', 60000),
           quoted('HKG', 'BKK', 'SEA', 'SWA', 35000),

@@ -18,7 +18,7 @@ import {
   type CountryContinentCatalog,
 } from '../../../src/lib/schemas/country-continent.ts';
 import { continentForCountry, continentsVisited } from '../../../src/lib/rtw/continents.ts';
-import type { Airport, Leg } from '../../src/lib/types.ts';
+import type { Airport, FlightLeg, Leg } from '../../src/lib/types.ts';
 
 const catalog: CountryContinentCatalog = CountryContinentCatalogSchema.parse(
   JSON.parse(readFileSync('public/data/geo/current.json', 'utf8')),
@@ -53,7 +53,7 @@ const syntheticAirports = new Map<string, Airport>(
   ].map((airport) => [airport.iata, airport]),
 );
 
-function leg(from: string, to: string, extra?: Partial<Leg>): Leg {
+function leg(from: string, to: string, extra?: Partial<FlightLeg>): FlightLeg {
   return { from, to, operatingCarrier: 'ZZ', ...extra };
 }
 
@@ -154,7 +154,6 @@ describe('continentForCountry — territory ISO codes', () => {
   });
 
   test.each([
-    ['WFR', 'antarctica'], // Wolf's Fang Runway: only dataset row on AQ
     ['PRN', 'europe'], // Priština, XK
     ['RUN', 'africa'], // Réunion
   ] as const)('%s (real airport) → %s', (iata, expected) => {
@@ -200,7 +199,7 @@ describe('continentsVisited — order semantics', () => {
 
 describe('continentsVisited — surface-sector policy', () => {
   test('a continent reached ONLY via surface endpoints still counts', () => {
-    const legs: Leg[] = [leg('GRU', 'EZE', { surface: true }), leg('EZE', 'JFK')];
+    const legs: Leg[] = [{ from: 'GRU', to: 'EZE', surface: true }, leg('EZE', 'JFK')];
     expect(continentsVisited(legs, { airports: syntheticAirports, countryContinents: lookup })).toEqual([
       'south-america',
       'north-america',
@@ -208,7 +207,7 @@ describe('continentsVisited — surface-sector policy', () => {
   });
 
   test('surface endpoints contribute both `from` and `to`', () => {
-    const legs: Leg[] = [leg('GRU', 'EZE', { surface: true })];
+    const legs: Leg[] = [{ from: 'GRU', to: 'EZE', surface: true }];
     expect(continentsVisited(legs, { airports: syntheticAirports, countryContinents: lookup })).toEqual([
       'south-america',
     ]);

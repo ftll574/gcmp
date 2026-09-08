@@ -47,10 +47,10 @@
   --semantic-red: #b3402e;
 
   /* Map — OFP chart */
-  --map-land: #faf6ee;
-  --map-sea: #dce5e8;
-  --map-coast: rgba(107, 99, 89, 0.4);
-  --map-graticule: rgba(107, 99, 89, 0.14);
+  --map-land: #f7f3ea;
+  --map-sea: #e8eff0;
+  --map-coast: rgba(82, 76, 68, 0.34);
+  --map-graticule: rgba(82, 76, 68, 0.09);
 
   /* Elevation: hairlines do the work; shadows only under detached layers */
   --shadow-1: none;
@@ -168,10 +168,10 @@
     --semantic-orange: #d98e54;
     --semantic-red: #e06a55;
 
-    --map-land: #20252b;
-    --map-sea: #0f1317;
-    --map-coast: rgba(236, 231, 221, 0.3);
-    --map-graticule: rgba(236, 231, 221, 0.1);
+    --map-land: #22282e;
+    --map-sea: #11161a;
+    --map-coast: rgba(236, 231, 221, 0.26);
+    --map-graticule: rgba(236, 231, 221, 0.07);
 
     --shadow-1: none;
     --shadow-card: none;

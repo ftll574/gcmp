@@ -128,10 +128,25 @@ export const PROGRAM_ALLIANCES: Readonly<Record<ProgramId, Alliance>> = Object.f
  */
 export type FareClass = string;
 
-export interface Leg {
+interface BaseLeg {
   readonly from: Iata;
   readonly to: Iata;
+  /**
+   * RTW planning metadata attached to the arrival point. Undefined means
+   * timing is not decided yet. This is shared by flown and surface sectors
+   * because some RTW products count a surface arrival as a transfer/stopover.
+   */
+  readonly stopover?: boolean;
+}
+
+/** A real flown sector. Only this variant can carry flight-specific data. */
+export interface FlightLeg extends BaseLeg {
+  /** `surface: true` is reserved for SurfaceLeg; flown legs normally omit it. */
+  readonly surface?: false | undefined;
   readonly operatingCarrier: AirlineIata;
+  /** Operating flight-number suffix, e.g. 473 for CX473. A saved reference,
+   * not a persistent claim of current schedule/seat availability. */
+  readonly flightNumber?: string;
   /** Optional per-leg fare class letter override. */
   readonly fareClass?: FareClass;
   /**
@@ -143,17 +158,12 @@ export interface Leg {
    */
   readonly cabin?: CabinId;
   /**
-   * RTW planning metadata. Stopovers are stays of 24h+ at the arrival point;
-   * transfers are shorter connections. Undefined means "unknown" so the RTW
-   * validator can avoid pretending it knows timing before the user enters it.
+   * True only when the user explicitly added this FLIGHT without sourced
+   * route evidence from GCMP's current catalogs. This is provenance, not a
+   * validity verdict: validation keeps the leg usable but surfaces a review
+   * warning until the route/operator is independently confirmed.
    */
-  readonly stopover?: boolean;
-  /**
-   * Surface/open-jaw sector: user travels from `from` to `to` without a flight.
-   * Distance may still count for some award products, but it is not a flight
-   * coupon and has no operating carrier eligibility.
-   */
-  readonly surface?: boolean;
+  readonly manual?: boolean;
   /**
    * Optional per-leg departure date, ISO `YYYY-MM-DD`. Absent = undated
    * (the leg carries no timing claim; chronology/day checks skip it).
@@ -161,6 +171,26 @@ export interface Leg {
    * (docs/decisions/flight-schedule-model.md S1).
    */
   readonly departsOn?: string;
+}
+
+/**
+ * Surface/open-jaw sector: the traveler moves from `from` to `to` without a
+ * flight coupon. It deliberately has NO carrier, flight number, cabin, fare
+ * class, manual-flight provenance, or departure-date claim. `surface: true`
+ * is the discriminator so existing flown-leg literals remain source-compatible.
+ */
+export interface SurfaceLeg extends BaseLeg {
+  readonly surface: true;
+}
+
+export type Leg = FlightLeg | SurfaceLeg;
+
+export function isSurfaceLeg(leg: Leg): leg is SurfaceLeg {
+  return leg.surface === true;
+}
+
+export function isFlightLeg(leg: Leg): leg is FlightLeg {
+  return leg.surface !== true;
 }
 
 export type ProjectionShortCode = 'm' | 'e' | 'a' | 'o';

@@ -21,8 +21,12 @@
  *       (typed parse error otherwise); when absent every leg is undated.
  *
  *   Path:       groups separated by `,`, airports within group by `-`
- *   `op`:       groups separated by `;`, legs within group by `,`
+ *   `op`:       groups separated by `;`, legs within group by `,`; surface
+ *               legs use an empty cell because they have no operator
  *   `fc`:       per-leg fare class letters, same shape as `op` — optional
+ *   `cab`:      per-leg cabin (Y / W / J / F), same shape as `op` — optional.
+ *               Old links without `cab` inherit their global `c` cabin on
+ *               every leg so historical shared routes keep their meaning.
  *   `d`:        per-leg departure dates (ISO YYYY-MM-DD), same shape as
  *               `op` with empty segments for undated legs — optional
  *   `p`:        global crediting programs (AA, AS, ...)
@@ -39,6 +43,8 @@
 
 import {
   PROGRAM_SHORT_CODES,
+  isFlightLeg,
+  isSurfaceLeg,
   type CabinId,
   type EliteTier,
   type Leg,
@@ -159,10 +165,17 @@ export function parseShareUrl(input: string): UrlParseResult {
   const opRaw = params.get('op');
   const pRaw = params.get('p');
   const cRaw = params.get('c');
+  const cabRaw = params.get('cab');
   const fcRaw = params.get('fc');
   const dRaw = params.get('d');
+  const fnRaw = params.get('fn');
+  const flightNumbersByGroup = fnRaw === null ? null : fnRaw.split(';');
+  if (flightNumbersByGroup && flightNumbersByGroup.length !== iataByGroup.length) {
+    return err('mismatched-op-length', 'Flight-number groups must match the airport groups.');
+  }
   const stopoverRaw = params.get('stp');
   const surfaceRaw = params.get('surf');
+  const manualRaw = params.get('man');
   const rvRaw = params.get('rv');
   const sdRaw = params.get('sd');
   const edRaw = params.get('ed');
@@ -170,9 +183,17 @@ export function parseShareUrl(input: string): UrlParseResult {
   const projRaw = params.get('proj');
   const stRaw = params.get('st');
 
-  if (!opRaw) return err('missing-required-param', 'Missing `op` (operating carriers) in query.');
+  // `op=` may legitimately be empty when every leg in the group is surface.
+  // Missing and present-but-empty are therefore distinct states.
+  if (opRaw === null) return err('missing-required-param', 'Missing `op` (operating carriers) in query.');
   if (!pRaw) return err('missing-required-param', 'Missing `p` (programs) in query.');
   if (!cRaw) return err('missing-required-param', 'Missing `c` (cabin) in query.');
+
+  const cabinLetter = cRaw.toUpperCase();
+  const cabin = CABIN_BY_LETTER[cabinLetter];
+  if (!cabin) {
+    return err('unknown-cabin', `Unknown cabin code "${cRaw}". Expected Y/W/J/F.`);
+  }
 
   // Split op by `;` per group.
   const opByGroupStr = opRaw.split(';');
@@ -197,6 +218,20 @@ export function parseShareUrl(input: string): UrlParseResult {
     }
   }
 
+  // Per-leg cabins. A present `cab=` is authoritative and may contain empty
+  // cells for undecided legs. When it is absent, this is a legacy URL and the
+  // historic global `c=` value is copied onto every flown leg.
+  let cabinByGroupStr: string[] | null = null;
+  if (cabRaw !== null) {
+    cabinByGroupStr = cabRaw.split(';');
+    if (cabinByGroupStr.length !== iataByGroup.length) {
+      return err(
+        'mismatched-op-length',
+        `Expected ${iataByGroup.length} group(s) in cab (semicolon-separated); got ${cabinByGroupStr.length}.`,
+      );
+    }
+  }
+
   // Per-leg departure dates. Optional. Same shape as op: `;`-separated
   // groups, `,`-separated legs; an empty cell means "this leg is undated"
   // (docs/decisions/flight-schedule-model.md S1 — partial dating inside a
@@ -213,7 +248,7 @@ export function parseShareUrl(input: string): UrlParseResult {
     }
   }
 
-  function parseBooleanShape(raw: string | null, param: 'stp' | 'surf'): string[] | null {
+  function parseBooleanShape(raw: string | null, param: 'stp' | 'surf' | 'man'): string[] | null {
     if (!raw) return null;
     const byGroup = raw.split(';');
     if (byGroup.length !== iataByGroup.length) {
@@ -226,9 +261,11 @@ export function parseShareUrl(input: string): UrlParseResult {
 
   let stopoverByGroupStr: string[] | null;
   let surfaceByGroupStr: string[] | null;
+  let manualByGroupStr: string[] | null;
   try {
     stopoverByGroupStr = parseBooleanShape(stopoverRaw, 'stp');
     surfaceByGroupStr = parseBooleanShape(surfaceRaw, 'surf');
+    manualByGroupStr = parseBooleanShape(manualRaw, 'man');
   } catch (e) {
     return err('mismatched-op-length', e instanceof Error ? e.message : String(e));
   }
@@ -237,7 +274,7 @@ export function parseShareUrl(input: string): UrlParseResult {
     rawGroup: string,
     expectedCount: number,
     groupIndex: number,
-    param: 'stp' | 'surf',
+    param: 'stp' | 'surf' | 'man',
   ): Array<boolean | undefined> | UrlParseError {
     const rawCells = rawGroup === '' ? [] : rawGroup.split(',');
     if (rawCells.length > 0 && rawCells.length !== expectedCount) {
@@ -273,12 +310,6 @@ export function parseShareUrl(input: string): UrlParseResult {
         `Group ${gi + 1}: expected ${expectedOpCount} operating carrier(s) for ${iataCodes.length} airports; got ${operatingCarriers.length}.`,
       );
     }
-    for (const carrier of operatingCarriers) {
-      if (!/^[A-Z0-9]{2,3}$/.test(carrier)) {
-        return err('malformed-path', `Invalid operating carrier code: "${carrier}"`);
-      }
-    }
-
     // Decode fare-class letters for this group, if present.
     let fareClasses: ReadonlyArray<string | undefined> | null = null;
     if (fcByGroupStr) {
@@ -305,6 +336,32 @@ export function parseShareUrl(input: string): UrlParseResult {
         }
       }
       fareClasses = out;
+    }
+
+    let cabins: ReadonlyArray<CabinId | undefined> | null = null;
+    if (cabinByGroupStr) {
+      const groupCabinStr = cabinByGroupStr[gi] ?? '';
+      const rawCabins = groupCabinStr === '' ? [] : groupCabinStr.split(',');
+      if (rawCabins.length > 0 && rawCabins.length !== expectedOpCount) {
+        return err(
+          'mismatched-op-length',
+          `Group ${gi + 1}: expected ${expectedOpCount} cabin(s) in cab; got ${rawCabins.length}.`,
+        );
+      }
+      const padded = rawCabins.length === 0
+        ? new Array<string>(expectedOpCount).fill('')
+        : rawCabins;
+      const out: Array<CabinId | undefined> = [];
+      for (const cell of padded) {
+        const cleaned = (cell ?? '').toUpperCase().trim();
+        if (cleaned === '') out.push(undefined);
+        else {
+          const decoded = CABIN_BY_LETTER[cleaned];
+          if (!decoded) return err('unknown-cabin', `Unknown per-leg cabin "${cell}". Expected Y/W/J/F.`);
+          out.push(decoded);
+        }
+      }
+      cabins = out;
     }
 
     // Decode departure dates for this group, if present. Empty cell =
@@ -350,26 +407,68 @@ export function parseShareUrl(input: string): UrlParseResult {
       surfaces = decoded;
     }
 
+    let manuals: ReadonlyArray<boolean | undefined> | null = null;
+    if (manualByGroupStr) {
+      const decoded = decodeBooleanCells(manualByGroupStr[gi] ?? '', expectedOpCount, gi, 'man');
+      if (!Array.isArray(decoded)) return decoded;
+      manuals = decoded;
+    }
+
     const legs: Leg[] = [];
+    const flightNumbers = flightNumbersByGroup?.[gi]?.split(',');
+    if (flightNumbers && flightNumbers.length !== expectedOpCount) {
+      return err('mismatched-op-length', `Group ${gi + 1}: flight numbers must match the leg count.`);
+    }
     for (let i = 0; i < iataCodes.length - 1; i++) {
       const from = iataCodes[i];
       const to = iataCodes[i + 1];
       const operatingCarrier = operatingCarriers[i];
-      if (!from || !to || !operatingCarrier) {
+      if (!from || !to || operatingCarrier === undefined) {
         return err('malformed-path', 'Internal: leg construction failed.');
       }
       const fc = fareClasses?.[i];
+      const legCabin = cabinByGroupStr === null ? cabin : cabins?.[i];
       const stopover = stopovers?.[i];
       const surface = surfaces?.[i];
+      const manual = manuals?.[i];
       const departsOn = departures?.[i];
+      const flightNumber = flightNumbers?.[i];
+      if (surface === true) {
+        // Legacy links stored a placeholder carrier (and could also carry
+        // flight-only metadata) on surface sectors. Accept a syntactically
+        // valid legacy carrier, but normalize the sector to a true SurfaceLeg
+        // and discard every flight-only field.
+        if (operatingCarrier !== '' && !/^[A-Z0-9]{2,3}$/.test(operatingCarrier)) {
+          return err('malformed-path', `Invalid operating carrier code: "${operatingCarrier}"`);
+        }
+        if (flightNumber) {
+          return err('malformed-path', 'A flight number requires a flown leg and 1–4 digits with an optional letter suffix.');
+        }
+        legs.push({
+          from,
+          to,
+          surface: true,
+          ...(stopover !== undefined ? { stopover } : {}),
+        });
+        continue;
+      }
+      if (!/^[A-Z0-9]{2,3}$/.test(operatingCarrier)) {
+        return err('malformed-path', `Invalid operating carrier code: "${operatingCarrier}"`);
+      }
+      if (flightNumber && !/^\d{1,4}[A-Z]?$/.test(flightNumber)) {
+        return err('malformed-path', 'A flight number requires a flown leg and 1–4 digits with an optional letter suffix.');
+      }
       legs.push({
         from,
         to,
         operatingCarrier,
+        ...(legCabin !== undefined ? { cabin: legCabin } : {}),
         ...(fc !== undefined ? { fareClass: fc } : {}),
         ...(stopover !== undefined ? { stopover } : {}),
-        ...(surface !== undefined ? { surface } : {}),
+        ...(surface === false ? { surface: false as const } : {}),
+        ...(manual === true ? { manual: true } : {}),
         ...(departsOn !== undefined ? { departsOn } : {}),
+        ...(flightNumber ? { flightNumber } : {}),
       });
     }
     groups.push({ legs });
@@ -386,12 +485,6 @@ export function parseShareUrl(input: string): UrlParseResult {
   }
   if (programs.length === 0) {
     return err('missing-required-param', 'At least one program required in `p`.');
-  }
-
-  const cabinLetter = cRaw.toUpperCase();
-  const cabin = CABIN_BY_LETTER[cabinLetter];
-  if (!cabin) {
-    return err('unknown-cabin', `Unknown cabin code "${cRaw}". Expected Y/W/J/F.`);
   }
 
   let rulesVersion: string | undefined;
@@ -479,31 +572,42 @@ export function encodeShareUrl(req: RoutingRequest): string {
   });
 
   const opByGroup = req.groups.map((group) =>
-    group.legs.map((leg) => leg.operatingCarrier).join(','),
+    group.legs.map((leg) => isFlightLeg(leg) ? leg.operatingCarrier : '').join(','),
   );
 
   // Per-leg fare classes. Encode as `fc=J,C;F,F` mirroring `op` shape.
   // Empty cell `""` for legs without an override. Skip the whole param when
   // no leg in any group has a fare class — preserves URL compatibility with
   // every v0.x–v1.4 link.
-  const anyFc = req.groups.some((g) => g.legs.some((l) => l.fareClass !== undefined));
+  const anyFc = req.groups.some((g) => g.legs.some((leg) => isFlightLeg(leg) && leg.fareClass !== undefined));
   const fcByGroup = anyFc
-    ? req.groups.map((group) => group.legs.map((leg) => leg.fareClass ?? '').join(','))
+    ? req.groups.map((group) => group.legs.map((leg) => isFlightLeg(leg) ? (leg.fareClass ?? '') : '').join(','))
     : null;
+  // Current URLs always carry the per-leg cabin shape, including empty
+  // cells. This distinguishes a genuinely undecided mixed-cabin itinerary
+  // from legacy URLs, whose missing `cab` means "inherit global c on every
+  // leg" for backwards compatibility.
+  const cabinByGroup = req.groups.map((group) =>
+    group.legs.map((leg) => isFlightLeg(leg) && leg.cabin ? LETTER_BY_CABIN[leg.cabin] : '').join(','),
+  );
   const anyStopover = req.groups.some((g) => g.legs.some((l) => l.stopover !== undefined));
   const stopoverByGroup = anyStopover
     ? req.groups.map((group) => group.legs.map((leg) => leg.stopover === undefined ? '' : leg.stopover ? '1' : '0').join(','))
     : null;
-  const anySurface = req.groups.some((g) => g.legs.some((l) => l.surface !== undefined));
+  const anySurface = req.groups.some((g) => g.legs.some((leg) => isSurfaceLeg(leg) || leg.surface === false));
   const surfaceByGroup = anySurface
-    ? req.groups.map((group) => group.legs.map((leg) => leg.surface === undefined ? '' : leg.surface ? '1' : '0').join(','))
+    ? req.groups.map((group) => group.legs.map((leg) => isSurfaceLeg(leg) ? '1' : leg.surface === false ? '0' : '').join(','))
+    : null;
+  const anyManual = req.groups.some((g) => g.legs.some((leg) => isFlightLeg(leg) && leg.manual === true));
+  const manualByGroup = anyManual
+    ? req.groups.map((group) => group.legs.map((leg) => isFlightLeg(leg) && leg.manual === true ? '1' : '').join(','))
     : null;
   // Per-leg departure dates. Encode as `d=2026-09-01,,2026-09-05` mirroring
   // `op` shape. Empty cell for undated legs. Skip the whole param when no
   // leg is dated — preserves URL compatibility with every pre-dating link.
-  const anyDated = req.groups.some((g) => g.legs.some((l) => l.departsOn !== undefined));
+  const anyDated = req.groups.some((g) => g.legs.some((leg) => isFlightLeg(leg) && leg.departsOn !== undefined));
   const datesByGroup = anyDated
-    ? req.groups.map((group) => group.legs.map((leg) => leg.departsOn ?? '').join(','))
+    ? req.groups.map((group) => group.legs.map((leg) => isFlightLeg(leg) ? (leg.departsOn ?? '') : '').join(','))
     : null;
 
   const path = groupChains.join(',');
@@ -518,6 +622,7 @@ export function encodeShareUrl(req: RoutingRequest): string {
   params.set('op', op);
   params.set('p', p);
   params.set('c', c);
+  params.set('cab', cabinByGroup.join(';'));
   if (fcByGroup) {
     params.set('fc', fcByGroup.join(';'));
   }
@@ -527,8 +632,14 @@ export function encodeShareUrl(req: RoutingRequest): string {
   if (surfaceByGroup) {
     params.set('surf', surfaceByGroup.join(';'));
   }
+  if (manualByGroup) {
+    params.set('man', manualByGroup.join(';'));
+  }
   if (datesByGroup) {
     params.set('d', datesByGroup.join(';'));
+  }
+  if (req.groups.some((group) => group.legs.some((leg) => isFlightLeg(leg) && leg.flightNumber !== undefined))) {
+    params.set('fn', req.groups.map((group) => group.legs.map((leg) => isFlightLeg(leg) ? (leg.flightNumber ?? '') : '').join(',')).join(';'));
   }
   if (req.rulesVersion !== undefined) {
     params.set('rv', req.rulesVersion);

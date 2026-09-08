@@ -12,6 +12,10 @@ import type { CabinId, Leg } from '../../../src/lib/types.ts';
 const catalog = AwardPricingCatalogSchema.parse(
   JSON.parse(readFileSync('public/data/award-pricing/current.json', 'utf8')),
 );
+// Preserve the historical claims; current new-booking prices have separate tests.
+const historicalQfCatalog = AwardPricingCatalogSchema.parse(
+  JSON.parse(readFileSync('tests/fixtures/qantas-pre-2025-08-05.json', 'utf8')),
+);
 
 // Inline fixture: same mechanics as the real products, but carrying a
 // premiumEconomy price key — the live band-based products don't have one
@@ -65,9 +69,21 @@ describe('estimateAwardPrice', () => {
     expect(estimate?.confidence).toBe('reference-recheck');
   });
 
+  test('returns JAL official oneworld distance-band prices', () => {
+    const economy = estimateAwardPrice(catalog, 'jal-oneworld-award-ticket', 19000, 'economy');
+    const business = estimateAwardPrice(catalog, 'jal-oneworld-award-ticket', 19000, 'business');
+    const first = estimateAwardPrice(catalog, 'jal-oneworld-award-ticket', 35000, 'first');
+
+    expect(economy?.miles).toBe(90000);
+    expect(business?.miles).toBe(120000);
+    expect(first?.miles).toBe(330000);
+    expect(business?.confidence).toBe('published-chart');
+    expect(business?.band).toEqual({ minMiles: 14001, maxMiles: 20000 });
+  });
+
   test('returns Qantas OWCFR top-bracket business price (pre-Aug-2025 chart era)', () => {
     const estimate = estimateAwardPrice(
-      catalog,
+      historicalQfCatalog,
       'qantas-oneworld-classic-flight-reward',
       25000,
       'business',
@@ -84,8 +100,8 @@ describe('estimateAwardPrice', () => {
   test('Qantas partial chart returns null for unpriced cabin and beyond-cap distances', () => {
     const qf = 'qantas-oneworld-classic-flight-reward';
     // Only business is priced in the single verified bracket (19,201-35,000).
-    expect(estimateAwardPrice(catalog, qf, 25000, 'economy')).toBeNull();
-    expect(estimateAwardPrice(catalog, qf, 25000, 'first')).toBeNull();
+    expect(estimateAwardPrice(historicalQfCatalog, qf, 25000, 'economy')).toBeNull();
+    expect(estimateAwardPrice(historicalQfCatalog, qf, 25000, 'first')).toBeNull();
     // Nothing is priced past the 35,000-mile cap.
     expect(estimateAwardPrice(catalog, qf, 35500, 'business')).toBeNull();
     expect(estimateAwardPrice(catalog, qf, 35500, 'economy')).toBeNull();
@@ -170,6 +186,17 @@ describe('priceRtwItinerary', () => {
     expect(estimate?.cabin).toBe('premium-economy');
     expect(estimate?.miles).toBe(120000);
   });
+
+  test('JAL mixed-cabin itinerary prices at the highest booked cabin', () => {
+    const legs: Leg[] = [
+      { from: 'TPE', to: 'NRT', operatingCarrier: 'JL', cabin: 'economy' },
+      { from: 'NRT', to: 'LAX', operatingCarrier: 'JL', cabin: 'business' },
+    ];
+    const estimate = priceRtwItinerary(catalog, 'jal-oneworld-award-ticket', 19000, legs, 'economy');
+
+    expect(estimate?.cabin).toBe('business');
+    expect(estimate?.miles).toBe(120000);
+  });
 });
 
 describe('quoteAwardZone', () => {
@@ -208,7 +235,7 @@ describe('quoteAwardZone', () => {
   });
 
   test('quotes the Qantas single verified band with business-only price keys', () => {
-    const quote = quoteAwardZone(catalog, 'qantas-oneworld-classic-flight-reward', 25000);
+    const quote = quoteAwardZone(historicalQfCatalog, 'qantas-oneworld-classic-flight-reward', 25000);
 
     expect(quote?.label).toBe('Qantas oneworld Classic Flight Reward');
     expect(quote?.band).toEqual({ minMiles: 19201, maxMiles: 35000 });

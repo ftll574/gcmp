@@ -85,19 +85,30 @@
       "productId": "qantas-oneworld-classic-flight-reward",
       "label": "Qantas oneworld Classic Flight Reward",
       "pricingModel": "distance-band",
-      "confidence": "reference-recheck",
-      "currency": "miles",
+      "confidence": "published-chart",
+      "currency": "points",
+      "asOfEra": "2025-08",
+      "bookingEffectiveFrom": "2025-08-05",
+      "verifiedOn": "2026-09-05",
       "sourceUrls": [
-        "https://community.pointhacks.com/t/need-help-with-one-world-classic-flight-reward-melbourne-to-europe-aug-sept-2025/24765"
+        "https://www.qantas.com/en-us/frequent-flyer/use-points/classic-flight-rewards/tables"
       ],
       "notes": [
-        "Pre-Aug-2025 Qantas chart era: the source thread plans Aug/Sep 2025 travel; Qantas revised the chart on 2025-08-05, so pin per-rv values rather than one global constant.",
-        "Only the top bracket is verified (verbatim from the thread: business caps at 318,000 pts for distance 19201-35000 miles, flat even when flights are added); smaller brackets and other cabins are intentionally absent rather than invented.",
-        "Conflict guard: the Reddit agent's 365,800-point business total belongs to the post-2025-08-05 revision (docs/calibration-set.md conflict #2, rules-version drift, not a rule disagreement) — never merged into this entry.",
-        "confidence is reference-recheck because the catalog schema's product-level enum has no chart-verified grade; calibration-set.md Case 1 itself carries the chart-verified research label and this entry transcribes that verified thread."
+        "Official oneworld Classic Flight Reward chart, verified 2026-09-05. Ten return-itinerary distance zones and all four published cabins; values are Qantas Points per passenger, excluding taxes and carrier charges.",
+        "Applies to new bookings made from 2025-08-05. Booking date, not departure date, selects the era. The planner estimates a new booking and does not reconstruct an older ticket's price from its share URL.",
+        "Bookings made on or before 2025-08-04, including later changes to those bookings, use the old table. The historical partial 318,000-point case remains frozen in tests/fixtures/qantas-pre-2025-08-05.json."
       ],
       "bands": [
-        { "minMiles": 19201, "maxMiles": 35000, "prices": { "business": 318000 } }
+        { "minMiles": 0, "maxMiles": 1200, "prices": { "economy": 23000, "premiumEconomy": 33200, "business": 42000, "first": 61000 } },
+        { "minMiles": 1201, "maxMiles": 2400, "prices": { "economy": 32200, "premiumEconomy": 49800, "business": 63000, "first": 91400 } },
+        { "minMiles": 2401, "maxMiles": 4800, "prices": { "economy": 46000, "premiumEconomy": 72400, "business": 92000, "first": 135400 } },
+        { "minMiles": 4801, "maxMiles": 7200, "prices": { "economy": 56400, "premiumEconomy": 116400, "business": 146800, "first": 215600 } },
+        { "minMiles": 7201, "maxMiles": 9600, "prices": { "economy": 69400, "premiumEconomy": 141600, "business": 180000, "first": 258400 } },
+        { "minMiles": 9601, "maxMiles": 11600, "prices": { "economy": 87000, "premiumEconomy": 170000, "business": 216000, "first": 310400 } },
+        { "minMiles": 11601, "maxMiles": 14000, "prices": { "economy": 103600, "premiumEconomy": 196400, "business": 250800, "first": 359600 } },
+        { "minMiles": 14001, "maxMiles": 16800, "prices": { "economy": 115600, "premiumEconomy": 224400, "business": 286000, "first": 410000 } },
+        { "minMiles": 16801, "maxMiles": 19200, "prices": { "economy": 141400, "premiumEconomy": 261600, "business": 334000, "first": 478400 } },
+        { "minMiles": 19201, "maxMiles": 35000, "prices": { "economy": 152200, "premiumEconomy": 287000, "business": 365800, "first": 523200 } }
       ]
     },
     {
@@ -187,6 +198,35 @@
         { "originRegion": "SAm", "destinationRegion": "SAm", "prices": {"economy":35000,"premiumEconomy":40000,"business":60000} },
         { "originRegion": "SAm", "destinationRegion": "SWP", "prices": {"economy":120000,"premiumEconomy":130000,"business":180000} },
         { "originRegion": "SWP", "destinationRegion": "SWP", "prices": {"economy":35000,"premiumEconomy":45000,"business":60000} }
+      ]
+    },
+    {
+      "productId": "jal-oneworld-award-ticket",
+      "label": "JAL Mileage Bank oneworld Award Ticket",
+      "pricingModel": "distance-band",
+      "confidence": "published-chart",
+      "currency": "miles",
+      "verifiedOn": "2026-09-07",
+      "sourceUrls": [
+        "https://www.jal.co.jp/jp/en/jalmile/use/partner_air/oneworld/miles.html",
+        "https://www.jal.co.jp/jp/en/jalmile/use/partner_air/oneworld/conditions.html"
+      ],
+      "notes": [
+        "Official JAL oneworld Award Ticket chart, verified 2026-09-07. Required miles are determined by total flown itinerary distance and cabin.",
+        "JAL states that mixed-class itineraries are charged at the higher class. Premium Economy is not an Economy award cabin; JAL's published oneworld chart prices Economy, Business and First.",
+        "Surface-sector distance is excluded from total trip distance; the matching RTW product applies the same distance policy."
+      ],
+      "bands": [
+        { "minMiles": 1, "maxMiles": 4000, "prices": { "economy": 25000, "business": 48000, "first": 72000 } },
+        { "minMiles": 4001, "maxMiles": 8000, "prices": { "economy": 40000, "business": 80000, "first": 100000 } },
+        { "minMiles": 8001, "maxMiles": 10000, "prices": { "economy": 50000, "business": 85000, "first": 110000 } },
+        { "minMiles": 10001, "maxMiles": 12000, "prices": { "economy": 60000, "business": 110000, "first": 160000 } },
+        { "minMiles": 12001, "maxMiles": 14000, "prices": { "economy": 70000, "business": 115000, "first": 165000 } },
+        { "minMiles": 14001, "maxMiles": 20000, "prices": { "economy": 90000, "business": 120000, "first": 170000 } },
+        { "minMiles": 20001, "maxMiles": 25000, "prices": { "economy": 120000, "business": 150000, "first": 230000 } },
+        { "minMiles": 25001, "maxMiles": 29000, "prices": { "economy": 140000, "business": 190000, "first": 280000 } },
+        { "minMiles": 29001, "maxMiles": 34000, "prices": { "economy": 150000, "business": 200000, "first": 300000 } },
+        { "minMiles": 34001, "maxMiles": 50000, "prices": { "economy": 160000, "business": 220000, "first": 330000 } }
       ]
     }
   ]

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import {
-  estimateAwardPrice,
   PRICE_KEY_BY_CABIN,
+  priceRtwItinerary,
   quoteAwardZone,
 } from '../lib/rtw/award-pricing.ts';
 import { sortMileageRedemptionRtwProductsForMarket } from '../lib/rtw/products.ts';
@@ -22,8 +22,9 @@ import type { CiZoneMap } from '../lib/schemas/ci-zones.ts';
 import type { ContinentId } from '../lib/schemas/country-continent.ts';
 import type { MarketProfile } from '../lib/schemas/market.ts';
 import type { NetworkGapEntry } from '../lib/schemas/network-gaps.ts';
+import type { ScheduleEntry } from '../lib/schemas/flight-schedules.ts';
 import type { RtwRuleCatalog } from '../lib/schemas/rtw-rule.ts';
-import type { Airport, RoutingRequest } from '../lib/types.ts';
+import { isFlightLeg, type Airport, type RoutingRequest } from '../lib/types.ts';
 
 interface RtwValidationPanelProps {
   readonly routing: RoutingRequest;
@@ -38,13 +39,13 @@ interface RtwValidationPanelProps {
   readonly airportContinentOverrides: ReadonlyMap<string, ContinentId> | null;
   /** Network-gap watchlist; null ⇒ engine emits no gap findings. */
   readonly networkGaps: ReadonlyArray<NetworkGapEntry> | null;
+  readonly schedules?: ReadonlyArray<ScheduleEntry> | null;
   /**
    * CI station→zone map; null ⇒ the CI zone-quote block stays hidden
    * (degrade-to-null loader contract).
    */
   readonly ciZones: CiZoneMap | null;
   readonly selectedProductId: string;
-  readonly onProductChange: (productId: string) => void;
 }
 
 function flattenLegs(routing: RoutingRequest) {
@@ -95,9 +96,9 @@ export function RtwValidationPanel({
   countryContinents,
   airportContinentOverrides,
   networkGaps,
+  schedules,
   ciZones,
   selectedProductId,
-  onProductChange,
 }: RtwValidationPanelProps): React.ReactElement {
   const { t } = useLocale();
   const products = useMemo(
@@ -131,18 +132,21 @@ export function RtwValidationPanel({
       countryContinents: countryContinents ?? undefined,
       airportContinentOverrides: airportContinentOverrides ?? undefined,
       networkGaps: networkGaps ?? undefined,
+      schedules: schedules ?? undefined,
       openJawSectors,
     }, routing);
-  }, [selectedProduct, legs, airports, allianceCatalog, countryContinents, airportContinentOverrides, networkGaps, openJawSectors, routing]);
+  }, [selectedProduct, legs, airports, allianceCatalog, countryContinents, airportContinentOverrides, networkGaps, schedules, openJawSectors, routing]);
+  const missingCabins = legs.filter((leg) => isFlightLeg(leg) && leg.cabin === undefined).length;
   const awardPrice = useMemo(() => {
-    if (!selectedProduct || !result) return null;
-    return estimateAwardPrice(
+    if (!selectedProduct || !result || missingCabins > 0) return null;
+    return priceRtwItinerary(
       awardPricingCatalog,
       selectedProduct.id,
       result.summary.totalDistanceMiles,
-      routing.cabin,
+      legs,
+      'economy',
     );
-  }, [awardPricingCatalog, selectedProduct, result, routing.cabin]);
+  }, [awardPricingCatalog, selectedProduct, result, legs, missingCabins]);
   // Zone breakdown: every cabin the matched band actually prices (honest
   // gaps for partial archived charts); independent of whether the routing's
   // own cabin is priced — an economy request on ANA's business-only chart
@@ -163,7 +167,7 @@ export function RtwValidationPanel({
   // engine's prohibited-ocean-combination check actually fails.
   // (Computed before the early return below — hooks ordering.)
   const ciProductSelected = selectedProduct?.id === CHINA_AIRLINES_SKYTEAM_PRODUCT_ID;
-  const ciCarriersIncluded = legs.some((leg) => leg.operatingCarrier === 'CI');
+  const ciCarriersIncluded = legs.some((leg) => isFlightLeg(leg) && leg.operatingCarrier === 'CI');
   const ciOceanRuleTripped =
     result?.findings.some(
       (finding) => finding.ruleId === 'prohibited-ocean-combination' && finding.severity === 'fail',
@@ -180,21 +184,21 @@ export function RtwValidationPanel({
       return null;
     }
     return legs.map((leg) => {
-      const surface = leg.surface === true;
-      if (surface) {
-        return { from: leg.from, to: leg.to, surface: true, quote: null, fromZone: null, toZone: null };
+      if (!isFlightLeg(leg)) {
+        return { from: leg.from, to: leg.to, surface: true, quote: null, fromZone: null, toZone: null, cabin: null };
       }
       const fromZone = resolveCiZone(ciZones, leg.from);
       const toZone = resolveCiZone(ciZones, leg.to);
+      const legCabin = leg.cabin;
       const quote =
-        fromZone && toZone
+        fromZone && toZone && legCabin
           ? quoteCiLeg({
               catalog: awardPricingCatalog,
               productId: ciProductId,
               zoneMap: ciZones,
               fromAirport: leg.from,
               toAirport: leg.to,
-              cabin: routing.cabin,
+              cabin: legCabin,
             })
           : null;
       return {
@@ -204,11 +208,25 @@ export function RtwValidationPanel({
         quote,
         fromZone: fromZone?.zone ?? null,
         toZone: toZone?.zone ?? null,
+        cabin: legCabin ?? null,
       };
     });
-  }, [ciProductSelected, ciZones, ciProductId, legs, awardPricingCatalog, routing.cabin]);
+  }, [ciProductSelected, ciZones, ciProductId, legs, awardPricingCatalog]);
 
   if (!selectedProduct) return <section className="rtw-panel">{t('rtw.noProducts')}</section>;
+
+  const missingDates = legs.filter((leg) => isFlightLeg(leg) && leg.departsOn === undefined).length;
+  // The engine's legacy boolean means "no structural failure", not ready
+  // to book. Do not color an incomplete/unknown itinerary green.
+  const verdict = result === null ? 'empty'
+    : !result.valid ? 'invalid'
+      : missingDates > 0 || missingCabins > 0 || result.findings.some((finding) => finding.severity === 'unknown') ? 'incomplete'
+        : result.findings.some((finding) => finding.severity === 'warning') ? 'review'
+          : 'valid';
+  const verdictKey = verdict === 'valid' ? 'rtw.integrity.structuralPass'
+    : verdict === 'incomplete' ? 'rtw.integrity.incomplete'
+      : verdict === 'review' ? 'rtw.integrity.review' : `rtw.status.${verdict}`;
+  const pricingProduct = awardPricingCatalog.products.find((product) => product.productId === selectedProduct.id);
 
   return (
     <section className="rtw-panel" aria-label="RTW validation">
@@ -217,25 +235,18 @@ export function RtwValidationPanel({
           <p className="rtw-eyebrow">{t('rtw.validationEyebrow')}</p>
           <h2>{t('rtw.validationTitle')}</h2>
         </div>
-        <span className={`rtw-status ${result?.valid ? 'valid' : 'invalid'}`}>
-          {result ? (result.valid ? t('rtw.status.valid') : t('rtw.status.invalid')) : t('rtw.status.empty')}
+        <span className={`rtw-status ${verdict}`} data-verdict={verdict}>
+          {t(verdictKey)}
         </span>
       </div>
 
-      <label className="rtw-product-picker">
-        <span>{t('rtw.productShort')}</span>
-        <select
-          value={selectedProduct.id}
-          onChange={(event) => onProductChange(event.target.value)}
-        >
-          {products.map((product) => (
-            <option key={product.id} value={product.id}>
-              {product.label}
-              {product.status !== 'active' ? ` (${product.status})` : ''}
-            </option>
-          ))}
-        </select>
-      </label>
+      <p className="rtw-scope-note">{t('rtw.integrity.scopeNote')}</p>
+      {missingDates > 0 && (
+        <p className="rtw-planning-note">{t('rtw.integrity.missingDates', { count: missingDates })}</p>
+      )}
+      {missingCabins > 0 && (
+        <p className="rtw-planning-note">{t('rtw.integrity.missingCabins', { count: missingCabins })}</p>
+      )}
 
       {result ? (
         <>
@@ -290,7 +301,13 @@ export function RtwValidationPanel({
                           : t('rtw.award.confidence.recheck')}
                     </em>
                   </div>
-                  <strong>{t('rtw.award.miles', { count: awardPrice.miles.toLocaleString() })}</strong>
+                  <strong>{t(awardPrice.currency === 'points' ? 'rtw.integrity.points' : 'rtw.award.miles', { count: awardPrice.miles.toLocaleString() })}</strong>
+                  {pricingProduct?.bookingEffectiveFrom && (
+                    <p className="rtw-pricing-era">{t('rtw.integrity.newBookingChart', { date: pricingProduct.bookingEffectiveFrom })}</p>
+                  )}
+                  {pricingProduct?.verifiedOn && (
+                    <small>{t('rtw.integrity.verifiedOn', { date: pricingProduct.verifiedOn })}</small>
+                  )}
                   <small>
                     {t(`rtw.award.cabin.${PRICE_KEY_BY_CABIN[awardPrice.cabin]}`)} · {awardPrice.band.minMiles.toLocaleString()}-
                     {awardPrice.band.maxMiles?.toLocaleString() ?? '∞'} {t('rtw.award.milesBand')}
@@ -303,7 +320,7 @@ export function RtwValidationPanel({
                   quote={zoneQuote}
                 />
               )}
-              {ciZoneRows && <CiZoneQuotes rows={ciZoneRows} cabin={routing.cabin} />}
+              {ciZoneRows && <CiZoneQuotes rows={ciZoneRows} />}
               {awardPrice && (awardPrice.sourceUrls.length > 0 || awardPrice.notes.length > 0) ? (
                 <details className="rtw-award-sources">
                   <summary>{t('rtw.award.sources')}</summary>
@@ -342,10 +359,21 @@ export function RtwValidationPanel({
                     })
                   : null;
               return (
-                <li key={finding.ruleId} className={`rtw-finding ${finding.severity}`}>
+                <li key={`${finding.ruleId}-${finding.affectedLegIndexes?.join(',') ?? ''}`} className={`rtw-finding ${finding.severity}`} data-rule-id={finding.ruleId}>
                   <span className="rtw-finding-severity">{finding.severity}</span>
                   <span>
                     {findingMessage(finding, t)}
+                    {finding.affectedLegIndexes && (
+                      <small className="rtw-finding-legs">
+                        {finding.affectedLegIndexes.map((index) => {
+                          const leg = legs[index];
+                          if (!leg) return '';
+                          return isFlightLeg(leg)
+                            ? `${index + 1}: ${leg.from} → ${leg.to} · ${leg.operatingCarrier}`
+                            : `${index + 1}: ${leg.from} ⇢ ${leg.to} · ${t('rtw.timing.surface')}`;
+                        }).filter(Boolean).join(' / ')}
+                      </small>
+                    )}
                     {fixHint && (
                       <em className="rtw-fix-hint">
                         {t(fixHint.remedyKey, fixHint.remedyParams)}

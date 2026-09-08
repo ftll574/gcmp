@@ -172,10 +172,10 @@ const CASE1_FLOWN: Leg[] = [
   { from: 'ADL', to: 'PER', operatingCarrier: 'QF', stopover: false },
   { from: 'PER', to: 'KUL', operatingCarrier: 'MH', stopover: false },
   { from: 'KUL', to: 'CDG', operatingCarrier: 'MH', stopover: false },
-  { from: 'CDG', to: 'MXP', operatingCarrier: 'ZZ', surface: true, stopover: false },
+  { from: 'CDG', to: 'MXP', surface: true, stopover: false },
   { from: 'MXP', to: 'HEL', operatingCarrier: 'AY', stopover: false },
   { from: 'HEL', to: 'HND', operatingCarrier: 'AY', stopover: false },
-  { from: 'HND', to: 'NRT', operatingCarrier: 'ZZ', surface: true, stopover: false },
+  { from: 'HND', to: 'NRT', surface: true, stopover: false },
   { from: 'NRT', to: 'HKG', operatingCarrier: 'JL', stopover: false },
   { from: 'HKG', to: 'KUL', operatingCarrier: 'MH', stopover: false },
   { from: 'KUL', to: 'PER', operatingCarrier: 'MH', stopover: false },
@@ -635,7 +635,7 @@ describe('FlyerTalk calibration set — Iron Rule (docs/calibration-set.md)', ()
     ];
     const withGroundSector: Leg[] = [
       { from: 'TPE', to: 'SIN', operatingCarrier: 'SQ', stopover: true },
-      { from: 'SIN', to: 'KUL', operatingCarrier: 'ZZ', surface: true, stopover: false },
+      { from: 'SIN', to: 'KUL', surface: true, stopover: false },
       ...flown.slice(1),
     ];
 

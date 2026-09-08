@@ -1,0 +1,100 @@
+.flight-dates-grid [data-state="published"] {
+  border: 2px dashed var(--accent);
+  background: var(--bg-map-land);
+}
+.flight-dates-legend [data-state="published"] {
+  text-decoration: underline dashed;
+  text-underline-offset: 4px;
+}
+.flight-dates {
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 16px;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  min-width: 0;
+}
+.flight-dates-head, .flight-dates-month, .flight-dates-actions, .flight-dates-direct {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.flight-dates-head h3 { margin: 0; font-size: 16px; }
+.flight-dates-selected-flight {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 8px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  background: var(--tint-fill-soft);
+}
+.flight-dates-selected-flight > span {
+  align-self: center;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+.flight-dates-selected-flight > strong {
+  font-family: var(--font-mono);
+  font-size: 16px;
+}
+.flight-dates-selected-flight > small {
+  grid-column: 1 / -1;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+.flight-dates button, .flight-dates-open, .flight-dates-direct button, .rtw-query-leg-schedule {
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--accent);
+  padding: 8px;
+  min-height: 40px;
+  font: inherit;
+  cursor: pointer;
+}
+.flight-dates button:focus-visible, .flight-dates-direct input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.flight-dates button:disabled, .flight-dates-direct button:disabled {
+  color: var(--text-secondary);
+  cursor: not-allowed;
+}
+.flight-dates-note, .flight-dates-reference, .flight-dates-flight small {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;
+}
+.flight-dates-notice { font-size: 14px; line-height: 1.6; padding-block: 12px; border-block: 1px solid var(--rule); }
+.flight-dates-month { margin-block: 12px; }
+.flight-dates-month button { min-width: 40px; }
+.flight-dates-query { width: 100%; }
+.flight-dates-query:not(:disabled), .flight-dates-actions button:first-child {
+  background: var(--accent);
+  color: var(--bg-page);
+}
+.flight-dates-legend { display: flex; flex-wrap: wrap; gap: 8px; font-size: 12px; margin-block: 12px; }
+.flight-dates-legend [data-state="scheduled"] { color: var(--accent); font-weight: 600; }
+.flight-dates-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.flight-dates-weekday { text-align: center; font-size: 12px; padding-block: 4px; }
+.flight-dates-grid button { padding: 8px 2px; min-height: 56px; color: var(--text-secondary); }
+.flight-dates-grid button strong, .flight-dates-grid button small { display: block; }
+.flight-dates-grid button small { font-size: 10px; overflow-wrap: anywhere; }
+.flight-dates-grid button[data-state="scheduled"] { color: var(--accent); border-color: var(--accent); }
+.flight-dates-grid button[aria-pressed="true"] { outline: 2px solid var(--accent); outline-offset: 1px; }
+.flight-dates-results { margin-top: 16px; border-top: 1px solid var(--rule); padding-top: 12px; }
+.flight-dates-results h4 { margin: 0 0 8px; }
+.flight-dates-flight { padding-block: 12px; border-top: 1px solid var(--rule); }
+.flight-dates-flight p { font-size: 14px; margin-block: 8px; }
+.flight-dates-actions { margin-top: 8px; flex-wrap: wrap; font-size: 13px; }
+.flight-dates-reference { margin-top: 16px; border-top: 1px solid var(--rule); padding-top: 12px; }
+.flight-dates-direct { flex-wrap: wrap; padding-block: 12px; border-block: 1px solid var(--rule); }
+.flight-dates-direct label { display: grid; gap: 4px; font-size: 12px; flex: 1; }
+.flight-dates-direct input { min-height: 40px; width: 100%; min-width: 80px; padding: 8px; border: 1px solid var(--rule); border-radius: 4px; background: var(--bg-page); color: var(--text-primary); }
+.flight-dates-open { font-size: 13px; text-align: left; }
+.rtw-query-leg-schedule { display: block; font-size: 12px; margin-top: 4px; }
+.rtw-flight-reference { display: block; font-size: 12px; color: var(--text-secondary); }

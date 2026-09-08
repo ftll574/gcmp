@@ -1,20 +1,21 @@
 /**
- * Leg chain: draggable chips showing each airport in the routing, with a
- * per-leg operating-carrier dropdown and per-leg fare-class chip.
- *
- *   [SFO ✈ AA J] [NRT ✈ JL D] [BKK ✈ CX I] [HKG]
- *               ↑drag handle    ↑× removes the airport
- *
- * The carrier + fare-class badges appear on EVERY chip except the last
- * one. Fare-class is a single letter A-Z; when set, the engine looks up
- * the carrier's exact bucket (CX I=25%, CX J=150%, etc.). When unset
- * (default), the engine falls back to the carrier's
- * defaultLetterByCabin[cabin] — i.e., v1.5+ behavior is opt-in.
+ * Route chain rendered one PHYSICAL LEG per row. The airport pair is the
+ * primary object (TPE → CNX); flight/cabin/timing are secondary metadata for
+ * that row rather than a control inserted between two airport rows.
  */
 
 import { useState } from 'react';
 import { useLocale } from '../i18n/use-locale.ts';
-import type { Airline, AirlineIata, Airport, Iata } from '../lib/types.ts';
+import {
+  isFlightLeg,
+  isSurfaceLeg,
+  type Airline,
+  type AirlineIata,
+  type Airport,
+  type CabinId,
+  type Iata,
+  type Leg,
+} from '../lib/types.ts';
 
 /**
  * Fare-class letters offered in the picker. Grouped by likely cabin in
@@ -31,19 +32,14 @@ const FARE_CLASS_GROUPS: ReadonlyArray<{ label: string; letters: ReadonlyArray<s
 interface Props {
   /** Airports in the chain, in order. */
   airports: ReadonlyArray<Airport>;
-  /** Operating carriers per leg. Length = airports.length - 1. */
-  operatingCarriers: ReadonlyArray<AirlineIata>;
-  /** Per-leg explicit fare-class override. undefined = use cabin default. */
-  fareClasses: ReadonlyArray<string | undefined>;
-  /** Per-leg stopover marker. undefined = timing unknown. */
-  stopovers: ReadonlyArray<boolean | undefined>;
-  /** Per-leg surface/open-jaw marker. */
-  surfaces: ReadonlyArray<boolean | undefined>;
+  /** Canonical per-segment model. Surface legs contain no flight metadata. */
+  legs: ReadonlyArray<Leg>;
   /** Pool of carriers for the badge dropdown. */
   airlines: ReadonlyArray<Airline>;
-  onReorder: (newOrder: ReadonlyArray<Iata>) => void;
+  onReorder: (airportOccurrenceOrder: ReadonlyArray<number>) => void;
   onRemove: (iata: Iata, index: number) => void;
   onCarrierChange: (legIndex: number, carrier: AirlineIata) => void;
+  onCabinChange: (legIndex: number, cabin: CabinId | undefined) => void;
   /** Set undefined to clear the override (let cabin default apply). */
   onFareClassChange: (legIndex: number, fareClass: string | undefined) => void;
   onStopoverChange: (legIndex: number, stopover: boolean | undefined) => void;
@@ -52,14 +48,12 @@ interface Props {
 
 export function LegChain({
   airports,
-  operatingCarriers,
-  fareClasses,
-  stopovers,
-  surfaces,
+  legs,
   airlines,
   onReorder,
   onRemove,
   onCarrierChange,
+  onCabinChange,
   onFareClassChange,
   onStopoverChange,
   onSurfaceChange,
@@ -67,6 +61,7 @@ export function LegChain({
   const { t } = useLocale();
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [overIndex, setOverIndex] = useState<number | null>(null);
+  const [expandedLegIndex, setExpandedLegIndex] = useState<number | null>(null);
 
   function handleDragStart(i: number, e: React.DragEvent<HTMLLIElement>): void {
     setDragIndex(i);
@@ -79,12 +74,13 @@ export function LegChain({
   }
   function handleDrop(i: number, e: React.DragEvent<HTMLLIElement>): void {
     e.preventDefault();
-    const from = Number(e.dataTransfer.getData('text/plain'));
-    if (Number.isFinite(from) && from !== i) {
-      const next = airports.slice();
+    const raw = e.dataTransfer.getData('text/plain');
+    const from = Number(raw);
+    if (raw !== '' && Number.isInteger(from) && from >= 0 && from < airports.length && from !== i) {
+      const next = airports.map((_, index) => index);
       const [moved] = next.splice(from, 1);
-      if (moved) next.splice(i, 0, moved);
-      onReorder(next.map((a) => a.iata));
+      if (moved !== undefined) next.splice(i, 0, moved);
+      onReorder(next);
     }
     setDragIndex(null);
     setOverIndex(null);
@@ -94,14 +90,52 @@ export function LegChain({
     setOverIndex(null);
   }
 
+  if (airports.length === 1) {
+    const airport = airports[0]!;
+    return (
+      <ol className="leg-chain" aria-label="Routing legs">
+        <li className="leg-chip leg-chip-start" data-route-start={airport.iata}>
+          <div className="leg-chip-route-line">
+            <span className="leg-chip-handle is-placeholder" aria-hidden="true">⋮⋮</span>
+            <span className="leg-chip-route-airports">
+              <strong className="leg-chip-iata">{airport.iata}</strong>
+            </span>
+            <span className="leg-chip-city">{airport.city}</span>
+            <button
+              type="button"
+              className="leg-chip-remove"
+              aria-label={t('leg.remove', { iata: airport.iata })}
+              onClick={() => onRemove(airport.iata, 0)}
+            >
+              ×
+            </button>
+          </div>
+        </li>
+      </ol>
+    );
+  }
+
   return (
     <ol className="leg-chain" aria-label="Routing legs">
-      {airports.map((airport, i) => {
-        const isLast = i === airports.length - 1;
+      {airports.slice(0, -1).map((airport, i) => {
+        const toAirport = airports[i + 1]!;
         const legIndex = i;
-        const carrier = !isLast ? operatingCarriers[legIndex] : undefined;
+        const destinationIndex = i + 1;
+        const leg = legs[legIndex];
+        if (!leg) return null;
+        const flight = isFlightLeg(leg) ? leg : null;
+        const isSurface = isSurfaceLeg(leg);
+        const isManual = flight?.manual === true;
+        const isEditingLeg = expandedLegIndex === legIndex;
+        const timingSummary = leg.stopover === undefined
+          ? t('rtw.timing.unknownShort')
+          : leg.stopover
+            ? t('rtw.timing.stopover')
+            : t('rtw.timing.transfer');
         const klass = [
           'leg-chip',
+          isSurface ? 'is-surface' : '',
+          isManual ? 'is-manual' : '',
           dragIndex === i ? 'dragging' : '',
           overIndex === i ? 'drag-over' : '',
         ]
@@ -109,99 +143,158 @@ export function LegChain({
           .join(' ');
         return (
           <li
-            key={`${airport.iata}-${i}`}
+            key={`${airport.iata}-${toAirport.iata}-${i}`}
             className={klass}
+            data-leg-route={`${airport.iata}-${toAirport.iata}`}
             draggable
-            onDragStart={(e) => handleDragStart(i, e)}
-            onDragOver={(e) => handleDragOver(i, e)}
-            onDrop={(e) => handleDrop(i, e)}
+            onDragStart={(e) => handleDragStart(destinationIndex, e)}
+            onDragOver={(e) => handleDragOver(destinationIndex, e)}
+            onDrop={(e) => handleDrop(destinationIndex, e)}
             onDragEnd={handleDragEnd}
-            aria-label={t('leg.ariaLabel', {
-              n: i + 1,
-              total: airports.length,
-              from: airport.iata,
-              to: airport.city,
-            })}
+            aria-label={`${airport.iata} → ${toAirport.iata}`}
           >
-            <span className="leg-chip-handle" aria-hidden="true">⋮⋮</span>
-            <span className="leg-chip-iata">{airport.iata}</span>
-            <span className="leg-chip-city">{airport.city}</span>
-            <button
-              type="button"
-              className="leg-chip-remove"
-              aria-label={t('leg.remove', { iata: airport.iata })}
-              onClick={() => onRemove(airport.iata, i)}
-            >
-              ×
-            </button>
-            {!isLast && carrier !== undefined && (
-              <span className="leg-chip-carrier-wrap">
-                <span className="leg-chip-arrow" aria-hidden="true">→</span>
-                <select
-                  className="leg-chip-carrier"
-                  value={carrier}
-                  onChange={(e) => onCarrierChange(legIndex, e.target.value.toUpperCase())}
-                  aria-label={t('leg.carrierLabel', { n: legIndex + 1 })}
-                >
-                  {airlines.map((al) => (
-                    <option key={al.iata} value={al.iata}>
-                      {al.iata}
-                    </option>
-                  ))}
-                </select>
-                <select
-                  className={`leg-chip-fareclass${fareClasses[legIndex] ? ' has-override' : ''}`}
-                  value={fareClasses[legIndex] ?? ''}
-                  onChange={(e) => {
-                    const v = e.target.value;
-                    onFareClassChange(legIndex, v === '' ? undefined : v);
-                  }}
-                  aria-label={t('leg.fareClassLabel', { n: legIndex + 1 })}
-                  title={t('leg.fareClassTitle')}
-                >
-                  <option value="">{t('leg.fareClassAuto')}</option>
-                  {FARE_CLASS_GROUPS.map((g) => (
-                    <optgroup key={g.label} label={g.label}>
-                      {g.letters.map((letter) => (
-                        <option key={letter} value={letter}>
-                          {letter}
-                        </option>
-                      ))}
-                    </optgroup>
-                  ))}
-                </select>
-                <select
-                  className={`leg-chip-stopover${stopovers[legIndex] !== undefined ? ' is-set' : ''}`}
-                  value={
-                    stopovers[legIndex] === undefined
-                      ? ''
-                      : stopovers[legIndex]
-                        ? 'stopover'
-                        : 'transfer'
-                  }
-                  onChange={(e) => {
-                    const v = e.target.value;
-                    onStopoverChange(legIndex, v === '' ? undefined : v === 'stopover');
-                  }}
-                  aria-label={t('rtw.legChip.stopoverLabel', { n: legIndex + 1 })}
-                  title={t('rtw.legChip.stopoverTitle')}
-                >
-                  <option value="">{t('rtw.timing.unknownShort')}</option>
-                  <option value="transfer">{t('rtw.timing.transfer')}</option>
-                  <option value="stopover">{t('rtw.timing.stopover')}</option>
-                </select>
-                <label
-                  className={`leg-chip-surface${surfaces[legIndex] === true ? ' is-surface' : ''}`}
-                  title={t('rtw.legChip.surfaceTitle')}
-                >
-                  <input
-                    type="checkbox"
-                    checked={surfaces[legIndex] === true}
-                    onChange={(e) => onSurfaceChange(legIndex, e.target.checked)}
-                  />
-                  {t('rtw.timing.surface')}
-                </label>
+            <div className="leg-chip-route-line">
+              <span className="leg-chip-handle" aria-hidden="true">⋮⋮</span>
+              <span className="leg-chip-route-airports">
+                <strong className="leg-chip-iata">{airport.iata}</strong>
+                <span className="leg-chip-route-arrow" aria-hidden="true">{isSurface ? '⇢' : '→'}</span>
+                <strong className="leg-chip-iata">{toAirport.iata}</strong>
+                {isManual && <span className="leg-chip-unverified" data-leg-manual>{t('rtw.legChip.unverifiedRoute')}</span>}
               </span>
+              <span className="leg-chip-city">{airport.city} → {toAirport.city}</span>
+              <span className="leg-chip-route-actions">
+                {i === 0 && (
+                  <button
+                    type="button"
+                    className="leg-chip-remove leg-chip-remove-origin"
+                    aria-label={t('leg.remove', { iata: airport.iata })}
+                    onClick={() => onRemove(airport.iata, i)}
+                  >
+                    ×
+                  </button>
+                )}
+                <button
+                  type="button"
+                  className="leg-chip-remove leg-chip-remove-destination"
+                  aria-label={t('leg.remove', { iata: toAirport.iata })}
+                  onClick={() => onRemove(toAirport.iata, destinationIndex)}
+                >
+                  ×
+                </button>
+              </span>
+            </div>
+            {(
+              <>
+                <button
+                  type="button"
+                  className={`leg-chip-summary${isEditingLeg ? ' is-open' : ''}`}
+                  aria-expanded={isEditingLeg}
+                  aria-label={t('rtw.workflow.editLeg', { n: legIndex + 1 })}
+                  onPointerDown={(event) => event.stopPropagation()}
+                  onClick={() => setExpandedLegIndex(isEditingLeg ? null : legIndex)}
+                >
+                  <span className="leg-chip-summary-main">
+                    <strong>{flight ? `${flight.operatingCarrier}${flight.flightNumber ?? ''}` : t('rtw.timing.surface')}</strong>
+                  </span>
+                  <span className="leg-chip-summary-meta">
+                    {flight
+                      ? `${flight.cabin ? t(`cabin.${flight.cabin === 'premium-economy' ? 'premiumEconomyShort' : `${flight.cabin}Short`}`) : t('rtw.legChip.cabinUnset')} · ${timingSummary}${flight.fareClass ? ` · ${flight.fareClass}` : ''}`
+                      : timingSummary}
+                  </span>
+                  <span className="leg-chip-summary-toggle" aria-hidden="true">{isEditingLeg ? '−' : '+'}</span>
+                </button>
+                <span className={`leg-chip-carrier-wrap${isEditingLeg ? ' is-open' : ''}`}>
+                  <span className="leg-chip-arrow" aria-hidden="true">→</span>
+                  {flight && <select
+                    className="leg-chip-carrier"
+                    value={flight.operatingCarrier}
+                    onChange={(e) => onCarrierChange(legIndex, e.target.value.toUpperCase())}
+                    aria-label={t('leg.carrierLabel', { n: legIndex + 1 })}
+                    aria-invalid={!airlines.some((airline) => airline.iata === flight.operatingCarrier)}
+                  >
+                    {!airlines.some((airline) => airline.iata === flight.operatingCarrier) && (
+                      <option value={flight.operatingCarrier}>{flight.operatingCarrier} · {t('rtw.integrity.ineligibleCarrier')}</option>
+                    )}
+                    {airlines.map((al) => (
+                      <option key={al.iata} value={al.iata}>
+                        {al.iata}
+                      </option>
+                    ))}
+                  </select>}
+                  {flight?.flightNumber && (
+                    <span className="leg-chip-flight-number" data-flight-number={`${flight.operatingCarrier}${flight.flightNumber}`}>
+                      {flight.operatingCarrier}{flight.flightNumber}
+                    </span>
+                  )}
+                  {flight && <select
+                    className={`leg-chip-cabin${flight.cabin ? ' is-set' : ''}`}
+                    value={flight.cabin ?? ''}
+                    onChange={(event) => {
+                      const value = event.target.value as CabinId | '';
+                      onCabinChange(legIndex, value === '' ? undefined : value);
+                    }}
+                    aria-label={t('rtw.legChip.cabinLabel', { n: legIndex + 1 })}
+                  >
+                    <option value="">{t('rtw.legChip.cabinUnset')}</option>
+                    <option value="economy">{t('cabin.economy')}</option>
+                    <option value="premium-economy">{t('cabin.premiumEconomy')}</option>
+                    <option value="business">{t('cabin.business')}</option>
+                    <option value="first">{t('cabin.first')}</option>
+                  </select>}
+                  {flight?.fareClass !== undefined && <select
+                    className={`leg-chip-fareclass${flight.fareClass ? ' has-override' : ''}`}
+                    value={flight.fareClass ?? ''}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      onFareClassChange(legIndex, v === '' ? undefined : v);
+                    }}
+                    aria-label={t('leg.fareClassLabel', { n: legIndex + 1 })}
+                    title={t('rtw.integrity.legacyBookingCode')}
+                  >
+                    <option value="">{t('leg.fareClassAuto')}</option>
+                    {FARE_CLASS_GROUPS.map((g) => (
+                      <optgroup key={g.label} label={g.label}>
+                        {g.letters.map((letter) => (
+                          <option key={letter} value={letter}>
+                            {letter}
+                          </option>
+                        ))}
+                      </optgroup>
+                    ))}
+                  </select>}
+                  <select
+                    className={`leg-chip-stopover${leg.stopover !== undefined ? ' is-set' : ''}`}
+                    value={
+                      leg.stopover === undefined
+                        ? ''
+                        : leg.stopover
+                          ? 'stopover'
+                          : 'transfer'
+                    }
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      onStopoverChange(legIndex, v === '' ? undefined : v === 'stopover');
+                    }}
+                    aria-label={t('rtw.legChip.stopoverLabel', { n: legIndex + 1 })}
+                    title={t('rtw.legChip.stopoverTitle')}
+                  >
+                    <option value="">{t('rtw.timing.unknownShort')}</option>
+                    <option value="transfer">{t('rtw.timing.transfer')}</option>
+                    <option value="stopover">{t('rtw.timing.stopover')}</option>
+                  </select>
+                  <label
+                    className={`leg-chip-surface${isSurface ? ' is-surface' : ''}`}
+                    title={t('rtw.legChip.surfaceTitle')}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={isSurface}
+                      onChange={(e) => onSurfaceChange(legIndex, e.target.checked)}
+                    />
+                    {t('rtw.timing.surface')}
+                  </label>
+                </span>
+              </>
             )}
           </li>
         );

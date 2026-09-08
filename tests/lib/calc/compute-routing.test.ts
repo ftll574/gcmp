@@ -120,7 +120,7 @@ describe('computeRouting (single-group)', () => {
 
   test('surface sector keeps distance but earns zero miles', () => {
     const req: RoutingRequest = {
-      groups: [{ legs: [{ from: 'SFO', to: 'NRT', operatingCarrier: 'AA', surface: true }] }],
+      groups: [{ legs: [{ from: 'SFO', to: 'NRT', surface: true }] }],
       cabin: 'business',
       programs: ['aa-aadvantage'],
     };

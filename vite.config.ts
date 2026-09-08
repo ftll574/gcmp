@@ -20,6 +20,9 @@ export default defineConfig({
     target: 'es2022',
   },
   server: {
+    proxy: {
+      '/api/schedules': { target: 'http://127.0.0.1:8787' },
+    },
     watch: {
       // Atomic-save tools create+delete `<name>.<uuid>.tmpdir/<file>.tmp`
       // siblings next to real sources; chokidar's Windows watcher exits

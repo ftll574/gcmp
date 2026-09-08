@@ -36,7 +36,7 @@ const networkGaps = NetworkGapCatalogSchema.parse(
 const airports = new Map<string, Airport>(
   [
     { iata: 'TPE', name: 'Taipei Taoyuan', city: 'Taipei', country: 'TW', lat: 25.0797, lon: 121.2342 },
-    { iata: 'NRT', name: 'Narita', city: 'Tokyo', country: 'JP', lat: 35.772, lon: 140.3929 },
+    { iata: 'NRT', name: 'Narita', city: 'Narita', country: 'JP', lat: 35.772, lon: 140.3929 },
     { iata: 'LAX', name: 'Los Angeles', city: 'Los Angeles', country: 'US', lat: 33.9425, lon: -118.4081 },
     { iata: 'JFK', name: 'John F. Kennedy', city: 'New York', country: 'US', lat: 40.6413, lon: -73.7781 },
     { iata: 'LHR', name: 'Heathrow', city: 'London', country: 'GB', lat: 51.47, lon: -0.4543 },
@@ -56,6 +56,12 @@ const airports = new Map<string, Airport>(
     { iata: 'HND', name: 'Haneda', city: 'Tokyo', country: 'JP', lat: 35.5533, lon: 139.7811 },
     // Network-gap watchlist tests (calibration Case 5 root cause)
     { iata: 'GUM', name: 'Antonio B. Won Pat Intl', city: 'Tamuning', country: 'US', lat: 13.4843, lon: 144.7977 },
+    // Product-specific RTW direction / country-rule fixtures.
+    { iata: 'ICN', name: 'Incheon', city: 'Seoul', country: 'KR', lat: 37.4602, lon: 126.4407 },
+    { iata: 'PEK', name: 'Beijing Capital', city: 'Beijing', country: 'CN', lat: 40.0799, lon: 116.6031 },
+    { iata: 'IST', name: 'Istanbul', city: 'Istanbul', country: 'TR', lat: 41.2753, lon: 28.7519 },
+    { iata: 'TAS', name: 'Tashkent', city: 'Tashkent', country: 'UZ', lat: 41.2579, lon: 69.2812 },
+    { iata: 'SFO', name: 'San Francisco', city: 'San Francisco', country: 'US', lat: 37.6213, lon: -122.379 },
   ].map((airport) => [airport.iata, airport]),
 );
 
@@ -84,6 +90,36 @@ function validateWithDates(
 }
 
 describe('validateRtwRoute', () => {
+  test('manual flight provenance stays usable but emits a persistent route-evidence warning', () => {
+    const result = validate('oneworld-explorer', [
+      { from: 'NRT', to: 'LAX', operatingCarrier: 'JL', manual: true },
+      { from: 'LAX', to: 'JFK', operatingCarrier: 'AA' },
+      { from: 'JFK', to: 'LHR', operatingCarrier: 'BA' },
+      { from: 'LHR', to: 'HND', operatingCarrier: 'BA' },
+    ]);
+    const finding = result.findings.find((item) => item.ruleId === 'manual-route-evidence');
+    expect(finding).toMatchObject({
+      severity: 'warning',
+      affectedLegIndexes: [0],
+      messageKey: 'rtw.findings.manualRouteEvidence',
+    });
+    expect(result.valid).toBe(true);
+  });
+
+  test('same-city start/end treats NRT and HND as Tokyo via TYO, not their municipality strings', () => {
+    const legs: Leg[] = [
+      { from: 'NRT', to: 'LAX', operatingCarrier: 'JL' },
+      { from: 'LAX', to: 'JFK', operatingCarrier: 'AA' },
+      { from: 'JFK', to: 'LHR', operatingCarrier: 'BA' },
+      { from: 'LHR', to: 'HND', operatingCarrier: 'BA' },
+    ];
+
+    const result = validate('oneworld-explorer', legs);
+    expect(result.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({ ruleId: 'start-end', severity: 'pass' }),
+    ]));
+  });
+
   test('passes a structurally basic oneworld Explorer route using oneworld carriers', () => {
     const legs: Leg[] = [
       { from: 'TPE', to: 'NRT', operatingCarrier: 'JL' },
@@ -250,7 +286,7 @@ describe('validateRtwRoute', () => {
       { from: 'TPE', to: 'SIN', operatingCarrier: 'SQ', stopover: true },
       { from: 'SIN', to: 'LHR', operatingCarrier: 'SQ', stopover: true },
       { from: 'LHR', to: 'JFK', operatingCarrier: 'UA', stopover: false },
-      { from: 'JFK', to: 'LAX', operatingCarrier: 'ZZ', surface: true, stopover: false },
+      { from: 'JFK', to: 'LAX', surface: true, stopover: false },
       { from: 'LAX', to: 'TPE', operatingCarrier: 'UA', stopover: false },
     ];
 
@@ -356,7 +392,7 @@ describe('validateRtwRoute', () => {
     const legs: Leg[] = [
       { from: 'TPE', to: 'HKG', operatingCarrier: 'CX', stopover: true },
       { from: 'HKG', to: 'LHR', operatingCarrier: 'BA', stopover: true },
-      { from: 'LHR', to: 'LGW', operatingCarrier: 'BA', surface: true, stopover: false },
+      { from: 'LHR', to: 'LGW', surface: true, stopover: false },
       { from: 'LGW', to: 'JFK', operatingCarrier: 'BA', stopover: true },
       { from: 'JFK', to: 'LHR', operatingCarrier: 'AA', stopover: false },
       { from: 'LHR', to: 'TPE', operatingCarrier: 'CX', stopover: false },
@@ -378,7 +414,7 @@ describe('validateRtwRoute', () => {
     // sit exactly AT the cap and must stay green.
     const legs: Leg[] = [
       { from: 'TPE', to: 'NRT', operatingCarrier: 'JL', stopover: false },
-      { from: 'NRT', to: 'HND', operatingCarrier: 'ZZ', surface: true, stopover: false },
+      { from: 'NRT', to: 'HND', surface: true, stopover: false },
       { from: 'HND', to: 'LAX', operatingCarrier: 'AA', stopover: true },
       { from: 'LAX', to: 'TPE', operatingCarrier: 'CX', stopover: false },
     ];
@@ -401,8 +437,8 @@ describe('validateRtwRoute', () => {
   test('fails Qantas Classic Flight Reward when one city call exceeds two transfers', () => {
     const legs: Leg[] = [
       { from: 'TPE', to: 'NRT', operatingCarrier: 'JL', stopover: false },
-      { from: 'NRT', to: 'HND', operatingCarrier: 'ZZ', surface: true, stopover: false },
-      { from: 'HND', to: 'NRT', operatingCarrier: 'ZZ', surface: true, stopover: false },
+      { from: 'NRT', to: 'HND', surface: true, stopover: false },
+      { from: 'HND', to: 'NRT', surface: true, stopover: false },
       { from: 'NRT', to: 'HKG', operatingCarrier: 'CX', stopover: false },
       { from: 'HKG', to: 'TPE', operatingCarrier: 'CX', stopover: false },
     ];
@@ -425,7 +461,7 @@ describe('validateRtwRoute', () => {
   test('stopover-marked arrivals do not count toward transfers-per-city', () => {
     const legs: Leg[] = [
       { from: 'TPE', to: 'HND', operatingCarrier: 'JL', stopover: true },
-      { from: 'HND', to: 'NRT', operatingCarrier: 'ZZ', surface: true, stopover: false },
+      { from: 'HND', to: 'NRT', surface: true, stopover: false },
       { from: 'NRT', to: 'HKG', operatingCarrier: 'CX', stopover: false },
       { from: 'HKG', to: 'TPE', operatingCarrier: 'CX', stopover: false },
     ];
@@ -447,7 +483,7 @@ describe('validateRtwRoute', () => {
     // whereas whole-itinerary accumulation would wrongly fail at three.
     const legs: Leg[] = [
       { from: 'TPE', to: 'NRT', operatingCarrier: 'JL', stopover: false },
-      { from: 'NRT', to: 'HND', operatingCarrier: 'ZZ', surface: true, stopover: false },
+      { from: 'NRT', to: 'HND', surface: true, stopover: false },
       { from: 'HND', to: 'SIN', operatingCarrier: 'CX', stopover: false },
       { from: 'SIN', to: 'NRT', operatingCarrier: 'CX', stopover: false },
       { from: 'NRT', to: 'TPE', operatingCarrier: 'CX', stopover: false },
@@ -470,8 +506,8 @@ describe('validateRtwRoute', () => {
     // legs whose timing metadata is still unknown.
     const legs: Leg[] = [
       { from: 'TPE', to: 'NRT', operatingCarrier: 'JL' },
-      { from: 'NRT', to: 'HND', operatingCarrier: 'ZZ', surface: true },
-      { from: 'HND', to: 'NRT', operatingCarrier: 'ZZ', surface: true },
+      { from: 'NRT', to: 'HND', surface: true },
+      { from: 'HND', to: 'NRT', surface: true },
       { from: 'NRT', to: 'HKG', operatingCarrier: 'CX' },
       { from: 'HKG', to: 'TPE', operatingCarrier: 'CX' },
     ];
@@ -532,6 +568,166 @@ describe('validateRtwRoute', () => {
         expect.objectContaining({ ruleId: 'trip-duration', severity: 'pass' }),
       ]),
     );
+  });
+});
+
+describe('validateRtwRoute · airline-specific RTW primitives', () => {
+  test('JAL fails when the itinerary returns to the origin country and then continues abroad', () => {
+    const legs: Leg[] = [
+      { from: 'LAX', to: 'LHR', operatingCarrier: 'BA', stopover: false },
+      { from: 'LHR', to: 'JFK', operatingCarrier: 'AA', stopover: false },
+      { from: 'JFK', to: 'HKG', operatingCarrier: 'CX', stopover: false },
+    ];
+
+    const result = validate('jal-oneworld-award-ticket', legs);
+    expect(result.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({ ruleId: 'origin-country-terminal', severity: 'fail' }),
+    ]));
+  });
+
+  test('JAL enforces the Japan-origin no-stopover rule and the three-visits-per-city cap', () => {
+    const japanOrigin: Leg[] = [
+      { from: 'NRT', to: 'HKG', operatingCarrier: 'JL', stopover: false },
+      { from: 'HKG', to: 'HND', operatingCarrier: 'CX', stopover: true },
+      { from: 'HND', to: 'LHR', operatingCarrier: 'BA', stopover: false },
+    ];
+    const stopoverResult = validate('jal-oneworld-award-ticket', japanOrigin);
+    expect(stopoverResult.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({ ruleId: 'origin-country-stopover', severity: 'fail' }),
+    ]));
+
+    const tooManyTokyoVisits: Leg[] = [
+      { from: 'TPE', to: 'NRT', operatingCarrier: 'JL', stopover: false },
+      { from: 'NRT', to: 'HKG', operatingCarrier: 'CX', stopover: false },
+      { from: 'HKG', to: 'HND', operatingCarrier: 'CX', stopover: false },
+      { from: 'HND', to: 'LHR', operatingCarrier: 'BA', stopover: false },
+      { from: 'LHR', to: 'NRT', operatingCarrier: 'BA', stopover: false },
+      { from: 'NRT', to: 'JFK', operatingCarrier: 'JL', stopover: false },
+      { from: 'JFK', to: 'HND', operatingCarrier: 'JL', stopover: false },
+      { from: 'HND', to: 'TPE', operatingCarrier: 'JL', stopover: false },
+    ];
+    const visitResult = validate('jal-oneworld-award-ticket', tooManyTokyoVisits);
+    expect(visitResult.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({ ruleId: 'visits-per-city', severity: 'fail' }),
+    ]));
+  });
+
+  test('JAL counts a surface sector as a stopover and blocks onward travel after returning to the origin city', () => {
+    const surface: Leg[] = [
+      { from: 'TPE', to: 'NRT', operatingCarrier: 'JL', stopover: false },
+      { from: 'NRT', to: 'HND', surface: true, stopover: false },
+      { from: 'HND', to: 'HKG', operatingCarrier: 'CX', stopover: false },
+    ];
+    const surfaceResult = validate('jal-oneworld-award-ticket', surface);
+    expect(surfaceResult.summary.knownStopovers).toBe(1);
+
+    const originCityReturn: Leg[] = [
+      { from: 'LAX', to: 'LHR', operatingCarrier: 'BA', stopover: false },
+      { from: 'LHR', to: 'LAX', operatingCarrier: 'AA', stopover: false },
+      { from: 'LAX', to: 'JFK', operatingCarrier: 'AA', stopover: false },
+    ];
+    const cityResult = validate('jal-oneworld-award-ticket', originCityReturn);
+    expect(cityResult.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({ ruleId: 'origin-city-terminal', severity: 'fail' }),
+    ]));
+  });
+
+  test('Thai enforces country/origin/open-jaw hard limits but treats backtracking as manual review', () => {
+    const countryCap: Leg[] = [
+      { from: 'TPE', to: 'LAX', operatingCarrier: 'UA', stopover: true },
+      { from: 'LAX', to: 'JFK', operatingCarrier: 'UA', stopover: true },
+      { from: 'JFK', to: 'SFO', operatingCarrier: 'UA', stopover: true },
+      { from: 'SFO', to: 'LHR', operatingCarrier: 'UA', stopover: true },
+      { from: 'LHR', to: 'TPE', operatingCarrier: 'BR', stopover: false },
+    ];
+    const countryResult = validateRtwRoute(
+      product('thai-royal-orchid-plus-star-rtw-award'),
+      countryCap,
+      { airports, allianceCatalog },
+      { startDate: '2026-09-01', endDate: '2026-09-20' },
+    );
+    expect(countryResult.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({ ruleId: 'stopovers-per-country', severity: 'fail' }),
+      expect.objectContaining({ ruleId: 'direction', severity: 'warning' }),
+    ]));
+
+    const originStopover: Leg[] = [
+      { from: 'TPE', to: 'SIN', operatingCarrier: 'SQ', stopover: true },
+      { from: 'SIN', to: 'TPE', operatingCarrier: 'BR', stopover: true },
+      { from: 'TPE', to: 'LHR', operatingCarrier: 'LH', stopover: true },
+      { from: 'LHR', to: 'TPE', operatingCarrier: 'LH', stopover: false },
+    ];
+    const originResult = validate('thai-royal-orchid-plus-star-rtw-award', originStopover);
+    expect(originResult.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({ ruleId: 'origin-country-stopover', severity: 'fail' }),
+    ]));
+
+    const twoOpenJaws: Leg[] = [
+      { from: 'TPE', to: 'SIN', operatingCarrier: 'SQ', stopover: true },
+      { from: 'SIN', to: 'BKK', surface: true, stopover: false },
+      { from: 'BKK', to: 'LHR', operatingCarrier: 'TG', stopover: true },
+      { from: 'LHR', to: 'JFK', surface: true, stopover: false },
+      { from: 'JFK', to: 'TPE', operatingCarrier: 'UA', stopover: true },
+    ];
+    const jawResult = validate('thai-royal-orchid-plus-star-rtw-award', twoOpenJaws);
+    expect(jawResult.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({ ruleId: 'open-jaws', severity: 'fail' }),
+    ]));
+  });
+
+  test('Asiana ignores same-IATA-area reversals while enforcing one direction between areas', () => {
+    const allowed: Leg[] = [
+      { from: 'ICN', to: 'PEK', operatingCarrier: 'OZ', stopover: false, departsOn: '2026-09-01' },
+      { from: 'PEK', to: 'NRT', operatingCarrier: 'OZ', stopover: false, departsOn: '2026-09-03' },
+      { from: 'NRT', to: 'LAX', operatingCarrier: 'UA', stopover: false, departsOn: '2026-09-05' },
+      { from: 'LAX', to: 'LHR', operatingCarrier: 'UA', stopover: false, departsOn: '2026-09-09' },
+      { from: 'LHR', to: 'ICN', operatingCarrier: 'LH', stopover: false, departsOn: '2026-09-14' },
+    ];
+    const allowedResult = validateRtwRoute(
+      product('asiana-club-star-alliance-rtw-award'),
+      allowed,
+      { airports, allianceCatalog, countryContinents },
+      { startDate: '2026-09-01', endDate: '2026-09-14' },
+    );
+    expect(allowedResult.summary.direction).toBe('eastbound');
+    expect(allowedResult.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({ ruleId: 'direction', severity: 'pass' }),
+      expect.objectContaining({ ruleId: 'ocean-crossings', severity: 'pass' }),
+      expect.objectContaining({ ruleId: 'product-travel-window', severity: 'pass' }),
+    ]));
+    expect(allowedResult.valid).toBe(true);
+
+    // Official Asiana example: Istanbul (Area 2) → Tashkent (Area 3) is a
+    // cross-area reversal and is not permitted after westbound Area 3→2.
+    const forbidden: Leg[] = [
+      { from: 'ICN', to: 'IST', operatingCarrier: 'TK', stopover: false },
+      { from: 'IST', to: 'TAS', operatingCarrier: 'TK', stopover: false },
+      { from: 'TAS', to: 'ICN', operatingCarrier: 'OZ', stopover: false },
+    ];
+    const forbiddenResult = validateRtwRoute(
+      product('asiana-club-star-alliance-rtw-award'),
+      forbidden,
+      { airports, allianceCatalog, countryContinents },
+      { startDate: '2026-09-01', endDate: '2026-09-15' },
+    );
+    expect(forbiddenResult.summary.direction).toBe('mixed');
+    expect(forbiddenResult.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({ ruleId: 'direction', severity: 'fail' }),
+    ]));
+
+    const afterCutoff = allowed.map((leg, index) => ({
+      ...leg,
+      departsOn: index === allowed.length - 1 ? '2026-12-17' : `2026-12-${String(index + 1).padStart(2, '0')}`,
+    }));
+    const cutoffResult = validateRtwRoute(
+      product('asiana-club-star-alliance-rtw-award'),
+      afterCutoff,
+      { airports, allianceCatalog, countryContinents },
+      { startDate: '2026-12-01', endDate: '2026-12-17' },
+    );
+    expect(cutoffResult.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({ ruleId: 'product-travel-window', severity: 'fail' }),
+    ]));
   });
 });
 
@@ -732,7 +928,7 @@ describe('validateRtwRoute · summary.continentsVisited', () => {
   });
 
   test('surface sector endpoints count as visited while contributing no ocean crossing', () => {
-    const legs: Leg[] = [{ from: 'LHR', to: 'JFK', operatingCarrier: 'BA', surface: true }];
+    const legs: Leg[] = [{ from: 'LHR', to: 'JFK', surface: true }];
     const result = validateWithGeo('oneworld-explorer', legs);
 
     expect(result.summary.continentsVisited).toEqual(['europe', 'north-america']);
@@ -759,10 +955,10 @@ describe('validateRtwRoute · summary.continentsVisited', () => {
       { from: 'ADL', to: 'PER', operatingCarrier: 'QF', stopover: false },
       { from: 'PER', to: 'KUL', operatingCarrier: 'MH', stopover: false },
       { from: 'KUL', to: 'CDG', operatingCarrier: 'MH', stopover: false },
-      { from: 'CDG', to: 'MXP', operatingCarrier: 'ZZ', surface: true, stopover: false },
+      { from: 'CDG', to: 'MXP', surface: true, stopover: false },
       { from: 'MXP', to: 'HEL', operatingCarrier: 'AY', stopover: false },
       { from: 'HEL', to: 'HND', operatingCarrier: 'AY', stopover: false },
-      { from: 'HND', to: 'NRT', operatingCarrier: 'ZZ', surface: true, stopover: false },
+      { from: 'HND', to: 'NRT', surface: true, stopover: false },
       { from: 'NRT', to: 'HKG', operatingCarrier: 'JL', stopover: false },
       { from: 'HKG', to: 'KUL', operatingCarrier: 'MH', stopover: false },
       { from: 'KUL', to: 'PER', operatingCarrier: 'MH', stopover: false },
@@ -921,7 +1117,7 @@ describe('validateRtwRoute — network-gap watchlist warnings', () => {
 
   test('surface sectors never match the watchlist', () => {
     const result = validateWithGaps(
-      [{ from: 'TPE', to: 'GUM', operatingCarrier: 'BR', surface: true, stopover: false }],
+      [{ from: 'TPE', to: 'GUM', surface: true, stopover: false }],
       [openGap],
       { startDate: '2026-09-01', endDate: '2026-09-11' },
     );
@@ -1082,10 +1278,10 @@ describe('trip-dates-mismatch cross-check (flight-schedule-model S2)', () => {
   });
 
   test('surface sectors never anchor a boundary; undated boundaries stay silent', () => {
-    // The surface leg carries a stray date that matches NEITHER trip date;
-    // the only flight leg (first AND last) agrees with both boundaries.
+    // Surface legs cannot carry a departure date. The only flight leg (first
+    // AND last) agrees with both trip boundaries.
     const legs: Leg[] = [
-      { from: 'TPE', to: 'NRT', operatingCarrier: 'JL', surface: true, stopover: false, departsOn: '2026-08-30' },
+      { from: 'TPE', to: 'NRT', surface: true, stopover: false },
       { from: 'NRT', to: 'LAX', operatingCarrier: 'JL', stopover: false, departsOn: '2026-09-11' },
     ];
 
@@ -1216,9 +1412,9 @@ describe('schedule-day-mismatch (flight-schedule-model S4)', () => {
     expect(dayMismatchFindings(result)).toEqual([]);
   });
 
-  test('surface sectors are skipped even when dated off-schedule', () => {
+  test('surface sectors are excluded from schedule-day validation', () => {
     const legs: Leg[] = [
-      { from: 'TPE', to: 'NRT', operatingCarrier: 'BR', surface: true, stopover: false, departsOn: '2026-09-08' },
+      { from: 'TPE', to: 'NRT', surface: true, stopover: false },
     ];
     const result = validateRtwRoute(product('oneworld-explorer'), legs, {
       airports,

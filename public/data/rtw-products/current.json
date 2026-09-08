@@ -1,6 +1,6 @@
 {
   "version": "2026.2",
-  "lastVerified": "2026-05-23",
+  "lastVerified": "2026-09-07",
   "products": [
     {
       "id": "br-infinity-star-alliance-world-travel-award",
@@ -44,7 +44,7 @@
       "version": "2026.2",
       "status": "active",
       "sourceUrls": [
-        "https://www.cathaypacific.com/content/dam/focal-point/cx/membership/programme-update/Cathay-membership-programme-terms-and-conditions-2026-EN.pdf"
+        "https://www.cathaypacific.com/cx/en_TW/legal-and-privacy/cathay-membership-terms-and-conditions.html?switch=Y"
       ],
       "limits": {
         "maxStopovers": 5,
@@ -236,6 +236,1031 @@
         "alliance": "skyteam",
         "includeAffiliates": false
       }
+    },
+    {
+      "id": "iberia-club-oneworld-multi-carrier-award",
+      "label": "Iberia Club oneworld Multi-carrier Award",
+      "kind": "multi-carrier-award",
+      "owner": "airline",
+      "airline": "IB",
+      "alliance": "oneworld",
+      "version": "2026.2",
+      "status": "active",
+      "bookingStatusNote": "Iberia Club permits an Avios award using Iberia plus another oneworld airline, or two or more oneworld airlines excluding Iberia. The origin and final destination must be the same and the itinerary may contain up to eight flight coupons.",
+      "sourceUrls": [
+        "https://www.iberia.com/cn/zh/iberia-club/conditions/"
+      ],
+      "limits": {
+        "maxFlights": 8
+      },
+      "geography": {
+        "startEnd": "same-city",
+        "directionPolicy": "flexible",
+        "pricingBasis": "distance"
+      },
+      "airlineEligibility": {
+        "type": "alliance-members",
+        "alliance": "oneworld",
+        "includeAffiliates": false
+      },
+      "carrierCombination": {
+        "triggerCarrier": "IB",
+        "minCarriersWithoutTrigger": 2,
+        "minCarriersWithTrigger": 2
+      }
+    },
+    {
+      "id": "miles-more-star-alliance-world-award-flight",
+      "label": "Miles & More Star Alliance World Award Flight",
+      "kind": "award-rtw",
+      "owner": "airline",
+      "airline": "LH",
+      "alliance": "star",
+      "version": "2026.2",
+      "status": "active",
+      "bookingStatusNote": "Miles & More's World Award Flight is phone-only. It starts and ends in the same country, travels in one global direction, crosses both the Atlantic and Pacific, lasts at least 10 days and no more than 12 months, and allows up to 10 flight segments and 7 stopovers.",
+      "sourceUrls": [
+        "https://www.miles-and-more.com/at/en/program/flight-benefits/award-flights/world-award-flight.html",
+        "https://www.miles-and-more.com/at/en/earn/miles-and-more/partner/milesandmore/stories/info/promotional-offer/2510_editorial_around_the_world_trip.html"
+      ],
+      "limits": {
+        "maxFlights": 10,
+        "maxStopovers": 7,
+        "minTripDays": 10,
+        "maxTripMonths": 12
+      },
+      "geography": {
+        "startEnd": "same-country",
+        "directionPolicy": "east-or-west-continuous",
+        "requiresAtlanticCrossing": true,
+        "requiresPacificCrossing": true,
+        "oceanCrossingCount": "once"
+      },
+      "airlineEligibility": {
+        "type": "alliance-members",
+        "alliance": "star",
+        "includeAffiliates": false
+      }
+    },
+    {
+      "id": "jal-oneworld-award-ticket",
+      "label": "JAL Mileage Bank oneworld Award Ticket",
+      "kind": "multi-carrier-award",
+      "owner": "airline",
+      "airline": "JL",
+      "alliance": "oneworld",
+      "version": "2026.2",
+      "status": "active",
+      "bookingStatusNote": "JAL allows one-way oneworld Award Tickets. After returning to the point or country of origin the itinerary cannot continue onward; if travel originates in Japan, stopovers in Japan are not permitted.",
+      "surfaceSectorsCountAsStopovers": true,
+      "sourceUrls": [
+        "https://www.jal.co.jp/jp/en/jalmile/use/partner_air/oneworld/conditions.html"
+      ],
+      "limits": {
+        "maxFlights": 8,
+        "maxStopovers": 7,
+        "maxStopoversPerCity": 1,
+        "maxVisitsPerCity": 3,
+        "maxSurfaceSectors": 1
+      },
+      "geography": {
+        "startEnd": "open",
+        "directionPolicy": "flexible",
+        "originCountryTerminalOnly": true,
+        "originCityTerminalOnly": true,
+        "forbidOriginCountryStopoversWhenOriginIn": ["JP"],
+        "pricingBasis": "distance"
+      },
+      "surfaceDistancePolicy": "excluded-from-distance",
+      "airlineEligibility": {
+        "type": "alliance-members",
+        "alliance": "oneworld",
+        "includeAffiliates": false
+      },
+      "carrierCombination": {
+        "triggerCarrier": "JL",
+        "minCarriersWithoutTrigger": 2,
+        "minCarriersWithTrigger": 2
+      }
+    },
+    {
+      "id": "thai-royal-orchid-plus-star-rtw-award",
+      "label": "Thai Royal Orchid Plus Star Alliance Round-the-World Award",
+      "kind": "award-rtw",
+      "owner": "airline",
+      "airline": "TG",
+      "alliance": "star",
+      "version": "2026.2",
+      "status": "active",
+      "bookingStatusNote": "Backtracking is permitted only when required by the Star Alliance network. GCMP marks a mixed-direction route for manual review rather than automatically accepting or rejecting that exception. Operating carrier changes after ticketing are also restricted by Thai.",
+      "sourceUrls": [
+        "https://www.thaiairways.com/zh-tw/content/spend-miles/air-awards/",
+        "https://www.thaiairways.com/th-th/content/about-royal-orchid-plus/award-conditions/"
+      ],
+      "limits": {
+        "minStopovers": 3,
+        "maxStopovers": 10,
+        "maxStopoversPerCity": 1,
+        "maxStopoversPerCountry": 2,
+        "maxOpenJaws": 1,
+        "minTripDays": 10,
+        "maxTripMonths": 12
+      },
+      "geography": {
+        "startEnd": "same-country",
+        "directionPolicy": "network-required-backtracking",
+        "forbidOriginCountryStopovers": true
+      },
+      "airlineEligibility": {
+        "type": "alliance-members",
+        "alliance": "star",
+        "includeAffiliates": false
+      }
+    },
+    {
+      "id": "asiana-club-star-alliance-rtw-award",
+      "label": "Asiana Club Star Alliance Round the World Award",
+      "kind": "award-rtw",
+      "owner": "airline",
+      "airline": "OZ",
+      "alliance": "star",
+      "version": "2026.2",
+      "status": "active",
+      "bookingStatusNote": "Asiana is in its 2026 Star Alliance exit transition. GCMP rejects flight departures after the published 2026-12-16 travel-date cutoff and applies the IATA Area direction rule. The notice also requires travel completion before integration and lists carrier-specific ticketing deadlines, so recheck final arrival timing and ticketing before issue.",
+      "travelEffectiveUntil": "2026-12-16",
+      "sourceUrls": [
+        "https://flyasiana.com/C/GB/EN/contents/around-the-world-with-star-alliance",
+        "https://flyasiana.com/C/US/EN/customer/notice/detail?id=CM202606090002529359"
+      ],
+      "limits": {
+        "maxStopovers": 7,
+        "maxStopoversPerCountry": 2,
+        "minTripDays": 10
+      },
+      "geography": {
+        "startEnd": "same-country",
+        "directionPolicy": "iata-area-continuous",
+        "requiresAtlanticCrossing": true,
+        "requiresPacificCrossing": true
+      },
+      "airlineEligibility": {
+        "type": "alliance-members",
+        "alliance": "star",
+        "includeAffiliates": false
+      }
+    }
+  ],
+  "ticketingPrograms": [
+    {
+      "id": "atmos-rewards-oneworld-awards",
+      "programName": "Atmos Rewards",
+      "airlines": ["AS", "HA"],
+      "alliance": "oneworld",
+      "scope": "alliance-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "Atmos points can be redeemed across current oneworld member airlines and other airline partners.", "zhTW": "Atmos 點數可兌換目前 oneworld 成員航空與其他合作航空的獎勵機票。" },
+        { "en": "This is an alliance/partner award program, not a separately published RTW award product.", "zhTW": "這是聯盟／夥伴獎勵票計畫，目前沒有另行公布的哩程制環球票產品。" }
+      ],
+      "sourceUrls": [
+        "https://www.alaskaair.com/atmosrewards/content/partners/oneworld",
+        "https://www.hawaiianairlines.com/content/partners/oneworld"
+      ]
+    },
+    {
+      "id": "aadvantage-oneworld-awards",
+      "programName": "AAdvantage",
+      "airlines": ["AA", "FJ"],
+      "alliance": "oneworld",
+      "scope": "alliance-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "AAdvantage miles can be used for award travel on current oneworld airline partners.", "zhTW": "AAdvantage 哩程可兌換目前 oneworld 航空夥伴的獎勵機票。" },
+        { "en": "Partner awards are built as one-way, round-trip or multi-city awards; this is not a published AAdvantage RTW award chart.", "zhTW": "夥伴獎勵票可組成單程、來回或多城市行程；目前不是一張獨立公布的 AAdvantage 環球票表。" },
+        { "en": "Fiji Airways adopted AAdvantage as its loyalty program in 2025.", "zhTW": "Fiji Airways 已於 2025 年採用 AAdvantage 作為其哩程會員計畫。" }
+      ],
+      "sourceUrls": [
+        "https://www.aa.com/web/i18n/aadvantage-program/miles/partners/partner-airlines.html",
+        "https://www.aa.com/web/i18n/aadvantage-program/use-miles/partner-airline-flights.html",
+        "https://news.aa.com/news/news-details/2025/American-Airlines-expands-its-AAdvantage-partnerships-as-Fiji-Airways-joins-the-award-winning-travel-rewards-program-AADV-03/"
+      ]
+    },
+    {
+      "id": "british-airways-club-multi-carrier-avios",
+      "programName": "British Airways Club",
+      "airlines": ["BA"],
+      "alliance": "oneworld",
+      "scope": "multi-carrier-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "A separate Avios table applies when an itinerary uses two or more oneworld airlines.", "zhTW": "行程使用兩家以上 oneworld 航空時，適用獨立的多航司 Avios 兌換表。" },
+        { "en": "Pricing is based on total itinerary distance with published bands up to 50,000 miles and cabin multipliers.", "zhTW": "依整段行程總距離分級計價，官方表涵蓋至 50,000 哩並依艙等套用倍率。" },
+        { "en": "The current public page does not publish enough structural routing rules for the RTW validator, so this remains reference-only.", "zhTW": "目前公開頁沒有完整公布足以套入 RTW validator 的結構規則，因此先維持規則參考。" }
+      ],
+      "sourceUrls": [
+        "https://www.britishairways.com/travel/multi-carrier-avios-costs-zone/public/en_sa"
+      ]
+    },
+    {
+      "id": "cathay-asia-miles-oneworld-multi-carrier",
+      "programName": "Cathay Asia Miles",
+      "airlines": ["CX"],
+      "alliance": "oneworld",
+      "scope": "multi-carrier-award",
+      "status": "active",
+      "plannerProductId": "cx-asia-miles-oneworld-multi-carrier-award",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "The oneworld Multi-carrier Award supports multi-airline oneworld itineraries and is priced by total distance.", "zhTW": "oneworld 多航司獎勵票可使用多家 oneworld 航空，並依總飛行距離計價。" },
+        { "en": "The cataloged product allows up to 5 stopovers, 2 transfers and 2 surface sectors, with a 50,000-mile distance cap.", "zhTW": "目前收錄規則為最多 5 次停留、2 次轉機、2 個地面段，總距離上限 50,000 哩。" },
+        { "en": "Carrier-combination requirements change depending on whether Cathay Pacific is included.", "zhTW": "是否包含國泰航空會影響最低需要使用的航空公司家數。" }
+      ],
+      "sourceUrls": [
+        "https://www.cathaypacific.com/cx/en_TW/legal-and-privacy/cathay-membership-terms-and-conditions.html?switch=Y"
+      ]
+    },
+    {
+      "id": "finnair-plus-partner-awards",
+      "programName": "Finnair Plus",
+      "airlines": ["AY"],
+      "alliance": "oneworld",
+      "scope": "partner-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "Finnair Plus Avios can be redeemed on oneworld and other partner award flights.", "zhTW": "Finnair Plus Avios 可兌換 oneworld 與其他合作航空獎勵票。" },
+        { "en": "A ticket can combine Finnair with one partner, but two or more different partner airlines cannot be combined on one award.", "zhTW": "一張獎勵票可組合 Finnair 與一家夥伴航空，但不能在同一張票混用兩家以上不同夥伴航空。" },
+        { "en": "Partner awards are generally one-way or round-trip and do not form a separate Finnair RTW product.", "zhTW": "夥伴獎勵票主要為單程／來回，並非獨立的 Finnair 哩程環球票產品。" }
+      ],
+      "sourceUrls": [
+        "https://www.finnair.com/en/finnair-plus/collect-and-use-avios/use-avios-on-award-flights-with-partners"
+      ]
+    },
+    {
+      "id": "iberia-club-oneworld-multi-carrier",
+      "programName": "Iberia Club",
+      "airlines": ["IB"],
+      "alliance": "oneworld",
+      "scope": "multi-carrier-award",
+      "status": "active",
+      "plannerProductId": "iberia-club-oneworld-multi-carrier-award",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "The award may use Iberia plus another oneworld airline, or two or more oneworld airlines excluding Iberia.", "zhTW": "可使用 Iberia 加另一家 oneworld 航空，或完全不含 Iberia、但使用兩家以上 oneworld 航空。" },
+        { "en": "The point of origin and final destination must be the same.", "zhTW": "行程起點與最終目的地必須相同。" },
+        { "en": "The itinerary may contain up to 8 flight coupons; intermediate connection points do not need to be the same.", "zhTW": "整張票最多 8 張飛行票券；中間轉機點不必相同。" }
+      ],
+      "sourceUrls": [
+        "https://www.iberia.com/cn/zh/iberia-club/conditions/"
+      ]
+    },
+    {
+      "id": "jal-mileage-bank-oneworld-awards",
+      "programName": "JAL Mileage Bank",
+      "airlines": ["JL"],
+      "alliance": "oneworld",
+      "scope": "multi-carrier-award",
+      "status": "active",
+      "plannerProductId": "jal-oneworld-award-ticket",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "oneworld Award Tickets allow up to 8 flight sectors, excluding surface sectors, and up to 7 stopovers.", "zhTW": "oneworld 特典航空券最多可使用 8 個飛行航段（不含地面段），並最多 7 次停留。" },
+        { "en": "Only one surface sector is permitted and its distance is excluded from total trip distance; total trip distance determines required miles.", "zhTW": "最多允許 1 個地面段，地面段距離不計入總距離；兌換哩程依整段行程總距離決定。" },
+        { "en": "One-way travel is allowed and origin/final points may differ, including different countries.", "zhTW": "允許單程；起點與最終點可不同，也可以位於不同國家。" },
+        { "en": "The itinerary cannot return to the point or country of origin and then continue onward; GCMP now validates the origin-country terminal rule and Japan-origin stopover restriction.", "zhTW": "不得折返起點或起點國家後再繼續前往其他目的地；GCMP 現在會自動檢查回到出發國即結束，以及日本出發時日本境內不得停留。" }
+      ],
+      "sourceUrls": [
+        "https://www.jal.co.jp/jp/en/jalmile/use/partner_air/oneworld/conditions.html"
+      ]
+    },
+    {
+      "id": "malaysia-airlines-enrich-partner-awards",
+      "programName": "Enrich",
+      "airlines": ["MH"],
+      "alliance": "oneworld",
+      "scope": "partner-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "Enrich points can be redeemed on oneworld and other airline partners subject to partner award rules and inventory.", "zhTW": "Enrich 點數可兌換 oneworld 與其他航空夥伴，並受各夥伴獎勵票規則與機位限制。" },
+        { "en": "Partner-award mixed cabins are priced according to the actual cabin used on the applicable sectors.", "zhTW": "夥伴獎勵票若混艙，會依實際搭乘艙等與適用航段計算。" },
+        { "en": "This is maintained as a partner-award reference rather than an RTW validator product.", "zhTW": "目前以夥伴獎勵票規則參考收錄，不作為 RTW validator 產品。" }
+      ],
+      "sourceUrls": [
+        "https://enrich.malaysiaairlines.com/enrich/about-enrich/terms-conditions.html"
+      ]
+    },
+    {
+      "id": "oman-air-sindbad-oneworld-awards",
+      "programName": "Sindbad",
+      "airlines": ["WY"],
+      "alliance": "oneworld",
+      "scope": "alliance-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "Sindbad miles can be redeemed for oneworld partner awards under Oman Air's current oneworld partner redemption rules.", "zhTW": "Sindbad 哩程可依 Oman Air 現行 oneworld 夥伴兌換規則開立獎勵票。" },
+        { "en": "For listed partners, redemption requires the partner's marketed-and-operated flight; awards may include Oman Air or other Sindbad partner flights, and mileage upgrades are not available.", "zhTW": "已列出的夥伴兌換要求由該夥伴航空行銷且實際營運；獎勵票可包含 Oman Air 或其他 Sindbad 夥伴航班，且不能使用哩程升等。" }
+      ],
+      "sourceUrls": [
+        "https://sindbad.omanair.com/oneworld-partner"
+      ]
+    },
+    {
+      "id": "qantas-frequent-flyer-oneworld-classic",
+      "programName": "Qantas Frequent Flyer",
+      "airlines": ["QF"],
+      "alliance": "oneworld",
+      "scope": "multi-carrier-award",
+      "status": "active",
+      "plannerProductId": "qantas-oneworld-classic-flight-reward",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "The oneworld Classic Flight Reward is a multi-carrier award with a 35,000-mile distance ceiling.", "zhTW": "oneworld Classic Flight Reward 是多航司獎勵票，總行程距離上限為 35,000 哩。" },
+        { "en": "The cataloged rules allow up to 16 flight sectors and 5 stopovers, with city-level transfer and stopover limits.", "zhTW": "目前收錄規則為最多 16 個飛行航段、5 次停留，並有單一城市轉機／停留次數限制。" },
+        { "en": "Carrier-combination requirements depend on whether Qantas is included.", "zhTW": "是否包含 Qantas 會影響最低需要使用的航空公司家數。" }
+      ],
+      "sourceUrls": [
+        "https://www.qantas.com/ch/en/frequent-flyer/use-points/classic-flight-rewards.html",
+        "https://www.qantas.com/ca/en/frequent-flyer/discover-and-join/terms-and-conditions.html"
+      ]
+    },
+    {
+      "id": "qatar-privilege-club-partner-awards",
+      "programName": "Qatar Airways Privilege Club",
+      "airlines": ["QR"],
+      "alliance": "oneworld",
+      "scope": "partner-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "Privilege Club Avios can be redeemed on oneworld and other airline partners subject to partner award availability.", "zhTW": "Privilege Club Avios 可兌換 oneworld 與其他航空夥伴，並受夥伴獎勵機位限制。" },
+        { "en": "Partner-award Avios are based on the itinerary flight distance; mixed cabins are accounted for in the final award price.", "zhTW": "夥伴獎勵票依行程飛行距離計算 Avios；混艙會反映在最終兌換價格。" },
+        { "en": "This remains a partner-award reference, not an independently published Privilege Club RTW product.", "zhTW": "目前維持夥伴獎勵票規則參考，並非獨立公布的 Privilege Club 環球票產品。" }
+      ],
+      "sourceUrls": [
+        "https://www.qatarairways.com/en/Privilege-Club/terms-and-conditions.html"
+      ]
+    },
+    {
+      "id": "royal-air-maroc-safar-flyer-oneworld-awards",
+      "programName": "Safar Flyer",
+      "airlines": ["AT"],
+      "alliance": "oneworld",
+      "scope": "partner-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "Safar Flyer miles can be redeemed for oneworld award tickets using the published partner award chart.", "zhTW": "Safar Flyer 哩程可依官方夥伴獎勵表兌換 oneworld 獎勵票。" },
+        { "en": "The oneworld award page states that a multi-leg award involving two or more different airlines cannot be issued as one ticket.", "zhTW": "官方 oneworld 獎勵票頁明確表示：涉及兩家以上不同航空公司的多航段行程不能開在同一張獎勵票。" },
+        { "en": "This restriction prevents treating Safar Flyer as an RTW multi-carrier product.", "zhTW": "因此不能把 Safar Flyer 當成可用於 RTW 的多航司產品。" }
+      ],
+      "sourceUrls": [
+        "https://royalairmaroc.com/at-en/safar-flyer/award-ticket-oneworld"
+      ]
+    },
+    {
+      "id": "royal-jordanian-royal-club-oneworld-awards",
+      "programName": "Royal Club",
+      "airlines": ["RJ"],
+      "alliance": "oneworld",
+      "scope": "partner-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "Royal Club miles can be redeemed on Royal Jordanian and oneworld airline partners, subject to partner award availability.", "zhTW": "Royal Club 哩程可兌換 Royal Jordanian 與 oneworld 航空夥伴，並受夥伴獎勵機位限制。" },
+        { "en": "The current public material supports oneworld partner redemption but does not publish a separate Royal Club RTW award rule set.", "zhTW": "目前官方公開資料支持 oneworld 夥伴兌換，但沒有獨立公布 Royal Club 哩程環球票規則。" }
+      ],
+      "sourceUrls": [
+        "https://www.rj.com/en/royal-club/redeem/redeem-miles"
+      ]
+    },
+    {
+      "id": "srilankan-flysmiles-oneworld-awards",
+      "programName": "FlySmiLes",
+      "airlines": ["UL"],
+      "alliance": "oneworld",
+      "scope": "partner-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "FlySmiLes members can earn and redeem miles on all current oneworld member airlines.", "zhTW": "FlySmiLes 會員可在目前所有 oneworld 成員航空累積與兌換哩程。" },
+        { "en": "Published FlySmiLes partner-award material uses partner reward charts and direct-routing constraints rather than a dedicated mileage RTW award product.", "zhTW": "FlySmiLes 公開資料以夥伴獎勵表與路線限制為主，目前不是一個獨立的哩程制 RTW 產品。" },
+        { "en": "oneworld cash round-the-world fares are separately marketed by SriLankan and are not the same as FlySmiLes mileage awards.", "zhTW": "SriLankan 另有銷售 oneworld 現金環球票；這與 FlySmiLes 哩程獎勵票是不同產品。" }
+      ],
+      "sourceUrls": [
+        "https://onboard.srilankan.com/en_uk/oneworld/one-world-page",
+        "https://www.srilankan.com/zh_cn/oneworld/fare-products"
+      ]
+    },
+    {
+      "id": "miles-more-world-award-flight",
+      "programName": "Miles & More",
+      "airlines": ["OS", "SN", "OU", "AZ", "LO", "LH", "LX"],
+      "alliance": "star",
+      "scope": "rtw-award",
+      "status": "active",
+      "plannerProductId": "miles-more-star-alliance-world-award-flight",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "The Star Alliance World Award Flight is a current round-the-world mileage award, bookable only through the Miles & More Service Centre.", "zhTW": "Star Alliance World Award Flight 是目前仍可兌換的哩程環球票，只能透過 Miles & More 服務中心開票。" },
+        { "en": "It must start and end in the same country, travel in one global direction, and include one Atlantic and one Pacific crossing.", "zhTW": "行程須在同一國家開始與結束、維持單一全球方向，並各跨越大西洋與太平洋一次。" },
+        { "en": "Travel lasts at least 10 days and up to 12 months, with at most 10 flight segments and 7 stopovers.", "zhTW": "旅程至少 10 天、最長 12 個月，最多 10 個飛行航段與 7 次停留。" },
+        { "en": "Current fixed mileage is 195,000 Economy, 400,000 Business and 540,000 First.", "zhTW": "目前固定兌換標準為經濟艙 195,000、商務艙 400,000、頭等艙 540,000 哩。" }
+      ],
+      "sourceUrls": [
+        "https://www.miles-and-more.com/at/en/program/flight-benefits/award-flights/world-award-flight.html",
+        "https://www.miles-and-more.com/at/en/earn/miles-and-more/partner/milesandmore/stories/info/promotional-offer/2510_editorial_around_the_world_trip.html",
+        "https://www.miles-and-more.com/row/en/program/partners.html",
+        "https://www.ita-airways.com/us/en/profile/miles-and-more"
+      ]
+    },
+    {
+      "id": "phoenixmiles-star-awards",
+      "programName": "PhoenixMiles",
+      "airlines": ["CA", "ZH"],
+      "alliance": "star",
+      "scope": "alliance-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "PhoenixMiles provides award redemption on Star Alliance member airlines under its current member handbook and partner award rules.", "zhTW": "鳳凰知音（PhoenixMiles）依現行會員手冊與夥伴獎勵規則提供 Star Alliance 成員航空的獎勵票兌換。" },
+        { "en": "Air China and Shenzhen Airlines use the shared PhoenixMiles program for mileage redemption.", "zhTW": "Air China 與 Shenzhen Airlines 共用 PhoenixMiles 會員計畫進行哩程兌換。" },
+        { "en": "No separate current PhoenixMiles mileage RTW product is published in the sourced rules, so this remains an alliance-award reference.", "zhTW": "目前官方來源沒有另行公布 PhoenixMiles 哩程環球票產品，因此維持 Star 聯盟獎勵票規則參考。" }
+      ],
+      "sourceUrls": [
+        "https://ffp.airchina.com.cn/cms/handbook?language=en&type=ORDINARY_MEMBER"
+      ]
+    },
+    {
+      "id": "aegean-milesbonus-star-awards",
+      "programName": "Miles+Bonus",
+      "airlines": ["A3"],
+      "alliance": "star",
+      "scope": "alliance-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "Miles+Bonus miles can be redeemed for award tickets on Star Alliance member airlines, subject to award-seat availability and partner conditions.", "zhTW": "Miles+Bonus 哩程可兌換 Star Alliance 成員航空獎勵票，並受獎勵機位與夥伴規則限制。" },
+        { "en": "The current public terms support Star partner awards but do not publish a separate Miles+Bonus RTW mileage product.", "zhTW": "目前公開條款支持 Star 夥伴獎勵票，但沒有另行公布 Miles+Bonus 哩程環球票產品。" }
+      ],
+      "sourceUrls": [
+        "https://en.aegeanair.com/conditions-notices/milesbonus-terms-and-conditions/"
+      ]
+    },
+    {
+      "id": "aeroplan-star-partner-awards",
+      "programName": "Aeroplan",
+      "airlines": ["AC"],
+      "alliance": "star",
+      "scope": "partner-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "Aeroplan Flight Rewards can include Air Canada and partner airlines in one-way, round-trip, open-jaw and multi-city itineraries.", "zhTW": "Aeroplan Flight Rewards 可使用 Air Canada 與合作航空，並支援單程、來回、open jaw 與多城市行程。" },
+        { "en": "Current policy allows up to six flight segments per direction and up to twelve segments on one reservation.", "zhTW": "現行政策為每個方向最多 6 個飛行航段，一張訂位最多 12 個航段。" },
+        { "en": "Aeroplan allows one stopover per direction for up to 45 days, but does not publish a distinct current RTW award product.", "zhTW": "Aeroplan 每個方向可安排 1 次、最長 45 天的停留，但目前沒有另行公布獨立 RTW 獎勵票產品。" }
+      ],
+      "sourceUrls": [
+        "https://www.aircanada.com/ca/en/aco/home/aeroplan/legal/aeroplan-flight-reward-policy.html"
+      ]
+    },
+    {
+      "id": "air-india-maharaja-star-awards",
+      "programName": "Maharaja Club",
+      "airlines": ["AI"],
+      "alliance": "star",
+      "scope": "alliance-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "Maharaja Club points can be redeemed on Star Alliance partner airlines.", "zhTW": "Maharaja Club 點數可兌換 Star Alliance 夥伴航空獎勵票。" },
+        { "en": "Air India's current partner page states Star partner awards are single-sector; multi-sector travel requires separate tickets.", "zhTW": "Air India 現行夥伴頁明確表示 Star 夥伴獎勵票以單一航段開立；多航段行程需分開開票。" },
+        { "en": "That rule prevents treating Maharaja Club as a multi-carrier RTW product.", "zhTW": "因此不能把 Maharaja Club 當成多航司環球票產品。" }
+      ],
+      "sourceUrls": [
+        "https://www.airindia.com/content/air-india/in/en/maharaja-club/redeem-points/partner-airlines.html"
+      ]
+    },
+    {
+      "id": "air-new-zealand-airpoints-star-awards",
+      "programName": "Airpoints",
+      "airlines": ["NZ"],
+      "alliance": "star",
+      "scope": "partner-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "Airpoints Dollars can be used for reward travel on Star Alliance and other airline partners under the partner reward chart.", "zhTW": "Airpoints Dollars 可依夥伴獎勵表兌換 Star Alliance 與其他合作航空獎勵票。" },
+        { "en": "Partner reward pricing is applied by sector; the current material does not publish a separate Airpoints RTW mileage product.", "zhTW": "夥伴獎勵票依航段計價；目前資料沒有另行公布 Airpoints 哩程環球票產品。" }
+      ],
+      "sourceUrls": [
+        "https://www.airnewzealand.co.nz/koru/spend-airpoints/spend-on-flights",
+        "https://www.airnewzealand.co.nz/airline-partner-reward-chart"
+      ]
+    },
+    {
+      "id": "ana-mileage-club-star-rtw",
+      "programName": "ANA Mileage Club",
+      "airlines": ["NH"],
+      "alliance": "star",
+      "scope": "rtw-discontinued",
+      "status": "discontinued",
+      "plannerProductId": "ana-star-alliance-rtw-award",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "ANA's Star Alliance Round the World Award was a distance-based RTW mileage product with up to 12 flights and 8 stopovers.", "zhTW": "ANA Star Alliance Round the World Award 原為距離制哩程環球票，最多 12 個飛行航段、8 次停留。" },
+        { "en": "New RTW award tickets have not been issued since 23 June 2025; previously issued tickets may be used until expiry.", "zhTW": "自 2025/6/23 起已停止開立新的環球獎勵票；先前已開立的票可使用至有效期屆滿。" }
+      ],
+      "sourceUrls": [
+        "https://www.ana.co.jp/en/gb/amc/partner-flight-awards/around-the-world/"
+      ]
+    },
+    {
+      "id": "asiana-club-star-rtw-transition",
+      "programName": "Asiana Club",
+      "airlines": ["OZ"],
+      "alliance": "star",
+      "scope": "rtw-award",
+      "status": "transition",
+      "plannerProductId": "asiana-club-star-alliance-rtw-award",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "Asiana Club still publishes a Star Alliance Round-the-World award during its 2026 Star Alliance exit transition.", "zhTW": "Asiana Club 在 2026 年退出 Star Alliance 的過渡期間仍公布 Star Alliance 環球獎勵票。" },
+        { "en": "The award returns to the departure country, crosses the globe in one overall direction, allows up to 7 stopovers and a minimum 10-day trip.", "zhTW": "行程須回到出發國家、以單一全球方向繞行，最多 7 次停留，且至少旅行 10 天。" },
+        { "en": "GCMP now applies Asiana's IATA Area rule: backtracking within an Area is allowed, while reversing direction between different Areas fails validation.", "zhTW": "GCMP 現在依 Asiana 的 IATA Area 規則檢查：同一 Area 內可折返，但不同 Area 之間反向移動會判定不符合。" },
+        { "en": "Asiana's Star Alliance membership is scheduled to end on 16 December 2026 (KST).", "zhTW": "Asiana 預定於 2026/12/16（韓國時間）結束 Star Alliance 會員資格。" }
+      ],
+      "sourceUrls": [
+        "https://flyasiana.com/C/SG/EN/contents/around-the-world-with-star-alliance",
+        "https://flyasiana.com/C/US/EN/customer/notice/detail?id=CM202606090002529359"
+      ]
+    },
+    {
+      "id": "avianca-lifemiles-star-awards",
+      "programName": "LifeMiles",
+      "airlines": ["AV"],
+      "alliance": "star",
+      "scope": "alliance-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "LifeMiles can be redeemed for award travel on Avianca and Star Alliance airline partners.", "zhTW": "LifeMiles 可兌換 Avianca 與 Star Alliance 航空夥伴的獎勵機票。" },
+        { "en": "Current official support material covers Star partner redemption but does not publish a separate LifeMiles RTW award rule set.", "zhTW": "目前官方支援資料涵蓋 Star 夥伴兌換，但沒有另行公布 LifeMiles 環球獎勵票規則。" }
+      ],
+      "sourceUrls": [
+        "https://ayuda.avianca.com/hc/en-us/articles/37370155801243-Can-I-redeem-miles-to-fly-with-avianca-and-other-airline-partners",
+        "https://ayuda.avianca.com/hc/en-us/articles/19639392960923-What-is-Star-Alliance"
+      ]
+    },
+    {
+      "id": "copa-connectmiles-star-awards",
+      "programName": "ConnectMiles",
+      "airlines": ["CM"],
+      "alliance": "star",
+      "scope": "alliance-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "ConnectMiles miles can be used for award travel on Star Alliance member airlines.", "zhTW": "ConnectMiles 哩程可兌換 Star Alliance 成員航空獎勵票。" },
+        { "en": "Copa publishes separate award-ticket rules for changes, validity and partner redemption; no distinct ConnectMiles RTW product is currently published.", "zhTW": "Copa 另有獎勵票變更、效期與夥伴兌換規則；目前沒有另行公布 ConnectMiles 哩程環球票產品。" }
+      ],
+      "sourceUrls": [
+        "https://www.copaair.com/en-gs/connectmiles/miles/use-miles-on-star-alliance/",
+        "https://www.copaair.com/en-gs/connectmiles/miles/award-ticket-rules/"
+      ]
+    },
+    {
+      "id": "egyptair-plus-star-awards",
+      "programName": "EGYPTAIR Plus",
+      "airlines": ["MS"],
+      "alliance": "star",
+      "scope": "alliance-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "EGYPTAIR's current booking surface explicitly offers a multi-destination award ticket paid with miles, and EGYPTAIR remains a current Star Alliance member.", "zhTW": "EGYPTAIR 現行訂位頁明確提供「使用哩程購買多目的地獎勵票」，且 EGYPTAIR 目前仍是 Star Alliance 正式會員。" },
+        { "en": "The current public surface does not expose complete Star-partner or RTW routing rules, so no partner-combination rule is inferred and this remains reference-only.", "zhTW": "目前公開頁沒有完整列出 Star 夥伴或 RTW 路線規則，因此不推定任何多航司組合規則，只維持規則參考。" }
+      ],
+      "sourceUrls": [
+        "https://www.egyptair.com/en/Pages/default.aspx",
+        "https://www.egyptair.com/ar/about-egyptair/Pages/star-alliance.aspx"
+      ]
+    },
+    {
+      "id": "ethiopian-shebamiles-star-awards",
+      "programName": "ShebaMiles",
+      "airlines": ["ET"],
+      "alliance": "star",
+      "scope": "alliance-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "ShebaMiles members can redeem Star Alliance flight awards using one or more Star member airlines on one reservation.", "zhTW": "ShebaMiles 會員可在同一張訂位使用一家或多家 Star Alliance 成員航空兌換獎勵票。" },
+        { "en": "Stopovers can be permitted with additional miles; a connection of 24 hours or less is not treated as a stopover.", "zhTW": "可在加收哩程的情況下安排停留；24 小時內的轉機不視為停留。" },
+        { "en": "The official page is a Star Alliance award product, not a separately specified RTW award, so it stays reference-only.", "zhTW": "官方頁面屬 Star Alliance 一般獎勵票，而非另行定義的 RTW 產品，因此先維持規則參考。" }
+      ],
+      "sourceUrls": [
+        "https://shebamiles.ethiopianairlines.com/miles/spend-miles/star-alliance-flight-award"
+      ]
+    },
+    {
+      "id": "eva-infinity-star-world-award",
+      "programName": "Infinity MileageLands",
+      "airlines": ["BR"],
+      "alliance": "star",
+      "scope": "rtw-award",
+      "status": "active",
+      "plannerProductId": "br-infinity-star-alliance-world-travel-award",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "EVA publishes a Star Alliance World Travel Award that can be ticketed through EVA reservation offices.", "zhTW": "EVA 公布 Star Alliance 環球獎勵票，須透過 EVA 訂位中心開票。" },
+        { "en": "The cataloged structural rules include up to 10 flight segments, 7 stopovers and a minimum 10-day trip.", "zhTW": "目前收錄結構規則為最多 10 個飛行航段、7 次停留，且行程至少 10 天。" },
+        { "en": "The itinerary must return to the same country and cross both the Pacific and Atlantic in one global direction.", "zhTW": "行程須回到同一國家，並以單一全球方向跨越太平洋與大西洋。" }
+      ],
+      "sourceUrls": [
+        "https://www.evaair.com/zh-hk/infinity-mileagelands/mileage-award-program/mileage-redemption/award-ticket/star-alliance/"
+      ]
+    },
+    {
+      "id": "singapore-krisflyer-star-rtw-history",
+      "programName": "KrisFlyer",
+      "airlines": ["SQ"],
+      "alliance": "star",
+      "scope": "rtw-discontinued",
+      "status": "discontinued",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "KrisFlyer previously offered a Star Alliance Round the World Award, but new RTW awards have not been ticketable since 1 May 2024.", "zhTW": "KrisFlyer 過去提供 Star Alliance 環球獎勵票，但自 2024/5/1 起已無法開立新的 RTW 獎勵票。" },
+        { "en": "Current KrisFlyer members can still redeem regular Star Alliance award tickets under the active Star partner award rules.", "zhTW": "目前 KrisFlyer 會員仍可依現行 Star 夥伴獎勵票規則兌換一般 Star Alliance 獎勵票。" }
+      ],
+      "sourceUrls": [
+        "https://www.singaporeair.com/en_UK/sg/ppsclub-krisflyer/use-miles/redeem-miles/star-alliance-round-the-world-award/",
+        "https://www.singaporeair.com/en_UK/lk/ppsclub-krisflyer/use-miles/redeem-miles/award-tickets-on-star-alliance-airlines/"
+      ]
+    },
+    {
+      "id": "saa-voyager-star-awards",
+      "programName": "Voyager",
+      "airlines": ["SA"],
+      "alliance": "star",
+      "scope": "alliance-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "Voyager Star Alliance awards may use multiple Star airlines and are subject to published routing constraints.", "zhTW": "Voyager Star Alliance 獎勵票可使用多家 Star 航空，並受官方公布的路線限制。" },
+        { "en": "The current rules cap the award at six segments including domestic add-ons, allow one intercontinental stopover and one open jaw, and prohibit backtracking/repeated cities in each direction.", "zhTW": "現行規則最多 6 個航段（含國內接駁）、可有 1 次洲際停留與 1 個 open jaw，並限制折返與同方向重複城市。" },
+        { "en": "These are complex alliance-award routing rules rather than a separately named Voyager RTW product, so they remain reference-only.", "zhTW": "這是複雜的聯盟獎勵票路線規則，而非另行命名的 Voyager RTW 產品，因此先維持規則參考。" }
+      ],
+      "sourceUrls": [
+        "https://voyager.flysaa.com/en/web/voyager/voyager-star-alliance"
+      ]
+    },
+    {
+      "id": "tap-miles-go-star-awards",
+      "programName": "Miles&Go",
+      "airlines": ["TP"],
+      "alliance": "star",
+      "scope": "alliance-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "Miles&Go can issue Star Alliance award tickets and does not allow Star and non-Star partners to be combined on the same award.", "zhTW": "Miles&Go 可開立 Star Alliance 獎勵票，且同一張票不能混用 Star 與非 Star 夥伴。" },
+        { "en": "A round-trip award is limited to 6 segments and a one-way award to 3 segments.", "zhTW": "來回獎勵票最多 6 個航段，單程最多 3 個航段。" },
+        { "en": "If any segment is in Business or First, the applicable higher-class award pricing rules apply; no separate structural RTW product is published.", "zhTW": "若含商務或頭等航段，會依較高艙等的獎勵票規則計價；目前沒有另行公布完整 RTW 結構產品。" }
+      ],
+      "sourceUrls": [
+        "https://www.flytap.com/en-ca/legal-info/terms-and-conditions-miles-and-go",
+        "https://www.flytap.com/en-us/miles-and-go/partners"
+      ]
+    },
+    {
+      "id": "thai-royal-orchid-plus-star-rtw",
+      "programName": "Royal Orchid Plus",
+      "airlines": ["TG"],
+      "alliance": "star",
+      "scope": "rtw-award",
+      "status": "active",
+      "plannerProductId": "thai-royal-orchid-plus-star-rtw-award",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "Royal Orchid Plus currently publishes a Star Alliance Round-the-World Award valid on all Star Alliance operated flights.", "zhTW": "Royal Orchid Plus 目前仍公布 Star Alliance 環球獎勵票，可使用所有 Star Alliance 成員航空實際營運航班。" },
+        { "en": "Travel must continue eastbound or westbound and return to the country of origin; the trip lasts at least 10 days and no more than one year.", "zhTW": "行程須持續向東或向西，並回到出發國家；旅程至少 10 天、最長 1 年。" },
+        { "en": "The award allows 3 to 10 stopovers, one open jaw, at most one stopover per city and two per country, with no stopover in the origin country.", "zhTW": "允許 3–10 次停留、1 個 open jaw；每城市最多 1 次、每國家最多 2 次停留，且出發國家不可停留。" },
+        { "en": "Backtracking is allowed only when required by the Star Alliance network. GCMP now validates the hard limits and flags mixed-direction routing for manual confirmation of network necessity.", "zhTW": "只有在 Star Alliance 航網銜接必要時才允許折返。GCMP 現在會自動檢查硬性限制，若出現方向折返則標示需人工確認是否屬航網必要。" }
+      ],
+      "sourceUrls": [
+        "https://www.thaiairways.com/zh-tw/content/spend-miles/air-awards/",
+        "https://www.thaiairways.com/th-th/content/about-royal-orchid-plus/award-conditions/"
+      ]
+    },
+    {
+      "id": "turkish-miles-smiles-star-awards",
+      "programName": "Miles&Smiles",
+      "airlines": ["TK"],
+      "alliance": "star",
+      "scope": "alliance-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "Miles&Smiles award tickets can be issued on Star Alliance partners as one-way or round-trip awards.", "zhTW": "Miles&Smiles 可開立 Star Alliance 夥伴的單程或來回獎勵票。" },
+        { "en": "Round-trip awards may include one open jaw, and the same airport cannot be visited more than once in the outbound or return direction.", "zhTW": "來回獎勵票可有 1 個 open jaw；去程或回程中同一機場不可重複造訪超過一次。" },
+        { "en": "The current rules support Star partner awards but do not define a separate Miles&Smiles RTW mileage product.", "zhTW": "現行規則支持 Star 夥伴獎勵票，但沒有另行定義 Miles&Smiles 哩程環球票產品。" }
+      ],
+      "sourceUrls": [
+        "https://www.turkishairlines.com/zh-tw/miles-and-smiles/redeem-miles/redeem-miles-on-flights/award-travel-terms-conditions/"
+      ]
+    },
+    {
+      "id": "united-mileageplus-star-awards",
+      "programName": "MileagePlus",
+      "airlines": ["UA"],
+      "alliance": "star",
+      "scope": "alliance-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "MileagePlus award search supports one-way, round-trip and multi-city award travel and can include Star Alliance partner airlines.", "zhTW": "MileagePlus 獎勵票搜尋支援單程、來回與多城市行程，並可使用 Star Alliance 夥伴航空。" },
+        { "en": "United's current official material does not publish a separate mileage RTW award chart or RTW structural product.", "zhTW": "United 目前官方資料沒有另行公布哩程制 RTW 獎勵表或獨立 RTW 結構產品。" }
+      ],
+      "sourceUrls": [
+        "https://www.united.com/en/mp/book-flight/united-award-travel",
+        "https://www.united.com/en/us/fly/mileageplus/partners/airline-partners.html"
+      ]
+    },
+    {
+      "id": "aerolineas-plus-skyteam-awards",
+      "programName": "Aerolíneas Plus",
+      "airlines": ["AR"],
+      "alliance": "skyteam",
+      "scope": "alliance-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "Aerolíneas Plus miles can be redeemed for award travel on SkyTeam partner airlines.", "zhTW": "Aerolíneas Plus 哩程可兌換 SkyTeam 夥伴航空獎勵票。" },
+        { "en": "The published SkyTeam redemption method prices connecting itineraries by adding the mileage required for each flight segment.", "zhTW": "官方 SkyTeam 兌換方式以逐航段加總所需哩程計算轉機行程。" },
+        { "en": "This is an alliance award reference rather than a separately published Aerolíneas Plus RTW product.", "zhTW": "目前屬 SkyTeam 聯盟獎勵票規則參考，而非另行公布的 Aerolíneas Plus 環球票產品。" }
+      ],
+      "sourceUrls": [
+        "https://www.aerolineas.com.ar/utilizar-millas-skyteam-gol?zrdct=true"
+      ]
+    },
+    {
+      "id": "aeromexico-rewards-skyteam-awards",
+      "programName": "Aeromexico Rewards",
+      "airlines": ["AM"],
+      "alliance": "skyteam",
+      "scope": "alliance-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "Classic Award Tickets can be redeemed on Aeromexico, SkyTeam airlines and participating affiliated airlines.", "zhTW": "Classic Award Ticket 可兌換 Aeromexico、SkyTeam 航空與參與的合作航空。" },
+        { "en": "Awards use published fixed redemption tables and are subject to award inventory.", "zhTW": "獎勵票依官方固定兌換表計價，並受獎勵機位限制。" },
+        { "en": "No separate current Aeromexico Rewards RTW award product is published in the sourced material.", "zhTW": "目前來源沒有另行公布 Aeromexico Rewards 哩程環球票產品。" }
+      ],
+      "sourceUrls": [
+        "https://www.aeromexico.com/en-us/aeromexico-rewards/award-ticket"
+      ]
+    },
+    {
+      "id": "air-europa-suma-skyteam-awards",
+      "programName": "Air Europa SUMA",
+      "airlines": ["UX"],
+      "alliance": "skyteam",
+      "scope": "alliance-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "SUMA Miles can be redeemed on Air Europa, SkyTeam members and affiliated airline-operated flights under the program conditions.", "zhTW": "SUMA Miles 可依計畫條款兌換 Air Europa、SkyTeam 成員與合作航空實際營運航班。" },
+        { "en": "The current terms support partner redemption but do not publish a separate SUMA mileage RTW product.", "zhTW": "現行條款支持夥伴兌換，但沒有另行公布 SUMA 哩程環球票產品。" }
+      ],
+      "sourceUrls": [
+        "https://www.aireuropa.com/us/en/aea/travel-information/terms-and-conditions/air-europa-suma-conditions.html"
+      ]
+    },
+    {
+      "id": "flying-blue-skyteam-awards",
+      "programName": "Flying Blue",
+      "airlines": ["AF", "KL", "RO"],
+      "alliance": "skyteam",
+      "scope": "alliance-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "Flying Blue miles can be used for reward tickets on Air France, KLM and participating Flying Blue / SkyTeam partner flights.", "zhTW": "Flying Blue 哩程可兌換 Air France、KLM 及參與的 Flying Blue／SkyTeam 夥伴航班。" },
+        { "en": "TAROM participates in Flying Blue and exposes SkyTeam frequent-flyer benefits through that shared program.", "zhTW": "TAROM 使用 Flying Blue 會員計畫，並透過此共用計畫提供 SkyTeam 常旅客權益。" },
+        { "en": "TAROM's current SkyTeam material refers to multi-carrier awards, but the public rules do not define a complete RTW structural product for the validator.", "zhTW": "TAROM 現行 SkyTeam 資料提到多航司獎勵票，但公開規則不足以定義完整 RTW validator 產品。" }
+      ],
+      "sourceUrls": [
+        "https://www.flyingblue.com/en/spend/flights",
+        "https://www.tarom.ro/en/skyteam/"
+      ]
+    },
+    {
+      "id": "china-airlines-dynasty-skyteam-partner-award",
+      "programName": "Dynasty Flyer",
+      "airlines": ["CI"],
+      "alliance": "skyteam",
+      "scope": "multi-carrier-award",
+      "status": "active",
+      "plannerProductId": "china-airlines-skyteam-partner-award",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "China Airlines publishes a SkyTeam Partner Award that can combine eligible SkyTeam partner travel under its zone-based award rules.", "zhTW": "China Airlines 提供 SkyTeam 夥伴獎勵票，可依區域制獎勵規則組合合資格 SkyTeam 夥伴行程。" },
+        { "en": "The cataloged structural limit is up to 6 flight segments, 1 stopover and 1 surface sector.", "zhTW": "目前收錄結構上限為最多 6 個飛行航段、1 次停留與 1 個地面段。" },
+        { "en": "China Airlines explicitly does not accept an itinerary crossing both the Pacific and Atlantic, so this is not a true full-RTW product.", "zhTW": "China Airlines 明確不接受同時跨越太平洋與大西洋的行程，因此它不是完整傳統 RTW 產品。" }
+      ],
+      "sourceUrls": [
+        "https://www.china-airlines.com/us/en/member/miles/redeem/reward-ticket"
+      ]
+    },
+    {
+      "id": "china-eastern-eastern-miles-partner-awards",
+      "programName": "Eastern Miles",
+      "airlines": ["MU"],
+      "alliance": "skyteam",
+      "scope": "partner-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "Eastern Miles supports partner-airline award ticket redemption through the official website, service locations, hotline and app depending on the partner and channel.", "zhTW": "Eastern Miles 可依夥伴與通路，透過官網、服務據點、客服或 App 兌換合作航空獎勵票。" },
+        { "en": "Partner availability and supported airlines vary by redemption channel; no separate current Eastern Miles RTW award product is published.", "zhTW": "可兌換的合作航空與機位會依通路而異；目前沒有另行公布 Eastern Miles 哩程環球票產品。" }
+      ],
+      "sourceUrls": [
+        "https://easternmiles.ceair.com/member/huiyuanshouce/app/hysc/jfdhxq.html"
+      ]
+    },
+    {
+      "id": "delta-skymiles-partner-awards",
+      "programName": "SkyMiles",
+      "airlines": ["DL"],
+      "alliance": "skyteam",
+      "scope": "partner-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "SkyMiles can be used for award travel on Delta and many current SkyTeam / airline partners through Delta's award booking channels.", "zhTW": "SkyMiles 可透過 Delta 獎勵票訂位管道兌換 Delta 與許多目前的 SkyTeam／航空夥伴航班。" },
+        { "en": "The current program uses dynamic/partner award pricing rather than a separately published SkyMiles RTW mileage product.", "zhTW": "現行計畫採動態／夥伴獎勵票方式計價，而不是另行公布 SkyMiles 哩程環球票產品。" }
+      ],
+      "sourceUrls": [
+        "https://www.delta.com/us/en/skymiles/how-to-use-miles/travel-with-miles"
+      ]
+    },
+    {
+      "id": "garuda-garudamiles-partner-awards",
+      "programName": "GarudaMiles",
+      "airlines": ["GA"],
+      "alliance": "skyteam",
+      "scope": "partner-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "GarudaMiles can be spent on airline-partner award tickets under GarudaMiles partner redemption rules.", "zhTW": "GarudaMiles 可依合作航空兌換規則開立夥伴航空獎勵票。" },
+        { "en": "Direct routes use the applicable table; when a direct route is unavailable, connecting itinerary costs are added by sector.", "zhTW": "直飛航線依適用兌換表計價；若無直飛而需轉機，行程成本依各航段加總。" },
+        { "en": "This remains a partner-award reference, not a separately specified GarudaMiles RTW award.", "zhTW": "目前維持夥伴獎勵票規則參考，並非另行定義的 GarudaMiles 環球獎勵票。" }
+      ],
+      "sourceUrls": [
+        "https://web.garuda-indonesia.com/static/en/garudamiles/syarat-dan-ketentuan.html?lang=en&loc=oc&v=0ce3f161-f865-4961-bc76-427ef8f29b19"
+      ]
+    },
+    {
+      "id": "kenya-asante-skyteam-awards",
+      "programName": "Asante Rewards",
+      "airlines": ["KQ"],
+      "alliance": "skyteam",
+      "scope": "partner-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "Asante Rewards offers SkyAward redemption on Kenya Airways and selected SkyTeam partners including Air France, KLM, Vietnam Airlines, Korean Air, Delta and Virgin Atlantic.", "zhTW": "Asante Rewards 的 SkyAward 可兌換 Kenya Airways 與指定 SkyTeam 夥伴，包括 Air France、KLM、Vietnam Airlines、Korean Air、Delta、Virgin Atlantic。" },
+        { "en": "Partner award pricing depends on distance and cabin and is serviced through Kenya Airways customer channels.", "zhTW": "夥伴獎勵票依距離與艙等計價，並透過 Kenya Airways 客服管道辦理。" },
+        { "en": "The current public material does not define a separate Asante RTW award product.", "zhTW": "目前公開資料沒有另行定義 Asante 哩程環球票產品。" }
+      ],
+      "sourceUrls": [
+        "https://asante.kenya-airways.com/pages/skyaward"
+      ]
+    },
+    {
+      "id": "korean-skypass-skyteam-awards",
+      "programName": "SKYPASS",
+      "airlines": ["KE"],
+      "alliance": "skyteam",
+      "scope": "alliance-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "SKYPASS SkyTeam Awards can combine Korean Air and eligible SkyTeam member airlines under the published SkyTeam award rules.", "zhTW": "SKYPASS SkyTeam 獎勵票可依官方規則組合 Korean Air 與合資格 SkyTeam 成員航空。" },
+        { "en": "Published routing rules generally require direct travel where available; detours and connections can require separate awards.", "zhTW": "官方路線規則原則上在有直飛時要求直飛；繞路或轉機可能需要拆成不同獎勵票。" },
+        { "en": "SkyTeam awards use round-trip-based rules, require origin/final destination in the same country and prohibit revisiting origin/destination; these constraints are more detailed than the current RTW validator.", "zhTW": "SkyTeam 獎勵票採來回制規則，起訖須在同一國家，且限制重複造訪起點／終點；這些規則比目前 RTW validator 更細。" }
+      ],
+      "sourceUrls": [
+        "https://www.koreanair.com/contents/skypass/use-miles/partner-airlines/skyteam-award/guide"
+      ]
+    },
+    {
+      "id": "mea-cedar-miles-skyteam-awards",
+      "programName": "Cedar Miles",
+      "airlines": ["ME"],
+      "alliance": "skyteam",
+      "scope": "alliance-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "Cedar Miles can issue round-trip reward tickets with SkyTeam partner airlines.", "zhTW": "Cedar Miles 可開立 SkyTeam 夥伴航空的來回獎勵票。" },
+        { "en": "MEA also supports free reward ticket redemption with MEA and SkyTeam partners through Cedar Miles.", "zhTW": "MEA 也透過 Cedar Miles 支援 MEA 與 SkyTeam 夥伴的免費獎勵票兌換。" },
+        { "en": "No separate current Cedar Miles RTW mileage product is published in the sourced material.", "zhTW": "目前來源沒有另行公布 Cedar Miles 哩程環球票產品。" }
+      ],
+      "sourceUrls": [
+        "https://www.mea.com.lb/english/cedar-miles/spend-miles/with-skyteam-partners",
+        "https://www.mea.com.lb/english/cedar-miles-pages/spend-miles/how-to-spend"
+      ]
+    },
+    {
+      "id": "sas-eurobonus-skyteam-awards",
+      "programName": "EuroBonus",
+      "airlines": ["SK"],
+      "alliance": "skyteam",
+      "scope": "alliance-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "EuroBonus points can be used for partner award flights and can combine SAS with other SkyTeam airlines in one booking.", "zhTW": "EuroBonus 點數可兌換夥伴獎勵票，且同一張訂位可組合 SAS 與其他 SkyTeam 航空。" },
+        { "en": "Partner awards use fixed region/class pricing; a one-way award costs 60% of the round-trip amount.", "zhTW": "夥伴獎勵票採固定區域／艙等計價；單程為來回所需點數的 60%。" },
+        { "en": "Stopovers longer than 24 hours are not permitted on current partner awards, so this is not a conventional RTW award product.", "zhTW": "現行夥伴獎勵票不允許超過 24 小時的停留，因此不是傳統環球獎勵票產品。" }
+      ],
+      "sourceUrls": [
+        "https://www.flysas.com/en/eurobonus/points/use/partner-award-flights/"
+      ]
+    },
+    {
+      "id": "saudia-alfursan-skyteam-awards",
+      "programName": "AlFursan",
+      "airlines": ["SV"],
+      "alliance": "skyteam",
+      "scope": "alliance-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "AlFursan Reward Miles can be redeemed for free tickets on Saudia and SkyTeam airline partners.", "zhTW": "AlFursan Reward Miles 可兌換 Saudia 與 SkyTeam 航空夥伴的免費獎勵票。" },
+        { "en": "Award redemption is available through Saudia web/customer-care channels and remains subject to the program terms and partner availability.", "zhTW": "獎勵票可透過 Saudia 網站／客服管道辦理，並受計畫條款與夥伴機位限制。" },
+        { "en": "The sourced rules do not define a separate AlFursan RTW mileage product.", "zhTW": "目前來源沒有另行定義 AlFursan 哩程環球票產品。" }
+      ],
+      "sourceUrls": [
+        "https://prod.dcloud.saudia.com/pages/help/faqs/alfursan-faq"
+      ]
+    },
+    {
+      "id": "vietnam-lotusmiles-skyteam-awards",
+      "programName": "Lotusmiles",
+      "airlines": ["VN"],
+      "alliance": "skyteam",
+      "scope": "alliance-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "Lotusmiles can redeem awards on Vietnam Airlines, SkyTeam and other eligible partner airlines.", "zhTW": "Lotusmiles 可兌換 Vietnam Airlines、SkyTeam 與其他合資格合作航空獎勵票。" },
+        { "en": "Vietnam Airlines and SkyTeam flights can be combined subject to marketed/operated flight eligibility.", "zhTW": "可依行銷／實際營運航班資格組合 Vietnam Airlines 與 SkyTeam 航班。" },
+        { "en": "Published partner pricing is applied by flight segment; the ticket is generally valid for 12 months from issue.", "zhTW": "官方夥伴兌換表依飛行航段計價；獎勵票一般自開票日起有效 12 個月。" }
+      ],
+      "sourceUrls": [
+        "https://www.vietnamairlines.com/vn/en/lotusmiles/redeem-mile/with-skyteam"
+      ]
+    },
+    {
+      "id": "virgin-atlantic-flying-club-partner-awards",
+      "programName": "Flying Club",
+      "airlines": ["VS"],
+      "alliance": "skyteam",
+      "scope": "partner-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "Flying Club points can be redeemed on participating SkyTeam and airline partners under partner-specific award rules.", "zhTW": "Flying Club 點數可依各夥伴獎勵規則兌換參與的 SkyTeam 與合作航空。" },
+        { "en": "Partner award pages generally require the eligible airline to operate the flight; marketing codeshares operated by another airline can be excluded.", "zhTW": "夥伴獎勵票通常要求合資格航空實際營運；由其他航空執飛的行銷共掛班號可能不適用。" },
+        { "en": "No separate current Flying Club RTW award product is published.", "zhTW": "目前沒有另行公布 Flying Club 哩程環球票產品。" }
+      ],
+      "sourceUrls": [
+        "https://www.virginatlantic.com/en-US/flying-club/airline-partners/delta"
+      ]
+    },
+    {
+      "id": "xiamenair-egret-club-skyteam-awards",
+      "programName": "Egret Club",
+      "airlines": ["MF"],
+      "alliance": "skyteam",
+      "scope": "alliance-award",
+      "status": "active",
+      "checkedOn": "2026-09-07",
+      "keyRules": [
+        { "en": "The current Egret Club member handbook supports mileage redemption with SkyTeam partner airlines under the program's partner-award rules.", "zhTW": "現行 Egret Club 會員手冊支持依夥伴獎勵規則兌換 SkyTeam 合作航空。" },
+        { "en": "SkyTeam partner awards are maintained as alliance-award references; no separate current XiamenAir RTW mileage product is published.", "zhTW": "SkyTeam 夥伴獎勵票目前以聯盟獎勵票規則參考收錄；沒有另行公布 XiamenAir 哩程環球票產品。" }
+      ],
+      "sourceUrls": [
+        "https://cdn-mfemas.xiamenair.com/cms_mobile/newmemberHandbook.html"
+      ]
     }
   ]
 }

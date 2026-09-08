@@ -8,11 +8,11 @@
  *
  * Format:
  *
- *   gcmp · SFO → NRT → BKK · Business · Rules 2026.4
+ *   gcmp · SFO → NRT → BKK · Mixed cabin · Rules 2026.4
  *
- *   LEG       OP  FC  DIST       AA AAdvantage    Alaska MP
- *   SFO→NRT   AA  J     4,470          5,587         5,587
- *   NRT→BKK   JL  D     2,962          3,703         3,703
+ *   LEG       OP  CAB  FC  DIST       AA AAdvantage    Alaska MP
+ *   SFO→NRT   AA  Y    J     4,470          5,587         5,587
+ *   NRT→BKK   JL  J    D     2,962          3,703         3,703
  *   ────────────────────────────────────────────────────────
  *   TOTAL              7,432          9,290         9,290 nm
  *
@@ -28,7 +28,7 @@ import type {
   RoutingRequest,
   RoutingResult,
 } from './types.ts';
-import { PROGRAM_LABELS } from './types.ts';
+import { isFlightLeg, PROGRAM_LABELS } from './types.ts';
 
 interface FormatInput {
   readonly request: RoutingRequest;
@@ -43,6 +43,21 @@ const CABIN_DISPLAY: Record<CabinId, string> = {
   business: 'Business',
   first: 'First',
 };
+const CABIN_SHORT: Record<CabinId, string> = {
+  economy: 'Y',
+  'premium-economy': 'W',
+  business: 'J',
+  first: 'F',
+};
+
+function cabinSummary(request: RoutingRequest): string {
+  const cabins = request.groups.flatMap((group) => group.legs)
+    .filter(isFlightLeg)
+    .map((leg) => leg.cabin);
+  if (cabins.length === 0 || cabins.some((cabin) => cabin === undefined)) return 'Cabin by leg';
+  const unique = [...new Set(cabins.filter((cabin): cabin is CabinId => cabin !== undefined))];
+  return unique.length === 1 && unique[0] ? CABIN_DISPLAY[unique[0]] : 'Mixed cabin';
+}
 
 function chainOf(legs: ReadonlyArray<Leg>): string {
   if (legs.length === 0) return '';
@@ -84,7 +99,8 @@ function formatGroup(
     8,
     ...legs.map((l) => `${l.from}→${l.to}`.length),
   );
-  const OP_W = 3;
+  const OP_W = 4;
+  const CAB_W = 3;
   const FC_W = 2;
   const DIST_W = Math.max(
     6,
@@ -107,6 +123,8 @@ function formatGroup(
     '  ' +
     padR('OP', OP_W) +
     '  ' +
+    padR('CAB', CAB_W) +
+    '  ' +
     padR('FC', FC_W) +
     '  ' +
     padL('DIST', DIST_W) +
@@ -120,18 +138,21 @@ function formatGroup(
   const dataRows = group.byLeg.map((ld, i) => {
     const leg = legs[i];
     if (!leg) return '';
+    const flight = isFlightLeg(leg) ? leg : null;
     return (
       padR(`${ld.leg.from}→${ld.leg.to}`, ROUTE_W) +
       '  ' +
-      padR(ld.leg.operatingCarrier, OP_W) +
+      padR(flight ? flight.operatingCarrier : 'SURF', OP_W) +
       '  ' +
-      padR(leg.fareClass ?? '—', FC_W) +
+      padR(flight?.cabin ? CABIN_SHORT[flight.cabin] : '—', CAB_W) +
+      '  ' +
+      padR(flight ? (flight.fareClass ?? '—') : '—', FC_W) +
       '  ' +
       padL(fmtN(ld.distanceNm), DIST_W) +
       programOrder
         .map((id, pi) => {
           const e = group.programs[id]?.byLeg[i];
-          const val = e && !e.missingRule ? fmtN(e.rdm) : '—';
+          const val = flight && e && !e.missingRule ? fmtN(e.rdm) : '—';
           return '  ' + padL(val, progWidths[pi] ?? 4);
         })
         .join('')
@@ -139,7 +160,7 @@ function formatGroup(
   });
 
   const totalsRow =
-    padR('TOTAL', ROUTE_W + 2 + OP_W + 2 + FC_W) +
+    padR('TOTAL', ROUTE_W + 2 + OP_W + 2 + CAB_W + 2 + FC_W) +
     '  ' +
     padL(fmtN(group.totalDistanceNm), DIST_W) +
     programOrder
@@ -159,7 +180,7 @@ function formatGroup(
 
 export function formatForumPost(input: FormatInput): string {
   const { request, result, shareUrl } = input;
-  const cabinLabel = CABIN_DISPLAY[request.cabin];
+  const cabinLabel = cabinSummary(request);
   const allChains = request.groups.map((g) => chainOf(g.legs)).filter(Boolean);
   const headerLine =
     `gcmp · ${allChains.join('   /   ')} · ${cabinLabel} · ` +

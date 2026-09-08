@@ -51,7 +51,11 @@ const AwardPricingProductBaseSchema = z.object({
   productId: z.string().regex(/^[a-z0-9][a-z0-9-]*$/),
   label: z.string().min(1),
   confidence: z.enum(['official-fixed', 'published-chart', 'reference-recheck']),
-  currency: z.literal('miles'),
+  currency: z.enum(['miles', 'points']),
+  /** Product-level verification avoids falsely re-dating the other charts. */
+  verifiedOn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  /** New-booking applicability, never inferred from a flight departure date. */
+  bookingEffectiveFrom: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   sourceUrls: z.array(z.string().url()).min(1),
   notes: z.array(z.string()).optional(),
   /**

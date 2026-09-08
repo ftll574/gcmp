@@ -1,5 +1,9 @@
 import { describe, expect, test } from 'vitest';
-import { RtwRuleCatalogSchema, RtwRuleSetSchema } from '../../../src/lib/schemas/rtw-rule.ts';
+import {
+  RtwRuleCatalogSchema,
+  RtwRuleSetSchema,
+  RtwTicketingProgramSchema,
+} from '../../../src/lib/schemas/rtw-rule.ts';
 
 describe('RtwRuleSetSchema', () => {
   test('accepts an alliance cash RTW fare rule set', () => {
@@ -164,6 +168,41 @@ describe('RtwRuleSetSchema', () => {
       }),
     ).toThrow();
   });
+
+  test('accepts product-specific RTW direction and origin-country primitives', () => {
+    const parsed = RtwRuleSetSchema.parse({
+      id: 'advanced-rtw-product',
+      label: 'Advanced RTW Product',
+      kind: 'award-rtw',
+      owner: 'airline',
+      airline: 'OZ',
+      alliance: 'star',
+      version: '2026.2',
+      status: 'active',
+      sourceUrls: ['https://example.com/rules'],
+      limits: {
+        maxStopoversPerCountry: 2,
+        maxVisitsPerCity: 3,
+        maxOpenJaws: 1,
+      },
+      geography: {
+        startEnd: 'same-country',
+        directionPolicy: 'iata-area-continuous',
+        originCountryTerminalOnly: true,
+        forbidOriginCountryStopoversWhenOriginIn: ['JP'],
+      },
+      airlineEligibility: {
+        type: 'alliance-members',
+        alliance: 'star',
+      },
+    });
+
+    expect(parsed.limits.maxStopoversPerCountry).toBe(2);
+    expect(parsed.limits.maxVisitsPerCity).toBe(3);
+    expect(parsed.limits.maxOpenJaws).toBe(1);
+    expect(parsed.geography.directionPolicy).toBe('iata-area-continuous');
+    expect(parsed.geography.forbidOriginCountryStopoversWhenOriginIn).toEqual(['JP']);
+  });
 });
 
 describe('RtwRuleCatalogSchema', () => {
@@ -175,5 +214,45 @@ describe('RtwRuleCatalogSchema', () => {
         products: [],
       }),
     ).toThrow();
+  });
+
+  test('defaults the ticketing reference layer for legacy catalogs', () => {
+    const parsed = RtwRuleCatalogSchema.parse({
+      version: '2026.2',
+      lastVerified: '2026-05-23',
+      products: [{
+        id: 'legacy-product',
+        label: 'Legacy',
+        kind: 'award-rtw',
+        owner: 'airline',
+        airline: 'BR',
+        alliance: 'star',
+        version: '2026.2',
+        status: 'active',
+        sourceUrls: ['https://example.com/rules'],
+        limits: {},
+        geography: { startEnd: 'open', directionPolicy: 'flexible' },
+        airlineEligibility: { type: 'alliance-members', alliance: 'star' },
+      }],
+    });
+    expect(parsed.ticketingPrograms).toEqual([]);
+  });
+});
+
+describe('RtwTicketingProgramSchema', () => {
+  test('accepts a bilingual reference-only partner award', () => {
+    const parsed = RtwTicketingProgramSchema.parse({
+      id: 'finnair-plus-oneworld-awards',
+      programName: 'Finnair Plus',
+      airlines: ['AY'],
+      alliance: 'oneworld',
+      scope: 'partner-award',
+      status: 'active',
+      checkedOn: '2026-09-07',
+      keyRules: [{ en: 'Partner awards are available.', zhTW: '可兌換夥伴航空獎勵票。' }],
+      sourceUrls: ['https://www.finnair.com/en/finnair-plus'],
+    });
+    expect(parsed.airlines).toEqual(['AY']);
+    expect(parsed.plannerProductId).toBeUndefined();
   });
 });

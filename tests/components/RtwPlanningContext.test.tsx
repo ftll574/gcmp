@@ -34,7 +34,7 @@ function renderContext(selectedProductId: string, onProductChange = vi.fn()) {
   );
 }
 
-describe('RtwPlanningContext two-step selection', () => {
+describe('RtwPlanningContext product selection', () => {
   test('renders one chip per alliance present in the product list', () => {
     const starProduct = catalog.products.find((p) => p.alliance === 'star');
     if (!starProduct) throw new Error('no star product in catalog');
@@ -77,20 +77,17 @@ describe('RtwPlanningContext two-step selection', () => {
     expect(onProductChange).not.toHaveBeenCalled();
   });
 
-  test('the product select narrows to the active alliance only', () => {
+  test('the primary product select exposes products across alliances without requiring a chip first', () => {
+    const starProduct = catalog.products.find((p) => p.alliance === 'star');
     const oneworldProduct = catalog.products.find((p) => p.alliance === 'oneworld');
-    if (!oneworldProduct) throw new Error('no oneworld product in catalog');
+    if (!starProduct || !oneworldProduct) throw new Error('catalog missing alliances');
 
     renderContext(oneworldProduct.id);
     const select = screen.getByLabelText('RTW product') as HTMLSelectElement;
     const optionIds = [...select.options].map((o) => o.value);
-    // Every visible option belongs to oneworld — cross-alliance products
-    // stay reachable through the alliance chips, not this select.
-    for (const id of optionIds) {
-      const product = catalog.products.find((p) => p.id === id);
-      expect(product?.alliance).toBe('oneworld');
-    }
     expect(optionIds).toContain(oneworldProduct.id);
+    expect(optionIds).toContain(starProduct.id);
+    expect(optionIds).toEqual(catalog.products.map((product) => product.id));
   });
 
   test('member carrier codes render for the active alliance', () => {

@@ -102,20 +102,20 @@ export const CONTINENT_ORDER = [
   'antarctica',
 ] as const;
 
-export interface CountryDestinationGroup {
+export interface CountryDestinationGroup<T = DestinationOption> {
   readonly country: string;
-  readonly destinations: ReadonlyArray<DestinationOption>;
+  readonly destinations: ReadonlyArray<T>;
 }
 
-export interface SubregionDestinationGroup {
+export interface SubregionDestinationGroup<T = DestinationOption> {
   /** null = countries not covered by the optional subregion tier. */
   readonly subregion: string | null;
-  readonly countries: ReadonlyArray<CountryDestinationGroup>;
+  readonly countries: ReadonlyArray<CountryDestinationGroup<T>>;
 }
 
-export interface ContinentDestinationGroup {
+export interface ContinentDestinationGroup<T = DestinationOption> {
   readonly continent: string;
-  readonly subregions: ReadonlyArray<SubregionDestinationGroup>;
+  readonly subregions: ReadonlyArray<SubregionDestinationGroup<T>>;
 }
 
 function continentRank(continent: string): number {
@@ -129,15 +129,15 @@ function continentRank(continent: string): number {
  * subregion from the geo catalog maps. Destinations keep their sorted
  * order inside each country bucket.
  */
-export function groupDestinationsByGeo(
-  destinations: ReadonlyArray<DestinationOption>,
+export function groupDestinationsByGeo<T extends { readonly iata: string }>(
+  destinations: ReadonlyArray<T>,
   countryOf: (iata: string) => string | undefined,
   continentOf: (country: string) => string | undefined,
   subregionOf: (country: string) => string | undefined,
-): ReadonlyArray<ContinentDestinationGroup> {
+): ReadonlyArray<ContinentDestinationGroup<T>> {
   interface CountryBucket {
-    countries: Map<string, DestinationOption[]>;
-    subregions: Map<string | null, Map<string, DestinationOption[]>>;
+    countries: Map<string, T[]>;
+    subregions: Map<string | null, Map<string, T[]>>;
   }
   const byContinent = new Map<string, CountryBucket>();
 

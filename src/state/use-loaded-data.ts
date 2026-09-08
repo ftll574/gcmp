@@ -29,6 +29,7 @@ import {
 } from '../lib/schemas/network-gaps.ts';
 import { ProgramSchema, type Program } from '../lib/schemas/program.ts';
 import { RtwRuleCatalogSchema, type RtwRuleCatalog } from '../lib/schemas/rtw-rule.ts';
+import { parseRouteNetworkCatalog, type RouteNetworkCatalog } from '../lib/schemas/route-network.ts';
 import {
   PROGRAM_REGISTRY,
   type Airline,
@@ -76,6 +77,17 @@ export interface LoadedData {
    * (same degrade-to-null contract as `networkGaps`).
    */
   schedules: ReadonlyArray<ScheduleEntry> | null;
+  /** Published route observations, never a substitute for dated schedules. */
+  routeNetwork: RouteNetworkCatalog | null;
+  /** Build-time global route counts used by the plan gate without loading the
+   * multi-megabyte runtime graph. Null if runtime metadata is unavailable. */
+  routeNetworkCounts: ReadonlyMap<string, number> | null;
+  /** Full premerged graph is fetched only when the user explicitly expands
+   * the all-routes disclosure. */
+  routeNetworkRuntimeUrl: string;
+  /** Planner discovery fetches only the first-letter shard for its active
+   * origin instead of downloading the complete global graph. */
+  routeNetworkOriginShardBaseUrl: string;
   /**
    * CI SkyTeAm partner-award station→zone map (geo/ci-zones.json). Null if
    * the file is unavailable/malformed — the panel then shows no per-leg
@@ -107,6 +119,18 @@ async function fetchJsonOptional(url: string): Promise<unknown | null> {
   }
 }
 
+function parseRouteNetworkCounts(raw: unknown): ReadonlyMap<string, number> | null {
+  if (typeof raw !== 'object' || raw === null || Array.isArray(raw)) return null;
+  const counts = (raw as { routeCountByCarrier?: unknown }).routeCountByCarrier;
+  if (typeof counts !== 'object' || counts === null || Array.isArray(counts)) return null;
+  const result = new Map<string, number>();
+  for (const [carrier, value] of Object.entries(counts)) {
+    if (!/^[A-Z0-9]{2,3}$/.test(carrier) || !Number.isInteger(value) || (value as number) < 0) return null;
+    result.set(carrier, value as number);
+  }
+  return result.size > 0 ? result : null;
+}
+
 export function useLoadedData(baseUrlOverride?: string): LoadState {
   const [state, setState] = useState<LoadState>({ status: 'loading' });
 
@@ -129,6 +153,8 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
           networkGapsRaw,
           schedulesRaw,
           ciZonesRaw,
+          routeNetworkRaw,
+          runtimeRouteNetworkMetaRaw,
           ...programRaws
         ] = await Promise.all([
           fetchJsonStrict(`${baseUrl}/data/airports.json`),
@@ -141,11 +167,31 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
           fetchJsonOptional(`${baseUrl}/data/network-gaps/current.json`),
           fetchJsonOptional(`${baseUrl}/data/schedules/current.json`),
           fetchJsonOptional(`${baseUrl}/data/geo/ci-zones.json`),
+          fetchJsonOptional(`${baseUrl}/data/route-network/current.json`),
+          fetchJsonOptional(`${baseUrl}/data/route-network/runtime-current.meta.json`),
           ...programDirs.map((dir) =>
             fetchJsonOptional(`${baseUrl}/data/programs/${dir}/current.json`),
           ),
         ]);
         if (cancelled) return;
+
+        const airports = parseAirportCatalog(airportsRaw);
+        let routeNetwork: RouteNetworkCatalog | null = null;
+        if (routeNetworkRaw !== null && routeNetworkRaw !== undefined) {
+          try {
+            const knownAirports = new Set(airports.map((airport) => airport.iata));
+            routeNetwork = parseRouteNetworkCatalog(routeNetworkRaw, knownAirports);
+          } catch (e) {
+            console.warn('route-network/current.json invalid; using schedule-only discovery:', e);
+          }
+        }
+        let routeNetworkCounts: ReadonlyMap<string, number> | null = null;
+        if (routeNetwork !== null && runtimeRouteNetworkMetaRaw !== null && runtimeRouteNetworkMetaRaw !== undefined) {
+          routeNetworkCounts = parseRouteNetworkCounts(runtimeRouteNetworkMetaRaw);
+          if (routeNetworkCounts === null) {
+            console.warn('route-network/runtime-current.meta.json invalid; plan gate uses curated route counts.');
+          }
+        }
 
         let countryContinents: ReadonlyMap<string, ContinentId> | null = null;
         let countrySubregions: ReadonlyMap<string, string> | null = null;
@@ -226,14 +272,12 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
           }
         });
 
-        if (programs.size === 0) {
-          throw new Error('No loyalty programs loaded successfully.');
-        }
-
+        // Earning programs are legacy, optional inputs to secondary tools.
+        // Their absence must never block the independent RTW planner.
         setState({
           status: 'ready',
           data: {
-            airports: parseAirportCatalog(airportsRaw),
+            airports,
             airlines: airlinesRaw as Airline[],
             programs,
             allianceCatalog,
@@ -245,6 +289,10 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
             airportContinentOverrides,
             networkGaps,
             schedules,
+            routeNetwork,
+            routeNetworkCounts,
+            routeNetworkRuntimeUrl: `${baseUrl}/data/route-network/runtime-current.json`,
+            routeNetworkOriginShardBaseUrl: `${baseUrl}/data/route-network/runtime-origins`,
             ciZones,
           },
         });
