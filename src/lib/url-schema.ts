@@ -68,7 +68,7 @@ const LETTER_BY_TIER: Record<EliteTier, string> = {
   high: 'h',
   top: 't',
 };
-import type { ProjectionId } from './calc/projections.ts';
+import type { ProjectionId } from './calc/projection-model.ts';
 
 const SCHEMA_VERSION = 'v1';
 

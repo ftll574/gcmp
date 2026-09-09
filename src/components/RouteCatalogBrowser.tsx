@@ -15,7 +15,7 @@ import {
 } from '../lib/rtw/route-catalog-browser.ts';
 import './RouteCatalogBrowser.css';
 
-interface Props {
+export interface RouteCatalogBrowserProps {
   readonly routeNetwork?: RouteNetworkCatalog | null | undefined;
   readonly schedules?: ReadonlyArray<ScheduleEntry> | null | undefined;
   readonly officialSchedules?: RouteBrowserOfficialCatalog | null | undefined;
@@ -186,7 +186,7 @@ export function RouteCatalogBrowser({
   airports,
   countryContinents,
   airportContinentOverrides,
-}: Props): React.ReactElement {
+}: RouteCatalogBrowserProps): React.ReactElement {
   const { locale: appLocale, t } = useLocale();
   const locale: 'en' | 'zh-TW' = appLocale === 'zh-TW' ? 'zh-TW' : 'en';
   const copy = COPY[locale];

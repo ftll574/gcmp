@@ -13,7 +13,7 @@
  * backward compatibility with already-shared URLs — they are just inert.
  */
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { isCalendarDate } from './lib/calendar-date.ts';
 import { selectedDepartureDate, type FlightSelection } from './lib/schemas/dated-schedules.ts';
 import { ActionRow } from './components/ActionRow.tsx';
@@ -23,7 +23,6 @@ import { LanguagePicker } from './components/LanguagePicker.tsx';
 import { LegChain } from './components/LegChain.tsx';
 import { MapErrorBoundary } from './components/MapErrorBoundary.tsx';
 import { ImportFromGcmap } from './components/ImportFromGcmap.tsx';
-import { MapView } from './components/MapView.tsx';
 import { MobileBanner } from './components/MobileBanner.tsx';
 import { RtwLegTable } from './components/RtwLegTable.tsx';
 import { RtwPlanGate } from './components/RtwPlanGate.tsx';
@@ -33,12 +32,11 @@ import type { NextLegMapGuide } from './lib/rtw/next-leg-discovery.ts';
 import { RtwTripDates } from './components/RtwTripDates.tsx';
 import { RtwValidationPanel } from './components/RtwValidationPanel.tsx';
 import { SampleRoutings } from './components/SampleRoutings.tsx';
-import { SeasonalItineraryFinder } from './components/SeasonalItineraryFinder.tsx';
 import { SavedRoutings } from './components/SavedRoutings.tsx';
 import { useLocale } from './i18n/use-locale.ts';
 import { buildAirportIndex } from './lib/airport-index.ts';
 import { computeRouting } from './lib/calc/index.ts';
-import { DEFAULT_PROJECTION } from './lib/calc/projections.ts';
+import { DEFAULT_PROJECTION } from './lib/calc/projection-model.ts';
 import {
   eligibleAirlinesForProduct,
   firstEligibleCarrierForProduct,
@@ -66,6 +64,15 @@ import { useRoutingState } from './state/use-routing-state.ts';
 import { useSavedRoutings } from './state/use-saved-routings.ts';
 import { useViewportWidth } from './state/use-viewport.ts';
 import './App.css';
+
+const LazyMapView = lazy(() =>
+  import('./components/MapView.tsx').then((module) => ({ default: module.MapView })),
+);
+const LazySeasonalItineraryFinder = lazy(() =>
+  import('./components/SeasonalItineraryFinder.tsx').then((module) => ({
+    default: module.SeasonalItineraryFinder,
+  })),
+);
 
 const MOBILE_BREAKPOINT = 768;
 type InspectorPanel = 'rules' | 'tools' | 'saved';
@@ -739,26 +746,28 @@ function Ready({
                   {!isMobile && (
                     <AirportAutocomplete index={airportIndex} onCommit={addAirport} />
                   )}
-                  <SeasonalItineraryFinder
-                    productId={selectedRtwProductId}
-                    templateUrl={`${import.meta.env.BASE_URL}data/rtw-seasonal/eva-star-w26.json`}
-                    initialStartDate={routing.startDate}
-                    onApply={(seasonal) => {
-                      const legs: Leg[] = seasonalItineraryLegs(seasonal);
-                      setRouting({
-                        ...routing,
-                        groups: [{ legs }],
-                        rtwProductId: selectedRtwProductId,
-                        startDate: seasonal.actualStartDate,
-                        endDate: seasonal.endDate,
-                      });
-                      setActiveGroupIndex(0);
-                      setPendingByGroup(new Map());
-                      setNextLegSelection(null);
-                      setNextLegMapGuide(null);
-                      setRouteSetupExpanded(true);
-                    }}
-                  />
+                  <Suspense fallback={null}>
+                    <LazySeasonalItineraryFinder
+                      productId={selectedRtwProductId}
+                      templateUrl={`${import.meta.env.BASE_URL}data/rtw-seasonal/eva-star-w26.json`}
+                      initialStartDate={routing.startDate}
+                      onApply={(seasonal) => {
+                        const legs: Leg[] = seasonalItineraryLegs(seasonal);
+                        setRouting({
+                          ...routing,
+                          groups: [{ legs }],
+                          rtwProductId: selectedRtwProductId,
+                          startDate: seasonal.actualStartDate,
+                          endDate: seasonal.endDate,
+                        });
+                        setActiveGroupIndex(0);
+                        setPendingByGroup(new Map());
+                        setNextLegSelection(null);
+                        setNextLegMapGuide(null);
+                        setRouteSetupExpanded(true);
+                      }}
+                    />
+                  </Suspense>
                   {showSamples && (
                     <details className="route-editor-details route-examples-details">
                       <summary>{t('rtw.workflow.examples')}</summary>
@@ -905,26 +914,28 @@ function Ready({
             ))}
           </div>
           <MapErrorBoundary groups={routing.groups}>
-            <MapView
-              key={routing.projection ?? DEFAULT_PROJECTION}
-              airportLookup={airportIndex.byIata}
-              airports={data.airports}
-              activeAirports={activeChainAirports}
-              groups={routing.groups}
-              activeIndex={safeActiveIndex}
-              width={mapSize.width}
-              height={mapSize.height}
-              projection={routing.projection ?? DEFAULT_PROJECTION}
-              showDistances={showDistances}
-              onAirportCommit={addAirport}
-              nextLegGuide={nextLegMapGuide}
-              selectedNextStop={
-                nextLegSelection?.origin === nextLegMapGuide?.origin ? nextLegSelection?.to ?? null : null
-              }
-              onNextLegSelect={(to) => {
-                setNextLegSelection(nextLegMapGuide && to ? { origin: nextLegMapGuide.origin, to } : null);
-              }}
-            />
+            <Suspense fallback={<div className="app-map-loading" aria-hidden="true" />}>
+              <LazyMapView
+                key={routing.projection ?? DEFAULT_PROJECTION}
+                airportLookup={airportIndex.byIata}
+                airports={data.airports}
+                activeAirports={activeChainAirports}
+                groups={routing.groups}
+                activeIndex={safeActiveIndex}
+                width={mapSize.width}
+                height={mapSize.height}
+                projection={routing.projection ?? DEFAULT_PROJECTION}
+                showDistances={showDistances}
+                onAirportCommit={addAirport}
+                nextLegGuide={nextLegMapGuide}
+                selectedNextStop={
+                  nextLegSelection?.origin === nextLegMapGuide?.origin ? nextLegSelection?.to ?? null : null
+                }
+                onNextLegSelect={(to) => {
+                  setNextLegSelection(nextLegMapGuide && to ? { origin: nextLegMapGuide.origin, to } : null);
+                }}
+              />
+            </Suspense>
           </MapErrorBoundary>
         </div>
         <aside

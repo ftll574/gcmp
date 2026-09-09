@@ -20,19 +20,9 @@ import {
   geoOrthographic,
 } from 'd3-geo';
 import type { GeoProjection } from 'd3-geo';
+import type { ProjectionId } from './projection-model.ts';
 
-export type ProjectionId =
-  | 'mercator'
-  | 'equirectangular'
-  | 'azimuthal-equidistant'
-  | 'orthographic';
-
-export const PROJECTION_IDS: ReadonlyArray<ProjectionId> = [
-  'mercator',
-  'equirectangular',
-  'azimuthal-equidistant',
-  'orthographic',
-];
+export { DEFAULT_PROJECTION, PROJECTION_IDS, type ProjectionId } from './projection-model.ts';
 
 export interface ProjectionOptions {
   width: number;
@@ -111,8 +101,6 @@ export function project(
  * and the world continues seamlessly from -180°). v1.0 default; the v1.1
  * 3D-globe default was reverted in v1.2 in favor of wrapping 2D.
  */
-export const DEFAULT_PROJECTION: ProjectionId = 'mercator';
-
 /**
  * Whether the projection tiles horizontally (Google-Maps-style wraparound).
  * Cylindrical projections (Mercator + Equirectangular) tile. Azimuthal /

@@ -1,7 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { RouteCatalogBrowser } from './RouteCatalogBrowser.tsx';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { useLocale } from '../i18n/use-locale.ts';
-import { officialScheduleCatalog } from '../lib/official-schedule-catalog.ts';
 import type { AllianceCatalog } from '../lib/schemas/alliance.ts';
 import type { ContinentId } from '../lib/schemas/country-continent.ts';
 import type { ScheduleEntry } from '../lib/schemas/flight-schedules.ts';
@@ -14,6 +12,11 @@ type AllianceId = NonNullable<RtwRuleSet['alliance']>;
 
 const ALLIANCE_ORDER: ReadonlyArray<AllianceId> = ['star', 'oneworld', 'skyteam'];
 const routeDetailsCache = new Map<string, RouteNetworkCatalog>();
+const LazyRouteCatalogBrowser = lazy(() =>
+  import('./RouteCatalogBrowserWithOfficialSchedules.tsx').then((module) => ({
+    default: module.RouteCatalogBrowserWithOfficialSchedules,
+  })),
+);
 
 interface Props {
   readonly products: ReadonlyArray<RtwRuleSet>;
@@ -390,15 +393,16 @@ export function RtwPlanGate({
             >
               <summary>{t('rtw.onboarding.showKnownRoutes')}</summary>
               {showKnownRoutes && (
-                <RouteCatalogBrowser
-                  routeNetwork={detailedRouteNetwork}
-                  schedules={schedules}
-                  officialSchedules={officialScheduleCatalog}
-                  memberCodes={memberCodes}
-                  airports={airportLookup}
-                  countryContinents={countryContinents}
-                  airportContinentOverrides={airportContinentOverrides}
-                />
+                <Suspense fallback={null}>
+                  <LazyRouteCatalogBrowser
+                    routeNetwork={detailedRouteNetwork}
+                    schedules={schedules}
+                    memberCodes={memberCodes}
+                    airports={airportLookup}
+                    countryContinents={countryContinents}
+                    airportContinentOverrides={airportContinentOverrides}
+                  />
+                </Suspense>
               )}
             </details>
           </section>

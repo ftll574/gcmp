@@ -215,7 +215,7 @@ export interface RoutingRequest {
   /** Rules version. Undefined means "use the current rules version". */
   readonly rulesVersion?: string;
   /** Map projection preference. Undefined → default (mercator). */
-  readonly projection?: import('./calc/projections.ts').ProjectionId;
+  readonly projection?: import('./calc/projection-model.ts').ProjectionId;
   /** RTW trip start date, ISO YYYY-MM-DD. Optional until user sets dates. */
   readonly startDate?: string;
   /** RTW trip final arrival date, ISO YYYY-MM-DD. Optional until user sets dates. */

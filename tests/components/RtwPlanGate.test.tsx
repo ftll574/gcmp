@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import { afterEach, expect, test, vi } from 'vitest';
 import { RtwPlanGate } from '../../src/components/RtwPlanGate.tsx';
@@ -84,21 +84,21 @@ test('planner-supported airlines are ordered ahead of reference-only members', (
   expect(Math.max(...plannerIndexes)).toBeLessThan(Math.min(...referenceIndexes));
 });
 
-test('route-pair details are materialized only after the disclosure is opened', () => {
+test('route-pair details are materialized only after the disclosure is opened', async () => {
   setup();
   fireEvent.click(document.querySelector<HTMLButtonElement>('[data-alliance="oneworld"]')!);
   expect(document.querySelector('.route-browser')).toBeNull();
   const details = document.querySelector<HTMLDetailsElement>('.rtw-gate-routes')!;
   details.open = true;
   fireEvent(details, new Event('toggle'));
-  expect(document.querySelector('.route-browser')).toBeInTheDocument();
+  await waitFor(() => expect(document.querySelector('.route-browser')).toBeInTheDocument());
   // The new browser exposes only the first grouping level initially; airport,
   // route, carrier and flight details mount progressively as each level opens.
   expect(document.querySelector('.route-browser-continent')).toBeInTheDocument();
   expect(document.querySelector('.route-browser-airport')).toBeNull();
 });
 
-test('SkyTeam exposes the cataloged CI plan with its RTW limitation instead of implying full coverage', () => {
+test('SkyTeam exposes the cataloged CI plan with its RTW limitation instead of implying full coverage', async () => {
   setup();
   fireEvent.click(document.querySelector<HTMLButtonElement>('[data-alliance="skyteam"]')!);
   const ci = document.querySelector<HTMLButtonElement>('[data-product-id="china-airlines-skyteam-partner-award"]');
@@ -108,18 +108,18 @@ test('SkyTeam exposes the cataloged CI plan with its RTW limitation instead of i
   const details = document.querySelector<HTMLDetailsElement>('.rtw-gate-routes')!;
   details.open = true;
   fireEvent(details, new Event('toggle'));
-  expect(document.querySelector('.route-browser-empty')).toBeInTheDocument();
+  await waitFor(() => expect(document.querySelector('.route-browser-empty')).toBeInTheDocument());
 });
 
-test('Star route browser exposes current cataloged EVA flight numbers only after drilling into the route', () => {
+test('Star route browser exposes current cataloged EVA flight numbers only after drilling into the route', async () => {
   setup();
   fireEvent.click(document.querySelector<HTMLButtonElement>('[data-alliance="star"]')!);
   const details = document.querySelector<HTMLDetailsElement>('.rtw-gate-routes')!;
   details.open = true;
   fireEvent(details, new Event('toggle'));
 
+  await waitFor(() => expect(document.querySelector('.route-browser-continent')).toBeInTheDocument());
   const continent = document.querySelector<HTMLDetailsElement>('.route-browser-continent')!;
-  expect(continent).toBeInTheDocument();
   continent.open = true;
   fireEvent(continent, new Event('toggle'));
 
