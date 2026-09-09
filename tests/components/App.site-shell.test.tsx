@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { SiteApp } from '../../src/SiteApp.tsx';
@@ -61,9 +61,29 @@ test('homepage showcases can rotate without loading planner data', async () => {
 test('route library is a separate page and keeps the heavy catalog out of the homepage', async () => {
   render(<SiteApp />);
   await screen.findByRole('heading', { name: /把世界變成一條/ });
-  expect(screen.queryByText('我們目前知道的世界航線。')).not.toBeInTheDocument();
+  expect(screen.queryByText('把世界航線看成一張網。')).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: '瀏覽所有航線' }));
-  expect(await screen.findByRole('heading', { name: '我們目前知道的世界航線。' })).toBeInTheDocument();
+  expect(await screen.findByRole('heading', { name: '把世界航線看成一張網。' })).toBeInTheDocument();
+  expect(await screen.findByRole('region', { name: '航網總覽' })).toBeInTheDocument();
+  expect(screen.getByRole('img', { name: '目前航網密度' })).toBeInTheDocument();
+  expect(new URLSearchParams(window.location.search).get('view')).toBe('routes');
+});
+
+test('site navigation remains available after entering the planner and returns to public pages', async () => {
+  render(<SiteApp />);
+  await screen.findByRole('heading', { name: /把世界變成一條/ });
+  fireEvent.click(screen.getByRole('button', { name: '開始規劃 →' }));
+  await waitFor(() => expect(document.querySelector('.rtw-gate')).not.toBeNull(), { timeout: 5_000 });
+
+  const plannerNav = screen.getByRole('navigation', { name: 'Primary navigation' });
+  expect(within(plannerNav).getByRole('button', { name: '規劃' })).toHaveClass('active');
+  fireEvent.click(within(plannerNav).getByRole('button', { name: '首頁' }));
+  expect(await screen.findByRole('heading', { name: /把世界變成一條/ })).toBeInTheDocument();
+  expect(new URLSearchParams(window.location.search).get('view')).toBe('home');
+
+  const homeNav = screen.getByRole('navigation', { name: 'Primary navigation' });
+  fireEvent.click(within(homeNav).getByRole('button', { name: '航線資料庫' }));
+  expect(await screen.findByRole('heading', { name: '把世界航線看成一張網。' })).toBeInTheDocument();
   expect(new URLSearchParams(window.location.search).get('view')).toBe('routes');
 });
 

@@ -32,6 +32,7 @@ export interface RouteCatalogBrowserProps {
   readonly airportBrowseRegions?: ReadonlyMap<string, string> | null | undefined;
   readonly airportContinentOverrides?: ReadonlyMap<string, ContinentId> | null | undefined;
   readonly carrierNames?: ReadonlyMap<string, string> | null | undefined;
+  readonly initialCarrier?: string | null | undefined;
 }
 
 interface LazyDisclosureProps {
@@ -239,12 +240,13 @@ export function RouteCatalogBrowser({
   airportBrowseRegions,
   airportContinentOverrides,
   carrierNames,
+  initialCarrier,
 }: RouteCatalogBrowserProps): React.ReactElement {
   const { locale: appLocale, t } = useLocale();
   const locale: 'en' | 'zh-TW' = appLocale === 'zh-TW' ? 'zh-TW' : 'en';
   const copy = COPY[locale];
   const [mode, setMode] = useState<RouteCatalogGroupMode>('from');
-  const [carrierFilter, setCarrierFilter] = useState<string>('all');
+  const [carrierFilter, setCarrierFilter] = useState<string>(() => initialCarrier ?? 'all');
   const [regionFilter, setRegionFilter] = useState<RouteCatalogRegionFilter>('all');
   const [localRegionFilter, setLocalRegionFilter] = useState<RouteCatalogLocalRegionFilter>('all');
   const pairs = useMemo(() => buildRouteCatalogPairs({

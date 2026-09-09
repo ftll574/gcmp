@@ -46,7 +46,7 @@ export function SiteApp(): React.ReactElement {
 
   return (
     <Suspense fallback={<div className="app-loading site-app-loading" role="status"><p>{t('loading')}</p></div>}>
-      <LazyLoadedApp />
+      <LazyLoadedApp siteView={view} onNavigateSite={navigate} />
     </Suspense>
   );
 }

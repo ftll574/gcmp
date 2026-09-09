@@ -19,12 +19,11 @@ import { selectedDepartureDate, type FlightSelection } from './lib/schemas/dated
 import { ActionRow } from './components/ActionRow.tsx';
 import { AirportAutocomplete } from './components/AirportAutocomplete.tsx';
 import { GroupTabs } from './components/GroupTabs.tsx';
-import { LanguagePicker } from './components/LanguagePicker.tsx';
 import { LegChain } from './components/LegChain.tsx';
 import { MapErrorBoundary } from './components/MapErrorBoundary.tsx';
 import { MobileBanner } from './components/MobileBanner.tsx';
 import { LandingPage } from './components/LandingPage.tsx';
-import type { SiteView } from './components/SiteHeader.tsx';
+import { SiteHeader, type SiteView } from './components/SiteHeader.tsx';
 import { RtwLegTable } from './components/RtwLegTable.tsx';
 import { RtwPlanGate } from './components/RtwPlanGate.tsx';
 import { DestinationsPanel } from './components/DestinationsPanel.tsx';
@@ -89,7 +88,20 @@ const MOBILE_BREAKPOINT = 768;
 type InspectorPanel = 'rules' | 'tools' | 'saved';
 type ResizeHandle = 'editor';
 
-export function App(): React.ReactElement {
+export interface AppProps {
+  readonly siteView?: Exclude<SiteView, 'home'>;
+  readonly onNavigateSite?: (view: SiteView) => void;
+}
+
+export function App({ siteView: controlledSiteView, onNavigateSite: controlledNavigate }: AppProps = {}): React.ReactElement {
+  if (controlledSiteView && controlledNavigate) {
+    return <LoadedSiteApp siteView={controlledSiteView} onNavigateSite={controlledNavigate} />;
+  }
+
+  return <StandaloneApp />;
+}
+
+function StandaloneApp(): React.ReactElement {
   const [siteView, setSiteView] = useState<SiteView>(() => {
     const explicit = new URLSearchParams(window.location.search).get('view');
     if (explicit === 'home' || explicit === 'planner' || explicit === 'routes') return explicit;
@@ -156,18 +168,24 @@ function LoadedSiteApp({ siteView, onNavigateSite }: LoadedSiteAppProps): React.
 
   if (load.status === 'loading') {
     return (
-      <div className="app-loading" role="status">
-        <p>{t('loading')}</p>
+      <div className="site-page planner-site-page">
+        <SiteHeader active={siteView} onNavigate={onNavigateSite} />
+        <div className="app-loading" role="status">
+          <p>{t('loading')}</p>
+        </div>
       </div>
     );
   }
 
   if (load.status === 'error') {
     return (
-      <div className="app-error" role="alert">
-        <h1>gcmp</h1>
-        <p>{t('errors.loadFailed', { message: load.error })}</p>
-        <p>{t('errors.loadFailedHelp')}</p>
+      <div className="site-page planner-site-page">
+        <SiteHeader active={siteView} onNavigate={onNavigateSite} />
+        <div className="app-error" role="alert">
+          <h1>gcmp</h1>
+          <p>{t('errors.loadFailed', { message: load.error })}</p>
+          <p>{t('errors.loadFailedHelp')}</p>
+        </div>
       </div>
     );
   }
@@ -181,21 +199,23 @@ function LoadedSiteApp({ siteView, onNavigateSite }: LoadedSiteAppProps): React.
   }
 
   return (
-    <Ready
-      data={load.data}
-      routing={routing.request}
-      routingError={routing.error}
-      setRouting={setRouting}
-      saved={saved}
-      save={save}
-      remove={remove}
-      saveError={saveError}
-      isMobile={viewportW < MOBILE_BREAKPOINT}
-      mapRef={mapRef}
-      mapSize={mapSize}
-      shareUrl={shareUrl}
-      onNavigateSite={onNavigateSite}
-    />
+    <div className="site-page planner-site-page">
+      <SiteHeader active="planner" onNavigate={onNavigateSite} />
+      <Ready
+        data={load.data}
+        routing={routing.request}
+        routingError={routing.error}
+        setRouting={setRouting}
+        saved={saved}
+        save={save}
+        remove={remove}
+        saveError={saveError}
+        isMobile={viewportW < MOBILE_BREAKPOINT}
+        mapRef={mapRef}
+        mapSize={mapSize}
+        shareUrl={shareUrl}
+      />
+    </div>
   );
 }
 
@@ -212,7 +232,6 @@ interface ReadyProps {
   mapRef: React.RefObject<HTMLDivElement | null>;
   mapSize: { width: number; height: number };
   shareUrl: string | null;
-  onNavigateSite: (view: SiteView) => void;
 }
 
 function Ready({
@@ -228,9 +247,8 @@ function Ready({
   mapRef,
   mapSize,
   shareUrl,
-  onNavigateSite,
 }: ReadyProps): React.ReactElement {
-  const { locale, t } = useLocale();
+  const { t } = useLocale();
   const hasAnyLegs = routing.groups.some((g) => g.legs.length > 0);
   const [activeGroupIndex, setActiveGroupIndex] = useState(0);
   const [showDistances, setShowDistances] = useState(false);
@@ -708,17 +726,6 @@ function Ready({
   if (!showPlanner) {
     return (
       <div className={`app app-gate${isMobile ? ' mobile' : ''}`}>
-        <header className="app-header">
-          <div className="app-brand">
-            <span className="app-brand-name">gcmp</span>
-            <span className="app-brand-tagline">{t('brand.tagline')}</span>
-          </div>
-          <div className="app-header-controls">
-            <button type="button" className="planner-site-link" onClick={() => onNavigateSite('home')}>{locale === 'zh-TW' ? '首頁' : 'Home'}</button>
-            <button type="button" className="planner-site-link" onClick={() => onNavigateSite('routes')}>{locale === 'zh-TW' ? '航線資料庫' : 'Route library'}</button>
-            <LanguagePicker />
-          </div>
-        </header>
         {routingError && <div className="app-banner app-banner-warn" role="alert">⚠ {routingError}</div>}
         <RtwPlanGate
           products={rtwProducts}
@@ -745,26 +752,21 @@ function Ready({
   return (
     <div className={`app${isMobile ? ' mobile' : ''}`}>
       <MobileBanner visible={isMobile} />
-      <header className="app-header">
-        <div className="app-brand">
-          <span className="app-brand-name">gcmp</span>
-          <span className="app-brand-tagline">{t('brand.tagline')}</span>
+      <div className="planner-action-toolbar" aria-label="Planner actions">
+        <div className="planner-action-context">
+          <span>{t('rtw.onboarding.currentPlan')}</span>
+          <strong>{selectedRtwProduct?.label ?? t('rtw.noProducts')}</strong>
         </div>
-        <div className="app-header-controls">
-          <button type="button" className="planner-site-link" onClick={() => onNavigateSite('home')}>{locale === 'zh-TW' ? '首頁' : 'Home'}</button>
-          <button type="button" className="planner-site-link" onClick={() => onNavigateSite('routes')}>{locale === 'zh-TW' ? '航線資料庫' : 'Route library'}</button>
-          <LanguagePicker />
-          <ActionRow
-            shareUrl={shareUrl}
-            canSave={hasAnyLegs}
-            onSave={(name) => {
-              if (shareUrl) save(name, shareUrl);
-            }}
-            result={result}
-            routing={routing}
-          />
-        </div>
-      </header>
+        <ActionRow
+          shareUrl={shareUrl}
+          canSave={hasAnyLegs}
+          onSave={(name) => {
+            if (shareUrl) save(name, shareUrl);
+          }}
+          result={result}
+          routing={routing}
+        />
+      </div>
       {routingError && (
         <div className="app-banner app-banner-warn" role="alert">
           ⚠ {routingError}

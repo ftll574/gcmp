@@ -35,6 +35,13 @@ interface GlobeRuntime {
   pointerX: number;
   pointerY: number;
   spin: number;
+  pitch: number;
+  dragging: boolean;
+  dragPointerId: number | null;
+  dragLastX: number;
+  dragLastY: number;
+  velocityYaw: number;
+  velocityPitch: number;
   reducedMotion: boolean;
 }
 
@@ -235,6 +242,7 @@ export function LandingGlobe({ catalog, onPlan }: Props): React.ReactElement {
   const [hoveredAirport, setHoveredAirport] = useState<string | null>(null);
   const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
   const [interactionPaused, setInteractionPaused] = useState(false);
+  const [dragging, setDragging] = useState(false);
   const [webglAvailable] = useState(canUseWebGl);
   const airportByIata = useMemo(
     () => new Map(catalog.airports.map((airport) => [airport.iata, airport] as const)),
@@ -344,6 +352,13 @@ export function LandingGlobe({ catalog, onPlan }: Props): React.ReactElement {
       pointerX: 0,
       pointerY: 0,
       spin: THREE.MathUtils.degToRad(-121),
+      pitch: 0,
+      dragging: false,
+      dragPointerId: null,
+      dragLastX: 0,
+      dragLastY: 0,
+      velocityYaw: 0,
+      velocityPitch: 0,
       reducedMotion,
     };
     runtimeRef.current = runtime;
@@ -384,10 +399,38 @@ export function LandingGlobe({ catalog, onPlan }: Props): React.ReactElement {
 
     const raycaster = new THREE.Raycaster();
     const pointer = new THREE.Vector2();
+    const pointerDown = (event: PointerEvent): void => {
+      if (event.button !== 0) return;
+      runtime.dragging = true;
+      runtime.dragPointerId = event.pointerId;
+      runtime.dragLastX = event.clientX;
+      runtime.dragLastY = event.clientY;
+      runtime.velocityYaw = 0;
+      runtime.velocityPitch = 0;
+      canvas.setPointerCapture?.(event.pointerId);
+      setDragging(true);
+      setHoveredAirport(null);
+    };
     const pointerMove = (event: PointerEvent): void => {
       const rect = canvas.getBoundingClientRect();
       runtime.pointerX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
       runtime.pointerY = -(((event.clientY - rect.top) / rect.height) * 2 - 1);
+
+      if (runtime.dragging && runtime.dragPointerId === event.pointerId) {
+        const dx = event.clientX - runtime.dragLastX;
+        const dy = event.clientY - runtime.dragLastY;
+        runtime.dragLastX = event.clientX;
+        runtime.dragLastY = event.clientY;
+        runtime.spin += dx * 0.007;
+        runtime.pitch = THREE.MathUtils.clamp(runtime.pitch + dy * 0.005, -0.92, 0.92);
+        runtime.velocityYaw = dx * 0.00065;
+        runtime.velocityPitch = dy * 0.00045;
+        canvas.dataset['globeYaw'] = runtime.spin.toFixed(4);
+        canvas.dataset['globePitch'] = runtime.pitch.toFixed(4);
+        setHoveredAirport(null);
+        return;
+      }
+
       pointer.set(runtime.pointerX, runtime.pointerY);
       raycaster.setFromCamera(pointer, camera);
       const hit = raycaster.intersectObjects(runtime.markerMeshes, false)[0];
@@ -395,12 +438,22 @@ export function LandingGlobe({ catalog, onPlan }: Props): React.ReactElement {
       setHoveredAirport(iata);
       setHoverPosition({ x: event.clientX - rect.left, y: event.clientY - rect.top });
     };
+    const finishDrag = (event: PointerEvent): void => {
+      if (!runtime.dragging || runtime.dragPointerId !== event.pointerId) return;
+      runtime.dragging = false;
+      runtime.dragPointerId = null;
+      canvas.releasePointerCapture?.(event.pointerId);
+      setDragging(false);
+    };
     const pointerLeave = (): void => {
       runtime.pointerX = 0;
       runtime.pointerY = 0;
       setHoveredAirport(null);
     };
+    canvas.addEventListener('pointerdown', pointerDown);
     canvas.addEventListener('pointermove', pointerMove);
+    canvas.addEventListener('pointerup', finishDrag);
+    canvas.addEventListener('pointercancel', finishDrag);
     canvas.addEventListener('pointerleave', pointerLeave);
 
     let animationFrame = 0;
@@ -411,11 +464,21 @@ export function LandingGlobe({ catalog, onPlan }: Props): React.ReactElement {
       const elapsed = (now - start) / 1000;
       const intro = Math.min(1, elapsed / 1.8);
       const easedIntro = 1 - Math.pow(1 - intro, 3);
-      if (!runtime.reducedMotion) runtime.spin += 0.00075;
-      globe.rotation.y = runtime.spin + runtime.pointerX * 0.13;
-      globe.rotation.x = THREE.MathUtils.lerp(globe.rotation.x, runtime.pointerY * 0.08, 0.035);
-      camera.position.x = THREE.MathUtils.lerp(camera.position.x, runtime.pointerX * 0.1, 0.03);
-      camera.position.y = THREE.MathUtils.lerp(camera.position.y, 0.08 + runtime.pointerY * 0.06, 0.03);
+      if (!runtime.dragging) {
+        if (!runtime.reducedMotion) {
+          runtime.spin += 0.00075 + runtime.velocityYaw;
+          runtime.pitch = THREE.MathUtils.clamp(runtime.pitch + runtime.velocityPitch, -0.92, 0.92);
+          runtime.velocityYaw *= 0.935;
+          runtime.velocityPitch *= 0.9;
+        } else {
+          runtime.velocityYaw = 0;
+          runtime.velocityPitch = 0;
+        }
+      }
+      globe.rotation.y = runtime.spin;
+      globe.rotation.x = THREE.MathUtils.lerp(globe.rotation.x, runtime.pitch, runtime.dragging ? 0.55 : 0.12);
+      camera.position.x = THREE.MathUtils.lerp(camera.position.x, 0, 0.08);
+      camera.position.y = THREE.MathUtils.lerp(camera.position.y, 0.08, 0.08);
       camera.position.z = 4.55 - easedIntro * 0.58;
       camera.lookAt(0, 0, 0);
 
@@ -438,7 +501,10 @@ export function LandingGlobe({ catalog, onPlan }: Props): React.ReactElement {
       disposed = true;
       cancelAnimationFrame(animationFrame);
       resizeObserver.disconnect();
+      canvas.removeEventListener('pointerdown', pointerDown);
       canvas.removeEventListener('pointermove', pointerMove);
+      canvas.removeEventListener('pointerup', finishDrag);
+      canvas.removeEventListener('pointercancel', finishDrag);
       canvas.removeEventListener('pointerleave', pointerLeave);
       disposeObject(scene);
       renderer.dispose();
@@ -539,7 +605,7 @@ export function LandingGlobe({ catalog, onPlan }: Props): React.ReactElement {
   return (
     <div
       ref={containerRef}
-      className={`landing-three-card alliance-${active.alliance}${hovered ? ' has-hover' : ''}`}
+      className={`landing-three-card alliance-${active.alliance}${hovered ? ' has-hover' : ''}${dragging ? ' is-dragging' : ''}`}
       onPointerEnter={() => setInteractionPaused(true)}
       onPointerLeave={() => setInteractionPaused(false)}
       aria-label={locale === 'zh-TW' ? '互動式三維世界航線地球' : 'Interactive 3D world route globe'}
