@@ -1,0 +1,44 @@
+.entity-map-fingerprint-key {
+  position: absolute;
+  z-index: 7;
+  left: 16px;
+  bottom: 16px;
+  display: grid;
+  gap: 5px;
+  padding: 10px 13px;
+  border: 1px solid rgba(181, 195, 185, .72);
+  border-radius: 13px;
+  background: rgba(248, 251, 248, .91);
+  box-shadow: 0 8px 22px rgba(33, 58, 42, .08);
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+}
+
+.entity-map-fingerprint-key span {
+  color: #748178;
+  font: 700 8px/1 var(--font-sans);
+}
+
+.entity-map-fingerprint-key strong {
+  color: #27382f;
+  font: 700 11px/1 var(--font-mono);
+  letter-spacing: .02em;
+}
+
+@media (prefers-color-scheme: dark) {
+  .entity-map-fingerprint-key {
+    border-color: var(--separator);
+    background: color-mix(in srgb, var(--secondary-system-background) 93%, transparent);
+  }
+
+  .entity-map-fingerprint-key strong {
+    color: var(--label);
+  }
+}
+
+@media (max-width: 700px) {
+  .entity-map-fingerprint-key {
+    left: 10px;
+    bottom: 10px;
+  }
+}

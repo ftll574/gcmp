@@ -49,6 +49,12 @@ export interface RouteEntityProfile {
   readonly route: RouteLibraryRouteCard;
 }
 
+export interface RouteLibraryFingerprint {
+  readonly routes: ReadonlyArray<RouteLibraryRouteCard>;
+  readonly hubs: ReadonlyArray<{ readonly airport: Airport; readonly connections: number }>;
+  readonly coreHubs: ReadonlyArray<{ readonly airport: Airport; readonly connections: number }>;
+}
+
 export interface RouteLibrarySearchResult {
   readonly key: string;
   readonly selection: RouteLibraryEntitySelection;
@@ -116,6 +122,97 @@ function buildPairCards(input: BuildRouteLibraryEntityInput, rows: ReadonlyArray
       distanceNm: Math.round(distanceNm(from, to)),
     }];
   });
+}
+
+/**
+ * Build a bounded visual fingerprint for a large airline/alliance network.
+ * The ranking rewards hub-to-hub strength and long-haul reach, while the
+ * endpoint quota prevents one mega-hub from consuming the entire overview.
+ */
+export function buildRouteLibraryFingerprint(
+  input: BuildRouteLibraryEntityInput,
+  limit = 120,
+): RouteLibraryFingerprint {
+  const rows = publishedRows(input);
+  const directedPairs = new Map<string, RouteNetworkEntry[]>();
+  for (const row of rows) {
+    const key = `${row.pair[0]}-${row.pair[1]}`;
+    const bucket = directedPairs.get(key) ?? [];
+    bucket.push(row);
+    directedPairs.set(key, bucket);
+  }
+  const degree = new Map<string, number>();
+  for (const pairRows of directedPairs.values()) {
+    const first = pairRows[0];
+    if (!first) continue;
+    degree.set(first.pair[0], (degree.get(first.pair[0]) ?? 0) + 1);
+    degree.set(first.pair[1], (degree.get(first.pair[1]) ?? 0) + 1);
+  }
+
+  const hubs = [...degree.entries()]
+    .map(([iata, connections]) => ({ airport: input.airports.get(iata), connections }))
+    .filter((row): row is { airport: Airport; connections: number } => row.airport !== undefined)
+    .sort((a, b) => b.connections - a.connections || a.airport.iata.localeCompare(b.airport.iata));
+  const coreHubs = hubs.slice(0, 16);
+
+  const bestDirection = new Map<string, { readonly rows: ReadonlyArray<RouteNetworkEntry>; readonly from: Airport; readonly to: Airport; readonly distanceNm: number }>();
+  for (const pairRows of directedPairs.values()) {
+    const first = pairRows[0];
+    if (!first) continue;
+    const from = input.airports.get(first.pair[0]);
+    const to = input.airports.get(first.pair[1]);
+    if (!from || !to) continue;
+    const key = [from.iata, to.iata].sort().join('-');
+    const candidate = { rows: pairRows, from, to, distanceNm: Math.round(distanceNm(from, to)) };
+    const previous = bestDirection.get(key);
+    if (!previous) {
+      bestDirection.set(key, candidate);
+      continue;
+    }
+    const candidateConfirmed = pairRows.some((row) => (row.flightNumbers?.length ?? 0) > 0) ? 1 : 0;
+    const previousConfirmed = previous.rows.some((row) => (row.flightNumbers?.length ?? 0) > 0) ? 1 : 0;
+    if (candidateConfirmed > previousConfirmed || (candidateConfirmed === previousConfirmed && pairRows.length > previous.rows.length)) {
+      bestDirection.set(key, candidate);
+    }
+  }
+
+  const scored = [...bestDirection.values()].map((candidate) => {
+    const fromDegree = degree.get(candidate.from.iata) ?? 1;
+    const toDegree = degree.get(candidate.to.iata) ?? 1;
+    const hubStrength = Math.sqrt(fromDegree * toDegree);
+    const distanceWeight = 1 + Math.min(candidate.distanceNm / 3_500, 1.7);
+    const carrierWeight = 1 + Math.min(candidate.rows.length - 1, 3) * 0.08;
+    return { candidate, score: hubStrength * distanceWeight * carrierWeight };
+  }).sort((a, b) => b.score - a.score
+    || b.candidate.distanceNm - a.candidate.distanceNm
+    || `${a.candidate.from.iata}-${a.candidate.to.iata}`.localeCompare(`${b.candidate.from.iata}-${b.candidate.to.iata}`));
+
+  const endpointCount = new Map<string, number>();
+  const endpointQuota = Math.max(8, Math.ceil(limit / 10));
+  const selected: typeof scored = [];
+  for (const row of scored) {
+    if (selected.length >= limit) break;
+    const fromCount = endpointCount.get(row.candidate.from.iata) ?? 0;
+    const toCount = endpointCount.get(row.candidate.to.iata) ?? 0;
+    if (fromCount >= endpointQuota || toCount >= endpointQuota) continue;
+    selected.push(row);
+    endpointCount.set(row.candidate.from.iata, fromCount + 1);
+    endpointCount.set(row.candidate.to.iata, toCount + 1);
+  }
+
+  if (selected.length < Math.min(limit, scored.length)) {
+    const selectedIds = new Set(selected.map((row) => [row.candidate.from.iata, row.candidate.to.iata].sort().join('-')));
+    for (const row of scored) {
+      if (selected.length >= limit) break;
+      const id = [row.candidate.from.iata, row.candidate.to.iata].sort().join('-');
+      if (selectedIds.has(id)) continue;
+      selected.push(row);
+      selectedIds.add(id);
+    }
+  }
+
+  const selectedRows = selected.flatMap((row) => row.candidate.rows);
+  return { routes: buildPairCards(input, selectedRows), hubs, coreHubs };
 }
 
 export function buildAirportEntityProfile(input: BuildRouteLibraryEntityInput, iata: string): AirportEntityProfile | null {

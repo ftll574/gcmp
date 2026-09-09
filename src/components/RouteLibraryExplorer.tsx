@@ -6,6 +6,7 @@ import { buildRouteLibraryOverview } from '../lib/rtw/route-library-overview.ts'
 import {
   buildAirportEntityProfile,
   buildAirlineEntityProfile,
+  buildRouteLibraryFingerprint,
   buildRouteEntityProfile,
   routeLibraryEntityContinent,
   searchRouteLibraryEntities,
@@ -14,6 +15,7 @@ import {
 } from '../lib/rtw/route-library-entities.ts';
 import { useLocale } from '../i18n/use-locale.ts';
 import { RouteEntityMap } from './RouteLibraryMap.tsx';
+import type { RouteMapAllianceTheme } from './RouteLibraryMap.tsx';
 import './RouteLibraryExplorer.css';
 
 interface PlanRouteInput {
@@ -33,6 +35,7 @@ interface Props {
   readonly selection: RouteLibraryEntitySelection | null;
   readonly onSelect: (selection: RouteLibraryEntitySelection | null) => void;
   readonly onPlanRoute: (route: PlanRouteInput) => void;
+  readonly alliance: RouteMapAllianceTheme;
 }
 
 function routeId(route: RouteLibraryRouteCard): string {
@@ -65,6 +68,7 @@ export function RouteLibraryExplorer({
   selection,
   onSelect,
   onPlanRoute,
+  alliance,
 }: Props): React.ReactElement {
   const { locale, t } = useLocale();
   const zh = locale === 'zh-TW';
@@ -80,6 +84,7 @@ export function RouteLibraryExplorer({
     countryContinents,
     airportContinentOverrides,
   }), [network, memberCodes, airports, carrierNames, countryContinents, airportContinentOverrides]);
+  const fingerprint = useMemo(() => buildRouteLibraryFingerprint(entityInput, alliance === 'all' ? 150 : 120), [alliance, entityInput]);
 
   const airportProfile = selection?.kind === 'airport' ? buildAirportEntityProfile(entityInput, selection.id) : null;
   const airlineProfile = selection?.kind === 'airline' ? buildAirlineEntityProfile(entityInput, selection.id) : null;
@@ -88,9 +93,6 @@ export function RouteLibraryExplorer({
   const continentLabel = (continent: ContinentId | 'unmapped'): string => continent === 'unmapped'
     ? (zh ? '未分類' : 'Unmapped')
     : t(`rtw.continent.${continent}`);
-  const topHubPoints = overview.hubs.map((hub) => ({ airport: airports.get(hub.iata), connections: hub.connections }))
-    .filter((row): row is { airport: Airport; connections: number } => row.airport !== undefined);
-
   const choose = (next: RouteLibraryEntitySelection): void => {
     setQuery('');
     setShowRouteIndex(false);
@@ -140,7 +142,7 @@ export function RouteLibraryExplorer({
         <header className="entity-detail-hero map-first-hero">
           <div><span>AIRPORT</span><h2><code>{airportProfile.airport.iata}</code> · {airportProfile.airport.city}</h2><p>{airportProfile.airport.name}</p></div>
         </header>
-        <section className="entity-section map-primary-section"><RouteEntityMap routes={airportProfile.outgoingRoutes} hubs={hubs} selectedAirport={airportProfile.airport} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={[{ value: airportProfile.destinationCount, label: copy.outbound }, { value: airportProfile.airlineCount, label: copy.airlines }, { value: airportProfile.countryCount, label: copy.countries }, { value: airportProfile.incomingRouteCount, label: copy.inbound }]} /></section>
+        <section className="entity-section map-primary-section"><RouteEntityMap routes={airportProfile.outgoingRoutes} hubs={hubs} selectedAirport={airportProfile.airport} allianceTheme={alliance} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={[{ value: airportProfile.destinationCount, label: copy.outbound }, { value: airportProfile.airlineCount, label: copy.airlines }, { value: airportProfile.countryCount, label: copy.countries }, { value: airportProfile.incomingRouteCount, label: copy.inbound }]} /></section>
         <details className="entity-secondary-index" open={showRouteIndex} onToggle={(event) => setShowRouteIndex(event.currentTarget.open)}>
           <summary>{copy.destinationIndex} · {airportProfile.destinationCount}</summary>
           {showRouteIndex && [...grouped.entries()].map(([continent, routes]) => (
@@ -158,7 +160,7 @@ export function RouteLibraryExplorer({
         <header className="entity-detail-hero map-first-hero">
           <div><span>AIRLINE</span><h2><code>{airlineProfile.carrier}</code> · {airlineProfile.name}</h2><p>{copy.airlineNetwork}</p></div>
         </header>
-        <section className="entity-section map-primary-section"><RouteEntityMap routes={airlineProfile.routes} hubs={airlineProfile.topHubs} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={[{ value: airlineProfile.routes.length, label: copy.routes }, { value: airlineProfile.airportCount, label: copy.airports }, { value: airlineProfile.countryCount, label: copy.countries }, { value: airlineProfile.operatingRouteCount, label: copy.operating }]} /></section>
+        <section className="entity-section map-primary-section"><RouteEntityMap routes={airlineProfile.routes} hubs={airlineProfile.topHubs} allianceTheme={alliance} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={[{ value: airlineProfile.routes.length, label: copy.routes }, { value: airlineProfile.airportCount, label: copy.airports }, { value: airlineProfile.countryCount, label: copy.countries }, { value: airlineProfile.operatingRouteCount, label: copy.operating }]} /></section>
         <details className="entity-secondary-index" open={showRouteIndex} onToggle={(event) => setShowRouteIndex(event.currentTarget.open)}>
           <summary>{copy.routeIndex} · {airlineProfile.routes.length}</summary>
           {showRouteIndex && <div className="entity-route-grid">{airlineProfile.routes.map((route) => <RouteCard key={routeId(route)} route={route} onSelect={choose} compact />)}</div>}
@@ -174,7 +176,7 @@ export function RouteLibraryExplorer({
         <header className="entity-detail-hero route-detail-hero map-first-hero">
           <div><span>ROUTE</span><h2><code>{route.from.iata}</code><b>→</b><code>{route.to.iata}</code></h2><p>{route.from.city} → {route.to.city}</p></div>
         </header>
-        <section className="entity-section map-primary-section"><RouteEntityMap routes={[route]} hubs={[{ airport: route.from, connections: 1 }, { airport: route.to, connections: 1 }]} selectedRouteId={routeId(route)} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={[{ value: `${route.distanceNm.toLocaleString()} nm`, label: copy.distance }, { value: route.carriers.length, label: copy.airlines }, { value: route.carriers.filter((carrier) => carrier.confirmedNumbers.length > 0).length, label: copy.confirmed }]} /></section>
+        <section className="entity-section map-primary-section"><RouteEntityMap routes={[route]} hubs={[{ airport: route.from, connections: 1 }, { airport: route.to, connections: 1 }]} selectedRouteId={routeId(route)} allianceTheme={alliance} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={[{ value: `${route.distanceNm.toLocaleString()} nm`, label: copy.distance }, { value: route.carriers.length, label: copy.airlines }, { value: route.carriers.filter((carrier) => carrier.confirmedNumbers.length > 0).length, label: copy.confirmed }]} /></section>
         <section className="entity-section route-carrier-list"><div className="entity-section-heading"><h3>{copy.routeDetail}</h3>{reverseExists && <button type="button" className="entity-inline-button" onClick={() => choose({ kind: 'route', id: reverseId })}>{copy.reverse}</button>}</div>
           {route.carriers.map((carrier) => (
             <article className="route-carrier-card" key={carrier.carrier}>
@@ -204,7 +206,7 @@ export function RouteLibraryExplorer({
 
       {!selection ? (
         <div className="entity-explore-home">
-          <RouteEntityMap routes={[]} hubs={topHubPoints} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} stats={[{ value: overview.routeCount, label: copy.routes }, { value: overview.airportCount, label: copy.airports }, { value: overview.carrierCount, label: copy.airlines }, { value: overview.confirmedNumberCount, label: copy.confirmed }]} />
+          <RouteEntityMap routes={fingerprint.routes} hubs={fingerprint.hubs} allianceTheme={alliance} fingerprint onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={[{ value: overview.routeCount, label: copy.routes }, { value: overview.airportCount, label: copy.airports }, { value: overview.carrierCount, label: copy.airlines }, { value: overview.confirmedNumberCount, label: copy.confirmed }]} />
         </div>
       ) : entityContent}
     </section>

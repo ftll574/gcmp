@@ -121,6 +121,7 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
               airports={airports}
               carrierNames={carrierNames}
               memberCodes={memberCodes}
+              alliance={alliance}
               countryContinents={data.countryContinents}
               airportContinentOverrides={data.airportContinentOverrides}
               selection={selection}

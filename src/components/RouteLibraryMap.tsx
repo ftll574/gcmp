@@ -3,6 +3,7 @@ import * as maplibregl from 'maplibre-gl';
 import type { GeoJSONSource, Map as MapLibreMap, StyleSpecification } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
+import './RouteLibraryMap.css';
 import type { FeatureCollection, Geometry } from 'geojson';
 import type { Airport } from '../lib/types.ts';
 import {
@@ -31,6 +32,15 @@ const FOCUS_AIRPORT_LAYER = 'gcmp-airport-focus';
 const HIT_SEARCH_RADIUS_PX = 10;
 const ROUTE_SELECT_RADIUS_PX = 18;
 
+export type RouteMapAllianceTheme = 'all' | 'star' | 'oneworld' | 'skyteam';
+
+const ALLIANCE_ACCENTS: Readonly<Record<RouteMapAllianceTheme, { readonly light: string; readonly dark: string }>> = {
+  all: { light: '#277b68', dark: '#65c5a7' },
+  star: { light: '#9a7226', dark: '#d4ad58' },
+  oneworld: { light: '#6b57a5', dark: '#a797df' },
+  skyteam: { light: '#356f9f', dark: '#73abd5' },
+};
+
 interface RouteEntityMapProps {
   readonly routes: ReadonlyArray<RouteLibraryRouteCard>;
   readonly hubs: ReadonlyArray<{ readonly airport: Airport; readonly connections: number }>;
@@ -39,6 +49,8 @@ interface RouteEntityMapProps {
   readonly onAirportSelect: (airport: Airport) => void;
   readonly onRouteSelect?: ((routeId: string) => void) | undefined;
   readonly stats?: ReadonlyArray<{ readonly value: string | number; readonly label: string }>;
+  readonly allianceTheme?: RouteMapAllianceTheme | undefined;
+  readonly fingerprint?: boolean | undefined;
 }
 
 type InspectorSelection =
@@ -139,6 +151,25 @@ function addSourcesAndLayers(map: MapLibreMap, dark: boolean): void {
     },
   });
   map.addLayer({
+    id: 'gcmp-hub-labels',
+    type: 'symbol',
+    source: AIRPORT_SOURCE,
+    filter: ['<', ['get', 'hubRank'], 12],
+    layout: {
+      'text-field': ['get', 'iata'],
+      'text-size': 10,
+      'text-offset': [0.9, 0],
+      'text-anchor': 'left',
+      'text-allow-overlap': false,
+      'text-ignore-placement': false,
+    },
+    paint: {
+      'text-color': dark ? '#d7e3db' : '#43534a',
+      'text-halo-color': dark ? '#111a16' : '#f7faf7',
+      'text-halo-width': 1.6,
+    },
+  });
+  map.addLayer({
     id: FOCUS_AIRPORT_LAYER,
     type: 'circle',
     source: FOCUS_AIRPORT_SOURCE,
@@ -149,6 +180,29 @@ function addSourcesAndLayers(map: MapLibreMap, dark: boolean): void {
       'circle-stroke-width': 2.5,
     },
   });
+}
+
+function applyMapAppearance(
+  map: MapLibreMap,
+  dark: boolean,
+  allianceTheme: RouteMapAllianceTheme,
+  fingerprint: boolean,
+): void {
+  const accent = dark ? ALLIANCE_ACCENTS[allianceTheme].dark : ALLIANCE_ACCENTS[allianceTheme].light;
+  map.setPaintProperty(ROUTE_LAYER, 'line-color', accent);
+  map.setPaintProperty(ROUTE_LAYER, 'line-width', fingerprint
+    ? ['*', ['interpolate', ['linear'], ['zoom'], 0, 0.8, 3, 1.35, 8, 2.2], ['interpolate', ['linear'], ['get', 'importance'], 0, 0.55, 0.45, 1, 1, 2.05]]
+    : ['interpolate', ['linear'], ['zoom'], 0, 0.7, 3, 1.2, 8, 2]);
+  map.setPaintProperty(ROUTE_LAYER, 'line-opacity', fingerprint
+    ? ['interpolate', ['linear'], ['get', 'importance'], 0, 0.1, 0.35, 0.28, 0.7, 0.56, 1, 0.82]
+    : ['interpolate', ['linear'], ['zoom'], 0, 0.22, 3, 0.38, 8, 0.58]);
+  map.setPaintProperty(AIRPORT_LAYER, 'circle-color', accent);
+  map.setPaintProperty(AIRPORT_LAYER, 'circle-opacity', fingerprint
+    ? ['interpolate', ['linear'], ['get', 'connections'], 1, 0.12, 8, 0.2, 30, 0.4, 100, 0.72, 250, 0.96]
+    : 0.96);
+  map.setPaintProperty(AIRPORT_LAYER, 'circle-radius', fingerprint
+    ? ['interpolate', ['linear'], ['get', 'connections'], 1, 1.8, 8, 2.5, 30, 3.7, 100, 6.8, 300, 10.8]
+    : ['interpolate', ['linear'], ['get', 'connections'], 0, 3, 10, 4.5, 80, 7, 300, 10]);
 }
 
 function boundsToMapLibre(bounds: RouteMapBounds): [[number, number], [number, number]] {
@@ -211,6 +265,8 @@ export function RouteEntityMap({
   onAirportSelect,
   onRouteSelect,
   stats = [],
+  allianceTheme = 'all',
+  fingerprint = false,
 }: RouteEntityMapProps): React.ReactElement {
   const { locale } = useLocale();
   const { features: worldFeatures } = useWorldMap();
@@ -224,8 +280,8 @@ export function RouteEntityMap({
   const [webGlAvailable] = useState(isWebGlAvailable);
   const model = useMemo(() => buildRouteMapModel(routes, hubs), [routes, hubs]);
   const copy = locale === 'zh-TW'
-    ? { fit: '顯示完整航網', airport: '機場資訊', route: '航線詳情', confirmed: '已確認班號', noConfirmed: '尚無 confirmed 班號', fallback: '此瀏覽器無法啟用互動地圖。' }
-    : { fit: 'Fit network', airport: 'Airport details', route: 'Route details', confirmed: 'Confirmed flights', noConfirmed: 'No confirmed flight number', fallback: 'Interactive map is unavailable in this browser.' };
+    ? { fit: '顯示完整航網', airport: '機場資訊', route: '航線詳情', confirmed: '已確認班號', noConfirmed: '尚無 confirmed 班號', fallback: '此瀏覽器無法啟用互動地圖。', coreHubs: '核心樞紐' }
+    : { fit: 'Fit network', airport: 'Airport details', route: 'Route details', confirmed: 'Confirmed flights', noConfirmed: 'No confirmed flight number', fallback: 'Interactive map is unavailable in this browser.', coreHubs: 'Core hubs' };
 
   const focusSelection = useCallback((next: InspectorSelection, animate = true): void => {
     setSelection(next);
@@ -283,6 +339,13 @@ export function RouteEntityMap({
       mapRef.current = null;
     };
   }, [webGlAvailable]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!ready || !map || !map.isStyleLoaded()) return;
+    const dark = window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
+    applyMapAppearance(map, dark, allianceTheme, fingerprint);
+  }, [allianceTheme, fingerprint, ready]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -394,10 +457,14 @@ export function RouteEntityMap({
   const activeRoute = selection?.kind === 'route' ? model.routeById.get(selection.routeId) ?? null : null;
 
   return (
-    <div className="entity-map-card maplibre-route-map" data-map-engine="maplibre" data-map-ready={ready ? 'true' : 'false'} data-map-routes={model.routes.features.length} data-map-airports={model.airports.features.length}>
+    <div className={`entity-map-card maplibre-route-map alliance-${allianceTheme}${fingerprint ? ' fingerprint' : ''}`} data-map-engine="maplibre" data-map-ready={ready ? 'true' : 'false'} data-map-routes={model.routes.features.length} data-map-airports={model.airports.features.length} data-map-alliance={allianceTheme} data-map-mode={fingerprint ? 'fingerprint' : 'detail'}>
       <div ref={containerRef} className="entity-map-maplibre" role="application" aria-label="Route network map" />
       {!webGlAvailable && <div className="entity-map-fallback">{copy.fallback}</div>}
       {stats.length > 0 && <div className="entity-map-stats">{stats.map((stat) => <div key={stat.label}><strong>{typeof stat.value === 'number' ? stat.value.toLocaleString() : stat.value}</strong><span>{stat.label}</span></div>)}</div>}
+      {fingerprint && hubs.length > 0 && <div className="entity-map-fingerprint-key" aria-label={copy.coreHubs}>
+        <span>{copy.coreHubs}</span>
+        <strong>{hubs.slice(0, 4).map((hub) => hub.airport.iata).join(' · ')}</strong>
+      </div>}
       {ready && <button type="button" className="entity-map-fit-network" onClick={() => {
         const map = mapRef.current;
         const container = containerRef.current;

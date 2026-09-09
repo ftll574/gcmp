@@ -39,6 +39,8 @@ describe('RouteEntityMap MapLibre model', () => {
     expect(model.routes.features).toHaveLength(180);
     expect(model.airports.features).toHaveLength(181);
     expect(model.routesByAirport.get('TPE')).toHaveLength(180);
+    expect(model.airports.features.find((feature) => feature.properties.iata === 'TPE')?.properties.hubRank).toBe(0);
+    expect(Math.max(...model.routes.features.map((feature) => feature.properties.importance))).toBeCloseTo(1, 6);
   });
 
   test('short and long routes expose materially different geographic bounds for native fitBounds', () => {

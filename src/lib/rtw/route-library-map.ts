@@ -9,6 +9,7 @@ export interface RouteMapAirportProperties {
   readonly name: string;
   readonly connections: number;
   readonly routeCount: number;
+  readonly hubRank: number;
 }
 
 export interface RouteMapRouteProperties {
@@ -18,6 +19,7 @@ export interface RouteMapRouteProperties {
   readonly distanceNm: number;
   readonly carriers: string;
   readonly confirmedNumbers: string;
+  readonly importance: number;
 }
 
 export interface RouteMapModel {
@@ -68,7 +70,7 @@ function splitAtAntimeridian(points: ReadonlyArray<readonly [number, number]>): 
   return segments.filter((segment) => segment.length >= 2);
 }
 
-function routeFeature(route: RouteLibraryRouteCard, count: number): Feature<LineString | MultiLineString, RouteMapRouteProperties> {
+function routeFeature(route: RouteLibraryRouteCard, count: number, importance: number): Feature<LineString | MultiLineString, RouteMapRouteProperties> {
   const points = greatCirclePath(route.from, route.to, sampleCount(count)).map((point): [number, number] => [point.lon, point.lat]);
   const segments = splitAtAntimeridian(points);
   const geometry: LineString | MultiLineString = segments.length <= 1
@@ -84,6 +86,7 @@ function routeFeature(route: RouteLibraryRouteCard, count: number): Feature<Line
       distanceNm: route.distanceNm,
       carriers: route.carriers.map((carrier) => carrier.carrier).join(' · '),
       confirmedNumbers: route.carriers.flatMap((carrier) => carrier.confirmedNumbers).slice(0, 8).join(' · '),
+      importance,
     },
   };
 }
@@ -96,6 +99,7 @@ export function buildRouteMapModel(
   const airportByIata = new Map<string, Airport>();
   const routesByAirportMutable = new Map<string, RouteLibraryRouteCard[]>();
   const connections = new Map<string, number>();
+  const hubRank = new Map(hubs.map((hub, index) => [hub.airport.iata, index] as const));
 
   const addRouteForAirport = (airport: Airport, route: RouteLibraryRouteCard): void => {
     airportByIata.set(airport.iata, airport);
@@ -124,10 +128,17 @@ export function buildRouteMapModel(
       name: airport.name,
       connections: connections.get(airport.iata) ?? 0,
       routeCount: routesByAirportMutable.get(airport.iata)?.length ?? 0,
+      hubRank: hubRank.get(airport.iata) ?? 999,
     },
   }));
 
-  const routeFeatures = routes.map((route) => routeFeature(route, routes.length));
+  const rawImportance = routes.map((route) => {
+    const fromDegree = Math.max(1, connections.get(route.from.iata) ?? 1);
+    const toDegree = Math.max(1, connections.get(route.to.iata) ?? 1);
+    return Math.sqrt(fromDegree * toDegree) * (1 + Math.min(route.distanceNm / 3_500, 1.7));
+  });
+  const maxImportance = Math.max(1, ...rawImportance);
+  const routeFeatures = routes.map((route, index) => routeFeature(route, routes.length, (rawImportance[index] ?? 0) / maxImportance));
   return {
     airports: { type: 'FeatureCollection', features: airportFeatures },
     routes: { type: 'FeatureCollection', features: routeFeatures },
