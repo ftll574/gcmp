@@ -20,6 +20,13 @@ export interface RouteMapRouteProperties {
   readonly carriers: string;
   readonly confirmedNumbers: string;
   readonly importance: number;
+  readonly bundleCount?: number;
+}
+
+export interface RouteMapEndpointRepresentative {
+  readonly key: string;
+  readonly lon: number;
+  readonly lat: number;
 }
 
 export interface RouteMapModel {
@@ -70,15 +77,22 @@ function splitAtAntimeridian(points: ReadonlyArray<readonly [number, number]>): 
   return segments.filter((segment) => segment.length >= 2);
 }
 
-function routeFeature(route: RouteLibraryRouteCard, count: number, importance: number): Feature<LineString | MultiLineString, RouteMapRouteProperties> {
-  const points = greatCirclePath(route.from, route.to, sampleCount(count)).map((point): [number, number] => [point.lon, point.lat]);
+function routeGeometry(
+  from: { readonly lon: number; readonly lat: number },
+  to: { readonly lon: number; readonly lat: number },
+  count: number,
+): LineString | MultiLineString {
+  const points = greatCirclePath(from, to, sampleCount(count)).map((point): [number, number] => [point.lon, point.lat]);
   const segments = splitAtAntimeridian(points);
-  const geometry: LineString | MultiLineString = segments.length <= 1
+  return segments.length <= 1
     ? { type: 'LineString', coordinates: [...(segments[0] ?? points)].map(([lon, lat]) => [lon, lat]) }
     : { type: 'MultiLineString', coordinates: segments.map((segment) => segment.map(([lon, lat]) => [lon, lat])) };
+}
+
+function routeFeature(route: RouteLibraryRouteCard, count: number, importance: number): Feature<LineString | MultiLineString, RouteMapRouteProperties> {
   return {
     type: 'Feature',
-    geometry,
+    geometry: routeGeometry(route.from, route.to, count),
     properties: {
       routeId: routeId(route),
       from: route.from.iata,
@@ -88,6 +102,80 @@ function routeFeature(route: RouteLibraryRouteCard, count: number, importance: n
       confirmedNumbers: route.carriers.flatMap((carrier) => carrier.confirmedNumbers).slice(0, 8).join(' · '),
       importance,
     },
+  };
+}
+
+export function buildClusterBundledRoutes(
+  model: RouteMapModel,
+  representatives: ReadonlyMap<string, RouteMapEndpointRepresentative>,
+): FeatureCollection<LineString | MultiLineString, RouteMapRouteProperties> {
+  if (representatives.size === 0) return model.routes;
+
+  interface Bundle {
+    readonly from: RouteMapEndpointRepresentative;
+    readonly to: RouteMapEndpointRepresentative;
+    readonly routes: RouteLibraryRouteCard[];
+    readonly carriers: Set<string>;
+    readonly confirmedNumbers: string[];
+    importance: number;
+  }
+
+  const bundles = new Map<string, Bundle>();
+  for (const route of model.routeById.values()) {
+    const from = representatives.get(route.from.iata) ?? { key: `airport:${route.from.iata}`, lon: route.from.lon, lat: route.from.lat };
+    const to = representatives.get(route.to.iata) ?? { key: `airport:${route.to.iata}`, lon: route.to.lon, lat: route.to.lat };
+    if (from.key === to.key) continue;
+
+    const [first, second] = from.key < to.key ? [from, to] : [to, from];
+    const key = `${first.key}|${second.key}`;
+    const existing = bundles.get(key);
+    const routeFeature = model.routeFeatureById.get(routeId(route));
+    const importance = routeFeature?.properties.importance ?? 0;
+    if (existing) {
+      existing.routes.push(route);
+      existing.importance = Math.max(existing.importance, importance);
+      for (const carrier of route.carriers) {
+        existing.carriers.add(carrier.carrier);
+        for (const number of carrier.confirmedNumbers) {
+          if (existing.confirmedNumbers.length < 8 && !existing.confirmedNumbers.includes(number)) existing.confirmedNumbers.push(number);
+        }
+      }
+      continue;
+    }
+
+    const carriers = new Set<string>();
+    const confirmedNumbers: string[] = [];
+    for (const carrier of route.carriers) {
+      carriers.add(carrier.carrier);
+      for (const number of carrier.confirmedNumbers) {
+        if (confirmedNumbers.length < 8 && !confirmedNumbers.includes(number)) confirmedNumbers.push(number);
+      }
+    }
+    bundles.set(key, { from: first, to: second, routes: [route], carriers, confirmedNumbers, importance });
+  }
+
+  return {
+    type: 'FeatureCollection',
+    features: [...bundles.values()].map((bundle) => {
+      const onlyRoute = bundle.routes.length === 1 ? bundle.routes[0] : null;
+      const selectableRoute = onlyRoute && !bundle.from.key.startsWith('cluster:') && !bundle.to.key.startsWith('cluster:') ? onlyRoute : null;
+      return {
+        type: 'Feature',
+        geometry: routeGeometry(bundle.from, bundle.to, model.routeById.size),
+        properties: {
+          // Cluster-aware bundles are intentionally not directly route-selectable.
+          // Zooming until endpoints expand restores the individual route IDs.
+          routeId: selectableRoute ? routeId(selectableRoute) : '',
+          from: onlyRoute?.from.iata ?? bundle.from.key,
+          to: onlyRoute?.to.iata ?? bundle.to.key,
+          distanceNm: onlyRoute?.distanceNm ?? 0,
+          carriers: [...bundle.carriers].join(' · '),
+          confirmedNumbers: bundle.confirmedNumbers.join(' · '),
+          importance: bundle.importance,
+          bundleCount: bundle.routes.length,
+        },
+      } satisfies Feature<LineString | MultiLineString, RouteMapRouteProperties>;
+    }),
   };
 }
 

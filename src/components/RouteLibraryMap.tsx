@@ -1,15 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as maplibregl from 'maplibre-gl';
-import type { GeoJSONSource, Map as MapLibreMap } from 'maplibre-gl';
+import type { ExpressionSpecification, GeoJSONSource, Map as MapLibreMap } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import './RouteLibraryMap.css';
 import type { FeatureCollection, Geometry } from 'geojson';
 import type { Airport } from '../lib/types.ts';
 import {
+  buildClusterBundledRoutes,
   buildRouteMapModel,
   nearestRouteIdByScreenDistance,
   routeMapBounds,
+  type RouteMapEndpointRepresentative,
   type RouteMapBounds,
   type RouteMapModel,
 } from '../lib/rtw/route-library-map.ts';
@@ -216,9 +218,10 @@ function applyMapAppearance(
 ): void {
   const accent = dark ? ALLIANCE_ACCENTS[allianceTheme].dark : ALLIANCE_ACCENTS[allianceTheme].light;
   map.setPaintProperty(ROUTE_LAYER, 'line-color', accent);
+  const bundleScale: ExpressionSpecification = ['interpolate', ['linear'], ['coalesce', ['get', 'bundleCount'], 1], 1, 1, 4, 1.2, 12, 1.5, 40, 2.1];
   map.setPaintProperty(ROUTE_LAYER, 'line-width', fingerprint
-    ? ['*', ['interpolate', ['linear'], ['zoom'], 0, 0.8, 3, 1.35, 8, 2.2], ['interpolate', ['linear'], ['get', 'importance'], 0, 0.55, 0.45, 1, 1, 2.05]]
-    : ['interpolate', ['linear'], ['zoom'], 0, 0.7, 3, 1.2, 8, 2]);
+    ? ['*', ['interpolate', ['linear'], ['zoom'], 0, 0.8, 3, 1.35, 8, 2.2], ['interpolate', ['linear'], ['get', 'importance'], 0, 0.55, 0.45, 1, 1, 2.05], bundleScale]
+    : ['*', ['interpolate', ['linear'], ['zoom'], 0, 0.7, 3, 1.2, 8, 2], bundleScale]);
   map.setPaintProperty(ROUTE_LAYER, 'line-opacity', fingerprint
     ? ['interpolate', ['linear'], ['zoom'],
         0, ['interpolate', ['linear'], ['get', 'importance'], 0, 0.005, 0.45, 0.025, 0.7, 0.16, 1, 0.72],
@@ -233,6 +236,48 @@ function applyMapAppearance(
   map.setPaintProperty(AIRPORT_LAYER, 'circle-radius', fingerprint
     ? ['interpolate', ['linear'], ['get', 'connections'], 1, 1.8, 8, 2.5, 30, 3.7, 100, 6.8, 300, 10.8]
     : ['interpolate', ['linear'], ['get', 'connections'], 0, 3, 10, 4.5, 80, 7, 300, 10]);
+}
+
+function focusedAirportIatas(model: RouteMapModel, selection: InspectorSelection): ReadonlySet<string> {
+  if (!selection) return new Set();
+  if (selection.kind === 'airport') return new Set([selection.iata]);
+  const route = model.routeById.get(selection.routeId);
+  return route ? new Set([route.from.iata, route.to.iata]) : new Set();
+}
+
+function airportSourceData(model: RouteMapModel, selection: InspectorSelection): typeof model.airports {
+  const focused = focusedAirportIatas(model, selection);
+  if (focused.size === 0) return model.airports;
+  return { type: 'FeatureCollection', features: model.airports.features.filter((feature) => !focused.has(feature.properties.iata)) };
+}
+
+async function clusterRepresentatives(
+  map: MapLibreMap,
+): Promise<ReadonlyMap<string, RouteMapEndpointRepresentative>> {
+  if (map.getZoom() > 5.01) return new Map();
+  const airportSource = source(map, AIRPORT_SOURCE);
+  if (!airportSource || !map.getLayer(CLUSTER_LAYER)) return new Map();
+
+  const clusters = map.queryRenderedFeatures({ layers: [CLUSTER_LAYER] });
+  const byId = new Map<number, maplibregl.MapGeoJSONFeature>();
+  for (const cluster of clusters) {
+    const clusterId = Number(cluster.properties?.cluster_id);
+    if (Number.isFinite(clusterId) && !byId.has(clusterId)) byId.set(clusterId, cluster);
+  }
+
+  const representatives = new Map<string, RouteMapEndpointRepresentative>();
+  await Promise.all([...byId.entries()].map(async ([clusterId, cluster]) => {
+    if (cluster.geometry.type !== 'Point') return;
+    const pointCount = Number(cluster.properties?.point_count ?? 0);
+    if (!Number.isFinite(pointCount) || pointCount <= 0) return;
+    const [lon, lat] = cluster.geometry.coordinates as [number, number];
+    const leaves = await airportSource.getClusterLeaves(clusterId, pointCount, 0);
+    for (const leaf of leaves) {
+      const iata = String(leaf.properties?.iata ?? '');
+      if (iata) representatives.set(iata, { key: `cluster:${clusterId}`, lon, lat });
+    }
+  }));
+  return representatives;
 }
 
 function boundsToMapLibre(bounds: RouteMapBounds): [[number, number], [number, number]] {
@@ -261,20 +306,16 @@ function fitModel(map: MapLibreMap, container: HTMLElement, model: RouteMapModel
 function setFocusSources(map: MapLibreMap, model: RouteMapModel, selection: InspectorSelection): void {
   const focusRoutes = selection?.kind === 'route'
     ? [model.routeById.get(selection.routeId)].filter((route): route is RouteLibraryRouteCard => route !== undefined)
-    : selection?.kind === 'airport'
-      ? [...(model.routesByAirport.get(selection.iata) ?? [])]
-      : [];
+    : [];
   const focusRouteIds = new Set(focusRoutes.map((route) => `${route.from.iata}-${route.to.iata}`));
   source(map, FOCUS_ROUTE_SOURCE)?.setData({
     type: 'FeatureCollection',
     features: model.routes.features.filter((feature) => focusRouteIds.has(feature.properties.routeId)),
   });
-  const airportFeature = selection?.kind === 'airport'
-    ? model.airports.features.find((feature) => feature.properties.iata === selection.iata)
-    : null;
+  const focusIatas = focusedAirportIatas(model, selection);
   source(map, FOCUS_AIRPORT_SOURCE)?.setData({
     type: 'FeatureCollection',
-    features: airportFeature ? [airportFeature] : [],
+    features: model.airports.features.filter((feature) => focusIatas.has(feature.properties.iata)),
   });
 }
 
@@ -303,6 +344,7 @@ export function RouteEntityMap({
   const cardRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
+  const routeBundleRevisionRef = useRef(0);
   const didInitialFitRef = useRef(false);
   const lastSelectionKeyRef = useRef<string | null>(null);
   const [ready, setReady] = useState(false);
@@ -342,6 +384,38 @@ export function RouteEntityMap({
     const airportIds = new Set([next.iata, ...related.flatMap((route) => [route.from.iata, route.to.iata])]);
     const bounds = routeMapBounds(model, routeIds, airportIds, airport.lon);
     if (bounds) map.fitBounds(boundsToMapLibre(bounds), { padding: focusPadding(container), maxZoom: related.length <= 3 ? 7 : 5.4, duration: animate ? 480 : 0 });
+  }, [model]);
+
+  const refreshClusterAwareRoutes = useCallback(async (map: MapLibreMap, activeSelection: InspectorSelection): Promise<void> => {
+    const revision = ++routeBundleRevisionRef.current;
+    if (map.getZoom() > 5.01) {
+      source(map, ROUTE_SOURCE)?.setData(model.routes);
+      if (cardRef.current) cardRef.current.dataset.mapBundledRoutes = '0';
+      return;
+    }
+    try {
+      const representatives = await clusterRepresentatives(map);
+      if (revision !== routeBundleRevisionRef.current) return;
+      // Focused airport/route endpoints are deliberately excluded from the cluster source,
+      // so they remain real endpoints while the other airports snap to cluster centers.
+      const focused = focusedAirportIatas(model, activeSelection);
+      const withFocus = new Map(representatives);
+      for (const iata of focused) {
+        const airport = model.airportByIata.get(iata);
+        if (airport) withFocus.set(iata, { key: `focus:${iata}`, lon: airport.lon, lat: airport.lat });
+      }
+      const bundled = buildClusterBundledRoutes(model, withFocus);
+      source(map, ROUTE_SOURCE)?.setData(bundled);
+      if (cardRef.current) {
+        cardRef.current.dataset.mapBundledRoutes = String(bundled.features.length);
+        cardRef.current.dataset.mapBundleRepresentatives = String(representatives.size);
+        cardRef.current.dataset.mapFocusedAirports = String(focused.size);
+      }
+    } catch (reason) {
+      if (revision !== routeBundleRevisionRef.current) return;
+      source(map, ROUTE_SOURCE)?.setData(model.routes);
+      if (cardRef.current) cardRef.current.dataset.mapBundleError = reason instanceof Error ? reason.message : String(reason);
+    }
   }, [model]);
 
   useEffect(() => {
@@ -417,18 +491,17 @@ export function RouteEntityMap({
     const map = mapRef.current;
     const container = containerRef.current;
     if (!ready || !map || !container) return;
-    source(map, ROUTE_SOURCE)?.setData(model.routes);
-    source(map, AIRPORT_SOURCE)?.setData(model.airports);
-    setFocusSources(map, model, null);
     const initial: InspectorSelection = selectedRouteId
       ? { kind: 'route', routeId: selectedRouteId }
       : selectedAirport ? { kind: 'airport', iata: selectedAirport.iata } : null;
+    source(map, ROUTE_SOURCE)?.setData(model.routes);
+    source(map, AIRPORT_SOURCE)?.setData(airportSourceData(model, initial));
+    setFocusSources(map, model, initial);
     const selectionKey = initial?.kind === 'route'
       ? `route:${initial.routeId}`
       : initial?.kind === 'airport' ? `airport:${initial.iata}` : null;
     const shouldMoveCamera = !didInitialFitRef.current || lastSelectionKeyRef.current !== selectionKey;
     setSelection(initial);
-    setFocusSources(map, model, initial);
     if (initial && shouldMoveCamera) {
       window.requestAnimationFrame(() => focusSelection(initial, false));
     } else if (!initial && shouldMoveCamera) {
@@ -436,7 +509,16 @@ export function RouteEntityMap({
     }
     didInitialFitRef.current = true;
     lastSelectionKeyRef.current = selectionKey;
-  }, [focusSelection, model, ready, routes, selectedAirport, selectedRouteId]);
+    map.once('idle', () => { void refreshClusterAwareRoutes(map, initial); });
+  }, [focusSelection, model, ready, refreshClusterAwareRoutes, routes, selectedAirport, selectedRouteId]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!ready || !map) return;
+    const onMoveEnd = (): void => { void refreshClusterAwareRoutes(map, selection); };
+    map.on('moveend', onMoveEnd);
+    return () => { map.off('moveend', onMoveEnd); };
+  }, [ready, refreshClusterAwareRoutes, selection]);
 
   useEffect(() => {
     const map = mapRef.current;

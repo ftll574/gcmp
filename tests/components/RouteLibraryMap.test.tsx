@@ -2,7 +2,7 @@ import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { Airport } from '../../src/lib/types.ts';
 import type { RouteLibraryRouteCard } from '../../src/lib/rtw/route-library-entities.ts';
-import { buildRouteMapModel, nearestRouteIdByScreenDistance, routeMapBounds } from '../../src/lib/rtw/route-library-map.ts';
+import { buildClusterBundledRoutes, buildRouteMapModel, nearestRouteIdByScreenDistance, routeMapBounds } from '../../src/lib/rtw/route-library-map.ts';
 
 vi.mock('../../src/state/use-world-map.ts', () => ({
   useWorldMap: () => ({ features: null, error: null }),
@@ -57,6 +57,22 @@ describe('RouteEntityMap MapLibre model', () => {
     const east: Airport = { ...TSA, iata: 'EST', lon: -179, lat: 21 };
     const model = buildRouteMapModel([route(west, east, 120)], []);
     expect(model.routes.features[0]?.geometry.type).toBe('MultiLineString');
+  });
+
+  test('snaps route endpoints to cluster centers and bundles duplicate cluster corridors', () => {
+    const SFO: Airport = { ...LAX, iata: 'SFO', name: 'San Francisco International Airport', city: 'San Francisco', lon: -122.379 };
+    const model = buildRouteMapModel([route(TPE, LAX, 5900), route(TSA, SFO, 5600), route(TPE, TSA, 17)], []);
+    const bundled = buildClusterBundledRoutes(model, new Map([
+      ['TPE', { key: 'cluster:tw', lon: 121.4, lat: 25.1 }],
+      ['TSA', { key: 'cluster:tw', lon: 121.4, lat: 25.1 }],
+      ['LAX', { key: 'cluster:ca', lon: -120.2, lat: 35 }],
+      ['SFO', { key: 'cluster:ca', lon: -120.2, lat: 35 }],
+    ]));
+    expect(bundled.features).toHaveLength(1);
+    expect(bundled.features[0]?.properties.bundleCount).toBe(2);
+    const geometry = bundled.features[0]?.geometry;
+    const coordinates = geometry?.type === 'LineString' ? geometry.coordinates : geometry?.coordinates.flat();
+    expect(coordinates).toEqual(expect.arrayContaining([[121.4, 25.1], [-120.2, 35]]));
   });
 
   test('resolves overlapping route hit candidates by actual screen-space distance', () => {
