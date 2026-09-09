@@ -11,6 +11,7 @@
 
 import { useEffect, useState } from 'react';
 import { parseAirportCatalog } from '../lib/schemas/airports.ts';
+import { AirportBrowseRegionCatalogSchema } from '../lib/schemas/airport-browse-region.ts';
 import { AwardPricingCatalogSchema, type AwardPricingCatalog } from '../lib/schemas/award-pricing.ts';
 import { AllianceCatalogSchema, type AllianceCatalog } from '../lib/schemas/alliance.ts';
 import {
@@ -62,6 +63,11 @@ export interface LoadedData {
    * their continent.
    */
   countrySubregions: ReadonlyMap<string, string> | null;
+  /**
+   * IATA→browse-only local region for very large countries. This overlay is
+   * navigation metadata only; it must never feed RTW rules or fare zones.
+   */
+  airportBrowseRegions: ReadonlyMap<string, string> | null;
   /**
    * Airport-level continent overrides (geo `.airportOverrides`, keyed by
    * IATA). Null alongside `countryContinents` — applied by the engine
@@ -155,6 +161,7 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
           awardPricingRaw,
           marketRaw,
           geoRaw,
+          airportBrowseRegionsRaw,
           networkGapsRaw,
           schedulesRaw,
           officialSchedulesRaw,
@@ -170,6 +177,7 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
           fetchJsonStrict(`${baseUrl}/data/award-pricing/current.json`),
           fetchJsonStrict(`${baseUrl}/data/markets/tw/current.json`),
           fetchJsonOptional(`${baseUrl}/data/geo/current.json`),
+          fetchJsonOptional(`${baseUrl}/data/geo/airport-browse-regions.json`),
           fetchJsonOptional(`${baseUrl}/data/network-gaps/current.json`),
           fetchJsonOptional(`${baseUrl}/data/schedules/current.json`),
           fetchJsonStrict(`${baseUrl}/data/official-schedules.json`),
@@ -202,6 +210,7 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
 
         let countryContinents: ReadonlyMap<string, ContinentId> | null = null;
         let countrySubregions: ReadonlyMap<string, string> | null = null;
+        let airportBrowseRegions: ReadonlyMap<string, string> | null = null;
         let airportContinentOverrides: ReadonlyMap<string, ContinentId> | null = null;
         if (geoRaw !== null && geoRaw !== undefined) {
           try {
@@ -219,6 +228,17 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
             );
           } catch (e) {
             console.warn('geo/current.json schema parse failed; continentsVisited will be empty:', e);
+          }
+        }
+
+        if (airportBrowseRegionsRaw !== null && airportBrowseRegionsRaw !== undefined) {
+          try {
+            const browseCatalog = AirportBrowseRegionCatalogSchema.parse(airportBrowseRegionsRaw);
+            airportBrowseRegions = new Map(
+              browseCatalog.airports.map((row) => [row.iata, row.region] as const),
+            );
+          } catch (e) {
+            console.warn('geo/airport-browse-regions.json invalid; large-country browse filter disabled:', e);
           }
         }
 
@@ -295,6 +315,7 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
             marketProfile,
             countryContinents,
             countrySubregions,
+            airportBrowseRegions,
             airportContinentOverrides,
             networkGaps,
             schedules,

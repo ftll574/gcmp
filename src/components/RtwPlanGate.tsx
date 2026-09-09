@@ -30,6 +30,7 @@ interface Props {
   readonly airportLookup?: ReadonlyMap<string, Airport> | null | undefined;
   readonly countryContinents?: ReadonlyMap<string, ContinentId> | null | undefined;
   readonly countrySubregions?: ReadonlyMap<string, string> | null | undefined;
+  readonly airportBrowseRegions?: ReadonlyMap<string, string> | null | undefined;
   readonly airportContinentOverrides?: ReadonlyMap<string, ContinentId> | null | undefined;
   readonly marketProfile: MarketProfile;
   readonly ticketingPrograms: ReadonlyArray<RtwTicketingProgram>;
@@ -164,6 +165,7 @@ export function RtwPlanGate({
   airportLookup,
   countryContinents,
   countrySubregions,
+  airportBrowseRegions,
   airportContinentOverrides,
   marketProfile,
   ticketingPrograms,
@@ -411,6 +413,7 @@ export function RtwPlanGate({
                     airports={airportLookup}
                     countryContinents={countryContinents}
                     countrySubregions={countrySubregions}
+                    airportBrowseRegions={airportBrowseRegions}
                     airportContinentOverrides={airportContinentOverrides}
                     carrierNames={memberNames}
                   />

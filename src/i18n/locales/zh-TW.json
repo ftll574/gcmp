@@ -497,6 +497,27 @@
       "micronesia": "密克羅尼西亞",
       "polynesia": "波里尼西亞"
     },
+    "localRegion": {
+      "us-northeast": "東北部",
+      "us-midwest": "中西部",
+      "us-south": "南部",
+      "us-west": "西部",
+      "us-alaska": "阿拉斯加",
+      "us-hawaii": "夏威夷",
+      "canada-pacific": "太平洋地區",
+      "canada-prairies": "草原省份",
+      "canada-central": "加拿大中部",
+      "canada-atlantic": "大西洋地區",
+      "canada-north": "加拿大北部",
+      "australia-new-south-wales": "新南威爾斯",
+      "australia-victoria": "維多利亞",
+      "australia-queensland": "昆士蘭",
+      "australia-western-australia": "西澳",
+      "australia-south-australia": "南澳",
+      "australia-tasmania": "塔斯馬尼亞",
+      "australia-northern-territory": "北領地",
+      "australia-capital-territory": "澳洲首都領地"
+    },
     "country": {
       "TW": "台灣",
       "CN": "中國",

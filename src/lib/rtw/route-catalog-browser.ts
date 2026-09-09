@@ -6,6 +6,7 @@ import type { Airport } from '../types.ts';
 export type RouteCatalogGroupMode = 'from' | 'to';
 export type RouteCatalogContinent = ContinentId | 'unmapped';
 export type RouteCatalogRegionFilter = 'all' | `continent:${RouteCatalogContinent}` | `subregion:${string}`;
+export type RouteCatalogLocalRegionFilter = 'all' | `local:${string}`;
 
 export interface RouteCatalogCarrierOption {
   readonly carrier: string;
@@ -17,6 +18,13 @@ export interface RouteCatalogRegionOption {
   readonly kind: 'continent' | 'subregion';
   readonly id: string;
   readonly continent: RouteCatalogContinent;
+  readonly routeCount: number;
+}
+
+export interface RouteCatalogLocalRegionOption {
+  readonly value: Exclude<RouteCatalogLocalRegionFilter, 'all'>;
+  readonly id: string;
+  readonly country: string;
   readonly routeCount: number;
 }
 
@@ -415,6 +423,7 @@ export interface RouteCatalogRegionOptionsInput {
   readonly mode: RouteCatalogGroupMode;
   readonly countryContinents?: ReadonlyMap<string, ContinentId> | null | undefined;
   readonly countrySubregions?: ReadonlyMap<string, string> | null | undefined;
+  readonly airportBrowseRegions?: ReadonlyMap<string, string> | null | undefined;
   readonly airportContinentOverrides?: ReadonlyMap<string, ContinentId> | null | undefined;
 }
 
@@ -465,9 +474,33 @@ export function listRouteCatalogRegionOptions(
     });
 }
 
+export function listRouteCatalogLocalRegionOptions(
+  input: Pick<RouteCatalogRegionOptionsInput, 'pairs' | 'mode' | 'airportBrowseRegions'>,
+): ReadonlyArray<RouteCatalogLocalRegionOption> {
+  const counts = new Map<string, { country: string; routeCount: number }>();
+  for (const pair of input.pairs) {
+    const iata = input.mode === 'from' ? pair.from : pair.to;
+    const airport = input.mode === 'from' ? pair.fromAirport : pair.toAirport;
+    const region = input.airportBrowseRegions?.get(iata);
+    if (!region || !airport) continue;
+    const current = counts.get(region);
+    if (current && current.country !== airport.country) continue;
+    counts.set(region, { country: airport.country, routeCount: (current?.routeCount ?? 0) + 1 });
+  }
+  return [...counts.entries()]
+    .map(([id, detail]) => ({
+      value: `local:${id}` as const,
+      id,
+      country: detail.country,
+      routeCount: detail.routeCount,
+    }))
+    .sort((a, b) => a.country.localeCompare(b.country) || a.id.localeCompare(b.id));
+}
+
 export interface FilterRouteCatalogPairsInput extends RouteCatalogRegionOptionsInput {
   readonly carrier?: string | 'all' | undefined;
   readonly region?: RouteCatalogRegionFilter | undefined;
+  readonly localRegion?: RouteCatalogLocalRegionFilter | undefined;
 }
 
 export function filterRouteCatalogPairs(
@@ -475,6 +508,7 @@ export function filterRouteCatalogPairs(
 ): ReadonlyArray<RouteCatalogPairView> {
   const selectedCarrier = input.carrier && input.carrier !== 'all' ? input.carrier : null;
   const selectedRegion = input.region ?? 'all';
+  const selectedLocalRegion = input.localRegion ?? 'all';
   return input.pairs.flatMap((pair): ReadonlyArray<RouteCatalogPairView> => {
     const iata = input.mode === 'from' ? pair.from : pair.to;
     const airport = input.mode === 'from' ? pair.fromAirport : pair.toAirport;
@@ -488,6 +522,10 @@ export function filterRouteCatalogPairs(
         const subregion = airport ? input.countrySubregions?.get(airport.country) : undefined;
         if (subregion !== id) return [];
       }
+    }
+    if (selectedLocalRegion !== 'all') {
+      const localRegion = selectedLocalRegion.slice('local:'.length);
+      if (input.airportBrowseRegions?.get(iata) !== localRegion) return [];
     }
     const carriers = selectedCarrier
       ? pair.carriers.filter((carrier) => carrier.carrier === selectedCarrier)

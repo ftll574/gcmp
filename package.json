@@ -46,7 +46,8 @@
     "test": "vitest run --maxWorkers=4",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "build:airports": "tsx scripts/build-airports.ts"
+    "build:airports": "tsx scripts/build-airports.ts",
+    "build:airport-browse-regions": "tsx scripts/build-airport-browse-regions.ts"
   },
   "dependencies": {
     "d3-geo": "^3.1.1",

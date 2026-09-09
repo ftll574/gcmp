@@ -127,3 +127,45 @@ test('can narrow the long country list by airline and subregion', () => {
   expect(screen.getByRole('combobox', { name: 'Airline' })).toHaveValue('all');
   expect(screen.getByRole('combobox', { name: 'Region' })).toHaveValue('all');
 });
+
+test('can narrow a large country by airport-level local area', () => {
+  const localAirports = new Map<string, Airport>([
+    ['TPE', airports.get('TPE')!],
+    ['LAX', { iata: 'LAX', name: 'Los Angeles International', city: 'Los Angeles', country: 'US', lat: 34, lon: -118 }],
+    ['JFK', { iata: 'JFK', name: 'John F Kennedy International', city: 'New York', country: 'US', lat: 41, lon: -74 }],
+  ]);
+  const localNetwork: RouteNetworkCatalog = {
+    version: '2026.3', coverage: 'curated-not-complete', carrierUniverses: [],
+    sources: [{ id: 'routes', url: 'https://example.com/routes', checkedOn: '2026-09-09', note: 'Routes' }],
+    routes: [
+      { carrier: 'BR', pair: ['TPE', 'LAX'], service: 'nonstop', status: 'published', sourceIds: ['routes'] },
+      { carrier: 'BR', pair: ['TPE', 'JFK'], service: 'nonstop', status: 'published', sourceIds: ['routes'] },
+    ],
+  };
+  render(
+    <RouteCatalogBrowser
+      routeNetwork={localNetwork}
+      schedules={[]}
+      officialSchedules={{ sources: {}, services: [], flightNumberReferences: [] }}
+      memberCodes={new Set(['BR'])}
+      airports={localAirports}
+      countryContinents={new Map([['TW', 'asia'], ['US', 'north-america']])}
+      countrySubregions={new Map([['TW', 'northeast-asia'], ['US', 'northern-america']])}
+      airportBrowseRegions={new Map([['LAX', 'us-west'], ['JFK', 'us-northeast']])}
+      carrierNames={new Map([['BR', 'EVA Air']])}
+    />,
+  );
+  fireEvent.click(screen.getByRole('button', { name: 'Group by destination' }));
+  expect(screen.getByRole('combobox', { name: 'Local area' })).toBeInTheDocument();
+  expect(screen.getByRole('option', { name: /United States · West/ })).toBeInTheDocument();
+  fireEvent.change(screen.getByRole('combobox', { name: 'Local area' }), {
+    target: { value: 'local:us-west' },
+  });
+  expect(screen.getByText(/Showing/)).toHaveTextContent('1 of 2 routes');
+  toggle(document.querySelector<HTMLDetailsElement>('[data-continent="north-america"]')!);
+  toggle(document.querySelector<HTMLDetailsElement>('[data-country="US"]')!);
+  expect(document.querySelector('[data-airport="LAX"]')).toBeInTheDocument();
+  expect(document.querySelector('[data-airport="JFK"]')).toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: 'Clear filters' }));
+  expect(screen.getByRole('combobox', { name: 'Local area' })).toHaveValue('all');
+});

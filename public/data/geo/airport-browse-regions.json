@@ -1,0 +1,2849 @@
+{
+  "version": "2026.1",
+  "convention": "ourairports-iso-region-browse-overlay",
+  "checkedOn": "2026-09-09",
+  "sourceUrls": [
+    "https://davidmegginson.github.io/ourairports-data/airports.csv"
+  ],
+  "note": "Browse-only airport subdivision overlay for large-country navigation. Not a fare zone, alliance rule region, or ticketing geography.",
+  "regions": [
+    {
+      "id": "us-northeast",
+      "country": "US"
+    },
+    {
+      "id": "us-midwest",
+      "country": "US"
+    },
+    {
+      "id": "us-south",
+      "country": "US"
+    },
+    {
+      "id": "us-west",
+      "country": "US"
+    },
+    {
+      "id": "us-alaska",
+      "country": "US"
+    },
+    {
+      "id": "us-hawaii",
+      "country": "US"
+    },
+    {
+      "id": "canada-pacific",
+      "country": "CA"
+    },
+    {
+      "id": "canada-prairies",
+      "country": "CA"
+    },
+    {
+      "id": "canada-central",
+      "country": "CA"
+    },
+    {
+      "id": "canada-atlantic",
+      "country": "CA"
+    },
+    {
+      "id": "canada-north",
+      "country": "CA"
+    },
+    {
+      "id": "australia-new-south-wales",
+      "country": "AU"
+    },
+    {
+      "id": "australia-victoria",
+      "country": "AU"
+    },
+    {
+      "id": "australia-queensland",
+      "country": "AU"
+    },
+    {
+      "id": "australia-western-australia",
+      "country": "AU"
+    },
+    {
+      "id": "australia-south-australia",
+      "country": "AU"
+    },
+    {
+      "id": "australia-tasmania",
+      "country": "AU"
+    },
+    {
+      "id": "australia-northern-territory",
+      "country": "AU"
+    },
+    {
+      "id": "australia-capital-territory",
+      "country": "AU"
+    }
+  ],
+  "airports": [
+    {
+      "iata": "ABE",
+      "country": "US",
+      "subdivision": "US-PA",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "ABI",
+      "country": "US",
+      "subdivision": "US-TX",
+      "region": "us-south"
+    },
+    {
+      "iata": "ABQ",
+      "country": "US",
+      "subdivision": "US-NM",
+      "region": "us-west"
+    },
+    {
+      "iata": "ABR",
+      "country": "US",
+      "subdivision": "US-SD",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "ABX",
+      "country": "AU",
+      "subdivision": "AU-NSW",
+      "region": "australia-new-south-wales"
+    },
+    {
+      "iata": "ABY",
+      "country": "US",
+      "subdivision": "US-GA",
+      "region": "us-south"
+    },
+    {
+      "iata": "ACK",
+      "country": "US",
+      "subdivision": "US-MA",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "ACT",
+      "country": "US",
+      "subdivision": "US-TX",
+      "region": "us-south"
+    },
+    {
+      "iata": "ACV",
+      "country": "US",
+      "subdivision": "US-CA",
+      "region": "us-west"
+    },
+    {
+      "iata": "ADK",
+      "country": "US",
+      "subdivision": "US-AK",
+      "region": "us-alaska"
+    },
+    {
+      "iata": "ADL",
+      "country": "AU",
+      "subdivision": "AU-SA",
+      "region": "australia-south-australia"
+    },
+    {
+      "iata": "ADQ",
+      "country": "US",
+      "subdivision": "US-AK",
+      "region": "us-alaska"
+    },
+    {
+      "iata": "AEX",
+      "country": "US",
+      "subdivision": "US-LA",
+      "region": "us-south"
+    },
+    {
+      "iata": "AGS",
+      "country": "US",
+      "subdivision": "US-GA",
+      "region": "us-south"
+    },
+    {
+      "iata": "AKN",
+      "country": "US",
+      "subdivision": "US-AK",
+      "region": "us-alaska"
+    },
+    {
+      "iata": "ALB",
+      "country": "US",
+      "subdivision": "US-NY",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "ALO",
+      "country": "US",
+      "subdivision": "US-IA",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "ALW",
+      "country": "US",
+      "subdivision": "US-WA",
+      "region": "us-west"
+    },
+    {
+      "iata": "AMA",
+      "country": "US",
+      "subdivision": "US-TX",
+      "region": "us-south"
+    },
+    {
+      "iata": "ANC",
+      "country": "US",
+      "subdivision": "US-AK",
+      "region": "us-alaska"
+    },
+    {
+      "iata": "APN",
+      "country": "US",
+      "subdivision": "US-MI",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "ARM",
+      "country": "AU",
+      "subdivision": "AU-NSW",
+      "region": "australia-new-south-wales"
+    },
+    {
+      "iata": "ART",
+      "country": "US",
+      "subdivision": "US-NY",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "ASE",
+      "country": "US",
+      "subdivision": "US-CO",
+      "region": "us-west"
+    },
+    {
+      "iata": "ASP",
+      "country": "AU",
+      "subdivision": "AU-NT",
+      "region": "australia-northern-territory"
+    },
+    {
+      "iata": "ATL",
+      "country": "US",
+      "subdivision": "US-GA",
+      "region": "us-south"
+    },
+    {
+      "iata": "ATW",
+      "country": "US",
+      "subdivision": "US-WI",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "ATY",
+      "country": "US",
+      "subdivision": "US-SD",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "AUS",
+      "country": "US",
+      "subdivision": "US-TX",
+      "region": "us-south"
+    },
+    {
+      "iata": "AVL",
+      "country": "US",
+      "subdivision": "US-NC",
+      "region": "us-south"
+    },
+    {
+      "iata": "AVP",
+      "country": "US",
+      "subdivision": "US-PA",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "AYQ",
+      "country": "AU",
+      "subdivision": "AU-NT",
+      "region": "australia-northern-territory"
+    },
+    {
+      "iata": "AZO",
+      "country": "US",
+      "subdivision": "US-MI",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "BCI",
+      "country": "AU",
+      "subdivision": "AU-QLD",
+      "region": "australia-queensland"
+    },
+    {
+      "iata": "BDB",
+      "country": "AU",
+      "subdivision": "AU-QLD",
+      "region": "australia-queensland"
+    },
+    {
+      "iata": "BDL",
+      "country": "US",
+      "subdivision": "US-CT",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "BET",
+      "country": "US",
+      "subdivision": "US-AK",
+      "region": "us-alaska"
+    },
+    {
+      "iata": "BFF",
+      "country": "US",
+      "subdivision": "US-NE",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "BFI",
+      "country": "US",
+      "subdivision": "US-WA",
+      "region": "us-west"
+    },
+    {
+      "iata": "BFL",
+      "country": "US",
+      "subdivision": "US-CA",
+      "region": "us-west"
+    },
+    {
+      "iata": "BGM",
+      "country": "US",
+      "subdivision": "US-NY",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "BGR",
+      "country": "US",
+      "subdivision": "US-ME",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "BHM",
+      "country": "US",
+      "subdivision": "US-AL",
+      "region": "us-south"
+    },
+    {
+      "iata": "BHQ",
+      "country": "AU",
+      "subdivision": "AU-NSW",
+      "region": "australia-new-south-wales"
+    },
+    {
+      "iata": "BIH",
+      "country": "US",
+      "subdivision": "US-CA",
+      "region": "us-west"
+    },
+    {
+      "iata": "BIL",
+      "country": "US",
+      "subdivision": "US-MT",
+      "region": "us-west"
+    },
+    {
+      "iata": "BIS",
+      "country": "US",
+      "subdivision": "US-ND",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "BJI",
+      "country": "US",
+      "subdivision": "US-MN",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "BKQ",
+      "country": "AU",
+      "subdivision": "AU-QLD",
+      "region": "australia-queensland"
+    },
+    {
+      "iata": "BLI",
+      "country": "US",
+      "subdivision": "US-WA",
+      "region": "us-west"
+    },
+    {
+      "iata": "BME",
+      "country": "AU",
+      "subdivision": "AU-WA",
+      "region": "australia-western-australia"
+    },
+    {
+      "iata": "BMI",
+      "country": "US",
+      "subdivision": "US-IL",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "BNA",
+      "country": "US",
+      "subdivision": "US-TN",
+      "region": "us-south"
+    },
+    {
+      "iata": "BNE",
+      "country": "AU",
+      "subdivision": "AU-QLD",
+      "region": "australia-queensland"
+    },
+    {
+      "iata": "BNK",
+      "country": "AU",
+      "subdivision": "AU-NSW",
+      "region": "australia-new-south-wales"
+    },
+    {
+      "iata": "BOI",
+      "country": "US",
+      "subdivision": "US-ID",
+      "region": "us-west"
+    },
+    {
+      "iata": "BOS",
+      "country": "US",
+      "subdivision": "US-MA",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "BPT",
+      "country": "US",
+      "subdivision": "US-TX",
+      "region": "us-south"
+    },
+    {
+      "iata": "BQK",
+      "country": "US",
+      "subdivision": "US-GA",
+      "region": "us-south"
+    },
+    {
+      "iata": "BRD",
+      "country": "US",
+      "subdivision": "US-MN",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "BRO",
+      "country": "US",
+      "subdivision": "US-TX",
+      "region": "us-south"
+    },
+    {
+      "iata": "BRW",
+      "country": "US",
+      "subdivision": "US-AK",
+      "region": "us-alaska"
+    },
+    {
+      "iata": "BTM",
+      "country": "US",
+      "subdivision": "US-MT",
+      "region": "us-west"
+    },
+    {
+      "iata": "BTR",
+      "country": "US",
+      "subdivision": "US-LA",
+      "region": "us-south"
+    },
+    {
+      "iata": "BTV",
+      "country": "US",
+      "subdivision": "US-VT",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "BUF",
+      "country": "US",
+      "subdivision": "US-NY",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "BUR",
+      "country": "US",
+      "subdivision": "US-CA",
+      "region": "us-west"
+    },
+    {
+      "iata": "BWI",
+      "country": "US",
+      "subdivision": "US-MD",
+      "region": "us-south"
+    },
+    {
+      "iata": "BWT",
+      "country": "AU",
+      "subdivision": "AU-TAS",
+      "region": "australia-tasmania"
+    },
+    {
+      "iata": "BXG",
+      "country": "AU",
+      "subdivision": "AU-VIC",
+      "region": "australia-victoria"
+    },
+    {
+      "iata": "BZN",
+      "country": "US",
+      "subdivision": "US-MT",
+      "region": "us-west"
+    },
+    {
+      "iata": "CAE",
+      "country": "US",
+      "subdivision": "US-SC",
+      "region": "us-south"
+    },
+    {
+      "iata": "CAK",
+      "country": "US",
+      "subdivision": "US-OH",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "CBR",
+      "country": "AU",
+      "subdivision": "AU-ACT",
+      "region": "australia-capital-territory"
+    },
+    {
+      "iata": "CDC",
+      "country": "US",
+      "subdivision": "US-UT",
+      "region": "us-west"
+    },
+    {
+      "iata": "CDV",
+      "country": "US",
+      "subdivision": "US-AK",
+      "region": "us-alaska"
+    },
+    {
+      "iata": "CFS",
+      "country": "AU",
+      "subdivision": "AU-NSW",
+      "region": "australia-new-south-wales"
+    },
+    {
+      "iata": "CHA",
+      "country": "US",
+      "subdivision": "US-TN",
+      "region": "us-south"
+    },
+    {
+      "iata": "CHO",
+      "country": "US",
+      "subdivision": "US-VA",
+      "region": "us-south"
+    },
+    {
+      "iata": "CHS",
+      "country": "US",
+      "subdivision": "US-SC",
+      "region": "us-south"
+    },
+    {
+      "iata": "CID",
+      "country": "US",
+      "subdivision": "US-IA",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "CIU",
+      "country": "US",
+      "subdivision": "US-MI",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "CKB",
+      "country": "US",
+      "subdivision": "US-WV",
+      "region": "us-south"
+    },
+    {
+      "iata": "CLD",
+      "country": "US",
+      "subdivision": "US-CA",
+      "region": "us-west"
+    },
+    {
+      "iata": "CLE",
+      "country": "US",
+      "subdivision": "US-OH",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "CLL",
+      "country": "US",
+      "subdivision": "US-TX",
+      "region": "us-south"
+    },
+    {
+      "iata": "CLT",
+      "country": "US",
+      "subdivision": "US-NC",
+      "region": "us-south"
+    },
+    {
+      "iata": "CMH",
+      "country": "US",
+      "subdivision": "US-OH",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "CMI",
+      "country": "US",
+      "subdivision": "US-IL",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "CMX",
+      "country": "US",
+      "subdivision": "US-MI",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "CNJ",
+      "country": "AU",
+      "subdivision": "AU-QLD",
+      "region": "australia-queensland"
+    },
+    {
+      "iata": "CNS",
+      "country": "AU",
+      "subdivision": "AU-QLD",
+      "region": "australia-queensland"
+    },
+    {
+      "iata": "COD",
+      "country": "US",
+      "subdivision": "US-WY",
+      "region": "us-west"
+    },
+    {
+      "iata": "COS",
+      "country": "US",
+      "subdivision": "US-CO",
+      "region": "us-west"
+    },
+    {
+      "iata": "COU",
+      "country": "US",
+      "subdivision": "US-MO",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "CPD",
+      "country": "AU",
+      "subdivision": "AU-SA",
+      "region": "australia-south-australia"
+    },
+    {
+      "iata": "CPR",
+      "country": "US",
+      "subdivision": "US-WY",
+      "region": "us-west"
+    },
+    {
+      "iata": "CRP",
+      "country": "US",
+      "subdivision": "US-TX",
+      "region": "us-south"
+    },
+    {
+      "iata": "CRW",
+      "country": "US",
+      "subdivision": "US-WV",
+      "region": "us-south"
+    },
+    {
+      "iata": "CSG",
+      "country": "US",
+      "subdivision": "US-GA",
+      "region": "us-south"
+    },
+    {
+      "iata": "CTL",
+      "country": "AU",
+      "subdivision": "AU-QLD",
+      "region": "australia-queensland"
+    },
+    {
+      "iata": "CVG",
+      "country": "US",
+      "subdivision": "US-KY",
+      "region": "us-south"
+    },
+    {
+      "iata": "CWA",
+      "country": "US",
+      "subdivision": "US-WI",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "CYS",
+      "country": "US",
+      "subdivision": "US-WY",
+      "region": "us-west"
+    },
+    {
+      "iata": "DAB",
+      "country": "US",
+      "subdivision": "US-FL",
+      "region": "us-south"
+    },
+    {
+      "iata": "DAL",
+      "country": "US",
+      "subdivision": "US-TX",
+      "region": "us-south"
+    },
+    {
+      "iata": "DAY",
+      "country": "US",
+      "subdivision": "US-OH",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "DBO",
+      "country": "AU",
+      "subdivision": "AU-NSW",
+      "region": "australia-new-south-wales"
+    },
+    {
+      "iata": "DCA",
+      "country": "US",
+      "subdivision": "US-DC",
+      "region": "us-south"
+    },
+    {
+      "iata": "DDC",
+      "country": "US",
+      "subdivision": "US-KS",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "DEC",
+      "country": "US",
+      "subdivision": "US-IL",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "DEN",
+      "country": "US",
+      "subdivision": "US-CO",
+      "region": "us-west"
+    },
+    {
+      "iata": "DFW",
+      "country": "US",
+      "subdivision": "US-TX",
+      "region": "us-south"
+    },
+    {
+      "iata": "DHN",
+      "country": "US",
+      "subdivision": "US-AL",
+      "region": "us-south"
+    },
+    {
+      "iata": "DIK",
+      "country": "US",
+      "subdivision": "US-ND",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "DLG",
+      "country": "US",
+      "subdivision": "US-AK",
+      "region": "us-alaska"
+    },
+    {
+      "iata": "DLH",
+      "country": "US",
+      "subdivision": "US-MN",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "DOV",
+      "country": "US",
+      "subdivision": "US-DE",
+      "region": "us-south"
+    },
+    {
+      "iata": "DPO",
+      "country": "AU",
+      "subdivision": "AU-TAS",
+      "region": "australia-tasmania"
+    },
+    {
+      "iata": "DRO",
+      "country": "US",
+      "subdivision": "US-CO",
+      "region": "us-west"
+    },
+    {
+      "iata": "DRW",
+      "country": "AU",
+      "subdivision": "AU-NT",
+      "region": "australia-northern-territory"
+    },
+    {
+      "iata": "DSM",
+      "country": "US",
+      "subdivision": "US-IA",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "DTW",
+      "country": "US",
+      "subdivision": "US-MI",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "DVL",
+      "country": "US",
+      "subdivision": "US-ND",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "EAR",
+      "country": "US",
+      "subdivision": "US-NE",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "EAT",
+      "country": "US",
+      "subdivision": "US-WA",
+      "region": "us-west"
+    },
+    {
+      "iata": "EAU",
+      "country": "US",
+      "subdivision": "US-WI",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "ECP",
+      "country": "US",
+      "subdivision": "US-FL",
+      "region": "us-south"
+    },
+    {
+      "iata": "EGE",
+      "country": "US",
+      "subdivision": "US-CO",
+      "region": "us-west"
+    },
+    {
+      "iata": "EKO",
+      "country": "US",
+      "subdivision": "US-NV",
+      "region": "us-west"
+    },
+    {
+      "iata": "ELM",
+      "country": "US",
+      "subdivision": "US-NY",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "ELP",
+      "country": "US",
+      "subdivision": "US-TX",
+      "region": "us-south"
+    },
+    {
+      "iata": "EMD",
+      "country": "AU",
+      "subdivision": "AU-QLD",
+      "region": "australia-queensland"
+    },
+    {
+      "iata": "ERI",
+      "country": "US",
+      "subdivision": "US-PA",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "ESC",
+      "country": "US",
+      "subdivision": "US-MI",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "EUG",
+      "country": "US",
+      "subdivision": "US-OR",
+      "region": "us-west"
+    },
+    {
+      "iata": "EVV",
+      "country": "US",
+      "subdivision": "US-IN",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "EWN",
+      "country": "US",
+      "subdivision": "US-NC",
+      "region": "us-south"
+    },
+    {
+      "iata": "EWR",
+      "country": "US",
+      "subdivision": "US-NJ",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "EYW",
+      "country": "US",
+      "subdivision": "US-FL",
+      "region": "us-south"
+    },
+    {
+      "iata": "FAI",
+      "country": "US",
+      "subdivision": "US-AK",
+      "region": "us-alaska"
+    },
+    {
+      "iata": "FAR",
+      "country": "US",
+      "subdivision": "US-ND",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "FAT",
+      "country": "US",
+      "subdivision": "US-CA",
+      "region": "us-west"
+    },
+    {
+      "iata": "FAY",
+      "country": "US",
+      "subdivision": "US-NC",
+      "region": "us-south"
+    },
+    {
+      "iata": "FCA",
+      "country": "US",
+      "subdivision": "US-MT",
+      "region": "us-west"
+    },
+    {
+      "iata": "FLG",
+      "country": "US",
+      "subdivision": "US-AZ",
+      "region": "us-west"
+    },
+    {
+      "iata": "FLL",
+      "country": "US",
+      "subdivision": "US-FL",
+      "region": "us-south"
+    },
+    {
+      "iata": "FLO",
+      "country": "US",
+      "subdivision": "US-SC",
+      "region": "us-south"
+    },
+    {
+      "iata": "FMN",
+      "country": "US",
+      "subdivision": "US-NM",
+      "region": "us-west"
+    },
+    {
+      "iata": "FNT",
+      "country": "US",
+      "subdivision": "US-MI",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "FOD",
+      "country": "US",
+      "subdivision": "US-IA",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "FSD",
+      "country": "US",
+      "subdivision": "US-SD",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "FSM",
+      "country": "US",
+      "subdivision": "US-AR",
+      "region": "us-south"
+    },
+    {
+      "iata": "FWA",
+      "country": "US",
+      "subdivision": "US-IN",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "GCC",
+      "country": "US",
+      "subdivision": "US-WY",
+      "region": "us-west"
+    },
+    {
+      "iata": "GCK",
+      "country": "US",
+      "subdivision": "US-KS",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "GEG",
+      "country": "US",
+      "subdivision": "US-WA",
+      "region": "us-west"
+    },
+    {
+      "iata": "GET",
+      "country": "AU",
+      "subdivision": "AU-WA",
+      "region": "australia-western-australia"
+    },
+    {
+      "iata": "GFF",
+      "country": "AU",
+      "subdivision": "AU-NSW",
+      "region": "australia-new-south-wales"
+    },
+    {
+      "iata": "GFK",
+      "country": "US",
+      "subdivision": "US-ND",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "GGG",
+      "country": "US",
+      "subdivision": "US-TX",
+      "region": "us-south"
+    },
+    {
+      "iata": "GJT",
+      "country": "US",
+      "subdivision": "US-CO",
+      "region": "us-west"
+    },
+    {
+      "iata": "GLT",
+      "country": "AU",
+      "subdivision": "AU-QLD",
+      "region": "australia-queensland"
+    },
+    {
+      "iata": "GNV",
+      "country": "US",
+      "subdivision": "US-FL",
+      "region": "us-south"
+    },
+    {
+      "iata": "GPT",
+      "country": "US",
+      "subdivision": "US-MS",
+      "region": "us-south"
+    },
+    {
+      "iata": "GRB",
+      "country": "US",
+      "subdivision": "US-WI",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "GRI",
+      "country": "US",
+      "subdivision": "US-NE",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "GRK",
+      "country": "US",
+      "subdivision": "US-TX",
+      "region": "us-south"
+    },
+    {
+      "iata": "GRR",
+      "country": "US",
+      "subdivision": "US-MI",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "GSO",
+      "country": "US",
+      "subdivision": "US-NC",
+      "region": "us-south"
+    },
+    {
+      "iata": "GSP",
+      "country": "US",
+      "subdivision": "US-SC",
+      "region": "us-south"
+    },
+    {
+      "iata": "GST",
+      "country": "US",
+      "subdivision": "US-AK",
+      "region": "us-alaska"
+    },
+    {
+      "iata": "GTF",
+      "country": "US",
+      "subdivision": "US-MT",
+      "region": "us-west"
+    },
+    {
+      "iata": "GTR",
+      "country": "US",
+      "subdivision": "US-MS",
+      "region": "us-south"
+    },
+    {
+      "iata": "GUC",
+      "country": "US",
+      "subdivision": "US-CO",
+      "region": "us-west"
+    },
+    {
+      "iata": "HBA",
+      "country": "AU",
+      "subdivision": "AU-TAS",
+      "region": "australia-tasmania"
+    },
+    {
+      "iata": "HDN",
+      "country": "US",
+      "subdivision": "US-CO",
+      "region": "us-west"
+    },
+    {
+      "iata": "HHH",
+      "country": "US",
+      "subdivision": "US-SC",
+      "region": "us-south"
+    },
+    {
+      "iata": "HIB",
+      "country": "US",
+      "subdivision": "US-MN",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "HLN",
+      "country": "US",
+      "subdivision": "US-MT",
+      "region": "us-west"
+    },
+    {
+      "iata": "HNL",
+      "country": "US",
+      "subdivision": "US-HI",
+      "region": "us-hawaii"
+    },
+    {
+      "iata": "HOB",
+      "country": "US",
+      "subdivision": "US-NM",
+      "region": "us-west"
+    },
+    {
+      "iata": "HOU",
+      "country": "US",
+      "subdivision": "US-TX",
+      "region": "us-south"
+    },
+    {
+      "iata": "HPN",
+      "country": "US",
+      "subdivision": "US-NY",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "HRL",
+      "country": "US",
+      "subdivision": "US-TX",
+      "region": "us-south"
+    },
+    {
+      "iata": "HSV",
+      "country": "US",
+      "subdivision": "US-AL",
+      "region": "us-south"
+    },
+    {
+      "iata": "HTI",
+      "country": "AU",
+      "subdivision": "AU-QLD",
+      "region": "australia-queensland"
+    },
+    {
+      "iata": "HTS",
+      "country": "US",
+      "subdivision": "US-WV",
+      "region": "us-south"
+    },
+    {
+      "iata": "HYA",
+      "country": "US",
+      "subdivision": "US-MA",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "HYS",
+      "country": "US",
+      "subdivision": "US-KS",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "IAD",
+      "country": "US",
+      "subdivision": "US-VA",
+      "region": "us-south"
+    },
+    {
+      "iata": "IAH",
+      "country": "US",
+      "subdivision": "US-TX",
+      "region": "us-south"
+    },
+    {
+      "iata": "ICT",
+      "country": "US",
+      "subdivision": "US-KS",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "IDA",
+      "country": "US",
+      "subdivision": "US-ID",
+      "region": "us-west"
+    },
+    {
+      "iata": "ILM",
+      "country": "US",
+      "subdivision": "US-NC",
+      "region": "us-south"
+    },
+    {
+      "iata": "IMT",
+      "country": "US",
+      "subdivision": "US-MI",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "IND",
+      "country": "US",
+      "subdivision": "US-IN",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "INL",
+      "country": "US",
+      "subdivision": "US-MN",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "ISA",
+      "country": "AU",
+      "subdivision": "AU-QLD",
+      "region": "australia-queensland"
+    },
+    {
+      "iata": "ITH",
+      "country": "US",
+      "subdivision": "US-NY",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "ITO",
+      "country": "US",
+      "subdivision": "US-HI",
+      "region": "us-hawaii"
+    },
+    {
+      "iata": "JAC",
+      "country": "US",
+      "subdivision": "US-WY",
+      "region": "us-west"
+    },
+    {
+      "iata": "JAN",
+      "country": "US",
+      "subdivision": "US-MS",
+      "region": "us-south"
+    },
+    {
+      "iata": "JAX",
+      "country": "US",
+      "subdivision": "US-FL",
+      "region": "us-south"
+    },
+    {
+      "iata": "JFK",
+      "country": "US",
+      "subdivision": "US-NY",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "JLN",
+      "country": "US",
+      "subdivision": "US-MO",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "JMS",
+      "country": "US",
+      "subdivision": "US-ND",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "JNU",
+      "country": "US",
+      "subdivision": "US-AK",
+      "region": "us-alaska"
+    },
+    {
+      "iata": "JST",
+      "country": "US",
+      "subdivision": "US-PA",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "KGC",
+      "country": "AU",
+      "subdivision": "AU-SA",
+      "region": "australia-south-australia"
+    },
+    {
+      "iata": "KGI",
+      "country": "AU",
+      "subdivision": "AU-WA",
+      "region": "australia-western-australia"
+    },
+    {
+      "iata": "KOA",
+      "country": "US",
+      "subdivision": "US-HI",
+      "region": "us-hawaii"
+    },
+    {
+      "iata": "KTA",
+      "country": "AU",
+      "subdivision": "AU-WA",
+      "region": "australia-western-australia"
+    },
+    {
+      "iata": "KTN",
+      "country": "US",
+      "subdivision": "US-AK",
+      "region": "us-alaska"
+    },
+    {
+      "iata": "LAF",
+      "country": "US",
+      "subdivision": "US-IN",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "LAN",
+      "country": "US",
+      "subdivision": "US-MI",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "LAR",
+      "country": "US",
+      "subdivision": "US-WY",
+      "region": "us-west"
+    },
+    {
+      "iata": "LAS",
+      "country": "US",
+      "subdivision": "US-NV",
+      "region": "us-west"
+    },
+    {
+      "iata": "LAW",
+      "country": "US",
+      "subdivision": "US-OK",
+      "region": "us-south"
+    },
+    {
+      "iata": "LAX",
+      "country": "US",
+      "subdivision": "US-CA",
+      "region": "us-west"
+    },
+    {
+      "iata": "LBB",
+      "country": "US",
+      "subdivision": "US-TX",
+      "region": "us-south"
+    },
+    {
+      "iata": "LBF",
+      "country": "US",
+      "subdivision": "US-NE",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "LBL",
+      "country": "US",
+      "subdivision": "US-KS",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "LCH",
+      "country": "US",
+      "subdivision": "US-LA",
+      "region": "us-south"
+    },
+    {
+      "iata": "LEX",
+      "country": "US",
+      "subdivision": "US-KY",
+      "region": "us-south"
+    },
+    {
+      "iata": "LFT",
+      "country": "US",
+      "subdivision": "US-LA",
+      "region": "us-south"
+    },
+    {
+      "iata": "LGA",
+      "country": "US",
+      "subdivision": "US-NY",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "LGB",
+      "country": "US",
+      "subdivision": "US-CA",
+      "region": "us-west"
+    },
+    {
+      "iata": "LIH",
+      "country": "US",
+      "subdivision": "US-HI",
+      "region": "us-hawaii"
+    },
+    {
+      "iata": "LIT",
+      "country": "US",
+      "subdivision": "US-AR",
+      "region": "us-south"
+    },
+    {
+      "iata": "LNK",
+      "country": "US",
+      "subdivision": "US-NE",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "LNS",
+      "country": "US",
+      "subdivision": "US-PA",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "LRD",
+      "country": "US",
+      "subdivision": "US-TX",
+      "region": "us-south"
+    },
+    {
+      "iata": "LRE",
+      "country": "AU",
+      "subdivision": "AU-QLD",
+      "region": "australia-queensland"
+    },
+    {
+      "iata": "LSE",
+      "country": "US",
+      "subdivision": "US-WI",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "LST",
+      "country": "AU",
+      "subdivision": "AU-TAS",
+      "region": "australia-tasmania"
+    },
+    {
+      "iata": "LWB",
+      "country": "US",
+      "subdivision": "US-WV",
+      "region": "us-south"
+    },
+    {
+      "iata": "LWS",
+      "country": "US",
+      "subdivision": "US-ID",
+      "region": "us-west"
+    },
+    {
+      "iata": "LYH",
+      "country": "US",
+      "subdivision": "US-VA",
+      "region": "us-south"
+    },
+    {
+      "iata": "MAF",
+      "country": "US",
+      "subdivision": "US-TX",
+      "region": "us-south"
+    },
+    {
+      "iata": "MBS",
+      "country": "US",
+      "subdivision": "US-MI",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "MCI",
+      "country": "US",
+      "subdivision": "US-MO",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "MCN",
+      "country": "US",
+      "subdivision": "US-GA",
+      "region": "us-south"
+    },
+    {
+      "iata": "MCO",
+      "country": "US",
+      "subdivision": "US-FL",
+      "region": "us-south"
+    },
+    {
+      "iata": "MCW",
+      "country": "US",
+      "subdivision": "US-IA",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "MCY",
+      "country": "AU",
+      "subdivision": "AU-QLD",
+      "region": "australia-queensland"
+    },
+    {
+      "iata": "MDT",
+      "country": "US",
+      "subdivision": "US-PA",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "MDW",
+      "country": "US",
+      "subdivision": "US-IL",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "MEI",
+      "country": "US",
+      "subdivision": "US-MS",
+      "region": "us-south"
+    },
+    {
+      "iata": "MEL",
+      "country": "AU",
+      "subdivision": "AU-VIC",
+      "region": "australia-victoria"
+    },
+    {
+      "iata": "MEM",
+      "country": "US",
+      "subdivision": "US-TN",
+      "region": "us-south"
+    },
+    {
+      "iata": "MFE",
+      "country": "US",
+      "subdivision": "US-TX",
+      "region": "us-south"
+    },
+    {
+      "iata": "MFR",
+      "country": "US",
+      "subdivision": "US-OR",
+      "region": "us-west"
+    },
+    {
+      "iata": "MGM",
+      "country": "US",
+      "subdivision": "US-AL",
+      "region": "us-south"
+    },
+    {
+      "iata": "MGW",
+      "country": "US",
+      "subdivision": "US-WV",
+      "region": "us-south"
+    },
+    {
+      "iata": "MHK",
+      "country": "US",
+      "subdivision": "US-KS",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "MHT",
+      "country": "US",
+      "subdivision": "US-NH",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "MIA",
+      "country": "US",
+      "subdivision": "US-FL",
+      "region": "us-south"
+    },
+    {
+      "iata": "MIM",
+      "country": "AU",
+      "subdivision": "AU-NSW",
+      "region": "australia-new-south-wales"
+    },
+    {
+      "iata": "MKE",
+      "country": "US",
+      "subdivision": "US-WI",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "MKY",
+      "country": "AU",
+      "subdivision": "AU-QLD",
+      "region": "australia-queensland"
+    },
+    {
+      "iata": "MLB",
+      "country": "US",
+      "subdivision": "US-FL",
+      "region": "us-south"
+    },
+    {
+      "iata": "MLI",
+      "country": "US",
+      "subdivision": "US-IL",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "MLU",
+      "country": "US",
+      "subdivision": "US-LA",
+      "region": "us-south"
+    },
+    {
+      "iata": "MOB",
+      "country": "US",
+      "subdivision": "US-AL",
+      "region": "us-south"
+    },
+    {
+      "iata": "MOT",
+      "country": "US",
+      "subdivision": "US-ND",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "MOV",
+      "country": "AU",
+      "subdivision": "AU-QLD",
+      "region": "australia-queensland"
+    },
+    {
+      "iata": "MQL",
+      "country": "AU",
+      "subdivision": "AU-VIC",
+      "region": "australia-victoria"
+    },
+    {
+      "iata": "MQT",
+      "country": "US",
+      "subdivision": "US-MI",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "MRY",
+      "country": "US",
+      "subdivision": "US-CA",
+      "region": "us-west"
+    },
+    {
+      "iata": "MRZ",
+      "country": "AU",
+      "subdivision": "AU-NSW",
+      "region": "australia-new-south-wales"
+    },
+    {
+      "iata": "MSN",
+      "country": "US",
+      "subdivision": "US-WI",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "MSO",
+      "country": "US",
+      "subdivision": "US-MT",
+      "region": "us-west"
+    },
+    {
+      "iata": "MSP",
+      "country": "US",
+      "subdivision": "US-MN",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "MSY",
+      "country": "US",
+      "subdivision": "US-LA",
+      "region": "us-south"
+    },
+    {
+      "iata": "MTJ",
+      "country": "US",
+      "subdivision": "US-CO",
+      "region": "us-west"
+    },
+    {
+      "iata": "MVY",
+      "country": "US",
+      "subdivision": "US-MA",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "MYR",
+      "country": "US",
+      "subdivision": "US-SC",
+      "region": "us-south"
+    },
+    {
+      "iata": "NTL",
+      "country": "AU",
+      "subdivision": "AU-NSW",
+      "region": "australia-new-south-wales"
+    },
+    {
+      "iata": "OAJ",
+      "country": "US",
+      "subdivision": "US-NC",
+      "region": "us-south"
+    },
+    {
+      "iata": "OAK",
+      "country": "US",
+      "subdivision": "US-CA",
+      "region": "us-west"
+    },
+    {
+      "iata": "OGG",
+      "country": "US",
+      "subdivision": "US-HI",
+      "region": "us-hawaii"
+    },
+    {
+      "iata": "OKC",
+      "country": "US",
+      "subdivision": "US-OK",
+      "region": "us-south"
+    },
+    {
+      "iata": "OLP",
+      "country": "AU",
+      "subdivision": "AU-SA",
+      "region": "australia-south-australia"
+    },
+    {
+      "iata": "OMA",
+      "country": "US",
+      "subdivision": "US-NE",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "OME",
+      "country": "US",
+      "subdivision": "US-AK",
+      "region": "us-alaska"
+    },
+    {
+      "iata": "ONT",
+      "country": "US",
+      "subdivision": "US-CA",
+      "region": "us-west"
+    },
+    {
+      "iata": "OOL",
+      "country": "AU",
+      "subdivision": "AU-QLD",
+      "region": "australia-queensland"
+    },
+    {
+      "iata": "OOM",
+      "country": "AU",
+      "subdivision": "AU-NSW",
+      "region": "australia-new-south-wales"
+    },
+    {
+      "iata": "ORD",
+      "country": "US",
+      "subdivision": "US-IL",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "ORF",
+      "country": "US",
+      "subdivision": "US-VA",
+      "region": "us-south"
+    },
+    {
+      "iata": "ORH",
+      "country": "US",
+      "subdivision": "US-MA",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "OTH",
+      "country": "US",
+      "subdivision": "US-OR",
+      "region": "us-west"
+    },
+    {
+      "iata": "OTZ",
+      "country": "US",
+      "subdivision": "US-AK",
+      "region": "us-alaska"
+    },
+    {
+      "iata": "PAE",
+      "country": "US",
+      "subdivision": "US-WA",
+      "region": "us-west"
+    },
+    {
+      "iata": "PAH",
+      "country": "US",
+      "subdivision": "US-KY",
+      "region": "us-south"
+    },
+    {
+      "iata": "PBI",
+      "country": "US",
+      "subdivision": "US-FL",
+      "region": "us-south"
+    },
+    {
+      "iata": "PBO",
+      "country": "AU",
+      "subdivision": "AU-WA",
+      "region": "australia-western-australia"
+    },
+    {
+      "iata": "PDX",
+      "country": "US",
+      "subdivision": "US-OR",
+      "region": "us-west"
+    },
+    {
+      "iata": "PER",
+      "country": "AU",
+      "subdivision": "AU-WA",
+      "region": "australia-western-australia"
+    },
+    {
+      "iata": "PGV",
+      "country": "US",
+      "subdivision": "US-NC",
+      "region": "us-south"
+    },
+    {
+      "iata": "PHE",
+      "country": "AU",
+      "subdivision": "AU-WA",
+      "region": "australia-western-australia"
+    },
+    {
+      "iata": "PHF",
+      "country": "US",
+      "subdivision": "US-VA",
+      "region": "us-south"
+    },
+    {
+      "iata": "PHL",
+      "country": "US",
+      "subdivision": "US-PA",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "PHX",
+      "country": "US",
+      "subdivision": "US-AZ",
+      "region": "us-west"
+    },
+    {
+      "iata": "PIA",
+      "country": "US",
+      "subdivision": "US-IL",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "PIB",
+      "country": "US",
+      "subdivision": "US-MS",
+      "region": "us-south"
+    },
+    {
+      "iata": "PIH",
+      "country": "US",
+      "subdivision": "US-ID",
+      "region": "us-west"
+    },
+    {
+      "iata": "PIR",
+      "country": "US",
+      "subdivision": "US-SD",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "PIT",
+      "country": "US",
+      "subdivision": "US-PA",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "PLN",
+      "country": "US",
+      "subdivision": "US-MI",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "PLO",
+      "country": "AU",
+      "subdivision": "AU-SA",
+      "region": "australia-south-australia"
+    },
+    {
+      "iata": "PNS",
+      "country": "US",
+      "subdivision": "US-FL",
+      "region": "us-south"
+    },
+    {
+      "iata": "PPP",
+      "country": "AU",
+      "subdivision": "AU-QLD",
+      "region": "australia-queensland"
+    },
+    {
+      "iata": "PQQ",
+      "country": "AU",
+      "subdivision": "AU-NSW",
+      "region": "australia-new-south-wales"
+    },
+    {
+      "iata": "PRC",
+      "country": "US",
+      "subdivision": "US-AZ",
+      "region": "us-west"
+    },
+    {
+      "iata": "PSC",
+      "country": "US",
+      "subdivision": "US-WA",
+      "region": "us-west"
+    },
+    {
+      "iata": "PSG",
+      "country": "US",
+      "subdivision": "US-AK",
+      "region": "us-alaska"
+    },
+    {
+      "iata": "PSP",
+      "country": "US",
+      "subdivision": "US-CA",
+      "region": "us-west"
+    },
+    {
+      "iata": "PUW",
+      "country": "US",
+      "subdivision": "US-WA",
+      "region": "us-west"
+    },
+    {
+      "iata": "PVD",
+      "country": "US",
+      "subdivision": "US-RI",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "PVU",
+      "country": "US",
+      "subdivision": "US-UT",
+      "region": "us-west"
+    },
+    {
+      "iata": "PWM",
+      "country": "US",
+      "subdivision": "US-ME",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "RAP",
+      "country": "US",
+      "subdivision": "US-SD",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "RDD",
+      "country": "US",
+      "subdivision": "US-CA",
+      "region": "us-west"
+    },
+    {
+      "iata": "RDM",
+      "country": "US",
+      "subdivision": "US-OR",
+      "region": "us-west"
+    },
+    {
+      "iata": "RDU",
+      "country": "US",
+      "subdivision": "US-NC",
+      "region": "us-south"
+    },
+    {
+      "iata": "RFD",
+      "country": "US",
+      "subdivision": "US-IL",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "RHI",
+      "country": "US",
+      "subdivision": "US-WI",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "RIC",
+      "country": "US",
+      "subdivision": "US-VA",
+      "region": "us-south"
+    },
+    {
+      "iata": "RIW",
+      "country": "US",
+      "subdivision": "US-WY",
+      "region": "us-west"
+    },
+    {
+      "iata": "RKS",
+      "country": "US",
+      "subdivision": "US-WY",
+      "region": "us-west"
+    },
+    {
+      "iata": "RMA",
+      "country": "AU",
+      "subdivision": "AU-QLD",
+      "region": "australia-queensland"
+    },
+    {
+      "iata": "RNO",
+      "country": "US",
+      "subdivision": "US-NV",
+      "region": "us-west"
+    },
+    {
+      "iata": "ROA",
+      "country": "US",
+      "subdivision": "US-VA",
+      "region": "us-south"
+    },
+    {
+      "iata": "ROC",
+      "country": "US",
+      "subdivision": "US-NY",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "ROK",
+      "country": "AU",
+      "subdivision": "AU-QLD",
+      "region": "australia-queensland"
+    },
+    {
+      "iata": "ROW",
+      "country": "US",
+      "subdivision": "US-NM",
+      "region": "us-west"
+    },
+    {
+      "iata": "RST",
+      "country": "US",
+      "subdivision": "US-MN",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "RSW",
+      "country": "US",
+      "subdivision": "US-FL",
+      "region": "us-south"
+    },
+    {
+      "iata": "SAF",
+      "country": "US",
+      "subdivision": "US-NM",
+      "region": "us-west"
+    },
+    {
+      "iata": "SAN",
+      "country": "US",
+      "subdivision": "US-CA",
+      "region": "us-west"
+    },
+    {
+      "iata": "SAT",
+      "country": "US",
+      "subdivision": "US-TX",
+      "region": "us-south"
+    },
+    {
+      "iata": "SAV",
+      "country": "US",
+      "subdivision": "US-GA",
+      "region": "us-south"
+    },
+    {
+      "iata": "SBA",
+      "country": "US",
+      "subdivision": "US-CA",
+      "region": "us-west"
+    },
+    {
+      "iata": "SBD",
+      "country": "US",
+      "subdivision": "US-CA",
+      "region": "us-west"
+    },
+    {
+      "iata": "SBN",
+      "country": "US",
+      "subdivision": "US-IN",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "SBP",
+      "country": "US",
+      "subdivision": "US-CA",
+      "region": "us-west"
+    },
+    {
+      "iata": "SBY",
+      "country": "US",
+      "subdivision": "US-MD",
+      "region": "us-south"
+    },
+    {
+      "iata": "SCC",
+      "country": "US",
+      "subdivision": "US-AK",
+      "region": "us-alaska"
+    },
+    {
+      "iata": "SCE",
+      "country": "US",
+      "subdivision": "US-PA",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "SDF",
+      "country": "US",
+      "subdivision": "US-KY",
+      "region": "us-south"
+    },
+    {
+      "iata": "SEA",
+      "country": "US",
+      "subdivision": "US-WA",
+      "region": "us-west"
+    },
+    {
+      "iata": "SFO",
+      "country": "US",
+      "subdivision": "US-CA",
+      "region": "us-west"
+    },
+    {
+      "iata": "SGF",
+      "country": "US",
+      "subdivision": "US-MO",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "SGU",
+      "country": "US",
+      "subdivision": "US-UT",
+      "region": "us-west"
+    },
+    {
+      "iata": "SHD",
+      "country": "US",
+      "subdivision": "US-VA",
+      "region": "us-south"
+    },
+    {
+      "iata": "SHR",
+      "country": "US",
+      "subdivision": "US-WY",
+      "region": "us-west"
+    },
+    {
+      "iata": "SHV",
+      "country": "US",
+      "subdivision": "US-LA",
+      "region": "us-south"
+    },
+    {
+      "iata": "SIT",
+      "country": "US",
+      "subdivision": "US-AK",
+      "region": "us-alaska"
+    },
+    {
+      "iata": "SJC",
+      "country": "US",
+      "subdivision": "US-CA",
+      "region": "us-west"
+    },
+    {
+      "iata": "SJT",
+      "country": "US",
+      "subdivision": "US-TX",
+      "region": "us-south"
+    },
+    {
+      "iata": "SLC",
+      "country": "US",
+      "subdivision": "US-UT",
+      "region": "us-west"
+    },
+    {
+      "iata": "SLN",
+      "country": "US",
+      "subdivision": "US-KS",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "SMF",
+      "country": "US",
+      "subdivision": "US-CA",
+      "region": "us-west"
+    },
+    {
+      "iata": "SNA",
+      "country": "US",
+      "subdivision": "US-CA",
+      "region": "us-west"
+    },
+    {
+      "iata": "SPI",
+      "country": "US",
+      "subdivision": "US-IL",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "SPS",
+      "country": "US",
+      "subdivision": "US-TX",
+      "region": "us-south"
+    },
+    {
+      "iata": "SRQ",
+      "country": "US",
+      "subdivision": "US-FL",
+      "region": "us-south"
+    },
+    {
+      "iata": "STL",
+      "country": "US",
+      "subdivision": "US-MO",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "STS",
+      "country": "US",
+      "subdivision": "US-CA",
+      "region": "us-west"
+    },
+    {
+      "iata": "SUN",
+      "country": "US",
+      "subdivision": "US-ID",
+      "region": "us-west"
+    },
+    {
+      "iata": "SUX",
+      "country": "US",
+      "subdivision": "US-IA",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "SWO",
+      "country": "US",
+      "subdivision": "US-OK",
+      "region": "us-south"
+    },
+    {
+      "iata": "SYD",
+      "country": "AU",
+      "subdivision": "AU-NSW",
+      "region": "australia-new-south-wales"
+    },
+    {
+      "iata": "SYR",
+      "country": "US",
+      "subdivision": "US-NY",
+      "region": "us-northeast"
+    },
+    {
+      "iata": "TLH",
+      "country": "US",
+      "subdivision": "US-FL",
+      "region": "us-south"
+    },
+    {
+      "iata": "TMW",
+      "country": "AU",
+      "subdivision": "AU-NSW",
+      "region": "australia-new-south-wales"
+    },
+    {
+      "iata": "TPA",
+      "country": "US",
+      "subdivision": "US-FL",
+      "region": "us-south"
+    },
+    {
+      "iata": "TRI",
+      "country": "US",
+      "subdivision": "US-TN",
+      "region": "us-south"
+    },
+    {
+      "iata": "TSV",
+      "country": "AU",
+      "subdivision": "AU-QLD",
+      "region": "australia-queensland"
+    },
+    {
+      "iata": "TUL",
+      "country": "US",
+      "subdivision": "US-OK",
+      "region": "us-south"
+    },
+    {
+      "iata": "TUS",
+      "country": "US",
+      "subdivision": "US-AZ",
+      "region": "us-west"
+    },
+    {
+      "iata": "TVC",
+      "country": "US",
+      "subdivision": "US-MI",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "TWF",
+      "country": "US",
+      "subdivision": "US-ID",
+      "region": "us-west"
+    },
+    {
+      "iata": "TXK",
+      "country": "US",
+      "subdivision": "US-AR",
+      "region": "us-south"
+    },
+    {
+      "iata": "TYR",
+      "country": "US",
+      "subdivision": "US-TX",
+      "region": "us-south"
+    },
+    {
+      "iata": "TYS",
+      "country": "US",
+      "subdivision": "US-TN",
+      "region": "us-south"
+    },
+    {
+      "iata": "VCT",
+      "country": "US",
+      "subdivision": "US-TX",
+      "region": "us-south"
+    },
+    {
+      "iata": "VLD",
+      "country": "US",
+      "subdivision": "US-GA",
+      "region": "us-south"
+    },
+    {
+      "iata": "VPS",
+      "country": "US",
+      "subdivision": "US-FL",
+      "region": "us-south"
+    },
+    {
+      "iata": "VRB",
+      "country": "US",
+      "subdivision": "US-FL",
+      "region": "us-south"
+    },
+    {
+      "iata": "WEI",
+      "country": "AU",
+      "subdivision": "AU-QLD",
+      "region": "australia-queensland"
+    },
+    {
+      "iata": "WGA",
+      "country": "AU",
+      "subdivision": "AU-NSW",
+      "region": "australia-new-south-wales"
+    },
+    {
+      "iata": "WRG",
+      "country": "US",
+      "subdivision": "US-AK",
+      "region": "us-alaska"
+    },
+    {
+      "iata": "WSI",
+      "country": "AU",
+      "subdivision": "AU-NSW",
+      "region": "australia-new-south-wales"
+    },
+    {
+      "iata": "WTB",
+      "country": "AU",
+      "subdivision": "AU-QLD",
+      "region": "australia-queensland"
+    },
+    {
+      "iata": "WYA",
+      "country": "AU",
+      "subdivision": "AU-SA",
+      "region": "australia-south-australia"
+    },
+    {
+      "iata": "WYS",
+      "country": "US",
+      "subdivision": "US-MT",
+      "region": "us-west"
+    },
+    {
+      "iata": "XNA",
+      "country": "US",
+      "subdivision": "US-AR",
+      "region": "us-south"
+    },
+    {
+      "iata": "XWA",
+      "country": "US",
+      "subdivision": "US-ND",
+      "region": "us-midwest"
+    },
+    {
+      "iata": "YAK",
+      "country": "US",
+      "subdivision": "US-AK",
+      "region": "us-alaska"
+    },
+    {
+      "iata": "YAM",
+      "country": "CA",
+      "subdivision": "CA-ON",
+      "region": "canada-central"
+    },
+    {
+      "iata": "YBG",
+      "country": "CA",
+      "subdivision": "CA-QC",
+      "region": "canada-central"
+    },
+    {
+      "iata": "YCD",
+      "country": "CA",
+      "subdivision": "CA-BC",
+      "region": "canada-pacific"
+    },
+    {
+      "iata": "YDF",
+      "country": "CA",
+      "subdivision": "CA-NL",
+      "region": "canada-atlantic"
+    },
+    {
+      "iata": "YEG",
+      "country": "CA",
+      "subdivision": "CA-AB",
+      "region": "canada-prairies"
+    },
+    {
+      "iata": "YFC",
+      "country": "CA",
+      "subdivision": "CA-NB",
+      "region": "canada-atlantic"
+    },
+    {
+      "iata": "YGP",
+      "country": "CA",
+      "subdivision": "CA-QC",
+      "region": "canada-central"
+    },
+    {
+      "iata": "YGR",
+      "country": "CA",
+      "subdivision": "CA-QC",
+      "region": "canada-central"
+    },
+    {
+      "iata": "YHM",
+      "country": "CA",
+      "subdivision": "CA-ON",
+      "region": "canada-central"
+    },
+    {
+      "iata": "YHZ",
+      "country": "CA",
+      "subdivision": "CA-NS",
+      "region": "canada-atlantic"
+    },
+    {
+      "iata": "YKA",
+      "country": "CA",
+      "subdivision": "CA-BC",
+      "region": "canada-pacific"
+    },
+    {
+      "iata": "YKM",
+      "country": "US",
+      "subdivision": "US-WA",
+      "region": "us-west"
+    },
+    {
+      "iata": "YLW",
+      "country": "CA",
+      "subdivision": "CA-BC",
+      "region": "canada-pacific"
+    },
+    {
+      "iata": "YMM",
+      "country": "CA",
+      "subdivision": "CA-AB",
+      "region": "canada-prairies"
+    },
+    {
+      "iata": "YMX",
+      "country": "CA",
+      "subdivision": "CA-QC",
+      "region": "canada-central"
+    },
+    {
+      "iata": "YOW",
+      "country": "CA",
+      "subdivision": "CA-ON",
+      "region": "canada-central"
+    },
+    {
+      "iata": "YPR",
+      "country": "CA",
+      "subdivision": "CA-BC",
+      "region": "canada-pacific"
+    },
+    {
+      "iata": "YQB",
+      "country": "CA",
+      "subdivision": "CA-QC",
+      "region": "canada-central"
+    },
+    {
+      "iata": "YQG",
+      "country": "CA",
+      "subdivision": "CA-ON",
+      "region": "canada-central"
+    },
+    {
+      "iata": "YQM",
+      "country": "CA",
+      "subdivision": "CA-NB",
+      "region": "canada-atlantic"
+    },
+    {
+      "iata": "YQQ",
+      "country": "CA",
+      "subdivision": "CA-BC",
+      "region": "canada-pacific"
+    },
+    {
+      "iata": "YQR",
+      "country": "CA",
+      "subdivision": "CA-SK",
+      "region": "canada-prairies"
+    },
+    {
+      "iata": "YQT",
+      "country": "CA",
+      "subdivision": "CA-ON",
+      "region": "canada-central"
+    },
+    {
+      "iata": "YQU",
+      "country": "CA",
+      "subdivision": "CA-AB",
+      "region": "canada-prairies"
+    },
+    {
+      "iata": "YQX",
+      "country": "CA",
+      "subdivision": "CA-NL",
+      "region": "canada-atlantic"
+    },
+    {
+      "iata": "YQY",
+      "country": "CA",
+      "subdivision": "CA-NS",
+      "region": "canada-atlantic"
+    },
+    {
+      "iata": "YQZ",
+      "country": "CA",
+      "subdivision": "CA-BC",
+      "region": "canada-pacific"
+    },
+    {
+      "iata": "YSB",
+      "country": "CA",
+      "subdivision": "CA-ON",
+      "region": "canada-central"
+    },
+    {
+      "iata": "YSJ",
+      "country": "CA",
+      "subdivision": "CA-NB",
+      "region": "canada-atlantic"
+    },
+    {
+      "iata": "YTS",
+      "country": "CA",
+      "subdivision": "CA-ON",
+      "region": "canada-central"
+    },
+    {
+      "iata": "YTZ",
+      "country": "CA",
+      "subdivision": "CA-ON",
+      "region": "canada-central"
+    },
+    {
+      "iata": "YUL",
+      "country": "CA",
+      "subdivision": "CA-QC",
+      "region": "canada-central"
+    },
+    {
+      "iata": "YUM",
+      "country": "US",
+      "subdivision": "US-AZ",
+      "region": "us-west"
+    },
+    {
+      "iata": "YUY",
+      "country": "CA",
+      "subdivision": "CA-QC",
+      "region": "canada-central"
+    },
+    {
+      "iata": "YVO",
+      "country": "CA",
+      "subdivision": "CA-QC",
+      "region": "canada-central"
+    },
+    {
+      "iata": "YVR",
+      "country": "CA",
+      "subdivision": "CA-BC",
+      "region": "canada-pacific"
+    },
+    {
+      "iata": "YWG",
+      "country": "CA",
+      "subdivision": "CA-MB",
+      "region": "canada-prairies"
+    },
+    {
+      "iata": "YWK",
+      "country": "CA",
+      "subdivision": "CA-NL",
+      "region": "canada-atlantic"
+    },
+    {
+      "iata": "YWL",
+      "country": "CA",
+      "subdivision": "CA-BC",
+      "region": "canada-pacific"
+    },
+    {
+      "iata": "YXC",
+      "country": "CA",
+      "subdivision": "CA-BC",
+      "region": "canada-pacific"
+    },
+    {
+      "iata": "YXE",
+      "country": "CA",
+      "subdivision": "CA-SK",
+      "region": "canada-prairies"
+    },
+    {
+      "iata": "YXJ",
+      "country": "CA",
+      "subdivision": "CA-BC",
+      "region": "canada-pacific"
+    },
+    {
+      "iata": "YXS",
+      "country": "CA",
+      "subdivision": "CA-BC",
+      "region": "canada-pacific"
+    },
+    {
+      "iata": "YXT",
+      "country": "CA",
+      "subdivision": "CA-BC",
+      "region": "canada-pacific"
+    },
+    {
+      "iata": "YXU",
+      "country": "CA",
+      "subdivision": "CA-ON",
+      "region": "canada-central"
+    },
+    {
+      "iata": "YXY",
+      "country": "CA",
+      "subdivision": "CA-YT",
+      "region": "canada-north"
+    },
+    {
+      "iata": "YYC",
+      "country": "CA",
+      "subdivision": "CA-AB",
+      "region": "canada-prairies"
+    },
+    {
+      "iata": "YYD",
+      "country": "CA",
+      "subdivision": "CA-BC",
+      "region": "canada-pacific"
+    },
+    {
+      "iata": "YYF",
+      "country": "CA",
+      "subdivision": "CA-BC",
+      "region": "canada-pacific"
+    },
+    {
+      "iata": "YYG",
+      "country": "CA",
+      "subdivision": "CA-PE",
+      "region": "canada-atlantic"
+    },
+    {
+      "iata": "YYJ",
+      "country": "CA",
+      "subdivision": "CA-BC",
+      "region": "canada-pacific"
+    },
+    {
+      "iata": "YYR",
+      "country": "CA",
+      "subdivision": "CA-NL",
+      "region": "canada-atlantic"
+    },
+    {
+      "iata": "YYT",
+      "country": "CA",
+      "subdivision": "CA-NL",
+      "region": "canada-atlantic"
+    },
+    {
+      "iata": "YYZ",
+      "country": "CA",
+      "subdivision": "CA-ON",
+      "region": "canada-central"
+    },
+    {
+      "iata": "YZF",
+      "country": "CA",
+      "subdivision": "CA-NT",
+      "region": "canada-north"
+    },
+    {
+      "iata": "YZP",
+      "country": "CA",
+      "subdivision": "CA-BC",
+      "region": "canada-pacific"
+    },
+    {
+      "iata": "YZV",
+      "country": "CA",
+      "subdivision": "CA-QC",
+      "region": "canada-central"
+    },
+    {
+      "iata": "ZNE",
+      "country": "AU",
+      "subdivision": "AU-WA",
+      "region": "australia-western-australia"
+    }
+  ]
+}

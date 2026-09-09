@@ -497,6 +497,27 @@
       "micronesia": "Micronesia",
       "polynesia": "Polynesia"
     },
+    "localRegion": {
+      "us-northeast": "Northeast",
+      "us-midwest": "Midwest",
+      "us-south": "South",
+      "us-west": "West",
+      "us-alaska": "Alaska",
+      "us-hawaii": "Hawaii",
+      "canada-pacific": "Pacific Canada",
+      "canada-prairies": "Prairies",
+      "canada-central": "Central Canada",
+      "canada-atlantic": "Atlantic Canada",
+      "canada-north": "Northern Canada",
+      "australia-new-south-wales": "New South Wales",
+      "australia-victoria": "Victoria",
+      "australia-queensland": "Queensland",
+      "australia-western-australia": "Western Australia",
+      "australia-south-australia": "South Australia",
+      "australia-tasmania": "Tasmania",
+      "australia-northern-territory": "Northern Territory",
+      "australia-capital-territory": "Australian Capital Territory"
+    },
     "country": {
       "TW": "Taiwan",
       "CN": "China",

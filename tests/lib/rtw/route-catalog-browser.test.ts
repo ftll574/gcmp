@@ -6,8 +6,10 @@ import {
   filterRouteCatalogPairs,
   groupRouteCatalog,
   listRouteCatalogCarrierOptions,
+  listRouteCatalogLocalRegionOptions,
   listRouteCatalogRegionOptions,
   type RouteBrowserOfficialCatalog,
+  type RouteCatalogPairView,
 } from '../../../src/lib/rtw/route-catalog-browser.ts';
 
 const airports = new Map<string, Airport>([
@@ -115,6 +117,37 @@ describe('route catalog browser model', () => {
     expect(filtered.map((pair) => `${pair.from}-${pair.to}`)).toEqual(['TPE-BKK']);
     expect(filtered[0]?.carriers.map((carrier) => carrier.carrier)).toEqual(['BR']);
     expect(filtered[0]?.flightCount).toBe(3);
+  });
+
+  test('offers airport-level local areas without changing country-level geography', () => {
+    const carrier = {
+      carrier: 'UA', identity: 'operating' as const, flightNumbers: ['UA1'],
+      candidateFlightNumbers: [], evidence: [],
+    };
+    const lax: Airport = { iata: 'LAX', name: 'Los Angeles', city: 'Los Angeles', country: 'US', lat: 34, lon: -118 };
+    const jfk: Airport = { iata: 'JFK', name: 'John F Kennedy', city: 'New York', country: 'US', lat: 41, lon: -74 };
+    const yyz: Airport = { iata: 'YYZ', name: 'Toronto Pearson', city: 'Toronto', country: 'CA', lat: 44, lon: -80 };
+    const localPairs: RouteCatalogPairView[] = [
+      { from: 'TPE', to: 'LAX', fromAirport: airports.get('TPE')!, toAirport: lax, carriers: [carrier], flightCount: 1 },
+      { from: 'TPE', to: 'JFK', fromAirport: airports.get('TPE')!, toAirport: jfk, carriers: [carrier], flightCount: 1 },
+      { from: 'TPE', to: 'YYZ', fromAirport: airports.get('TPE')!, toAirport: yyz, carriers: [carrier], flightCount: 1 },
+    ];
+    const overlay = new Map([
+      ['LAX', 'us-west'], ['JFK', 'us-northeast'], ['YYZ', 'canada-central'],
+    ]);
+    expect(listRouteCatalogLocalRegionOptions({ pairs: localPairs, mode: 'to', airportBrowseRegions: overlay })).toEqual([
+      { value: 'local:canada-central', id: 'canada-central', country: 'CA', routeCount: 1 },
+      { value: 'local:us-northeast', id: 'us-northeast', country: 'US', routeCount: 1 },
+      { value: 'local:us-west', id: 'us-west', country: 'US', routeCount: 1 },
+    ]);
+    const west = filterRouteCatalogPairs({
+      pairs: localPairs,
+      mode: 'to',
+      localRegion: 'local:us-west',
+      airportBrowseRegions: overlay,
+    });
+    expect(west.map((pair) => pair.to)).toEqual(['LAX']);
+    expect(west[0]?.toAirport?.country).toBe('US');
   });
 
   test('a current route correction cannot be resurrected by an older official flight-number reference', () => {
