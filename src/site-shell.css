@@ -116,6 +116,10 @@
 .routes-loading,.routes-error { padding:60px 20px; text-align:center; color:#687169; }
 .routes-loading-hero { min-height:420px; display:grid; place-items:center; border:1px solid #d8ddd8; border-radius:24px; background:rgba(255,255,255,.4); }
 .routes-error { color:#a14235; }
+.routes-advanced-shell { display:grid; gap:12px; margin-top:20px; padding-top:28px; border-top:1px solid #d8ddd8; }
+.routes-advanced-toggle { display:flex; align-items:center; justify-content:space-between; gap:24px; min-height:58px; padding:0 18px; border:1px solid #d5ddd7; border-radius:18px; background:rgba(255,255,255,.5); color:#2b3a31; text-align:left; cursor:pointer; }
+.routes-advanced-toggle span { font-weight:800; }
+.routes-advanced-toggle small { max-width:700px; color:#758078; line-height:1.5; text-align:right; }
 @media (prefers-reduced-motion: reduce) {
   .landing-three-ambient { filter:none; }
   .landing-showcase-switcher button,.landing-flight-strip button { transition:none; }
@@ -139,6 +143,9 @@
   .routes-alliance-tabs { border-color:var(--separator); background:color-mix(in srgb,var(--system-background) 88%,transparent); }
   .routes-explorer-intro { border-color:var(--separator); }
   .routes-explorer-intro p { color:var(--secondary-label); }
+  .routes-advanced-shell { border-color:var(--separator); }
+  .routes-advanced-toggle { border-color:var(--separator); background:color-mix(in srgb,var(--secondary-system-background) 70%,transparent); color:var(--label); }
+  .routes-advanced-toggle small { color:var(--secondary-label); }
   .site-button.secondary,
   .routes-alliance-tabs button { border-color: var(--separator); color: var(--label); }
   .routes-alliance-tabs button.active { background: var(--label); color: var(--system-background); border-color: var(--label); }
@@ -179,6 +186,8 @@
   .landing-support { margin-inline:0; padding-inline:18px; } .site-footer { align-items:flex-start; flex-direction:column; padding-inline:18px; }
   .routes-page-main { width:calc(100% - 28px); padding-top:48px; } .routes-page-intro h1 { font-size:52px; } .routes-browser-shell { padding:10px; border-radius:14px; }
   .routes-alliance-tabs { position:static; width:100%; border-radius:18px; } .routes-alliance-tabs button { flex:1; min-width:130px; }
+  .routes-advanced-toggle { align-items:flex-start; flex-direction:column; padding-block:14px; }
+  .routes-advanced-toggle small { text-align:left; }
   .planner-action-toolbar { align-items:flex-start; flex-direction:column; }
   .planner-action-context { width:100%; }
 }

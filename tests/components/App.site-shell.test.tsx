@@ -61,12 +61,33 @@ test('homepage showcases can rotate without loading planner data', async () => {
 test('route library is a separate page and keeps the heavy catalog out of the homepage', async () => {
   render(<SiteApp />);
   await screen.findByRole('heading', { name: /把世界變成一條/ });
-  expect(screen.queryByText('把世界航線看成一張網。')).not.toBeInTheDocument();
+  expect(screen.queryByText('不要翻資料庫，直接探索航網。')).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: '瀏覽所有航線' }));
-  expect(await screen.findByRole('heading', { name: '把世界航線看成一張網。' })).toBeInTheDocument();
-  expect(await screen.findByRole('region', { name: '航網總覽' })).toBeInTheDocument();
-  expect(screen.getByRole('img', { name: '目前航網密度' })).toBeInTheDocument();
+  expect(await screen.findByRole('heading', { name: '不要翻資料庫，直接探索航網。' })).toBeInTheDocument();
+  expect(await screen.findByRole('img', { name: 'Route network map' })).toBeInTheDocument();
   expect(new URLSearchParams(window.location.search).get('view')).toBe('routes');
+});
+
+test('route library searches a confirmed flight and hands it to the planner', async () => {
+  render(<SiteApp />);
+  await screen.findByRole('heading', { name: /把世界變成一條/ });
+  fireEvent.click(screen.getByRole('button', { name: '瀏覽所有航線' }));
+  await screen.findByRole('heading', { name: '不要翻資料庫，直接探索航網。' });
+
+  const search = await screen.findByRole('searchbox', { name: /搜尋機場、城市、航空公司、航線或班號/ });
+  fireEvent.change(search, { target: { value: 'BR198' } });
+  const result = await screen.findByRole('option', { name: /BR198 · TPE → NRT/ });
+  fireEvent.click(result);
+
+  expect(await screen.findByRole('heading', { name: /TPE.*→.*NRT/ })).toBeInTheDocument();
+  expect(new URLSearchParams(window.location.search).get('entity')).toBe('route');
+  expect(new URLSearchParams(window.location.search).get('id')).toBe('TPE-NRT');
+
+  fireEvent.click(await screen.findByRole('button', { name: 'BR198' }));
+  await waitFor(() => expect(document.querySelector('.route-plan-bar')).not.toBeNull(), { timeout: 5_000 });
+  expect(new URLSearchParams(window.location.search).get('view')).toBe('planner');
+  expect(window.location.hash).toContain('TPE-NRT');
+  expect(window.location.hash).toContain('fn=198');
 });
 
 test('site navigation remains available after entering the planner and returns to public pages', async () => {
@@ -83,7 +104,7 @@ test('site navigation remains available after entering the planner and returns t
 
   const homeNav = screen.getByRole('navigation', { name: 'Primary navigation' });
   fireEvent.click(within(homeNav).getByRole('button', { name: '航線資料庫' }));
-  expect(await screen.findByRole('heading', { name: '把世界航線看成一張網。' })).toBeInTheDocument();
+  expect(await screen.findByRole('heading', { name: '不要翻資料庫，直接探索航網。' })).toBeInTheDocument();
   expect(new URLSearchParams(window.location.search).get('view')).toBe('routes');
 });
 
