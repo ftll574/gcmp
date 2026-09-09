@@ -17,7 +17,7 @@ let brokenNetwork: 'missing' | 'malformed' | null = null;
 beforeEach(() => {
   brokenNetwork = null;
   window.localStorage.clear();
-  window.history.replaceState({}, '', '/');
+  window.history.replaceState({}, '', '/?view=planner');
   // Freeze only Date, not timeouts used by React/Testing Library.
   vi.useFakeTimers({ toFake: ['Date'] });
   vi.setSystemTime(new Date('2026-11-01T12:00:00Z'));

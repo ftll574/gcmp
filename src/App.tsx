@@ -23,6 +23,8 @@ import { LanguagePicker } from './components/LanguagePicker.tsx';
 import { LegChain } from './components/LegChain.tsx';
 import { MapErrorBoundary } from './components/MapErrorBoundary.tsx';
 import { MobileBanner } from './components/MobileBanner.tsx';
+import { LandingPage } from './components/LandingPage.tsx';
+import type { SiteView } from './components/SiteHeader.tsx';
 import { RtwLegTable } from './components/RtwLegTable.tsx';
 import { RtwPlanGate } from './components/RtwPlanGate.tsx';
 import { DestinationsPanel } from './components/DestinationsPanel.tsx';
@@ -79,6 +81,9 @@ const LazyImportFromGcmap = lazy(() =>
 const LazySavedRoutings = lazy(() =>
   import('./components/SavedRoutings.tsx').then((module) => ({ default: module.SavedRoutings })),
 );
+const LazyAllRoutesPage = lazy(() =>
+  import('./components/AllRoutesPage.tsx').then((module) => ({ default: module.AllRoutesPage })),
+);
 
 const MOBILE_BREAKPOINT = 768;
 type InspectorPanel = 'rules' | 'tools' | 'saved';
@@ -92,6 +97,36 @@ export function App(): React.ReactElement {
   const viewportW = useViewportWidth();
   const mapRef = useRef<HTMLDivElement>(null);
   const [mapSize, setMapSize] = useState({ width: 1024, height: 600 });
+  const [siteView, setSiteView] = useState<SiteView>(() => {
+    const explicit = new URLSearchParams(window.location.search).get('view');
+    if (explicit === 'home' || explicit === 'planner' || explicit === 'routes') return explicit;
+    return window.location.hash.startsWith('#/r/') ? 'planner' : 'home';
+  });
+
+  useEffect(() => {
+    const syncFromLocation = (): void => {
+      const explicit = new URLSearchParams(window.location.search).get('view');
+      if (explicit === 'home' || explicit === 'planner' || explicit === 'routes') {
+        setSiteView(explicit);
+        return;
+      }
+      setSiteView(window.location.hash.startsWith('#/r/') ? 'planner' : 'home');
+    };
+    window.addEventListener('popstate', syncFromLocation);
+    window.addEventListener('hashchange', syncFromLocation);
+    return () => {
+      window.removeEventListener('popstate', syncFromLocation);
+      window.removeEventListener('hashchange', syncFromLocation);
+    };
+  }, []);
+
+  const navigateSite = (view: SiteView): void => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('view', view);
+    window.history.pushState({}, '', `${url.pathname}${url.search}${url.hash}`);
+    setSiteView(view);
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  };
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -123,6 +158,18 @@ export function App(): React.ReactElement {
     );
   }
 
+  if (siteView === 'home') {
+    return <LandingPage data={load.data} onNavigate={navigateSite} />;
+  }
+
+  if (siteView === 'routes') {
+    return (
+      <Suspense fallback={<div className="app-loading" role="status"><p>{t('loading')}</p></div>}>
+        <LazyAllRoutesPage data={load.data} onNavigate={navigateSite} />
+      </Suspense>
+    );
+  }
+
   return (
     <Ready
       data={load.data}
@@ -137,6 +184,7 @@ export function App(): React.ReactElement {
       mapRef={mapRef}
       mapSize={mapSize}
       shareUrl={shareUrl}
+      onNavigateSite={navigateSite}
     />
   );
 }
@@ -154,6 +202,7 @@ interface ReadyProps {
   mapRef: React.RefObject<HTMLDivElement | null>;
   mapSize: { width: number; height: number };
   shareUrl: string | null;
+  onNavigateSite: (view: SiteView) => void;
 }
 
 function Ready({
@@ -169,8 +218,9 @@ function Ready({
   mapRef,
   mapSize,
   shareUrl,
+  onNavigateSite,
 }: ReadyProps): React.ReactElement {
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
   const hasAnyLegs = routing.groups.some((g) => g.legs.length > 0);
   const [activeGroupIndex, setActiveGroupIndex] = useState(0);
   const [showDistances, setShowDistances] = useState(false);
@@ -653,7 +703,11 @@ function Ready({
             <span className="app-brand-name">gcmp</span>
             <span className="app-brand-tagline">{t('brand.tagline')}</span>
           </div>
-          <div className="app-header-controls"><LanguagePicker /></div>
+          <div className="app-header-controls">
+            <button type="button" className="planner-site-link" onClick={() => onNavigateSite('home')}>{locale === 'zh-TW' ? '首頁' : 'Home'}</button>
+            <button type="button" className="planner-site-link" onClick={() => onNavigateSite('routes')}>{locale === 'zh-TW' ? '航線資料庫' : 'Route library'}</button>
+            <LanguagePicker />
+          </div>
         </header>
         {routingError && <div className="app-banner app-banner-warn" role="alert">⚠ {routingError}</div>}
         <RtwPlanGate
@@ -687,6 +741,8 @@ function Ready({
           <span className="app-brand-tagline">{t('brand.tagline')}</span>
         </div>
         <div className="app-header-controls">
+          <button type="button" className="planner-site-link" onClick={() => onNavigateSite('home')}>{locale === 'zh-TW' ? '首頁' : 'Home'}</button>
+          <button type="button" className="planner-site-link" onClick={() => onNavigateSite('routes')}>{locale === 'zh-TW' ? '航線資料庫' : 'Route library'}</button>
           <LanguagePicker />
           <ActionRow
             shareUrl={shareUrl}

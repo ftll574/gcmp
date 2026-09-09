@@ -4,6 +4,7 @@ import { App } from './App.tsx';
 import './index.css';
 import './left-panel-ux.css';
 import './map-polish.css';
+import './site-shell.css';
 
 const rootEl = document.getElementById('root');
 if (!rootEl) {

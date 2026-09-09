@@ -26,7 +26,7 @@ beforeEach(() => {
 });
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); vi.unstubAllEnvs(); vi.useRealTimers(); window.localStorage.clear(); window.history.replaceState({}, '', '/'); });
 async function mount(hash = '') {
-  window.history.replaceState({}, '', '/' + hash); render(<App />);
+  window.history.replaceState({}, '', hash ? '/' + hash : '/?view=planner'); render(<App />);
   await waitFor(() => expect(document.querySelector('.rtw-gate, .route-plan-bar')).not.toBeNull());
 }
 async function enterCxPlan() {

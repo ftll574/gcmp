@@ -17,7 +17,7 @@ let omitLegacyPrograms = false;
 beforeEach(() => {
   injectExplorerFixture = false;
   omitLegacyPrograms = false;
-  window.history.replaceState({}, '', '/');
+  window.history.replaceState({}, '', '/?view=planner');
   vi.stubGlobal('ResizeObserver', class {
     observe(): void {}
     unobserve(): void {}
