@@ -29,7 +29,7 @@ have different product behavior.
      after the local VRS/BTS/affiliate layers still have no number for that
      exact directional carrier-route.
    - A 2026-09-09 Chrome audit of FlightsFrom direct-route pages contributed
-     150 same-brand candidate routes. The same audit now contributes 185
+     150 same-brand candidate routes. The same audit now contributes 787
      confirmed designator routes only where GCMP already had independent
      operating-carrier evidence; FlightsFrom never promotes a provider-listed
      route by itself.
@@ -89,8 +89,8 @@ After the bounded 2026-09-09 refresh and identity audit:
 - current plannable routes: **29,568**
 - current plannable routes with at least one confirmed or candidate designator:
   **29,568 / 29,568 = 100%**
-- routes with route-level confirmed-number evidence: **14,333**
-- routes with candidate-number evidence: **24,329** (some also have confirmed
+- routes with route-level confirmed-number evidence: **14,935**
+- routes with candidate-number evidence: **24,234** (some also have confirmed
   evidence, so these two counts intentionally overlap)
 - relationships retained as `identity-unresolved`: **220**
 - relationships retained as `suspended`: **36**
@@ -127,6 +127,36 @@ page did not expose a same-carrier designator during the audit: `JL NRT-DFW`,
 `JL NRT-KIX`, `KE ICN-RMQ`, `KE RMQ-ICN`, `NH CTS-KIX`, `NH ISG-KIX`,
 `NH KIX-ISG`, and `NH OKA-KIX`. Their older standing references are preserved
 for research instead of being promoted without current timetable corroboration.
+
+### High-frequency alliance carrier confirmation pass
+
+A follow-up Chrome audit then targeted every remaining operating +
+candidate-only route for ten high-frequency RTW carriers: LH, TK, AC, AF, UA,
+AA, DL, BA, QF and QR. All **744 / 744** current direct-route pages returned
+successfully. Same-carrier timetable designators were present on **602** routes,
+which were promoted to confirmed route-level flight numbers. The other **142**
+routes remain candidate-only instead of being guessed or promoted from stale
+standing references.
+
+Promotions by carrier:
+
+- Lufthansa (LH): **147 / 182** checked
+- Turkish Airlines (TK): **165 / 192** checked
+- Air Canada (AC): **95 / 134** checked
+- Air France (AF): **103 / 110** checked
+- United (UA): **20 / 23** checked
+- American (AA): **18 / 21** checked
+- Delta (DL): **8 / 25** checked
+- British Airways (BA): **17 / 20** checked
+- Qantas (QF): **24 / 28** checked
+- Qatar Airways (QR): **5 / 9** checked
+
+After this pass, confirmed-number coverage among routes where GCMP already has
+independent operating-carrier evidence is: LH **525 / 560 (93.8%)**, TK
+**636 / 663 (95.9%)**, AC **444 / 483 (91.9%)**, AF **374 / 381 (98.2%)**,
+UA **1329 / 1332 (99.8%)**, AA **1268 / 1271 (99.8%)**, DL
+**1270 / 1287 (98.7%)**, BA **310 / 313 (99.0%)**, QF **198 / 202 (98.0%)**,
+and QR **368 / 372 (98.9%)**.
 
 Any remaining rows must stay explicit. A current public route page that only
 shows another airline's designator (for example a provider-listed alliance brand
