@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { App } from './App.tsx';
+import { SiteApp } from './SiteApp.tsx';
 import './index.css';
 import './left-panel-ux.css';
 import './map-polish.css';
@@ -13,6 +13,6 @@ if (!rootEl) {
 
 createRoot(rootEl).render(
   <StrictMode>
-    <App />
+    <SiteApp />
   </StrictMode>,
 );

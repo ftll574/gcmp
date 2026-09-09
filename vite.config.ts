@@ -28,6 +28,11 @@ export default defineConfig({
               priority: 20,
             },
             {
+              name: 'vendor-three',
+              test: /node_modules[\\/]three[\\/]/,
+              priority: 15,
+            },
+            {
               name: 'vendor-zod',
               test: /node_modules[\\/]zod[\\/]/,
               priority: 10,

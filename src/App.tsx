@@ -90,13 +90,6 @@ type InspectorPanel = 'rules' | 'tools' | 'saved';
 type ResizeHandle = 'editor';
 
 export function App(): React.ReactElement {
-  const { t } = useLocale();
-  const load = useLoadedData();
-  const { state: routing, setRouting, shareUrl } = useRoutingState();
-  const { saved, save, remove, lastError: saveError } = useSavedRoutings();
-  const viewportW = useViewportWidth();
-  const mapRef = useRef<HTMLDivElement>(null);
-  const [mapSize, setMapSize] = useState({ width: 1024, height: 600 });
   const [siteView, setSiteView] = useState<SiteView>(() => {
     const explicit = new URLSearchParams(window.location.search).get('view');
     if (explicit === 'home' || explicit === 'planner' || explicit === 'routes') return explicit;
@@ -128,6 +121,27 @@ export function App(): React.ReactElement {
     window.scrollTo({ top: 0, behavior: 'auto' });
   };
 
+  if (siteView === 'home') {
+    return <LandingPage onNavigate={navigateSite} />;
+  }
+
+  return <LoadedSiteApp siteView={siteView} onNavigateSite={navigateSite} />;
+}
+
+interface LoadedSiteAppProps {
+  readonly siteView: Exclude<SiteView, 'home'>;
+  readonly onNavigateSite: (view: SiteView) => void;
+}
+
+function LoadedSiteApp({ siteView, onNavigateSite }: LoadedSiteAppProps): React.ReactElement {
+  const { t } = useLocale();
+  const load = useLoadedData();
+  const { state: routing, setRouting, shareUrl } = useRoutingState();
+  const { saved, save, remove, lastError: saveError } = useSavedRoutings();
+  const viewportW = useViewportWidth();
+  const mapRef = useRef<HTMLDivElement>(null);
+  const [mapSize, setMapSize] = useState({ width: 1024, height: 600 });
+
   useEffect(() => {
     if (!mapRef.current) return;
     const ro = new ResizeObserver((entries) => {
@@ -158,14 +172,10 @@ export function App(): React.ReactElement {
     );
   }
 
-  if (siteView === 'home') {
-    return <LandingPage data={load.data} onNavigate={navigateSite} />;
-  }
-
   if (siteView === 'routes') {
     return (
       <Suspense fallback={<div className="app-loading" role="status"><p>{t('loading')}</p></div>}>
-        <LazyAllRoutesPage data={load.data} onNavigate={navigateSite} />
+        <LazyAllRoutesPage data={load.data} onNavigate={onNavigateSite} />
       </Suspense>
     );
   }
@@ -184,7 +194,7 @@ export function App(): React.ReactElement {
       mapRef={mapRef}
       mapSize={mapSize}
       shareUrl={shareUrl}
-      onNavigateSite={navigateSite}
+      onNavigateSite={onNavigateSite}
     />
   );
 }

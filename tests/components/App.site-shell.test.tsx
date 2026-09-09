@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { App } from '../../src/App.tsx';
+import { SiteApp } from '../../src/SiteApp.tsx';
 import { setLocale } from '../../src/i18n/i18n.ts';
 
 const PUBLIC = join(process.cwd(), 'public');
@@ -32,18 +32,34 @@ afterEach(() => {
 });
 
 test('fresh visits land on the editorial homepage before entering the planner', async () => {
-  render(<App />);
+  render(<SiteApp />);
   expect(await screen.findByRole('heading', { name: /把世界變成一條/ })).toBeInTheDocument();
-  expect(document.querySelector('.landing-map-card animateMotion')).not.toBeNull();
+  await waitFor(() => expect(document.querySelector('[data-three-globe], [data-three-fallback]')).not.toBeNull());
+  expect(await screen.findByText('BR184')).toBeInTheDocument();
+  expect(screen.getAllByRole('button', { name: /Star Alliance 經典環球|oneworld 城市樞紐環球|SkyTeam 跨洲接力|台灣出發長程四段/ })).toHaveLength(4);
   expect(screen.queryByText('先選聯盟與開票方案')).not.toBeInTheDocument();
 
+  const requestedBeforePlanner = vi.mocked(fetch).mock.calls.map(([input]) => String(input));
+  expect(requestedBeforePlanner).toEqual(['/data/site/landing-showcases.json']);
+  expect(requestedBeforePlanner.some((url) => url.includes('/programs/'))).toBe(false);
+  expect(requestedBeforePlanner.some((url) => url.includes('/rtw-products/'))).toBe(false);
+
   fireEvent.click(screen.getByRole('button', { name: '開始規劃 →' }));
-  await waitFor(() => expect(document.querySelector('.rtw-gate')).not.toBeNull());
+  await waitFor(() => expect(document.querySelector('.rtw-gate')).not.toBeNull(), { timeout: 5_000 });
   expect(new URLSearchParams(window.location.search).get('view')).toBe('planner');
 });
 
+test('homepage showcases can rotate without loading planner data', async () => {
+  render(<SiteApp />);
+  await screen.findByText('BR184');
+  fireEvent.click(screen.getByRole('button', { name: /02.*oneworld 城市樞紐環球/ }));
+  expect(await screen.findByText('CX407')).toBeInTheDocument();
+  expect(screen.getByText('CX237')).toBeInTheDocument();
+  expect(vi.mocked(fetch).mock.calls.map(([input]) => String(input))).toEqual(['/data/site/landing-showcases.json']);
+});
+
 test('route library is a separate page and keeps the heavy catalog out of the homepage', async () => {
-  render(<App />);
+  render(<SiteApp />);
   await screen.findByRole('heading', { name: /把世界變成一條/ });
   expect(screen.queryByText('我們目前知道的世界航線。')).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: '瀏覽所有航線' }));
@@ -53,7 +69,7 @@ test('route library is a separate page and keeps the heavy catalog out of the ho
 
 test('legacy share hashes still bypass the homepage and open the planner', async () => {
   window.history.replaceState({}, '', '/#/r/v1/TPE-NRT?op=BR&p=BR&c=J&rv=2026.4');
-  render(<App />);
+  render(<SiteApp />);
   await waitFor(() => expect(document.querySelector('.route-plan-bar')).not.toBeNull());
   expect(document.querySelector('.landing-page')).toBeNull();
 });

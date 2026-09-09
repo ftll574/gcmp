@@ -1,0 +1,374 @@
+{
+  "version": 1,
+  "builtOn": "2026-09-09",
+  "routeNetworkVersion": "2026.3",
+  "stats": {
+    "publishedRoutes": 29494,
+    "allianceMembers": 60,
+    "alliances": 3
+  },
+  "airports": [
+    {
+      "iata": "ATL",
+      "name": "Hartsfield Jackson Atlanta International Airport",
+      "city": "Atlanta",
+      "country": "US",
+      "lat": 33.6367,
+      "lon": -84.428101
+    },
+    {
+      "iata": "CDG",
+      "name": "Charles de Gaulle International Airport",
+      "city": "Paris (Roissy-en-France, Val-d'Oise)",
+      "country": "FR",
+      "lat": 49.00896,
+      "lon": 2.554117
+    },
+    {
+      "iata": "EWR",
+      "name": "Newark Liberty International Airport",
+      "city": "Newark",
+      "country": "US",
+      "lat": 40.6894,
+      "lon": -74.170545
+    },
+    {
+      "iata": "FRA",
+      "name": "Frankfurt Main Airport",
+      "city": "Frankfurt am Main",
+      "country": "DE",
+      "lat": 50.026706,
+      "lon": 8.55835
+    },
+    {
+      "iata": "HAN",
+      "name": "Noi Bai International Airport",
+      "city": "Hanoi (Soc Son)",
+      "country": "VN",
+      "lat": 21.221201,
+      "lon": 105.806999
+    },
+    {
+      "iata": "HKG",
+      "name": "Hong Kong International Airport",
+      "city": "Hong Kong",
+      "country": "HK",
+      "lat": 22.31184,
+      "lon": 113.914862
+    },
+    {
+      "iata": "ICN",
+      "name": "Incheon International Airport",
+      "city": "Seoul",
+      "country": "KR",
+      "lat": 37.469101,
+      "lon": 126.450996
+    },
+    {
+      "iata": "IST",
+      "name": "İstanbul Airport",
+      "city": "Istanbul",
+      "country": "TR",
+      "lat": 41.274874,
+      "lon": 28.732136
+    },
+    {
+      "iata": "JFK",
+      "name": "John F. Kennedy International Airport",
+      "city": "New York",
+      "country": "US",
+      "lat": 40.639447,
+      "lon": -73.779317
+    },
+    {
+      "iata": "LAX",
+      "name": "Los Angeles International Airport",
+      "city": "Los Angeles",
+      "country": "US",
+      "lat": 33.942501,
+      "lon": -118.407997
+    },
+    {
+      "iata": "LHR",
+      "name": "London Heathrow Airport",
+      "city": "London",
+      "country": "GB",
+      "lat": 51.470748,
+      "lon": -0.459909
+    },
+    {
+      "iata": "NRT",
+      "name": "Narita International Airport",
+      "city": "Narita",
+      "country": "JP",
+      "lat": 35.76858,
+      "lon": 140.388714
+    },
+    {
+      "iata": "SFO",
+      "name": "San Francisco International Airport",
+      "city": "San Francisco",
+      "country": "US",
+      "lat": 37.619806,
+      "lon": -122.374821
+    },
+    {
+      "iata": "SIN",
+      "name": "Singapore Changi Airport",
+      "city": "Singapore",
+      "country": "SG",
+      "lat": 1.35019,
+      "lon": 103.994003
+    },
+    {
+      "iata": "TPE",
+      "name": "Taiwan Taoyuan International Airport",
+      "city": "Taoyuan",
+      "country": "TW",
+      "lat": 25.0777,
+      "lon": 121.233002
+    }
+  ],
+  "showcases": [
+    {
+      "id": "star-world-loop",
+      "alliance": "star",
+      "titleZh": "Star Alliance 經典環球",
+      "titleEn": "Classic Star Alliance RTW",
+      "eyebrowZh": "跨太平洋 · 北美 · 歐洲 · 亞洲",
+      "eyebrowEn": "Pacific · North America · Europe · Asia",
+      "descriptionZh": "從台灣一路向東，利用 ANA、United、Lufthansa、Singapore Airlines 與 EVA Air 串出一條可讀的聯盟環球骨架。",
+      "descriptionEn": "A readable eastbound alliance skeleton from Taiwan through ANA, United, Lufthansa, Singapore Airlines and EVA Air.",
+      "legs": [
+        {
+          "from": "TPE",
+          "to": "NRT",
+          "carrier": "BR",
+          "carrierName": "EVA Air",
+          "flightNumber": "BR184",
+          "distanceNm": 1178
+        },
+        {
+          "from": "NRT",
+          "to": "LAX",
+          "carrier": "NH",
+          "carrierName": "All Nippon Airways",
+          "flightNumber": "NH6",
+          "distanceNm": 4726
+        },
+        {
+          "from": "LAX",
+          "to": "SFO",
+          "carrier": "UA",
+          "carrierName": "United Airlines",
+          "flightNumber": "UA1195",
+          "distanceNm": 293
+        },
+        {
+          "from": "SFO",
+          "to": "EWR",
+          "carrier": "UA",
+          "carrierName": "United Airlines",
+          "flightNumber": "UA1141",
+          "distanceNm": 2224
+        },
+        {
+          "from": "EWR",
+          "to": "FRA",
+          "carrier": "LH",
+          "carrierName": "Lufthansa",
+          "flightNumber": "LH403",
+          "distanceNm": 3354
+        },
+        {
+          "from": "FRA",
+          "to": "IST",
+          "carrier": "LH",
+          "carrierName": "Lufthansa",
+          "flightNumber": "LH1298",
+          "distanceNm": 992
+        },
+        {
+          "from": "IST",
+          "to": "SIN",
+          "carrier": "SQ",
+          "carrierName": "Singapore Airlines",
+          "flightNumber": "SQ391",
+          "distanceNm": 4687
+        },
+        {
+          "from": "SIN",
+          "to": "TPE",
+          "carrier": "BR",
+          "carrierName": "EVA Air",
+          "flightNumber": "BR216",
+          "distanceNm": 1740
+        }
+      ]
+    },
+    {
+      "id": "oneworld-world-loop",
+      "alliance": "oneworld",
+      "titleZh": "oneworld 城市樞紐環球",
+      "titleEn": "oneworld hub-to-hub RTW",
+      "eyebrowZh": "香港 · 倫敦 · 紐約 · 洛杉磯 · 東京",
+      "eyebrowEn": "Hong Kong · London · New York · Los Angeles · Tokyo",
+      "descriptionZh": "以 Cathay Pacific、British Airways、American Airlines 與 Japan Airlines 串接五個大型樞紐，展示 oneworld 很典型的環球節奏。",
+      "descriptionEn": "Cathay Pacific, British Airways, American Airlines and Japan Airlines connect five major hubs in a classic oneworld rhythm.",
+      "legs": [
+        {
+          "from": "TPE",
+          "to": "HKG",
+          "carrier": "CX",
+          "carrierName": "Cathay Pacific",
+          "flightNumber": "CX407",
+          "distanceNm": 435
+        },
+        {
+          "from": "HKG",
+          "to": "LHR",
+          "carrier": "CX",
+          "carrierName": "Cathay Pacific",
+          "flightNumber": "CX237",
+          "distanceNm": 5200
+        },
+        {
+          "from": "LHR",
+          "to": "JFK",
+          "carrier": "BA",
+          "carrierName": "British Airways",
+          "flightNumber": "BA181",
+          "distanceNm": 2991
+        },
+        {
+          "from": "JFK",
+          "to": "LAX",
+          "carrier": "AA",
+          "carrierName": "American Airlines",
+          "flightNumber": "AA1",
+          "distanceNm": 2146
+        },
+        {
+          "from": "LAX",
+          "to": "NRT",
+          "carrier": "JL",
+          "carrierName": "Japan Airlines",
+          "flightNumber": "JL61",
+          "distanceNm": 4726
+        },
+        {
+          "from": "NRT",
+          "to": "TPE",
+          "carrier": "JL",
+          "carrierName": "Japan Airlines",
+          "flightNumber": "JL809",
+          "distanceNm": 1178
+        }
+      ]
+    },
+    {
+      "id": "skyteam-world-loop",
+      "alliance": "skyteam",
+      "titleZh": "SkyTeam 跨洲接力",
+      "titleEn": "SkyTeam intercontinental relay",
+      "eyebrowZh": "首爾 · 洛杉磯 · 亞特蘭大 · 巴黎 · 河內",
+      "eyebrowEn": "Seoul · Los Angeles · Atlanta · Paris · Hanoi",
+      "descriptionZh": "Korean Air、Delta、Air France 與 Vietnam Airlines 把亞洲、北美與歐洲接成一圈，適合快速理解 SkyTeam 的長程骨幹。",
+      "descriptionEn": "Korean Air, Delta, Air France and Vietnam Airlines connect Asia, North America and Europe into a compact SkyTeam long-haul loop.",
+      "legs": [
+        {
+          "from": "TPE",
+          "to": "ICN",
+          "carrier": "KE",
+          "carrierName": "Korean Air",
+          "flightNumber": "KE2022",
+          "distanceNm": 790
+        },
+        {
+          "from": "ICN",
+          "to": "LAX",
+          "carrier": "KE",
+          "carrierName": "Korean Air",
+          "flightNumber": "KE207",
+          "distanceNm": 5197
+        },
+        {
+          "from": "LAX",
+          "to": "ATL",
+          "carrier": "DL",
+          "carrierName": "Delta Air Lines",
+          "flightNumber": "DL320",
+          "distanceNm": 1688
+        },
+        {
+          "from": "ATL",
+          "to": "CDG",
+          "carrier": "DL",
+          "carrierName": "Delta Air Lines",
+          "flightNumber": "DL100",
+          "distanceNm": 3810
+        },
+        {
+          "from": "CDG",
+          "to": "HAN",
+          "carrier": "VN",
+          "carrierName": "Vietnam Airlines",
+          "flightNumber": "VN18",
+          "distanceNm": 4945
+        },
+        {
+          "from": "HAN",
+          "to": "TPE",
+          "carrier": "VN",
+          "carrierName": "Vietnam Airlines",
+          "flightNumber": "VN578",
+          "distanceNm": 882
+        }
+      ]
+    },
+    {
+      "id": "taiwan-longhaul",
+      "alliance": "mixed",
+      "titleZh": "台灣出發長程四段",
+      "titleEn": "Four long-haul legs from Taiwan",
+      "eyebrowZh": "舊金山 · 紐約 · 巴黎 · 台北",
+      "eyebrowEn": "San Francisco · New York · Paris · Taipei",
+      "descriptionZh": "不限定單一聯盟，只用目前資料庫中的已確認班號示範：台灣如何用四個長程航段快速看懂跨太平洋與跨大西洋。",
+      "descriptionEn": "A mixed-alliance view using confirmed designators from the current catalog to make the Pacific and Atlantic structure instantly legible.",
+      "legs": [
+        {
+          "from": "TPE",
+          "to": "SFO",
+          "carrier": "BR",
+          "carrierName": "EVA Air",
+          "flightNumber": "BR8",
+          "distanceNm": 5611
+        },
+        {
+          "from": "SFO",
+          "to": "JFK",
+          "carrier": "AA",
+          "carrierName": "American Airlines",
+          "flightNumber": "AA16",
+          "distanceNm": 2242
+        },
+        {
+          "from": "JFK",
+          "to": "CDG",
+          "carrier": "AA",
+          "carrierName": "American Airlines",
+          "flightNumber": "AA42",
+          "distanceNm": 3150
+        },
+        {
+          "from": "CDG",
+          "to": "TPE",
+          "carrier": "BR",
+          "carrierName": "EVA Air",
+          "flightNumber": "BR88",
+          "distanceNm": 5284
+        }
+      ]
+    }
+  ]
+}

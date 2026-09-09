@@ -27,7 +27,7 @@
     "routes:build-flight-numbers": "tsx scripts/build-flight-number-layer.ts",
     "routes:build-runtime": "tsx scripts/build-runtime-route-network.ts",
     "routes:verify-runtime": "tsx scripts/verify-runtime-route-network.ts",
-    "predev": "tsx scripts/build-runtime-route-network.ts",
+    "predev": "tsx scripts/build-runtime-route-network.ts && tsx scripts/build-landing-showcases.ts",
     "dev": "tsx scripts/dev.ts",
     "schedules:serve": "tsx scripts/serve-schedules.ts",
     "schedules:verify": "tsx scripts/verify-tdx.ts",
@@ -38,7 +38,7 @@
     "schedules:controls:aerodatabox": "tsx scripts/aerodatabox-known-controls.ts",
     "coverage:alliances": "tsx scripts/report-alliance-coverage.ts",
     "coverage:flightconnections": "tsx scripts/report-flightconnections-parity.ts",
-    "prebuild": "tsx scripts/build-runtime-route-network.ts",
+    "prebuild": "tsx scripts/build-runtime-route-network.ts && tsx scripts/build-landing-showcases.ts",
     "build": "tsc -b && tsx scripts/build-airline-pages.ts && vite build",
     "lint": "eslint .",
     "typecheck": "tsc -b --noEmit",
@@ -47,13 +47,15 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "build:airports": "tsx scripts/build-airports.ts",
-    "build:airport-browse-regions": "tsx scripts/build-airport-browse-regions.ts"
+    "build:airport-browse-regions": "tsx scripts/build-airport-browse-regions.ts",
+    "build:landing-showcases": "tsx scripts/build-landing-showcases.ts"
   },
   "dependencies": {
     "d3-geo": "^3.1.1",
     "d3-geo-projection": "^4.0.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
+    "three": "^0.186.0",
     "topojson-client": "^3.1.0",
     "world-atlas": "^2.0.2",
     "zod": "^4.4.3"
@@ -66,6 +68,7 @@
     "@types/node": "^24.12.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@types/three": "^0.185.4",
     "@types/topojson-client": "^3.1.5",
     "@vitejs/plugin-react": "^6.0.1",
     "@vitest/coverage-v8": "^4.1.7",
