@@ -29,9 +29,10 @@ have different product behavior.
      after the local VRS/BTS/affiliate layers still have no number for that
      exact directional carrier-route.
    - A 2026-09-09 Chrome audit of FlightsFrom direct-route pages contributed
-     150 same-brand candidate routes. The same audit contributed 116 confirmed
-     designator routes only where GCMP already had independent operating-carrier
-     evidence; FlightsFrom never promotes a provider-listed route by itself.
+     150 same-brand candidate routes. The same audit now contributes 185
+     confirmed designator routes only where GCMP already had independent
+     operating-carrier evidence; FlightsFrom never promotes a provider-listed
+     route by itself.
    - Candidates are displayed for research but are not persisted as a confirmed
      itinerary flight until date/operator evidence is stronger. This prevents a
      marketing codeshare or stale standing row from becoming fake operator proof.
@@ -88,8 +89,8 @@ After the bounded 2026-09-09 refresh and identity audit:
 - current plannable routes: **29,568**
 - current plannable routes with at least one confirmed or candidate designator:
   **29,568 / 29,568 = 100%**
-- routes with route-level confirmed-number evidence: **14,264**
-- routes with candidate-number evidence: **24,357** (some also have confirmed
+- routes with route-level confirmed-number evidence: **14,333**
+- routes with candidate-number evidence: **24,329** (some also have confirmed
   evidence, so these two counts intentionally overlap)
 - relationships retained as `identity-unresolved`: **220**
 - relationships retained as `suspended`: **36**
@@ -105,6 +106,27 @@ date has already passed.
 Coverage means "there is at least one confirmed or candidate designator
 available for every route GCMP currently presents as plannable." It does **not**
 mean every number is selectable or that every candidate operates on every date.
+
+### Fixed-route priority confirmation pass
+
+After the initial 100% identity-coverage pass, a second bounded Chrome audit
+targeted 77 candidate-only routes where GCMP already had independent operating
+evidence for five high-priority alliance carriers: BR, JL, KE, NH and SQ. Current
+FlightsFrom direct-route timetable pages exposed same-carrier designators for 69
+of those routes, so only those 69 were promoted to confirmed route-level flight
+numbers:
+
+- EVA Air (BR): **15** routes
+- Japan Airlines (JL): **10** routes
+- Korean Air (KE): **37** routes
+- ANA (NH): **5** routes
+- Singapore Airlines (SQ): **2** routes
+
+Eight routes deliberately remain candidate-only because the current direct-route
+page did not expose a same-carrier designator during the audit: `JL NRT-DFW`,
+`JL NRT-KIX`, `KE ICN-RMQ`, `KE RMQ-ICN`, `NH CTS-KIX`, `NH ISG-KIX`,
+`NH KIX-ISG`, and `NH OKA-KIX`. Their older standing references are preserved
+for research instead of being promoted without current timetable corroboration.
 
 Any remaining rows must stay explicit. A current public route page that only
 shows another airline's designator (for example a provider-listed alliance brand
