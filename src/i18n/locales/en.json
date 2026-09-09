@@ -474,11 +474,28 @@
       "south-america": "South America"
     },
     "subregion": {
+      "northern-africa": "Northern Africa",
+      "western-africa": "Western Africa",
+      "central-africa": "Central Africa",
+      "eastern-africa": "Eastern Africa",
+      "southern-africa": "Southern Africa",
       "northeast-asia": "Northeast Asia",
       "southeast-asia": "Southeast Asia",
       "south-asia": "South Asia",
+      "central-asia": "Central Asia",
+      "western-asia": "Western Asia / Middle East",
+      "northern-europe": "Northern Europe",
       "central-europe": "Central Europe",
-      "western-europe": "Western Europe"
+      "western-europe": "Western Europe",
+      "eastern-europe": "Eastern Europe",
+      "southern-europe": "Southern Europe",
+      "northern-america": "Northern America",
+      "central-america": "Central America",
+      "caribbean": "Caribbean",
+      "australia-new-zealand": "Australia & New Zealand",
+      "melanesia": "Melanesia",
+      "micronesia": "Micronesia",
+      "polynesia": "Polynesia"
     },
     "country": {
       "TW": "Taiwan",

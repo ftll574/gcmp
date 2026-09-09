@@ -115,6 +115,7 @@ test('can narrow the long country list by airline and subregion', () => {
   fireEvent.click(screen.getByRole('button', { name: 'Group by destination' }));
   fireEvent.change(screen.getByRole('combobox', { name: 'Airline' }), { target: { value: 'BR' } });
   expect(screen.getByRole('option', { name: /BR · EVA Air/ })).toBeInTheDocument();
+  expect(screen.getByRole('option', { name: /Asia · Southeast Asia/ })).toBeInTheDocument();
   fireEvent.change(screen.getByRole('combobox', { name: 'Region' }), {
     target: { value: 'subregion:southeast-asia' },
   });

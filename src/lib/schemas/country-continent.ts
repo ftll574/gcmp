@@ -41,8 +41,9 @@ export const CountryContinentEntrySchema = z.object({
   /**
    * Optional second tier for the destinations explorer (contract §4):
    * UN-geoscheme-like subregion id, kebab-case (northeast-asia,
-   * southeast-asia, …). Countries without a row simply hang directly
-   * under their continent — the tier is additive, never required.
+   * southeast-asia, northern-africa, caribbean, …). Countries without a
+   * subregion simply hang directly under their continent — the tier is
+   * additive and intentionally remains country-level.
    */
   subregion: z
     .string()

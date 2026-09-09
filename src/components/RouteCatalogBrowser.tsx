@@ -300,9 +300,9 @@ export function RouteCatalogBrowser({
       : label;
   }
 
-  function regionOptionLabel(kind: 'continent' | 'subregion', id: string): string {
-    if (kind === 'continent') return continentLabel(id as RouteCatalogContinent);
-    return subregionLabel(id);
+  function regionOptionLabel(option: { kind: 'continent' | 'subregion'; id: string; continent: RouteCatalogContinent }): string {
+    if (option.kind === 'continent') return continentLabel(option.id as RouteCatalogContinent);
+    return `${continentLabel(option.continent)} · ${subregionLabel(option.id)}`;
   }
 
   if (pairs.length === 0) return <p className="route-browser-empty">{copy.empty}</p>;
@@ -354,7 +354,7 @@ export function RouteCatalogBrowser({
                 <optgroup label={copy.continents}>
                   {regionOptions.filter((option) => option.kind === 'continent').map((option) => (
                     <option key={option.value} value={option.value}>
-                      {regionOptionLabel(option.kind, option.id)} · {option.routeCount} {copy.routes}
+                      {regionOptionLabel(option)} · {option.routeCount} {copy.routes}
                     </option>
                   ))}
                 </optgroup>
@@ -362,7 +362,7 @@ export function RouteCatalogBrowser({
                   <optgroup label={copy.subregions}>
                     {regionOptions.filter((option) => option.kind === 'subregion').map((option) => (
                       <option key={option.value} value={option.value}>
-                        {regionOptionLabel(option.kind, option.id)} · {option.routeCount} {copy.routes}
+                        {regionOptionLabel(option)} · {option.routeCount} {copy.routes}
                       </option>
                     ))}
                   </optgroup>

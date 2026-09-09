@@ -16,6 +16,7 @@ export interface RouteCatalogRegionOption {
   readonly value: Exclude<RouteCatalogRegionFilter, 'all'>;
   readonly kind: 'continent' | 'subregion';
   readonly id: string;
+  readonly continent: RouteCatalogContinent;
   readonly routeCount: number;
 }
 
@@ -420,27 +421,36 @@ export interface RouteCatalogRegionOptionsInput {
 export function listRouteCatalogRegionOptions(
   input: RouteCatalogRegionOptionsInput,
 ): ReadonlyArray<RouteCatalogRegionOption> {
-  const counts = new Map<Exclude<RouteCatalogRegionFilter, 'all'>, number>();
+  const counts = new Map<
+    Exclude<RouteCatalogRegionFilter, 'all'>,
+    { routeCount: number; continent: RouteCatalogContinent }
+  >();
   for (const pair of input.pairs) {
     const iata = input.mode === 'from' ? pair.from : pair.to;
     const airport = input.mode === 'from' ? pair.fromAirport : pair.toAirport;
     const continent = continentOf(iata, airport, input.countryContinents, input.airportContinentOverrides);
     const continentKey = `continent:${continent}` as const;
-    counts.set(continentKey, (counts.get(continentKey) ?? 0) + 1);
+    const continentCount = counts.get(continentKey)?.routeCount ?? 0;
+    counts.set(continentKey, { routeCount: continentCount + 1, continent });
     const subregion = airport ? input.countrySubregions?.get(airport.country) : undefined;
     if (subregion) {
       const subregionKey = `subregion:${subregion}` as const;
-      counts.set(subregionKey, (counts.get(subregionKey) ?? 0) + 1);
+      const current = counts.get(subregionKey);
+      counts.set(subregionKey, {
+        routeCount: (current?.routeCount ?? 0) + 1,
+        continent: current?.continent ?? continent,
+      });
     }
   }
   return [...counts.entries()]
-    .map(([value, routeCount]): RouteCatalogRegionOption => {
+    .map(([value, detail]): RouteCatalogRegionOption => {
       const [kind, ...idParts] = value.split(':');
       return {
         value,
         kind: kind as 'continent' | 'subregion',
         id: idParts.join(':'),
-        routeCount,
+        continent: detail.continent,
+        routeCount: detail.routeCount,
       };
     })
     .sort((a, b) => {
@@ -449,6 +459,8 @@ export function listRouteCatalogRegionOptions(
         return CONTINENT_ORDER.indexOf(a.id as RouteCatalogContinent)
           - CONTINENT_ORDER.indexOf(b.id as RouteCatalogContinent);
       }
+      const continentOrder = CONTINENT_ORDER.indexOf(a.continent) - CONTINENT_ORDER.indexOf(b.continent);
+      if (continentOrder !== 0) return continentOrder;
       return a.id.localeCompare(b.id);
     });
 }

@@ -100,9 +100,9 @@ describe('route catalog browser model', () => {
       countryContinents: continents,
       countrySubregions: subregions,
     })).toEqual(expect.arrayContaining([
-      { value: 'continent:asia', kind: 'continent', id: 'asia', routeCount: 1 },
-      { value: 'subregion:northeast-asia', kind: 'subregion', id: 'northeast-asia', routeCount: 1 },
-      { value: 'subregion:western-europe', kind: 'subregion', id: 'western-europe', routeCount: 1 },
+      { value: 'continent:asia', kind: 'continent', id: 'asia', continent: 'asia', routeCount: 1 },
+      { value: 'subregion:northeast-asia', kind: 'subregion', id: 'northeast-asia', continent: 'asia', routeCount: 1 },
+      { value: 'subregion:western-europe', kind: 'subregion', id: 'western-europe', continent: 'europe', routeCount: 1 },
     ]));
     const filtered = filterRouteCatalogPairs({
       pairs,

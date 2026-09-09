@@ -474,11 +474,28 @@
       "south-america": "南美洲"
     },
     "subregion": {
+      "northern-africa": "北非",
+      "western-africa": "西非",
+      "central-africa": "中非",
+      "eastern-africa": "東非",
+      "southern-africa": "南部非洲",
       "northeast-asia": "東北亞",
       "southeast-asia": "東南亞",
       "south-asia": "南亞",
+      "central-asia": "中亞",
+      "western-asia": "西亞／中東",
+      "northern-europe": "北歐",
       "central-europe": "中歐",
-      "western-europe": "西歐"
+      "western-europe": "西歐",
+      "eastern-europe": "東歐",
+      "southern-europe": "南歐",
+      "northern-america": "北美北部",
+      "central-america": "中美洲",
+      "caribbean": "加勒比海",
+      "australia-new-zealand": "澳洲與紐西蘭",
+      "melanesia": "美拉尼西亞",
+      "micronesia": "密克羅尼西亞",
+      "polynesia": "波里尼西亞"
     },
     "country": {
       "TW": "台灣",

@@ -313,6 +313,48 @@ describe('dataset completeness guard (CI-critical)', () => {
     expect(catalog.lastVerified).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(catalog.sourceUrls.length).toBeGreaterThanOrEqual(1);
   });
+
+  test('global browse subregions cover every populated continent except South America', () => {
+    const continentOnly = catalog.mappings.filter((row) => !row.subregion);
+    expect(catalog.mappings.filter((row) => row.subregion)).toHaveLength(230);
+    expect(continentOnly.map((row) => row.continent).sort()).toEqual([
+      ...Array(5).fill('antarctica'),
+      ...Array(14).fill('south-america'),
+    ]);
+
+    const continentsBySubregion = new Map<string, Set<string>>();
+    for (const row of catalog.mappings) {
+      if (!row.subregion) continue;
+      const continents = continentsBySubregion.get(row.subregion) ?? new Set<string>();
+      continents.add(row.continent);
+      continentsBySubregion.set(row.subregion, continents);
+    }
+    expect([...continentsBySubregion.values()].every((continents) => continents.size === 1)).toBe(true);
+    expect([...continentsBySubregion.keys()].sort()).toEqual([
+      'australia-new-zealand',
+      'caribbean',
+      'central-africa',
+      'central-america',
+      'central-asia',
+      'central-europe',
+      'eastern-africa',
+      'eastern-europe',
+      'melanesia',
+      'micronesia',
+      'northeast-asia',
+      'northern-africa',
+      'northern-america',
+      'northern-europe',
+      'polynesia',
+      'south-asia',
+      'southeast-asia',
+      'southern-africa',
+      'southern-europe',
+      'western-africa',
+      'western-asia',
+      'western-europe',
+    ]);
+  });
 });
 
 describe('CountryContinentCatalogSchema', () => {
