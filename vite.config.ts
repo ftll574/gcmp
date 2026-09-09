@@ -18,6 +18,24 @@ export default defineConfig({
   build: {
     sourcemap: true,
     target: 'es2022',
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            {
+              name: 'vendor-react',
+              test: /node_modules[\\/](?:react|react-dom|scheduler)[\\/]/,
+              priority: 20,
+            },
+            {
+              name: 'vendor-zod',
+              test: /node_modules[\\/]zod[\\/]/,
+              priority: 10,
+            },
+          ],
+        },
+      },
+    },
   },
   server: {
     proxy: {
