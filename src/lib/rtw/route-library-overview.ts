@@ -38,6 +38,7 @@ export interface RouteLibraryOverviewModel {
   readonly confirmedNumberCount: number;
   readonly candidateOnlyCount: number;
   readonly topCarriers: ReadonlyArray<RouteLibraryCarrierStat>;
+  readonly hubs: ReadonlyArray<RouteLibraryHubStat>;
   readonly topHubs: ReadonlyArray<RouteLibraryHubStat>;
   readonly continents: ReadonlyArray<RouteLibraryContinentStat>;
   readonly representativeRoutes: ReadonlyArray<RouteLibraryRepresentativeRoute>;
@@ -106,14 +107,14 @@ export function buildRouteLibraryOverview(input: BuildRouteLibraryOverviewInput)
     .sort((a, b) => b.routes - a.routes || a.carrier.localeCompare(b.carrier))
     .slice(0, 10);
 
-  const topHubs = [...hubDegree.entries()]
+  const hubs = [...hubDegree.entries()]
     .map(([iata, connections]) => {
       const airport = input.airports.get(iata);
       return airport ? { iata, city: airport.city || airport.name, country: airport.country, connections } : null;
     })
     .filter((hub): hub is RouteLibraryHubStat => hub !== null)
-    .sort((a, b) => b.connections - a.connections || a.iata.localeCompare(b.iata))
-    .slice(0, 10);
+    .sort((a, b) => b.connections - a.connections || a.iata.localeCompare(b.iata));
+  const topHubs = hubs.slice(0, 10);
 
   const continents = CONTINENT_ORDER
     .map((continent) => ({ continent, routes: continentCounts.get(continent) ?? 0 }))
@@ -146,6 +147,7 @@ export function buildRouteLibraryOverview(input: BuildRouteLibraryOverviewInput)
     confirmedNumberCount,
     candidateOnlyCount,
     topCarriers,
+    hubs,
     topHubs,
     continents,
     representativeRoutes,
