@@ -54,8 +54,9 @@ export interface RouteCatalogSourceView {
 
 export interface RouteCatalogEvidenceView {
   readonly id: string;
-  readonly kind: 'route' | 'weekly-schedule' | 'official-service' | 'flight-number-reference';
+  readonly kind: 'route' | 'weekly-schedule' | 'official-service' | 'flight-number-reference' | 'flight-number-candidate';
   readonly flightNumbers: ReadonlyArray<string>;
+  readonly candidateFlightNumbers: ReadonlyArray<string>;
   readonly daysOfWeek: ReadonlyArray<number>;
   readonly addedDates: ReadonlyArray<string>;
   readonly effectiveFrom?: string | undefined;
@@ -70,6 +71,7 @@ export interface RouteCatalogCarrierView {
   readonly carrier: string;
   readonly identity: 'operating' | 'provider-listed';
   readonly flightNumbers: ReadonlyArray<string>;
+  readonly candidateFlightNumbers: ReadonlyArray<string>;
   readonly evidence: ReadonlyArray<RouteCatalogEvidenceView>;
 }
 
@@ -112,6 +114,7 @@ interface MutableCarrier {
   carrier: string;
   identity: 'operating' | 'provider-listed';
   flightNumbers: Set<string>;
+  candidateFlightNumbers: Set<string>;
   evidence: RouteCatalogEvidenceView[];
 }
 
@@ -170,7 +173,7 @@ function pairBucket(pairs: Map<string, MutablePair>, from: string, to: string): 
 function carrierBucket(pair: MutablePair, carrier: string, identity: 'operating' | 'provider-listed'): MutableCarrier {
   let row = pair.carriers.get(carrier);
   if (!row) {
-    row = { carrier, identity, flightNumbers: new Set(), evidence: [] };
+    row = { carrier, identity, flightNumbers: new Set(), candidateFlightNumbers: new Set(), evidence: [] };
     pair.carriers.set(carrier, row);
   } else if (identity === 'operating') {
     row.identity = 'operating';
@@ -183,6 +186,7 @@ function evidenceKey(row: RouteCatalogEvidenceView): string {
     row.kind,
     row.id,
     row.flightNumbers.join(','),
+    row.candidateFlightNumbers.join(','),
     row.daysOfWeek.join(','),
     row.addedDates.join(','),
     row.effectiveFrom ?? '',
@@ -197,6 +201,10 @@ function pushEvidence(carrier: MutableCarrier, evidence: RouteCatalogEvidenceVie
   const key = evidenceKey(evidence);
   if (!carrier.evidence.some((row) => evidenceKey(row) === key)) carrier.evidence.push(evidence);
   evidence.flightNumbers.forEach((flight) => carrier.flightNumbers.add(flight));
+  evidence.candidateFlightNumbers.forEach((flight) => {
+    if (!carrier.flightNumbers.has(flight)) carrier.candidateFlightNumbers.add(flight);
+  });
+  evidence.flightNumbers.forEach((flight) => carrier.candidateFlightNumbers.delete(flight));
 }
 
 export interface BuildRouteCatalogPairsInput {
@@ -216,6 +224,17 @@ export interface BuildRouteCatalogPairsInput {
 export function buildRouteCatalogPairs(input: BuildRouteCatalogPairsInput): ReadonlyArray<RouteCatalogPairView> {
   const pairs = new Map<string, MutablePair>();
   const routeSources = new Map(input.routeNetwork?.sources.map((source) => [source.id, source] as const) ?? []);
+  // The runtime route graph is the current-state authority. A newer
+  // correction may retire or de-attribue a route while an older weekly/
+  // official flight-number reference still exists. Do not let those older
+  // auxiliary layers resurrect an explicitly non-published carrier+pair.
+  const blockedRouteKeys = new Set(
+    (input.routeNetwork?.routes ?? [])
+      .filter((route) => route.status !== 'published')
+      .map((route) => `${route.carrier}:${route.pair[0]}-${route.pair[1]}`),
+  );
+  const blocked = (carrier: string, from: string, to: string): boolean =>
+    blockedRouteKeys.has(`${carrier}:${from}-${to}`);
 
   for (const route of input.routeNetwork?.routes ?? []) {
     if (route.status !== 'published' || !input.memberCodes.has(route.carrier)) continue;
@@ -227,6 +246,7 @@ export function buildRouteCatalogPairs(input: BuildRouteCatalogPairsInput): Read
         id: `route:${route.carrier}:${route.pair[0]}-${route.pair[1]}:${sourceId}`,
         kind: 'route',
         flightNumbers: [],
+        candidateFlightNumbers: [],
         daysOfWeek: [],
         addedDates: [],
         effectiveFrom: route.effectiveFrom,
@@ -239,10 +259,33 @@ export function buildRouteCatalogPairs(input: BuildRouteCatalogPairsInput): Read
         } : null,
       });
     }
+    for (const sourceId of route.flightNumberSourceIds ?? []) {
+      const source = routeSources.get(sourceId);
+      pushEvidence(carrier, {
+        id: `route-number:${route.carrier}:${route.pair[0]}-${route.pair[1]}:${sourceId}`,
+        kind: 'flight-number-reference',
+        flightNumbers: route.flightNumbers ?? [],
+        candidateFlightNumbers: [],
+        daysOfWeek: [], addedDates: [],
+        source: source ? { url: source.url, label: source.note, note: source.note, checkedOn: source.checkedOn } : null,
+      });
+    }
+    for (const sourceId of route.flightNumberCandidateSourceIds ?? []) {
+      const source = routeSources.get(sourceId);
+      pushEvidence(carrier, {
+        id: `route-number-candidate:${route.carrier}:${route.pair[0]}-${route.pair[1]}:${sourceId}`,
+        kind: 'flight-number-candidate',
+        flightNumbers: [],
+        candidateFlightNumbers: route.flightNumberCandidates ?? [],
+        daysOfWeek: [], addedDates: [],
+        source: source ? { url: source.url, label: source.note, note: source.note, checkedOn: source.checkedOn } : null,
+      });
+    }
   }
 
   for (const schedule of input.schedules ?? []) {
-    if (schedule.status === 'suspended' || !input.memberCodes.has(schedule.carrier)) continue;
+    if (schedule.status === 'suspended' || !input.memberCodes.has(schedule.carrier)
+      || blocked(schedule.carrier, schedule.pair[0], schedule.pair[1])) continue;
     const pair = pairBucket(pairs, schedule.pair[0], schedule.pair[1]);
     const carrier = carrierBucket(pair, schedule.carrier, 'operating');
     const flights = (schedule.flightNumbers ?? []).map((number) => fullFlightNumber(schedule.carrier, number));
@@ -250,6 +293,7 @@ export function buildRouteCatalogPairs(input: BuildRouteCatalogPairsInput): Read
       id: `weekly:${schedule.carrier}:${schedule.pair[0]}-${schedule.pair[1]}:${schedule.seasonStart ?? ''}:${schedule.seasonEnd ?? ''}`,
       kind: 'weekly-schedule',
       flightNumbers: flights,
+      candidateFlightNumbers: [],
       daysOfWeek: schedule.daysOfWeek,
       addedDates: [],
       effectiveFrom: schedule.effectiveFrom,
@@ -263,13 +307,14 @@ export function buildRouteCatalogPairs(input: BuildRouteCatalogPairsInput): Read
 
   const official = input.officialSchedules;
   for (const service of official?.services ?? []) {
-    if (!input.memberCodes.has(service.carrier)) continue;
+    if (!input.memberCodes.has(service.carrier) || blocked(service.carrier, service.from, service.to)) continue;
     const pair = pairBucket(pairs, service.from, service.to);
     const carrier = carrierBucket(pair, service.carrier, 'operating');
     pushEvidence(carrier, {
       id: `official:${service.id}`,
       kind: 'official-service',
       flightNumbers: [fullFlightNumber(service.carrier, service.flightNumber)],
+      candidateFlightNumbers: [],
       daysOfWeek: service.daysOfWeek,
       addedDates: service.addedDates,
       effectiveFrom: service.effectiveFrom,
@@ -282,13 +327,14 @@ export function buildRouteCatalogPairs(input: BuildRouteCatalogPairsInput): Read
   }
 
   for (const reference of official?.flightNumberReferences ?? []) {
-    if (!input.memberCodes.has(reference.carrier)) continue;
+    if (!input.memberCodes.has(reference.carrier) || blocked(reference.carrier, reference.from, reference.to)) continue;
     const pair = pairBucket(pairs, reference.from, reference.to);
     const carrier = carrierBucket(pair, reference.carrier, 'operating');
     pushEvidence(carrier, {
       id: `reference:${reference.id}`,
       kind: 'flight-number-reference',
       flightNumbers: reference.flightNumbers.map((number) => fullFlightNumber(reference.carrier, number)),
+      candidateFlightNumbers: [],
       daysOfWeek: [],
       addedDates: [],
       source: sourceFromPublication(official?.sources[reference.sourceId]),
@@ -302,6 +348,9 @@ export function buildRouteCatalogPairs(input: BuildRouteCatalogPairsInput): Read
           carrier: carrier.carrier,
           identity: carrier.identity,
           flightNumbers: [...carrier.flightNumbers].sort(compareFlightNumbers),
+          candidateFlightNumbers: [...carrier.candidateFlightNumbers]
+            .filter((flight) => !carrier.flightNumbers.has(flight))
+            .sort(compareFlightNumbers),
           evidence: [...carrier.evidence].sort((a, b) => a.kind.localeCompare(b.kind) || a.id.localeCompare(b.id)),
         }))
         .sort((a, b) => a.carrier.localeCompare(b.carrier));
@@ -311,7 +360,7 @@ export function buildRouteCatalogPairs(input: BuildRouteCatalogPairsInput): Read
         fromAirport: input.airports?.get(pair.from) ?? null,
         toAirport: input.airports?.get(pair.to) ?? null,
         carriers,
-        flightCount: new Set(carriers.flatMap((carrier) => carrier.flightNumbers)).size,
+        flightCount: new Set(carriers.flatMap((carrier) => [...carrier.flightNumbers, ...carrier.candidateFlightNumbers])).size,
       };
     })
     .sort((a, b) => a.from.localeCompare(b.from) || a.to.localeCompare(b.to));
@@ -372,7 +421,7 @@ export function groupRouteCatalog(input: GroupRouteCatalogInput): ReadonlyArray<
                 }),
                 routeCount: routes.length,
                 carrierCount: carrierCodes.size,
-                flightCount: new Set(routes.flatMap((route) => route.carriers.flatMap((carrier) => carrier.flightNumbers))).size,
+                flightCount: new Set(routes.flatMap((route) => route.carriers.flatMap((carrier) => [...carrier.flightNumbers, ...carrier.candidateFlightNumbers]))).size,
               };
             })
             .sort((a, b) => a.iata.localeCompare(b.iata));
@@ -381,7 +430,7 @@ export function groupRouteCatalog(input: GroupRouteCatalogInput): ReadonlyArray<
             airports: airportGroups,
             routeCount: airportGroups.reduce((sum, airport) => sum + airport.routeCount, 0),
             carrierCount: new Set(airportGroups.flatMap((airport) => airport.routes.flatMap((route) => route.carriers.map((carrier) => carrier.carrier)))).size,
-            flightCount: new Set(airportGroups.flatMap((airport) => airport.routes.flatMap((route) => route.carriers.flatMap((carrier) => carrier.flightNumbers)))).size,
+            flightCount: new Set(airportGroups.flatMap((airport) => airport.routes.flatMap((route) => route.carriers.flatMap((carrier) => [...carrier.flightNumbers, ...carrier.candidateFlightNumbers])))).size,
           };
         })
         .sort((a, b) => a.country.localeCompare(b.country));
@@ -392,7 +441,7 @@ export function groupRouteCatalog(input: GroupRouteCatalogInput): ReadonlyArray<
         airportCount: allAirports.length,
         routeCount: allAirports.reduce((sum, airport) => sum + airport.routeCount, 0),
         carrierCount: new Set(allAirports.flatMap((airport) => airport.routes.flatMap((route) => route.carriers.map((carrier) => carrier.carrier)))).size,
-        flightCount: new Set(allAirports.flatMap((airport) => airport.routes.flatMap((route) => route.carriers.flatMap((carrier) => carrier.flightNumbers)))).size,
+        flightCount: new Set(allAirports.flatMap((airport) => airport.routes.flatMap((route) => route.carriers.flatMap((carrier) => [...carrier.flightNumbers, ...carrier.candidateFlightNumbers])))).size,
       };
     })
     .sort((a, b) => CONTINENT_ORDER.indexOf(a.continent) - CONTINENT_ORDER.indexOf(b.continent));

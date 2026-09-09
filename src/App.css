@@ -1424,7 +1424,8 @@
   gap: var(--space-2);
 }
 .rtw-next-flight-number,
-.rtw-next-flight-unknown {
+.rtw-next-flight-unknown,
+.rtw-next-flight-candidate {
   min-width: 0;
   min-height: 64px;
   border: 1px solid var(--separator);
@@ -1445,6 +1446,43 @@
   gap: 2px;
   cursor: pointer;
   font: inherit;
+}
+.rtw-next-flight-candidate {
+  display: grid;
+  gap: 2px;
+  border-style: dashed;
+  background: var(--secondary-system-background);
+}
+.rtw-next-flight-candidate strong {
+  font-family: var(--font-mono);
+  font-size: var(--type-body);
+}
+.rtw-next-flight-candidate span,
+.rtw-next-flight-candidate small {
+  display: block;
+  color: var(--secondary-label);
+  font-size: var(--type-caption);
+}
+.rtw-next-flight-candidate small {
+  color: var(--semantic-orange);
+}
+.rtw-next-flight-candidate-more {
+  grid-column: 1 / -1;
+  border: 1px dashed var(--separator);
+  border-radius: var(--radius-control);
+  padding: var(--space-2) var(--space-3);
+}
+.rtw-next-flight-candidate-more summary {
+  cursor: pointer;
+  color: var(--secondary-label);
+  font-size: var(--type-caption);
+  font-weight: 700;
+}
+.rtw-next-flight-candidate-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin-top: var(--space-2);
 }
 .rtw-next-flight-unknown em {
   margin-top: var(--space-1);

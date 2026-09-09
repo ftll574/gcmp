@@ -4,6 +4,7 @@ import { z } from 'zod';
 const DateSchema = z.iso.date();
 const SourceIdSchema = z.string().regex(/^[a-z0-9][a-z0-9-]*$/);
 const SourceUrlSchema = z.string().url().refine((url) => url.startsWith('https://'), 'HTTPS source required');
+const FlightDesignatorSchema = z.string().regex(/^[A-Z0-9]{2,3}\d{1,4}[A-Z]?$/);
 
 export const RouteNetworkSourceSchema = z.object({
   id: SourceIdSchema,
@@ -42,11 +43,22 @@ export const RouteNetworkEntrySchema = z.object({
   carrier: z.string().regex(/^[A-Z0-9]{2,3}$/),
   pair: z.tuple([z.string().regex(/^[A-Z]{3}$/), z.string().regex(/^[A-Z]{3}$/)]),
   service: z.literal('nonstop'),
-  status: z.enum(['published', 'suspended']),
+  /** `identity-unresolved` preserves a sourced route relationship that is no
+   * longer safe to present as a current plannable carrier-route because no
+   * same-carrier commercial designator can be corroborated. */
+  status: z.enum(['published', 'suspended', 'identity-unresolved']),
   /** A listed/marketing carrier is useful for route discovery but is not
    * automatically the operating carrier. Dated/operator evidence must
    * promote it before itinerary persistence. */
   carrierIdentity: z.enum(['operating', 'provider-listed']).optional(),
+  /** Exact designators backed strongly enough for route planning. They still
+   * do not assert a weekday, time, award seat, or date-specific operation. */
+  flightNumbers: z.array(FlightDesignatorSchema).optional(),
+  flightNumberSourceIds: z.array(SourceIdSchema).optional(),
+  /** Useful designators from standing/marketing/reference layers that need a
+   * date/operator recheck before itinerary persistence. */
+  flightNumberCandidates: z.array(FlightDesignatorSchema).optional(),
+  flightNumberCandidateSourceIds: z.array(SourceIdSchema).optional(),
   sourceIds: z.array(SourceIdSchema).min(1),
   effectiveFrom: DateSchema.optional(),
   effectiveUntil: DateSchema.optional(),
@@ -59,6 +71,38 @@ export const RouteNetworkEntrySchema = z.object({
   }
   if (new Set(entry.sourceIds).size !== entry.sourceIds.length) {
     ctx.addIssue({ code: 'custom', path: ['sourceIds'], message: 'Duplicate source reference' });
+  }
+  const expectedPrefix = entry.carrier.toUpperCase();
+  for (const [field, numbers] of [
+    ['flightNumbers', entry.flightNumbers ?? []],
+    ['flightNumberCandidates', entry.flightNumberCandidates ?? []],
+  ] as const) {
+    if (new Set(numbers).size !== numbers.length) {
+      ctx.addIssue({ code: 'custom', path: [field], message: 'Duplicate flight designator' });
+    }
+    numbers.forEach((number, index) => {
+      if (!number.startsWith(expectedPrefix) || !/^\d{1,4}[A-Z]?$/.test(number.slice(expectedPrefix.length))) {
+        ctx.addIssue({ code: 'custom', path: [field, index], message: `Flight designator must match carrier ${expectedPrefix}` });
+      }
+    });
+  }
+  const confirmed = new Set(entry.flightNumbers ?? []);
+  if ((entry.flightNumberCandidates ?? []).some((number) => confirmed.has(number))) {
+    ctx.addIssue({ code: 'custom', path: ['flightNumberCandidates'], message: 'Confirmed and candidate flight designators must not overlap' });
+  }
+  for (const [numbersField, sourceField, numbers, sourceIds] of [
+    ['flightNumbers', 'flightNumberSourceIds', entry.flightNumbers ?? [], entry.flightNumberSourceIds ?? []],
+    ['flightNumberCandidates', 'flightNumberCandidateSourceIds', entry.flightNumberCandidates ?? [], entry.flightNumberCandidateSourceIds ?? []],
+  ] as const) {
+    if (numbers.length > 0 && sourceIds.length === 0) {
+      ctx.addIssue({ code: 'custom', path: [sourceField], message: `${numbersField} requires source references` });
+    }
+    if (numbers.length === 0 && sourceIds.length > 0) {
+      ctx.addIssue({ code: 'custom', path: [sourceField], message: `${sourceField} requires flight designators` });
+    }
+    if (new Set(sourceIds).size !== sourceIds.length) {
+      ctx.addIssue({ code: 'custom', path: [sourceField], message: 'Duplicate flight-number source reference' });
+    }
   }
 });
 export type RouteNetworkEntry = z.infer<typeof RouteNetworkEntrySchema>;
@@ -86,6 +130,14 @@ export const RouteNetworkCatalogSchema = z.object({
     route.sourceIds.forEach((id) => {
       if (!sources.has(id)) ctx.addIssue({ code: 'custom', path: ['routes', index, 'sourceIds'], message: `Unknown source ${id}` });
     });
+    for (const [field, ids] of [
+      ['flightNumberSourceIds', route.flightNumberSourceIds ?? []],
+      ['flightNumberCandidateSourceIds', route.flightNumberCandidateSourceIds ?? []],
+    ] as const) {
+      ids.forEach((id) => {
+        if (!sources.has(id)) ctx.addIssue({ code: 'custom', path: ['routes', index, field], message: `Unknown source ${id}` });
+      });
+    }
   });
   const universes = new Set<string>();
   catalog.carrierUniverses.forEach((universe, index) => {

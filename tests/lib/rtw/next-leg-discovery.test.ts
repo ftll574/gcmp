@@ -60,6 +60,40 @@ describe('next-leg discovery', () => {
     expect(promoted?.identityStatus).toBeUndefined();
     expect(promoted?.flightNumbers).toEqual(['CX473']);
   });
+  test('route-level recent numbers are selectable only for confirmed operating routes', () => {
+    const confirmed = buildNextLegIndex({
+      ...base,
+      network: network([{ flightNumbers: ['CX473'], flightNumberSourceIds: ['fixture'] }]),
+    }).get('TPE')?.[0]?.options[0];
+    expect(confirmed?.flightNumbers).toEqual(['CX473']);
+    expect(confirmed?.candidateFlightNumbers).toEqual([]);
+    expect(confirmed?.routeFlightNumberSources[0]?.id).toBe('fixture');
+
+    const providerListed = buildNextLegIndex({
+      ...base,
+      network: network([{
+        carrierIdentity: 'provider-listed',
+        flightNumbers: ['CX473'],
+        flightNumberSourceIds: ['fixture'],
+      }]),
+    }).get('TPE')?.[0]?.options[0];
+    expect(providerListed?.flightNumbers).toEqual([]);
+    expect(providerListed?.candidateFlightNumbers).toEqual(['CX473']);
+    expect(providerListed?.identityStatus).toBe('provider-listed');
+  });
+  test('standing and marketing references stay candidates without inventing a schedule', () => {
+    const option = buildNextLegIndex({
+      ...base,
+      network: network([{
+        flightNumberCandidates: ['CX475'],
+        flightNumberCandidateSourceIds: ['fixture'],
+      }]),
+    }).get('TPE')?.[0]?.options[0];
+    expect(option?.flightNumbers).toEqual([]);
+    expect(option?.candidateFlightNumbers).toEqual(['CX475']);
+    expect(option?.scheduleStatus).toBe('unknown');
+    expect(option?.candidateFlightNumberSources[0]?.id).toBe('fixture');
+  });
   test('preserves original publication date even after recently inspecting the source', () => {
     expect(buildNextLegIndex(base).get('TPE')?.[0]?.options[0]?.networkSources[0]).toMatchObject({ checkedOn: '2026-09-05', publishedOn: '2025-01-01' });
   });

@@ -157,6 +157,37 @@ describe('DestinationsPanel · nonblocking next-leg workflow', () => {
     expect(document.querySelector('.rtw-explorer-evidence')).toHaveTextContent('Source checked 2026-09-05');
   });
 
+  test('confirmed route-level flight number is selectable before dated schedule verification', () => {
+    const network = RouteNetworkCatalogSchema.parse({
+      version: '2026.3', coverage: 'curated-not-complete',
+      sources: [{ id: 'fixture', url: 'https://example.com/route', checkedOn: '2026-09-05', note: 'Recent flight identity.' }],
+      routes: [{
+        carrier: 'CX', pair: ['TPE', 'LHR'], service: 'nonstop', status: 'published', sourceIds: ['fixture'],
+        flightNumbers: ['CX250'], flightNumberSourceIds: ['fixture'],
+      }],
+    });
+    render(<DestinationsPanel {...baseProps} schedules={[]} network={network} pendingIata="TPE" />);
+    selectPair('TPE', 'LHR');
+    expect(flight('CX250', 'TPE', 'LHR')).toBeInTheDocument();
+    expect(document.querySelector('[data-candidate-flight-number="CX250:TPE-LHR"]')).toBeNull();
+  });
+
+  test('candidate flight number is visible but cannot be persisted as a confirmed flight', () => {
+    const network = RouteNetworkCatalogSchema.parse({
+      version: '2026.3', coverage: 'curated-not-complete',
+      sources: [{ id: 'fixture', url: 'https://example.com/route', checkedOn: '2026-09-05', note: 'Standing flight identity.' }],
+      routes: [{
+        carrier: 'CX', pair: ['TPE', 'LHR'], service: 'nonstop', status: 'published', sourceIds: ['fixture'],
+        flightNumberCandidates: ['CX251'], flightNumberCandidateSourceIds: ['fixture'],
+      }],
+    });
+    render(<DestinationsPanel {...baseProps} schedules={[]} network={network} pendingIata="TPE" />);
+    selectPair('TPE', 'LHR');
+    expect(document.querySelector('[data-candidate-flight-number="CX251:TPE-LHR"]')).toHaveTextContent('CX251');
+    expect(document.querySelector('[data-select-flight-number="CX251:TPE-LHR"]')).toBeNull();
+    expect(document.querySelector('[data-select-flight-later="CX:TPE-LHR"]')).toBeInTheDocument();
+  });
+
   test('missing flight number never blocks planning: airline-only draft can set transfer and add', () => {
     const onAddPair = vi.fn();
     const network = RouteNetworkCatalogSchema.parse({

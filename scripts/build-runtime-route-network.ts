@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { mkdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
 import { parseRouteNetworkCatalog, type RouteNetworkCatalog } from '../src/lib/schemas/route-network.ts';
-import { mergeRouteNetworkCatalogs } from '../src/lib/rtw/route-network-merge.ts';
+import { mergeRouteNetworkCatalogs, mergeRouteNumberEvidence } from '../src/lib/rtw/route-network-merge.ts';
 
 const INPUTS = [
   'current.json',
@@ -11,6 +11,8 @@ const INPUTS = [
   'bts-marketing-current.json',
   'standing-current.json',
 ] as const;
+const NUMBER_INPUT = 'flight-numbers-current.json';
+const CORRECTIONS_INPUT = 'current-corrections.json';
 
 const root = 'public/data/route-network';
 const airportCodes = new Set<string>(
@@ -32,10 +34,36 @@ const catalogs = INPUTS.map((file) => {
   return parseRouteNetworkCatalog(JSON.parse(raw), airportCodes);
 });
 
-const runtime = catalogs.slice(1).reduce<RouteNetworkCatalog>(
+const baseRuntime = catalogs.slice(1).reduce<RouteNetworkCatalog>(
   (network, layer) => mergeRouteNetworkCatalogs(network, layer),
   catalogs[0]!,
 );
+const correctionsRaw = readFileSync(`${root}/${CORRECTIONS_INPUT}`, 'utf8');
+rawByFile.set(CORRECTIONS_INPUT, correctionsRaw);
+const correctedRuntime = mergeRouteNetworkCatalogs(
+  parseRouteNetworkCatalog(JSON.parse(correctionsRaw), airportCodes),
+  baseRuntime,
+);
+const numberRaw = readFileSync(`${root}/${NUMBER_INPUT}`, 'utf8');
+rawByFile.set(NUMBER_INPUT, numberRaw);
+const numberedRuntime = mergeRouteNumberEvidence(
+  correctedRuntime,
+  parseRouteNetworkCatalog(JSON.parse(numberRaw), airportCodes),
+);
+// Provider-listed route relationships are useful discovery evidence, but a
+// current planner edge must at least carry a source-backed commercial flight
+// identity. Keep unresolved relationships in the audit graph without
+// presenting them as current selectable routes.
+const runtime = parseRouteNetworkCatalog({
+  ...numberedRuntime,
+  routes: numberedRuntime.routes.map((route) =>
+    route.status === 'published'
+      && route.carrierIdentity === 'provider-listed'
+      && (route.flightNumbers?.length ?? 0) === 0
+      && (route.flightNumberCandidates?.length ?? 0) === 0
+      ? { ...route, status: 'identity-unresolved' as const }
+      : route),
+}, airportCodes);
 
 // This artifact is fetched on every app startup. Keep it compact; the source
 // layers remain human-reviewable and the tiny meta file carries diagnostics.
@@ -43,8 +71,22 @@ const runtimeText = `${JSON.stringify(runtime)}\n`;
 writeFileSync(`${root}/runtime-current.json`, runtimeText);
 
 const publishedRoutes = runtime.routes.filter((route) => route.status === 'published');
+const unnumberedPublishedRoutes = publishedRoutes.filter((route) =>
+  (route.flightNumbers?.length ?? 0) === 0 && (route.flightNumberCandidates?.length ?? 0) === 0,
+);
+if (unnumberedPublishedRoutes.length > 0) {
+  throw new Error(`Published routes without flight identity: ${unnumberedPublishedRoutes
+    .slice(0, 20)
+    .map((route) => `${route.carrier}:${route.pair[0]}-${route.pair[1]}`)
+    .join(', ')}${unnumberedPublishedRoutes.length > 20 ? ` (+${unnumberedPublishedRoutes.length - 20} more)` : ''}`);
+}
 const confirmedOperatingRoutes = publishedRoutes.filter((route) => route.carrierIdentity !== 'provider-listed').length;
 const providerListedRoutes = publishedRoutes.length - confirmedOperatingRoutes;
+const confirmedFlightNumberRoutes = publishedRoutes.filter((route) => (route.flightNumbers?.length ?? 0) > 0).length;
+const candidateFlightNumberRoutes = publishedRoutes.filter((route) => (route.flightNumberCandidates?.length ?? 0) > 0).length;
+const anyFlightNumberRoutes = publishedRoutes.filter((route) =>
+  (route.flightNumbers?.length ?? 0) > 0 || (route.flightNumberCandidates?.length ?? 0) > 0,
+).length;
 const routeCountByCarrier = new Map<string, number>();
 const confirmedOperatingCountByCarrier = new Map<string, number>();
 const providerListedCountByCarrier = new Map<string, number>();
@@ -67,7 +109,11 @@ for (const letter of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') {
     try { unlinkSync(path); } catch { /* no stale shard */ }
     continue;
   }
-  const sourceIds = new Set(routes.flatMap((route) => route.sourceIds));
+  const sourceIds = new Set(routes.flatMap((route) => [
+    ...route.sourceIds,
+    ...(route.flightNumberSourceIds ?? []),
+    ...(route.flightNumberCandidateSourceIds ?? []),
+  ]));
   const shard: RouteNetworkCatalog = {
     version: runtime.version,
     coverage: runtime.coverage,
@@ -83,14 +129,17 @@ for (const letter of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') {
 
 const meta = {
   version: 1,
-  builtOn: '2026-09-08',
-  inputs: Object.fromEntries(INPUTS.map((file) => [file, sha256(rawByFile.get(file)!)])),
+  builtOn: '2026-09-09',
+  inputs: Object.fromEntries([...INPUTS, CORRECTIONS_INPUT, NUMBER_INPUT].map((file) => [file, sha256(rawByFile.get(file)!)])),
   outputSha256: sha256(runtimeText),
   routes: runtime.routes.length,
   publishedRoutes: publishedRoutes.length,
   carriers: new Set(runtime.routes.map((route) => route.carrier)).size,
   confirmedOperatingRoutes,
   providerListedRoutes,
+  confirmedFlightNumberRoutes,
+  candidateFlightNumberRoutes,
+  anyFlightNumberRoutes,
   routeCountByCarrier: Object.fromEntries([...routeCountByCarrier.entries()].sort(([a], [b]) => a.localeCompare(b))),
   confirmedOperatingCountByCarrier: Object.fromEntries(
     [...confirmedOperatingCountByCarrier.entries()].sort(([a], [b]) => a.localeCompare(b)),

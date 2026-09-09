@@ -15,9 +15,15 @@ const airports = new Map<string, Airport>([
 
 const routeNetwork: RouteNetworkCatalog = {
   version: '2026.3', coverage: 'curated-not-complete', carrierUniverses: [],
-  sources: [{ id: 'routes', url: 'https://example.com/routes', checkedOn: '2026-09-08', note: 'Route source' }],
+  sources: [
+    { id: 'routes', url: 'https://example.com/routes', checkedOn: '2026-09-08', note: 'Route source' },
+    { id: 'numbers', url: 'https://example.com/numbers', checkedOn: '2026-09-09', note: 'Flight-number source' },
+  ],
   routes: [
-    { carrier: 'BR', pair: ['TPE', 'BKK'], service: 'nonstop', status: 'published', carrierIdentity: 'provider-listed', sourceIds: ['routes'] },
+    {
+      carrier: 'BR', pair: ['TPE', 'BKK'], service: 'nonstop', status: 'published', carrierIdentity: 'provider-listed', sourceIds: ['routes'],
+      flightNumberCandidates: ['BR75'], flightNumberCandidateSourceIds: ['numbers'],
+    },
     { carrier: 'TG', pair: ['TPE', 'BKK'], service: 'nonstop', status: 'published', sourceIds: ['routes'] },
     { carrier: 'BR', pair: ['LHR', 'BKK'], service: 'nonstop', status: 'published', sourceIds: ['routes'] },
   ],
@@ -53,6 +59,9 @@ describe('route catalog browser model', () => {
     const br = tpeBkk.carriers.find((carrier) => carrier.carrier === 'BR')!;
     expect(br.identity).toBe('operating');
     expect(br.flightNumbers).toEqual(['BR61', 'BR67']);
+    expect(br.candidateFlightNumbers).toEqual(['BR75']);
+    expect(tpeBkk.flightCount).toBe(3);
+    expect(br.evidence.some((row) => row.kind === 'flight-number-candidate' && row.candidateFlightNumbers.includes('BR75'))).toBe(true);
     expect(br.evidence.some((row) => row.kind === 'official-service' && row.departureTime === '08:15')).toBe(true);
   });
 
@@ -72,5 +81,22 @@ describe('route catalog browser model', () => {
     expect(byDestination[0]?.countries.map((country) => country.country)).toEqual(['TH']);
     expect(byDestination[0]?.countries[0]?.airports[0]?.iata).toBe('BKK');
     expect(byDestination[0]?.countries[0]?.airports[0]?.routeCount).toBe(2);
+  });
+
+  test('a current route correction cannot be resurrected by an older official flight-number reference', () => {
+    const correctedNetwork: RouteNetworkCatalog = {
+      ...routeNetwork,
+      routes: [{
+        carrier: 'BR', pair: ['TPE', 'BKK'], service: 'nonstop', status: 'suspended',
+        sourceIds: ['routes'], effectiveFrom: '2026-09-09',
+      }],
+    };
+    const pairs = buildRouteCatalogPairs({
+      routeNetwork: correctedNetwork,
+      officialSchedules,
+      memberCodes: new Set(['BR']),
+      airports,
+    });
+    expect(pairs.find((pair) => pair.from === 'TPE' && pair.to === 'BKK')).toBeUndefined();
   });
 });

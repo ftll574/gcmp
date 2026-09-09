@@ -10,6 +10,8 @@ const INPUTS = [
   'affiliate-current.json',
   'bts-marketing-current.json',
   'standing-current.json',
+  'current-corrections.json',
+  'flight-numbers-current.json',
 ] as const;
 
 function sha256(text: string): string {

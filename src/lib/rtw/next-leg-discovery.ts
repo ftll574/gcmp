@@ -22,10 +22,15 @@ export interface NextLegOption {
    * catalog does not currently know a flight number for it.
    */
   readonly flightNumbers: ReadonlyArray<string>;
+  /** Route-level standing/marketing designators that are useful for lookup but
+   * are not persisted until date/operator evidence is stronger. */
+  readonly candidateFlightNumbers: ReadonlyArray<string>;
   readonly scheduleStatus: NextLegScheduleStatus;
   readonly networkSources: ReadonlyArray<RouteNetworkSource>;
   readonly schedules: ReadonlyArray<ScheduleEntry>;
   readonly flightNumberSources: ReadonlyArray<PublicationSource>;
+  readonly routeFlightNumberSources: ReadonlyArray<RouteNetworkSource>;
+  readonly candidateFlightNumberSources: ReadonlyArray<RouteNetworkSource>;
   readonly routeWindow: { readonly from?: string | undefined; readonly until?: string | undefined } | null;
   /** Undefined / confirmed-operating is backed by the existing operating-carrier
    * evidence pipeline. provider-listed means a live route source listed this
@@ -148,6 +153,7 @@ export function buildNextLegIndex({
   const origins = new Map<string, Map<string, NextLegOption[]>>();
   for (const item of buckets.values()) {
     if (hasNetworkGap(networkGaps ?? [], item.carrier, item.from, item.to, referenceDate)) continue;
+    if (item.route?.status === 'identity-unresolved') continue;
     if (item.route?.status === 'suspended' && inWindow(item.route, referenceDate)) continue;
     // An explicit suspension takes precedence over an undated observation.
     if (item.schedules.some((row) => row.status === 'suspended' && isScheduleActiveOn({ ...row, status: 'operating' }, referenceDate))) continue;
@@ -205,13 +211,25 @@ export function buildNextLegIndex({
       && positiveSchedules.length === 0
       && activeOfficialServices.length === 0
       && activeReferences.length === 0;
+    const routeFlightNumberSources = (item.route?.flightNumberSourceIds ?? [])
+      .flatMap((id) => { const source = sources.get(id); return source ? [source] : []; });
+    const candidateFlightNumberSources = (item.route?.flightNumberCandidateSourceIds ?? [])
+      .flatMap((id) => { const source = sources.get(id); return source ? [source] : []; });
+    const routeConfirmedNumbers = providerListedOnly ? [] : item.route?.flightNumbers ?? [];
+    const confirmedNumbers = [...new Set([
+      ...routeConfirmedNumbers,
+      ...positiveSchedules.flatMap((row) => row.flightNumbers ?? []),
+      ...activeOfficialServices.map((row) => `${row.carrier}${row.flightNumber}`),
+      ...activeReferences.flatMap((row) => row.flightNumbers.map((number) => `${row.carrier}${number}`)),
+    ])];
+    const confirmedNumberSet = new Set(confirmedNumbers);
+    const candidateFlightNumbers = [...new Set([
+      ...(item.route?.flightNumberCandidates ?? []),
+      ...(providerListedOnly ? item.route?.flightNumbers ?? [] : []),
+    ])].filter((number) => !confirmedNumberSet.has(number)).sort();
     options.push({
       carrier: item.carrier, from: item.from, to: item.to, scheduleStatus,
-      flightNumbers: [...new Set([
-        ...positiveSchedules.flatMap((row) => row.flightNumbers ?? []),
-        ...activeOfficialServices.map((row) => `${row.carrier}${row.flightNumber}`),
-        ...activeReferences.flatMap((row) => row.flightNumbers.map((number) => `${row.carrier}${number}`)),
-      ])]
+      flightNumbers: confirmedNumbers
         .sort((a, b) => {
           const departureA = departureByDesignator.get(a);
           const departureB = departureByDesignator.get(b);
@@ -220,7 +238,10 @@ export function buildNextLegIndex({
           if (departureB) return 1;
           return a.localeCompare(b);
         }),
+      candidateFlightNumbers,
       networkSources, schedules: positiveSchedules, flightNumberSources,
+      routeFlightNumberSources,
+      candidateFlightNumberSources,
       routeWindow: item.route ? { from: item.route.effectiveFrom, until: item.route.effectiveUntil } : null,
       ...(providerListedOnly ? { identityStatus: 'provider-listed' as const } : {}),
     });

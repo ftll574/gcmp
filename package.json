@@ -24,6 +24,7 @@
   ],
   "type": "module",
   "scripts": {
+    "routes:build-flight-numbers": "tsx scripts/build-flight-number-layer.ts",
     "routes:build-runtime": "tsx scripts/build-runtime-route-network.ts",
     "routes:verify-runtime": "tsx scripts/verify-runtime-route-network.ts",
     "predev": "tsx scripts/build-runtime-route-network.ts",

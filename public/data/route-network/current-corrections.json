@@ -1,0 +1,214 @@
+{
+  "version": "2026.3",
+  "coverage": "curated-not-complete",
+  "sources": [
+    {
+      "id": "et-add-atl-nondirect-20260909",
+      "url": "https://info.flightmapper.net/route/Ethiopian_Airlines_ET_ADD_ATL",
+      "checkedOn": "2026-09-09",
+      "note": "Current ET518 ADD-ATL schedule is published as a 1-stop service, so the ADD-ATL relationship must not remain a current nonstop planner edge."
+    },
+    {
+      "id": "ou-puy-lhr-past-20260909",
+      "url": "https://www.flightsfrom.com/PUY-LHR",
+      "checkedOn": "2026-09-09",
+      "note": "The direct PUY-LHR page lists service only in the past and does not corroborate current Croatia Airlines nonstop operation."
+    },
+    {
+      "id": "ou-zad-lhr-no-current-20260909",
+      "url": "https://www.flightsfrom.com/ZAD-LHR",
+      "checkedOn": "2026-09-09",
+      "note": "No current ZAD-LHR direct schedule is published on the checked route page."
+    },
+    {
+      "id": "qr-doh-jib-past-20260909",
+      "url": "https://www.flightsfrom.com/DOH-JIB",
+      "checkedOn": "2026-09-09",
+      "note": "The direct DOH-JIB page lists Qatar Airways service only in the past, so it is not a current nonstop planner edge."
+    },
+    {
+      "id": "sn-bgo-bru-wideroe-20260909",
+      "url": "https://www.flightsfrom.com/BGO-BRU",
+      "checkedOn": "2026-09-09",
+      "note": "Current BGO-BRU direct service is listed under Wideroe (WF1890), not Brussels Airlines; the SN carrier attribution is unresolved."
+    },
+    {
+      "id": "sn-bru-bgo-wideroe-20260909",
+      "url": "https://www.flightsfrom.com/BRU-BGO",
+      "checkedOn": "2026-09-09",
+      "note": "Current BRU-BGO direct service is listed under Wideroe (WF1891), not Brussels Airlines; the SN carrier attribution is unresolved."
+    },
+    {
+      "id": "sn-bru-ord-ua-20260909",
+      "url": "https://www.brusselsairlines.com/lhg/us/en/o-d/cy-cy/brussels-chicago",
+      "checkedOn": "2026-09-09",
+      "note": "Brussels Airlines publishes marketing flight SN8803 on BRU-ORD and explicitly states that it is operated by UA. Keep the SN designator as a provider-listed candidate, not operating-carrier evidence."
+    },
+    {
+      "id": "sn-bts-bru-no-current-20260909",
+      "url": "https://www.flightsfrom.com/BTS-BRU",
+      "checkedOn": "2026-09-09",
+      "note": "No current BTS-BRU direct schedule is published on the checked route page."
+    },
+    {
+      "id": "tk-dss-nkc-other-operators-20260909",
+      "url": "https://www.flightsfrom.com/DSS-NKC",
+      "checkedOn": "2026-09-09",
+      "note": "Current DSS-NKC direct service is published under other operators, including Mauritania Airlines; no TK commercial designator is shown."
+    },
+    {
+      "id": "tk-ist-hrg-air-cairo-20260909",
+      "url": "https://www.flightsfrom.com/IST-HRG",
+      "checkedOn": "2026-09-09",
+      "note": "Current IST-HRG direct service is published under Air Cairo (SM308), not Turkish Airlines; the TK carrier attribution is unresolved."
+    },
+    {
+      "id": "tk-led-dlm-past-20260909",
+      "url": "https://www.flightsfrom.com/LED-DLM",
+      "checkedOn": "2026-09-09",
+      "note": "The checked LED-DLM direct page lists service only in the past and under another operator, so it is not a current TK nonstop planner edge."
+    },
+    {
+      "id": "tk-saw-sjj-other-operators-20260909",
+      "url": "https://www.flightsfrom.com/SAW-SJJ",
+      "checkedOn": "2026-09-09",
+      "note": "Current SAW-SJJ direct flights are published as Pegasus/AJet services (PC/VF designators), not TK; the Turkish Airlines carrier attribution is unresolved."
+    },
+    {
+      "id": "ai-sfo-del-past-20260909",
+      "url": "https://www.flightsfrom.com/SFO-DEL",
+      "checkedOn": "2026-09-09",
+      "note": "The SFO-DEL direct page lists Air India service only in the past, so the edge is not current."
+    },
+    {
+      "id": "fj-nan-dfw-ended-20260906",
+      "url": "https://www.aeroroutes.com/eng/260428-fjsep26dfw",
+      "checkedOn": "2026-09-09",
+      "publishedOn": "2026-04-29",
+      "note": "Fiji Airways announced NAN-DFW discontinuation with the final FJ890 service scheduled for 2026-09-05; the route is no longer current from 2026-09-06."
+    }
+  ],
+  "carrierUniverses": [],
+  "routes": [
+    {
+      "carrier": "AI",
+      "pair": ["SFO", "DEL"],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": ["ai-sfo-del-past-20260909"],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "ET",
+      "pair": ["ADD", "ATL"],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": ["et-add-atl-nondirect-20260909"],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "FJ",
+      "pair": ["NAN", "DFW"],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": ["fj-nan-dfw-ended-20260906"],
+      "effectiveFrom": "2026-09-06"
+    },
+    {
+      "carrier": "OU",
+      "pair": ["PUY", "LHR"],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": ["ou-puy-lhr-past-20260909"],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "OU",
+      "pair": ["ZAD", "LHR"],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": ["ou-zad-lhr-no-current-20260909"],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "QR",
+      "pair": ["DOH", "JIB"],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": ["qr-doh-jib-past-20260909"],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "SN",
+      "pair": ["BGO", "BRU"],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": ["sn-bgo-bru-wideroe-20260909"],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "SN",
+      "pair": ["BRU", "BGO"],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": ["sn-bru-bgo-wideroe-20260909"],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "SN",
+      "pair": ["BRU", "ORD"],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "flightNumberCandidates": ["SN8803"],
+      "flightNumberCandidateSourceIds": ["sn-bru-ord-ua-20260909"],
+      "sourceIds": ["sn-bru-ord-ua-20260909"],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "SN",
+      "pair": ["BTS", "BRU"],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": ["sn-bts-bru-no-current-20260909"],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "TK",
+      "pair": ["DSS", "NKC"],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": ["tk-dss-nkc-other-operators-20260909"],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "TK",
+      "pair": ["IST", "HRG"],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": ["tk-ist-hrg-air-cairo-20260909"],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "TK",
+      "pair": ["LED", "DLM"],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": ["tk-led-dlm-past-20260909"],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "TK",
+      "pair": ["SAW", "SJJ"],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": ["tk-saw-sjj-other-operators-20260909"],
+      "effectiveFrom": "2026-09-09"
+    }
+  ]
+}

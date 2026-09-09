@@ -29,6 +29,75 @@ function mergeUniverse(
   };
 }
 
+function mergeRouteNumbers(
+  lower: RouteNetworkCatalog['routes'][number],
+  higher: RouteNetworkCatalog['routes'][number],
+): RouteNetworkCatalog['routes'][number] {
+  const confirmed = [...new Set([...(lower.flightNumbers ?? []), ...(higher.flightNumbers ?? [])])].sort();
+  const confirmedSet = new Set(confirmed);
+  const candidates = [...new Set([
+    ...(lower.flightNumberCandidates ?? []),
+    ...(higher.flightNumberCandidates ?? []),
+  ])].filter((number) => !confirmedSet.has(number)).sort();
+  return {
+    ...higher,
+    ...(confirmed.length > 0 ? { flightNumbers: confirmed } : {}),
+    ...(confirmed.length > 0 ? {
+      flightNumberSourceIds: [...new Set([
+        ...(lower.flightNumberSourceIds ?? []),
+        ...(higher.flightNumberSourceIds ?? []),
+      ])],
+    } : {}),
+    ...(candidates.length > 0 ? { flightNumberCandidates: candidates } : {}),
+    ...(candidates.length > 0 ? {
+      flightNumberCandidateSourceIds: [...new Set([
+        ...(lower.flightNumberCandidateSourceIds ?? []),
+        ...(higher.flightNumberCandidateSourceIds ?? []),
+      ])],
+    } : {}),
+  };
+}
+
+/** Apply number-only evidence to an already-established route graph. Unlike
+ * the normal route merge, this must never resurrect a route that disappeared
+ * from the current graph. */
+export function mergeRouteNumberEvidence(
+  network: RouteNetworkCatalog,
+  evidence: RouteNetworkCatalog | null,
+): RouteNetworkCatalog {
+  if (!evidence) return network;
+  if (evidence.version !== network.version) {
+    throw new Error(`Route-number version mismatch: ${network.version} vs ${evidence.version}`);
+  }
+  const sources = new Map(network.sources.map((source) => [source.id, source] as const));
+  for (const source of evidence.sources) {
+    const existing = sources.get(source.id);
+    if (existing && sourceKey(existing) !== sourceKey(source)) throw new Error(`Conflicting route-network source ${source.id}`);
+    if (!existing) sources.set(source.id, source);
+  }
+  const routes = new Map<string, RouteNetworkCatalog['routes'][number]>(
+    network.routes.map((route) => [`${route.carrier}:${route.pair[0]}-${route.pair[1]}`, route]),
+  );
+  for (const row of evidence.routes) {
+    const key = `${row.carrier}:${row.pair[0]}-${row.pair[1]}`;
+    const existing = routes.get(key);
+    if (!existing) throw new Error(`Flight-number evidence references missing route ${key}`);
+    const merged = mergeRouteNumbers(row, existing);
+    routes.set(key, row.status === 'identity-unresolved'
+      ? {
+          ...merged,
+          status: 'identity-unresolved',
+          sourceIds: [...new Set([...existing.sourceIds, ...row.sourceIds])],
+        }
+      : merged);
+  }
+  return RouteNetworkCatalogSchema.parse({
+    ...network,
+    sources: [...sources.values()],
+    routes: [...routes.values()],
+  });
+}
+
 /**
  * Overlay a high-recall observed/corroborated route layer underneath the
  * curated catalog.
@@ -58,9 +127,13 @@ export function mergeRouteNetworkCatalogs(
     if (!existing) sources.set(source.id, source);
   }
 
-  const routes = new Map(observed.routes.map((route) => [`${route.carrier}:${route.pair[0]}-${route.pair[1]}`, route] as const));
+  const routes = new Map<string, RouteNetworkCatalog['routes'][number]>(
+    observed.routes.map((route) => [`${route.carrier}:${route.pair[0]}-${route.pair[1]}`, route]),
+  );
   for (const route of curated.routes) {
-    routes.set(`${route.carrier}:${route.pair[0]}-${route.pair[1]}`, route);
+    const key = `${route.carrier}:${route.pair[0]}-${route.pair[1]}`;
+    const lower = routes.get(key);
+    routes.set(key, lower ? mergeRouteNumbers(lower, route) : route);
   }
 
   const universes = new Map<string, CarrierRouteUniverse>();

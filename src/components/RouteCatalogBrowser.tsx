@@ -59,12 +59,15 @@ const COPY = {
     carriers: '航司',
     flights: '班號',
     knownFlights: '已知班號',
+    candidateFlights: '候選班號',
+    candidateNote: '候選班號來自近期觀測、standing 或 marketing 參考；請再確認日期與實際營運者。',
     noFlights: '目前資料只有航線證據，尚沒有可列出的確切班號。',
     evidence: '班表與資料來源',
     routeEvidence: '航線來源',
     weeklySchedule: '週班表',
     officialService: '官方班次',
     flightReference: '班號參考',
+    flightCandidate: '候選班號參考',
     operating: '已確認營運者',
     providerListed: '供應商列示，實際營運者需再驗證',
     activeDays: '營運日',
@@ -86,12 +89,15 @@ const COPY = {
     carriers: 'carriers',
     flights: 'flight numbers',
     knownFlights: 'Known flight numbers',
+    candidateFlights: 'Candidate flight numbers',
+    candidateNote: 'Candidate numbers come from recent observations, standing data, or marketing references; recheck date and actual operator.',
     noFlights: 'Only route evidence is available here; no exact flight number is currently cataloged.',
     evidence: 'Schedule & sources',
     routeEvidence: 'Route evidence',
     weeklySchedule: 'Weekly schedule',
     officialService: 'Published service',
     flightReference: 'Flight-number reference',
+    flightCandidate: 'Candidate flight-number reference',
     operating: 'Operating carrier confirmed',
     providerListed: 'Provider-listed; operating identity requires verification',
     activeDays: 'Operating days',
@@ -111,11 +117,12 @@ const WEEKDAYS = {
 
 function evidenceKindLabel(
   kind: RouteCatalogEvidenceView['kind'],
-  copy: Pick<(typeof COPY)[keyof typeof COPY], 'routeEvidence' | 'weeklySchedule' | 'officialService' | 'flightReference'>,
+  copy: Pick<(typeof COPY)[keyof typeof COPY], 'routeEvidence' | 'weeklySchedule' | 'officialService' | 'flightReference' | 'flightCandidate'>,
 ): string {
   if (kind === 'route') return copy.routeEvidence;
   if (kind === 'weekly-schedule') return copy.weeklySchedule;
   if (kind === 'official-service') return copy.officialService;
+  if (kind === 'flight-number-candidate') return copy.flightCandidate;
   return copy.flightReference;
 }
 
@@ -133,6 +140,7 @@ function EvidenceRow({ evidence, locale }: { evidence: RouteCatalogEvidenceView;
       <div className="route-browser-evidence-head">
         <strong>{evidenceKindLabel(evidence.kind, copy)}</strong>
         {evidence.flightNumbers.length > 0 && <span>{evidence.flightNumbers.join(' · ')}</span>}
+        {evidence.candidateFlightNumbers.length > 0 && <span>{evidence.candidateFlightNumbers.join(' · ')}</span>}
       </div>
       <dl>
         {weekdays && <><dt>{copy.activeDays}</dt><dd>{weekdays}</dd></>}
@@ -163,7 +171,16 @@ function CarrierDetails({ carrier, locale }: { carrier: RouteCatalogCarrierView;
           <div className="route-browser-flight-chips">
             {carrier.flightNumbers.map((flight) => <code key={flight}>{flight}</code>)}
           </div>
-        ) : <p>{copy.noFlights}</p>}
+        ) : carrier.candidateFlightNumbers.length === 0 ? <p>{copy.noFlights}</p> : null}
+        {carrier.candidateFlightNumbers.length > 0 && (
+          <div className="route-browser-candidate-block">
+            <span className="route-browser-kicker">{copy.candidateFlights}</span>
+            <div className="route-browser-flight-chips candidate">
+              {carrier.candidateFlightNumbers.map((flight) => <code key={flight}>{flight}</code>)}
+            </div>
+            <small>{copy.candidateNote}</small>
+          </div>
+        )}
       </div>
       <LazyDisclosure
         className="route-browser-evidence"
@@ -310,7 +327,7 @@ export function RouteCatalogBrowser({
                                                       {carrier.identity === 'operating' ? copy.operating : copy.providerListed}
                                                     </small>
                                                   </span>
-                                                  <span>{carrier.flightNumbers.length} {copy.flights}</span>
+                                                  <span>{carrier.flightNumbers.length + carrier.candidateFlightNumbers.length} {copy.flights}</span>
                                                 </>
                                               )}
                                               renderChildren={() => <CarrierDetails carrier={carrier} locale={locale} />}

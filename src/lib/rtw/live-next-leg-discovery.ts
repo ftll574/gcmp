@@ -31,10 +31,13 @@ export function mergeLiveNextLegDestinations(
         from: route.from,
         to: route.to,
         flightNumbers: [],
+        candidateFlightNumbers: [],
         scheduleStatus: 'unknown',
         networkSources: [sourceFor(route.sourceUrl, live.checkedAt, route.from, route.to, listed.code)],
         schedules: [],
         flightNumberSources: [],
+        routeFlightNumberSources: [],
+        candidateFlightNumberSources: [],
         routeWindow: null,
         identityStatus: 'provider-listed',
       };

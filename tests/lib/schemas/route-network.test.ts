@@ -115,6 +115,25 @@ describe('route-network integrity', () => {
     expect(RouteNetworkEntrySchema.safeParse({ ...route, carrierIdentity: 'marketing' }).success).toBe(false);
   });
 
+  test('preserves an identity-unresolved route without treating it as a published current route', () => {
+    expect(RouteNetworkEntrySchema.parse({ ...route, status: 'identity-unresolved' }).status).toBe('identity-unresolved');
+  });
+
+  test('validates route-level confirmed and candidate flight designators without cross-carrier guesses', () => {
+    expect(RouteNetworkEntrySchema.parse({
+      ...route,
+      flightNumbers: ['CX473', 'CX852'],
+      flightNumberSourceIds: ['fixture'],
+      flightNumberCandidates: ['CX251A'],
+      flightNumberCandidateSourceIds: ['fixture'],
+    })).toMatchObject({ flightNumbers: ['CX473', 'CX852'], flightNumberCandidates: ['CX251A'] });
+    expect(RouteNetworkEntrySchema.safeParse({ ...route, flightNumbers: ['BR473'], flightNumberSourceIds: ['fixture'] }).success).toBe(false);
+    expect(RouteNetworkEntrySchema.safeParse({ ...route, flightNumberCandidates: ['CX1BS'], flightNumberCandidateSourceIds: ['fixture'] }).success).toBe(false);
+    expect(RouteNetworkEntrySchema.safeParse({ ...route, flightNumbers: ['CX473', 'CX473'], flightNumberSourceIds: ['fixture'] }).success).toBe(false);
+    expect(RouteNetworkEntrySchema.safeParse({ ...route, flightNumbers: ['CX473'], flightNumberSourceIds: ['fixture'], flightNumberCandidates: ['CX473'], flightNumberCandidateSourceIds: ['fixture'] }).success).toBe(false);
+    expect(RouteNetworkEntrySchema.safeParse({ ...route, flightNumbers: ['CX473'] }).success).toBe(false);
+  });
+
   test.each([
     ['missing sources', { ...fixture, sources: [] }],
     ['unknown source', { ...fixture, routes: [{ ...route, sourceIds: ['missing'] }] }],

@@ -15,8 +15,14 @@ const airports = new Map<string, Airport>([
 
 const routeNetwork: RouteNetworkCatalog = {
   version: '2026.3', coverage: 'curated-not-complete', carrierUniverses: [],
-  sources: [{ id: 'routes', url: 'https://example.com/routes', checkedOn: '2026-09-08', note: 'Route source' }],
-  routes: [{ carrier: 'BR', pair: ['TPE', 'BKK'], service: 'nonstop', status: 'published', sourceIds: ['routes'] }],
+  sources: [
+    { id: 'routes', url: 'https://example.com/routes', checkedOn: '2026-09-08', note: 'Route source' },
+    { id: 'numbers', url: 'https://example.com/numbers', checkedOn: '2026-09-09', note: 'Candidate flight-number source' },
+  ],
+  routes: [{
+    carrier: 'BR', pair: ['TPE', 'BKK'], service: 'nonstop', status: 'published', sourceIds: ['routes'],
+    flightNumberCandidates: ['BR75'], flightNumberCandidateSourceIds: ['numbers'],
+  }],
 };
 
 const officialSchedules: RouteBrowserOfficialCatalog = {
@@ -77,6 +83,8 @@ test('mounts route and flight details progressively instead of printing the full
   toggle(document.querySelector<HTMLDetailsElement>('[data-carrier="BR"]')!);
   expect(screen.getByText('BR67')).toBeInTheDocument();
   expect(screen.getByText('Known flight numbers')).toBeInTheDocument();
+  expect(screen.getByText('BR75')).toBeInTheDocument();
+  expect(screen.getByText('Candidate flight numbers')).toBeInTheDocument();
   expect(screen.queryByText('08:15 → 11:20')).not.toBeInTheDocument();
 
   toggle(document.querySelector<HTMLDetailsElement>('.route-browser-evidence')!);

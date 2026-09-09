@@ -245,15 +245,15 @@ test('network observations never introduce fake weekdays into the date picker', 
   expect(actualSchedules.some((row: { carrier: string }) => row.carrier === 'CX')).toBe(false);
 });
 
-test('route-only evidence can be added without a flight number and keeps transfer metadata', async () => {
+test('route can still be added without choosing a flight number and keeps transfer metadata', async () => {
   await mount(CX);
   await ensureOrigin('TPE');
   await waitFor(() => expect(document.querySelector('[data-select-route="TPE-HKG"]')).not.toBeNull());
   fireEvent.click(required<HTMLButtonElement>('[data-select-route="TPE-HKG"]'));
   const later = required<HTMLButtonElement>('[data-select-flight-later="CX:TPE-HKG"]');
+  expect(document.querySelector('[data-select-flight-number^="CX"]')).not.toBeNull();
   fireEvent.click(later);
   fireEvent.change(required<HTMLSelectElement>('[data-next-leg-timing="TPE-HKG"]'), { target: { value: 'transfer' } });
-  expect(document.querySelector('[data-select-flight-number^="CX"]')).toBeNull();
   fireEvent.click(required<HTMLButtonElement>('[data-add-draft="CX:TPE-HKG"]'));
   expect(request().groups[0]?.legs[0]).toMatchObject({
     from: 'TPE', to: 'HKG', operatingCarrier: 'CX', stopover: false,

@@ -497,6 +497,20 @@ export function DestinationsPanel({
               <span>{t('rtw.discovery.checkedOn', { date: source.checkedAt.slice(0, 10) })}</span>
             </li>
           ))}
+          {option.routeFlightNumberSources.map((source) => (
+            <li key={`route-flight-number-source-${source.id}`}>
+              <span>{locale === 'zh-TW' ? '近期觀測班號' : 'Recently observed flight number'}</span>
+              <a href={source.url} target="_blank" rel="noreferrer">{new URL(source.url).hostname}</a>
+              <span>{t('rtw.discovery.checkedOn', { date: source.checkedOn })}</span>
+            </li>
+          ))}
+          {option.candidateFlightNumberSources.map((source) => (
+            <li key={`candidate-flight-number-source-${source.id}`}>
+              <span>{locale === 'zh-TW' ? '候選班號參考' : 'Candidate flight-number reference'}</span>
+              <a href={source.url} target="_blank" rel="noreferrer">{new URL(source.url).hostname}</a>
+              <span>{t('rtw.discovery.checkedOn', { date: source.checkedOn })}</span>
+            </li>
+          ))}
         </ul>
       </details>
     );
@@ -546,9 +560,33 @@ export function DestinationsPanel({
                 const suffix = flightNumberSuffix(option.carrier, designator);
                 return suffix ? [{ designator, suffix }] : [];
               });
+              const candidates = option.candidateFlightNumbers.flatMap((designator) => {
+                const suffix = flightNumberSuffix(option.carrier, designator);
+                return suffix ? [{ designator, suffix }] : [];
+              });
+              const candidateCard = ({ designator }: { designator: string; suffix: string }): React.ReactElement => (
+                <div
+                  key={`${option.carrier}-${designator}-candidate`}
+                  className="rtw-next-flight-candidate"
+                  data-candidate-flight-number={`${designator}:${activeOrigin}-${destination.iata}`}
+                >
+                  <strong>{designator}</strong>
+                  <span>{carrierName(option.carrier)}</span>
+                  <small>{locale === 'zh-TW' ? '候選班號 · 請先查日期與實際營運' : 'Candidate · verify date and actual operator first'}</small>
+                </div>
+              );
+              const candidateCards = candidates.slice(0, 8).map(candidateCard);
+              const candidateOverflow = candidates.length > 8 ? [(
+                <details key={`${option.carrier}-candidate-more`} className="rtw-next-flight-candidate-more">
+                  <summary>{locale === 'zh-TW' ? `另有 ${candidates.length - 8} 個候選班號` : `${candidates.length - 8} more candidate flight numbers`}</summary>
+                  <div className="rtw-next-flight-candidate-list">
+                    {candidates.slice(8).map(candidateCard)}
+                  </div>
+                </details>
+              )] : [];
               if (numbers.length === 0) {
                 if (option.identityStatus === 'provider-listed') {
-                  return [(
+                  return [...candidateCards, ...candidateOverflow, (
                     <button
                       key={`${option.carrier}-live-candidate`}
                       type="button"
@@ -566,7 +604,7 @@ export function DestinationsPanel({
                     </button>
                   )];
                 }
-                return [(
+                return [...candidateCards, ...candidateOverflow, (
                   <button
                     key={`${option.carrier}-unknown`}
                     type="button"
@@ -608,6 +646,8 @@ export function DestinationsPanel({
                   </button>
                 );
                 }),
+                ...candidateCards,
+                ...candidateOverflow,
                 <button
                   key={`${option.carrier}-later`}
                   type="button"
