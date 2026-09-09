@@ -29,16 +29,16 @@ function selectionFromLocation(): RouteLibraryEntitySelection | null {
 export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.ReactElement {
   const { locale } = useLocale();
   const copy = locale === 'zh-TW' ? {
-    eyebrow: 'GCMP ROUTE LIBRARY', title: '不要翻資料庫，直接探索航網。',
-    intro: '搜尋一個機場、航空公司、航線或班號，先進入它自己的資料頁，再一路查到班號與來源證據。',
+    eyebrow: 'GCMP ROUTE LIBRARY', title: '全球航網，一張地圖看懂。',
+    intro: '搜尋機場、城市、航空公司或班號，查看航線、實際營運航空公司與班號資訊。',
     published: '目前顯示的 published routes', all: '全部聯盟', loading: '正在載入完整航線資料庫…', error: '航線資料載入失敗',
-    advanced: '進階 evidence 瀏覽器', advancedBody: '需要以出發地、抵達地、區域與完整 evidence tree 查資料時再打開。', closeAdvanced: '收起進階瀏覽器',
+    advanced: '詳細篩選', advancedBody: '依出發地、抵達地、航空公司與區域篩選完整航線。', closeAdvanced: '收起詳細篩選',
     footer: '航線證據會隨時間變動。開票前請再次確認日期與實際營運航空公司。',
   } : {
-    eyebrow: 'GCMP ROUTE LIBRARY', title: 'Explore the network. Don’t browse a database.',
-    intro: 'Search an airport, airline, route or flight number, enter its own entity page, and drill down to flight-number and source evidence from there.',
+    eyebrow: 'GCMP ROUTE LIBRARY', title: 'The global route network, on one map.',
+    intro: 'Search airports, cities, airlines or flight numbers and inspect routes, operating carriers and flight-number information.',
     published: 'published routes shown', all: 'All alliances', loading: 'Loading the complete route library…', error: 'Route library failed to load',
-    advanced: 'Advanced evidence browser', advancedBody: 'Open this only when you need the full origin/destination, geography, and evidence tree.', closeAdvanced: 'Close advanced browser',
+    advanced: 'Detailed filters', advancedBody: 'Filter the complete network by origin, destination, airline and region.', closeAdvanced: 'Close detailed filters',
     footer: 'Route evidence changes over time. Always recheck date and operating carrier before ticketing.',
   };
   const [network, setNetwork] = useState<RouteNetworkCatalog | null>(null);
