@@ -104,14 +104,6 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
           <div className="routes-page-metrics"><strong>{published.toLocaleString()}</strong><span>{copy.published}</span></div>
         </section>
 
-        <div className="routes-alliance-tabs" role="group" aria-label="Alliance filter">
-          {(['all', 'star', 'oneworld', 'skyteam'] as const).map((value) => (
-            <button key={value} type="button" className={alliance === value ? 'active' : ''} onClick={() => { setAlliance(value); selectEntity(null); }}>
-              {value === 'all' ? copy.all : value === 'star' ? 'Star Alliance' : value === 'oneworld' ? 'oneworld' : 'SkyTeam'}
-            </button>
-          ))}
-        </div>
-
         {!network && !error && <div className="routes-loading routes-loading-hero" role="status">{copy.loading}</div>}
         {error && <div className="routes-error" role="alert">{copy.error}: {error}</div>}
         {network && (
@@ -122,6 +114,10 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
               carrierNames={carrierNames}
               memberCodes={memberCodes}
               alliance={alliance}
+              onAllianceChange={(value) => {
+                setAlliance(value);
+                selectEntity(null);
+              }}
               countryContinents={data.countryContinents}
               airportContinentOverrides={data.airportContinentOverrides}
               selection={selection}

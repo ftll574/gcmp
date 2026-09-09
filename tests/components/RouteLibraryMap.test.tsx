@@ -88,4 +88,25 @@ describe('RouteEntityMap MapLibre model', () => {
     expect(screen.getByText('TPE→TSA')).not.toBeNull();
     expect(screen.getByText('Taoyuan → Taipei')).not.toBeNull();
   });
+
+  test('keeps search and alliance filters inside the map surface', () => {
+    const result = render(<RouteEntityMap
+      routes={[route(TPE, TSA, 17)]}
+      hubs={[]}
+      onAirportSelect={vi.fn()}
+      controls={{
+        alliance: 'star',
+        onAllianceChange: vi.fn(),
+        query: '',
+        onQueryChange: vi.fn(),
+        searchPlaceholder: 'Search airport',
+        searchResults: [],
+        onSearchResultSelect: vi.fn(),
+      }}
+    />);
+    const mapCard = result.container.querySelector('.entity-map-card');
+    expect(mapCard?.querySelector('[aria-label="Alliance filter"]')).not.toBeNull();
+    expect(mapCard?.querySelector('input[placeholder="Search airport"]')).not.toBeNull();
+    expect(screen.getByRole('button', { name: 'Star' }).getAttribute('aria-pressed')).toBe('true');
+  });
 });

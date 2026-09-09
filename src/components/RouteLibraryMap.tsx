@@ -13,7 +13,7 @@ import {
   type RouteMapBounds,
   type RouteMapModel,
 } from '../lib/rtw/route-library-map.ts';
-import type { RouteLibraryRouteCard } from '../lib/rtw/route-library-entities.ts';
+import type { RouteLibraryEntitySelection, RouteLibraryRouteCard, RouteLibrarySearchResult } from '../lib/rtw/route-library-entities.ts';
 import type { WorldFeatures } from '../state/use-world-map.ts';
 import { useWorldMap } from '../state/use-world-map.ts';
 import { useLocale } from '../i18n/use-locale.ts';
@@ -27,12 +27,24 @@ const FOCUS_AIRPORT_SOURCE = 'gcmp-focused-airport';
 const ROUTE_LAYER = 'gcmp-route-lines';
 const ROUTE_HIT_LAYER = 'gcmp-route-hit';
 const FOCUS_ROUTE_LAYER = 'gcmp-route-focus';
+const CLUSTER_LAYER = 'gcmp-airport-clusters';
+const CLUSTER_COUNT_LAYER = 'gcmp-airport-cluster-count';
 const AIRPORT_LAYER = 'gcmp-airports';
 const FOCUS_AIRPORT_LAYER = 'gcmp-airport-focus';
 const HIT_SEARCH_RADIUS_PX = 10;
 const ROUTE_SELECT_RADIUS_PX = 18;
 
 export type RouteMapAllianceTheme = 'all' | 'star' | 'oneworld' | 'skyteam';
+
+interface RouteMapControls {
+  readonly alliance: RouteMapAllianceTheme;
+  readonly onAllianceChange: (alliance: RouteMapAllianceTheme) => void;
+  readonly query: string;
+  readonly onQueryChange: (query: string) => void;
+  readonly searchPlaceholder: string;
+  readonly searchResults: ReadonlyArray<RouteLibrarySearchResult>;
+  readonly onSearchResultSelect: (selection: RouteLibraryEntitySelection) => void;
+}
 
 const ALLIANCE_ACCENTS: Readonly<Record<RouteMapAllianceTheme, { readonly light: string; readonly dark: string }>> = {
   all: { light: '#277b68', dark: '#65c5a7' },
@@ -51,6 +63,7 @@ interface RouteEntityMapProps {
   readonly stats?: ReadonlyArray<{ readonly value: string | number; readonly label: string }>;
   readonly allianceTheme?: RouteMapAllianceTheme | undefined;
   readonly fingerprint?: boolean | undefined;
+  readonly controls?: RouteMapControls | undefined;
 }
 
 type InspectorSelection =
@@ -97,7 +110,13 @@ function addSourcesAndLayers(map: MapLibreMap, dark: boolean): void {
   map.addSource(WORLD_SOURCE, { type: 'geojson', data: EMPTY_FEATURES });
   map.addSource(ROUTE_SOURCE, { type: 'geojson', data: EMPTY_FEATURES, lineMetrics: true });
   map.addSource(FOCUS_ROUTE_SOURCE, { type: 'geojson', data: EMPTY_FEATURES, lineMetrics: true });
-  map.addSource(AIRPORT_SOURCE, { type: 'geojson', data: EMPTY_FEATURES });
+  map.addSource(AIRPORT_SOURCE, {
+    type: 'geojson',
+    data: EMPTY_FEATURES,
+    cluster: true,
+    clusterRadius: 48,
+    clusterMaxZoom: 5,
+  });
   map.addSource(FOCUS_AIRPORT_SOURCE, { type: 'geojson', data: EMPTY_FEATURES });
 
   map.addLayer({
@@ -139,9 +158,36 @@ function addSourcesAndLayers(map: MapLibreMap, dark: boolean): void {
     },
   });
   map.addLayer({
+    id: CLUSTER_LAYER,
+    type: 'circle',
+    source: AIRPORT_SOURCE,
+    filter: ['has', 'point_count'],
+    paint: {
+      'circle-color': dark ? '#65c5a7' : '#277b68',
+      'circle-radius': ['step', ['get', 'point_count'], 15, 10, 19, 35, 24, 100, 30],
+      'circle-opacity': 0.88,
+      'circle-stroke-color': dark ? '#101813' : '#f7fbf8',
+      'circle-stroke-width': 2,
+    },
+  });
+  map.addLayer({
+    id: CLUSTER_COUNT_LAYER,
+    type: 'symbol',
+    source: AIRPORT_SOURCE,
+    filter: ['has', 'point_count'],
+    layout: {
+      'text-field': ['get', 'point_count_abbreviated'],
+      'text-size': 10,
+    },
+    paint: {
+      'text-color': dark ? '#101813' : '#ffffff',
+    },
+  });
+  map.addLayer({
     id: AIRPORT_LAYER,
     type: 'circle',
     source: AIRPORT_SOURCE,
+    filter: ['!', ['has', 'point_count']],
     paint: {
       'circle-color': dark ? '#65c5a7' : '#277b68',
       'circle-radius': ['interpolate', ['linear'], ['get', 'connections'], 0, 3, 10, 4.5, 80, 7, 300, 10],
@@ -154,7 +200,7 @@ function addSourcesAndLayers(map: MapLibreMap, dark: boolean): void {
     id: 'gcmp-hub-labels',
     type: 'symbol',
     source: AIRPORT_SOURCE,
-    filter: ['<', ['get', 'hubRank'], 12],
+    filter: ['all', ['!', ['has', 'point_count']], ['<', ['get', 'hubRank'], 12]],
     layout: {
       'text-field': ['get', 'iata'],
       'text-size': 10,
@@ -194,9 +240,13 @@ function applyMapAppearance(
     ? ['*', ['interpolate', ['linear'], ['zoom'], 0, 0.8, 3, 1.35, 8, 2.2], ['interpolate', ['linear'], ['get', 'importance'], 0, 0.55, 0.45, 1, 1, 2.05]]
     : ['interpolate', ['linear'], ['zoom'], 0, 0.7, 3, 1.2, 8, 2]);
   map.setPaintProperty(ROUTE_LAYER, 'line-opacity', fingerprint
-    ? ['interpolate', ['linear'], ['get', 'importance'], 0, 0.1, 0.35, 0.28, 0.7, 0.56, 1, 0.82]
+    ? ['interpolate', ['linear'], ['zoom'],
+        0, ['interpolate', ['linear'], ['get', 'importance'], 0, 0.005, 0.45, 0.025, 0.7, 0.16, 1, 0.72],
+        2, ['interpolate', ['linear'], ['get', 'importance'], 0, 0.025, 0.35, 0.12, 0.7, 0.4, 1, 0.82],
+        5, ['interpolate', ['linear'], ['get', 'importance'], 0, 0.14, 0.35, 0.34, 0.7, 0.64, 1, 0.9]]
     : ['interpolate', ['linear'], ['zoom'], 0, 0.22, 3, 0.38, 8, 0.58]);
   map.setPaintProperty(AIRPORT_LAYER, 'circle-color', accent);
+  map.setPaintProperty(CLUSTER_LAYER, 'circle-color', accent);
   map.setPaintProperty(AIRPORT_LAYER, 'circle-opacity', fingerprint
     ? ['interpolate', ['linear'], ['get', 'connections'], 1, 0.12, 8, 0.2, 30, 0.4, 100, 0.72, 250, 0.96]
     : 0.96);
@@ -267,9 +317,11 @@ export function RouteEntityMap({
   stats = [],
   allianceTheme = 'all',
   fingerprint = false,
+  controls,
 }: RouteEntityMapProps): React.ReactElement {
   const { locale } = useLocale();
   const { features: worldFeatures } = useWorldMap();
+  const cardRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const [ready, setReady] = useState(false);
@@ -280,8 +332,8 @@ export function RouteEntityMap({
   const [webGlAvailable] = useState(isWebGlAvailable);
   const model = useMemo(() => buildRouteMapModel(routes, hubs), [routes, hubs]);
   const copy = locale === 'zh-TW'
-    ? { fit: '顯示完整航網', airport: '機場資訊', route: '航線詳情', confirmed: '已確認班號', noConfirmed: '尚無 confirmed 班號', fallback: '此瀏覽器無法啟用互動地圖。', coreHubs: '核心樞紐' }
-    : { fit: 'Fit network', airport: 'Airport details', route: 'Route details', confirmed: 'Confirmed flights', noConfirmed: 'No confirmed flight number', fallback: 'Interactive map is unavailable in this browser.', coreHubs: 'Core hubs' };
+    ? { fit: '顯示完整航網', airport: '機場資訊', route: '航線詳情', confirmed: '已確認班號', noConfirmed: '尚無 confirmed 班號', fallback: '此瀏覽器無法啟用互動地圖。', coreHubs: '核心樞紐', all: '全部', clusters: '個機場', zoomCluster: '點擊放大查看' }
+    : { fit: 'Fit network', airport: 'Airport details', route: 'Route details', confirmed: 'Confirmed flights', noConfirmed: 'No confirmed flight number', fallback: 'Interactive map is unavailable in this browser.', coreHubs: 'Core hubs', all: 'All', clusters: 'airports', zoomCluster: 'Click to zoom in' };
 
   const focusSelection = useCallback((next: InspectorSelection, animate = true): void => {
     setSelection(next);
@@ -331,10 +383,40 @@ export function RouteEntityMap({
     mapRef.current = map;
     map.addControl(new maplibregl.NavigationControl({ showCompass: false, visualizePitch: false }), 'top-right');
     map.on('load', () => {
-      addSourcesAndLayers(map, dark);
-      setReady(true);
+      try {
+        addSourcesAndLayers(map, dark);
+        setReady(true);
+      } catch (reason) {
+        if (cardRef.current) cardRef.current.dataset.mapError = reason instanceof Error ? reason.message : String(reason);
+        console.error('Route library map initialization failed', reason);
+      }
     });
+    map.on('error', (event) => {
+      if (cardRef.current && event.error) cardRef.current.dataset.mapError = event.error.message;
+    });
+    const updateDiagnostics = (): void => {
+      const card = cardRef.current;
+      if (!card || !map.isStyleLoaded() || !map.getLayer(CLUSTER_LAYER)) return;
+      const clusters = map.queryRenderedFeatures({ layers: [CLUSTER_LAYER] });
+      card.dataset.mapZoom = map.getZoom().toFixed(2);
+      card.dataset.mapClusters = String(clusters.length);
+      card.dataset.mapVisibleAirports = String(map.queryRenderedFeatures({ layers: [AIRPORT_LAYER] }).length);
+      const firstCluster = clusters.find((feature) => feature.geometry.type === 'Point');
+      if (firstCluster?.geometry.type === 'Point') {
+        const [lon, lat] = firstCluster.geometry.coordinates as [number, number];
+        const point = map.project([lon, lat]);
+        card.dataset.mapFirstClusterX = point.x.toFixed(1);
+        card.dataset.mapFirstClusterY = point.y.toFixed(1);
+        card.dataset.mapFirstClusterSize = String(firstCluster.properties?.point_count ?? '');
+      } else {
+        delete card.dataset.mapFirstClusterX;
+        delete card.dataset.mapFirstClusterY;
+        delete card.dataset.mapFirstClusterSize;
+      }
+    };
+    map.on('idle', updateDiagnostics);
     return () => {
+      map.off('idle', updateDiagnostics);
       map.remove();
       mapRef.current = null;
     };
@@ -396,18 +478,25 @@ export function RouteEntityMap({
       );
       return routeId ? routeFeatures.find((feature) => String(feature.properties?.routeId ?? '') === routeId) ?? null : null;
     };
-    const featuresAt = (point: maplibregl.Point): { airport: maplibregl.MapGeoJSONFeature | null; route: maplibregl.MapGeoJSONFeature | null } => {
+    const featuresAt = (point: maplibregl.Point): { cluster: maplibregl.MapGeoJSONFeature | null; airport: maplibregl.MapGeoJSONFeature | null; route: maplibregl.MapGeoJSONFeature | null } => {
       const features = map.queryRenderedFeatures([
         [point.x - HIT_SEARCH_RADIUS_PX, point.y - HIT_SEARCH_RADIUS_PX],
         [point.x + HIT_SEARCH_RADIUS_PX, point.y + HIT_SEARCH_RADIUS_PX],
-      ], { layers: [AIRPORT_LAYER, ROUTE_HIT_LAYER] });
+      ], { layers: [CLUSTER_LAYER, AIRPORT_LAYER, ROUTE_HIT_LAYER] });
       return {
+        cluster: features.find((feature) => feature.layer.id === CLUSTER_LAYER) ?? null,
         airport: nearestAirport(features, point),
         route: nearestRoute(features, point),
       };
     };
     const onMapMove = (event: maplibregl.MapMouseEvent): void => {
-      const { airport, route } = featuresAt(event.point);
+      const { cluster, airport, route } = featuresAt(event.point);
+      if (cluster) {
+        canvas.style.cursor = 'pointer';
+        const count = Number(cluster.properties?.point_count ?? 0);
+        setHover({ kind: 'airport', title: `${count} ${copy.clusters}`, subtitle: copy.zoomCluster, x: event.point.x, y: event.point.y });
+        return;
+      }
       if (airport) {
         canvas.style.cursor = 'pointer';
         const iata = String(airport.properties?.iata ?? '');
@@ -428,7 +517,18 @@ export function RouteEntityMap({
       setHover(null);
     };
     const onMapClick = (event: maplibregl.MapMouseEvent): void => {
-      const { airport, route } = featuresAt(event.point);
+      const { cluster, airport, route } = featuresAt(event.point);
+      if (cluster && cluster.geometry.type === 'Point') {
+        const clusterId = Number(cluster.properties?.cluster_id);
+        const clusterSource = source(map, AIRPORT_SOURCE);
+        const [lon, lat] = cluster.geometry.coordinates as [number, number];
+        if (clusterSource && Number.isFinite(clusterId)) {
+          void clusterSource.getClusterExpansionZoom(clusterId).then((zoom) => {
+            map.easeTo({ center: [lon, lat], zoom: Math.min(zoom + 0.35, 11), duration: 420 });
+          });
+        }
+        return;
+      }
       if (airport) {
         const iata = String(airport.properties?.iata ?? '');
         if (iata) focusSelection({ kind: 'airport', iata });
@@ -450,16 +550,37 @@ export function RouteEntityMap({
       map.off('mousemove', onMapMove);
       map.off('click', onMapClick);
     };
-  }, [focusSelection, locale, model, ready]);
+  }, [copy.clusters, copy.zoomCluster, focusSelection, locale, model, ready]);
 
   const activeAirport = selection?.kind === 'airport' ? model.airportByIata.get(selection.iata) ?? null : null;
   const activeRoutes = inspectorRoutes(model, selection);
   const activeRoute = selection?.kind === 'route' ? model.routeById.get(selection.routeId) ?? null : null;
 
   return (
-    <div className={`entity-map-card maplibre-route-map alliance-${allianceTheme}${fingerprint ? ' fingerprint' : ''}`} data-map-engine="maplibre" data-map-ready={ready ? 'true' : 'false'} data-map-routes={model.routes.features.length} data-map-airports={model.airports.features.length} data-map-alliance={allianceTheme} data-map-mode={fingerprint ? 'fingerprint' : 'detail'}>
+    <div ref={cardRef} className={`entity-map-card maplibre-route-map alliance-${allianceTheme}${fingerprint ? ' fingerprint' : ''}`} data-map-engine="maplibre" data-map-ready={ready ? 'true' : 'false'} data-map-routes={model.routes.features.length} data-map-airports={model.airports.features.length} data-map-alliance={allianceTheme} data-map-mode={fingerprint ? 'fingerprint' : 'detail'}>
       <div ref={containerRef} className="entity-map-maplibre" role="application" aria-label="Route network map" />
       {!webGlAvailable && <div className="entity-map-fallback">{copy.fallback}</div>}
+      {controls && <div className="entity-map-commandbar">
+        <div className="entity-map-alliance-filter" role="group" aria-label="Alliance filter">
+          {(['all', 'star', 'oneworld', 'skyteam'] as const).map((value) => <button
+            type="button"
+            key={value}
+            className={controls.alliance === value ? 'active' : ''}
+            aria-pressed={controls.alliance === value}
+            onClick={() => controls.onAllianceChange(value)}
+          >{value === 'all' ? copy.all : value === 'star' ? 'Star' : value === 'oneworld' ? 'oneworld' : 'SkyTeam'}</button>)}
+        </div>
+        <div className="entity-map-search-wrap">
+          <label className="entity-map-search">
+            <span aria-hidden="true">⌕</span>
+            <input type="search" value={controls.query} onChange={(event) => controls.onQueryChange(event.target.value)} placeholder={controls.searchPlaceholder} aria-label={controls.searchPlaceholder} />
+            {controls.query && <button type="button" aria-label={locale === 'zh-TW' ? '清除搜尋' : 'Clear search'} onClick={() => controls.onQueryChange('')}>×</button>}
+          </label>
+          {controls.query && <div className="entity-map-search-results" role="listbox">
+            {controls.searchResults.length > 0 ? controls.searchResults.map((result) => <button type="button" role="option" key={result.key} onClick={() => controls.onSearchResultSelect(result.selection)}><span>{result.kind}</span><strong>{result.title}</strong><small>{result.subtitle}</small></button>) : <p>{locale === 'zh-TW' ? '沒有符合的結果' : 'No matching result'}</p>}
+          </div>}
+        </div>
+      </div>}
       {stats.length > 0 && <div className="entity-map-stats">{stats.map((stat) => <div key={stat.label}><strong>{typeof stat.value === 'number' ? stat.value.toLocaleString() : stat.value}</strong><span>{stat.label}</span></div>)}</div>}
       {fingerprint && hubs.length > 0 && <div className="entity-map-fingerprint-key" aria-label={copy.coreHubs}>
         <span>{copy.coreHubs}</span>

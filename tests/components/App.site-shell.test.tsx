@@ -65,6 +65,10 @@ test('route library is a separate page and keeps the heavy catalog out of the ho
   fireEvent.click(screen.getByRole('button', { name: '瀏覽所有航線' }));
   expect(await screen.findByRole('heading', { name: '全球航網，一張地圖看懂。' })).toBeInTheDocument();
   expect(await screen.findByRole('application', { name: 'Route network map' })).toBeInTheDocument();
+  expect(document.querySelector('.routes-alliance-tabs')).toBeNull();
+  const map = document.querySelector('.entity-map-card');
+  expect(map?.querySelector('[aria-label="Alliance filter"]')).not.toBeNull();
+  expect(map?.querySelector('input[type="search"]')).not.toBeNull();
   expect(screen.queryByText('不要翻資料庫，直接探索航網。')).not.toBeInTheDocument();
   expect(new URLSearchParams(window.location.search).get('view')).toBe('routes');
 });
