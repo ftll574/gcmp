@@ -2,9 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { fetchLiveRoutes } from '../lib/live-route-client.ts';
 import type { LiveRouteResponse } from '../lib/schemas/live-routes.ts';
 import { selectedDepartureDate } from '../lib/schemas/dated-schedules.ts';
-import { officialScheduleCatalog } from '../lib/official-schedule-catalog.ts';
 import type { ScheduleEntry } from '../lib/schemas/flight-schedules.ts';
 import type { NetworkGapEntry } from '../lib/schemas/network-gaps.ts';
+import type { OfficialScheduleCatalog } from '../lib/schemas/published-schedules.ts';
 import { parseRouteNetworkCatalog, type RouteNetworkCatalog } from '../lib/schemas/route-network.ts';
 import type { Airport, CabinId } from '../lib/types.ts';
 import {
@@ -20,6 +20,7 @@ import { cityCodeForAirport, cityCodeLabel, metropolitanAirportsFor } from '../l
 import { findLocalizedMatches } from '../i18n/localized-cities.ts';
 import { buildAirportIndex } from '../lib/airport-index.ts';
 import { useLocale } from '../i18n/use-locale.ts';
+
 import { FlightDatesPanel } from './FlightDatesPanel.tsx';
 
 export interface ExplorerCarrier {
@@ -32,6 +33,7 @@ const routeOriginShardCache = new Map<string, RouteNetworkCatalog>();
 interface DestinationsPanelProps {
   readonly airports: ReadonlyArray<Airport>;
   readonly schedules: ReadonlyArray<ScheduleEntry>;
+  readonly officialSchedules?: OfficialScheduleCatalog | null;
   readonly network?: RouteNetworkCatalog | null;
   /** Optional base URL for build-time first-letter origin shards. Standalone
    * callers can omit it and keep using the supplied network directly. */
@@ -85,7 +87,7 @@ interface ManualDraft {
 /** Source-backed next-leg discovery. A route observation never creates a
  * schedule or an award seat. Each add button names its operating carrier. */
 export function DestinationsPanel({
-  airports, schedules, network = null, networkGaps = null, carriers,
+  airports, schedules, officialSchedules = null, network = null, networkGaps = null, carriers,
   runtimeNetworkShardBaseUrl,
   chainEnd, pendingIata, lookupAirport, onAddPair, onAddSurface, onMapGuideChange,
   selectedDestination: controlledDestination,
@@ -141,13 +143,13 @@ export function DestinationsPanel({
   const index = useMemo(() => buildNextLegIndex({
     network: discoveryNetwork,
     schedules,
-    officialSchedules: officialScheduleCatalog,
+    ...(officialSchedules ? { officialSchedules } : {}),
     networkGaps,
     eligibleCarriers: eligibleCodes,
     referenceDate,
     knownAirports: allKnownAirports,
     ...(activeOrigin ? { origin: activeOrigin } : {}),
-  }), [discoveryNetwork, schedules, networkGaps, eligibleCodes, referenceDate, activeOrigin, allKnownAirports]);
+  }), [discoveryNetwork, schedules, officialSchedules, networkGaps, eligibleCodes, referenceDate, activeOrigin, allKnownAirports]);
   const airportsByIata = useMemo(() => new Map(airports.map((airport) => [airport.iata, airport] as const)), [airports]);
   const manualAirportIndex = useMemo(() => buildAirportIndex(airports), [airports]);
   const sameCityAirports = useMemo(() => {
@@ -799,6 +801,7 @@ export function DestinationsPanel({
       {flightTarget?.from === activeOrigin && attachable && <FlightDatesPanel key={`${flightTarget.from}:${flightTarget.to}:${flightTarget.carrier}:${flightTarget.flightNumber ?? ''}`}
         from={flightTarget.from} to={flightTarget.to} initialDate={referenceDate}
         carriers={new Set([flightTarget.carrier])} schedules={schedules}
+        officialSchedules={officialSchedules}
         {...(liveBase ? { apiBase: liveBase } : {})}
         flightNumber={flightTarget.flightNumber}
         onClose={() => setFlightTarget(null)} onChoose={(flight) => {

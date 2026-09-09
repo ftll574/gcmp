@@ -8,6 +8,7 @@ import { MarketProfileSchema } from '../../src/lib/schemas/market.ts';
 import { RouteNetworkCatalogSchema } from '../../src/lib/schemas/route-network.ts';
 import { RtwRuleCatalogSchema } from '../../src/lib/schemas/rtw-rule.ts';
 import { isMileageRedemptionRtwProduct } from '../../src/lib/rtw/products.ts';
+import { OfficialScheduleCatalogSchema } from '../../src/lib/schemas/published-schedules.ts';
 
 afterEach(cleanup);
 
@@ -16,6 +17,7 @@ const alliances = AllianceCatalogSchema.parse(JSON.parse(readFileSync('public/da
 const market = MarketProfileSchema.parse(JSON.parse(readFileSync('public/data/markets/tw/current.json', 'utf8')));
 const network = RouteNetworkCatalogSchema.parse(JSON.parse(readFileSync('public/data/route-network/current.json', 'utf8')));
 const products = catalog.products.filter(isMileageRedemptionRtwProduct);
+const officialSchedules = OfficialScheduleCatalogSchema.parse(JSON.parse(readFileSync('public/data/official-schedules.json', 'utf8')));
 const BR = 'br-infinity-star-alliance-world-travel-award';
 const CX = 'cx-asia-miles-oneworld-multi-carrier-award';
 const ANA = 'ana-star-alliance-rtw-award';
@@ -36,6 +38,7 @@ function setup(onContinue = vi.fn()) {
       allianceCatalog={alliances}
       routeNetwork={network}
       schedules={[]}
+      officialSchedules={officialSchedules}
       airportLookup={airportLookup}
       countryContinents={countryContinents}
       marketProfile={market}

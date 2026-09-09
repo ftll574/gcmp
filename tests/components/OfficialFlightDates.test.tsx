@@ -6,10 +6,14 @@ import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { FlightDatesPanel } from '../../src/components/FlightDatesPanel.tsx';
 import { App } from '../../src/App.tsx';
 import { parseShareUrl } from '../../src/lib/url-schema.ts';
+import { OfficialScheduleCatalogSchema } from '../../src/lib/schemas/published-schedules.ts';
 
 const NOW = Date.parse('2026-09-05T14:00:00Z');
 const NH = new Set(['NH']);
 const BR = 'br-infinity-star-alliance-world-travel-award';
+const officialSchedules = OfficialScheduleCatalogSchema.parse(
+  JSON.parse(readFileSync('public/data/official-schedules.json', 'utf8')),
+);
 beforeEach(() => {
   vi.useFakeTimers({ toFake: ['Date'] }); vi.setSystemTime(NOW);
   vi.stubEnv('VITE_SCHEDULE_API_BASE', ''); window.history.replaceState({}, '', '/');
@@ -19,7 +23,7 @@ afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.unstubAllGlobals(); vi.uns
 
 function mountPanel(from = 'NRT', to = 'BRU') {
   const onChoose = vi.fn();
-  render(<FlightDatesPanel from={from} to={to} initialDate="2026-09-07" carriers={NH} schedules={[]} onChoose={onChoose} onClose={vi.fn()} />);
+  render(<FlightDatesPanel from={from} to={to} initialDate="2026-09-07" carriers={NH} schedules={[]} officialSchedules={officialSchedules} onChoose={onChoose} onClose={vi.fn()} />);
   return onChoose;
 }
 function control(selector: string): HTMLElement {

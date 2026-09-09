@@ -9,8 +9,9 @@ import {
 } from '../lib/types.ts';
 import { useLocale } from '../i18n/use-locale.ts';
 import { LegDateCalendar } from './LegDateCalendar.tsx';
-import { FlightDatesPanel } from './FlightDatesPanel.tsx';
 import type { FlightSelection } from '../lib/schemas/dated-schedules.ts';
+import type { OfficialScheduleCatalog } from '../lib/schemas/published-schedules.ts';
+import { FlightDatesPanel } from './FlightDatesPanel.tsx';
 import {
   humanizeDays,
   operatingDaysForDate,
@@ -23,6 +24,7 @@ interface RtwLegTableProps {
   readonly legs: ReadonlyArray<Leg>;
   readonly onFlightSelect?: (legIndex: number, flight: FlightSelection) => void;
   readonly schedules: ReadonlyArray<ScheduleLike> | null;
+  readonly officialSchedules?: OfficialScheduleCatalog | null;
   readonly airlines: ReadonlyArray<Airline>;
   readonly onCarrierChange: (legIndex: number, carrier: AirlineIata) => void;
   readonly onStopoverChange: (legIndex: number, stopover: boolean | undefined) => void;
@@ -35,6 +37,7 @@ export function RtwLegTable({
   legs,
   onFlightSelect,
   schedules,
+  officialSchedules,
   airlines,
   onCarrierChange,
   onStopoverChange,
@@ -199,6 +202,7 @@ export function RtwLegTable({
           carriers={new Set([scheduleLeg.operatingCarrier])}
           flightNumber={scheduleLeg.flightNumber}
           schedules={[]}
+          {...(officialSchedules !== undefined ? { officialSchedules } : {})}
           onClose={() => setScheduleTarget(null)} onChoose={(flight) => { onFlightSelect(scheduleTarget.index, flight); setScheduleTarget(null); }} />
       )}
     </section>

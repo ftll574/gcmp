@@ -22,7 +22,6 @@ import { GroupTabs } from './components/GroupTabs.tsx';
 import { LanguagePicker } from './components/LanguagePicker.tsx';
 import { LegChain } from './components/LegChain.tsx';
 import { MapErrorBoundary } from './components/MapErrorBoundary.tsx';
-import { ImportFromGcmap } from './components/ImportFromGcmap.tsx';
 import { MobileBanner } from './components/MobileBanner.tsx';
 import { RtwLegTable } from './components/RtwLegTable.tsx';
 import { RtwPlanGate } from './components/RtwPlanGate.tsx';
@@ -31,8 +30,6 @@ import { clearLegField, reindexLegs } from './lib/rtw/itinerary-edit.ts';
 import type { NextLegMapGuide } from './lib/rtw/next-leg-discovery.ts';
 import { RtwTripDates } from './components/RtwTripDates.tsx';
 import { RtwValidationPanel } from './components/RtwValidationPanel.tsx';
-import { SampleRoutings } from './components/SampleRoutings.tsx';
-import { SavedRoutings } from './components/SavedRoutings.tsx';
 import { useLocale } from './i18n/use-locale.ts';
 import { buildAirportIndex } from './lib/airport-index.ts';
 import { computeRouting } from './lib/calc/index.ts';
@@ -72,6 +69,15 @@ const LazySeasonalItineraryFinder = lazy(() =>
   import('./components/SeasonalItineraryFinder.tsx').then((module) => ({
     default: module.SeasonalItineraryFinder,
   })),
+);
+const LazySampleRoutings = lazy(() =>
+  import('./components/SampleRoutings.tsx').then((module) => ({ default: module.SampleRoutings })),
+);
+const LazyImportFromGcmap = lazy(() =>
+  import('./components/ImportFromGcmap.tsx').then((module) => ({ default: module.ImportFromGcmap })),
+);
+const LazySavedRoutings = lazy(() =>
+  import('./components/SavedRoutings.tsx').then((module) => ({ default: module.SavedRoutings })),
 );
 
 const MOBILE_BREAKPOINT = 768;
@@ -658,6 +664,7 @@ function Ready({
           routeCountsByCarrier={data.routeNetworkCounts}
           routeNetworkDetailsUrl={data.routeNetworkRuntimeUrl}
           schedules={data.schedules}
+          officialSchedules={data.officialSchedules}
           airportLookup={airportIndex.byIata}
           countryContinents={data.countryContinents}
           airportContinentOverrides={data.airportContinentOverrides}
@@ -772,7 +779,9 @@ function Ready({
                     <details className="route-editor-details route-examples-details">
                       <summary>{t('rtw.workflow.examples')}</summary>
                       <div className="route-detail-stack">
-                        <SampleRoutings onSelect={loadExternalRouting} />
+                        <Suspense fallback={null}>
+                          <LazySampleRoutings onSelect={loadExternalRouting} />
+                        </Suspense>
                       </div>
                     </details>
                   )}
@@ -814,6 +823,7 @@ function Ready({
                             legs={activeGroup.legs}
                             onFlightSelect={selectExistingFlight}
                             schedules={data.schedules}
+                            officialSchedules={data.officialSchedules}
                             airlines={eligibleAirlines}
                             onCarrierChange={changeCarrier}
                             onStopoverChange={changeStopover}
@@ -842,6 +852,7 @@ function Ready({
                 key={`${selectedRtwProductId}:${safeActiveIndex}`}
                 airports={data.airports}
                 schedules={data.schedules ?? []}
+                officialSchedules={data.officialSchedules}
                 network={data.routeNetwork}
                 runtimeNetworkShardBaseUrl={data.routeNetworkOriginShardBaseUrl}
                 networkGaps={data.networkGaps}
@@ -993,11 +1004,15 @@ function Ready({
             )}
             {activeInspector === 'tools' && (
               <div className="inspector-stack">
-                <ImportFromGcmap onImport={loadExternalRouting} />
+                <Suspense fallback={null}>
+                  <LazyImportFromGcmap onImport={loadExternalRouting} />
+                </Suspense>
               </div>
             )}
             {activeInspector === 'saved' && (
-              <SavedRoutings saved={saved} onLoad={loadSaved} onDelete={remove} />
+              <Suspense fallback={null}>
+                <LazySavedRoutings saved={saved} onLoad={loadSaved} onDelete={remove} />
+              </Suspense>
             )}
           </div>
         </aside>

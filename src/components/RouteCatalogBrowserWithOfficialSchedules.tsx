@@ -1,10 +1,9 @@
-import { officialScheduleCatalog } from '../lib/official-schedule-catalog.ts';
 import {
   RouteCatalogBrowser,
   type RouteCatalogBrowserProps,
 } from './RouteCatalogBrowser.tsx';
 
-type Props = Omit<RouteCatalogBrowserProps, 'officialSchedules'>;
+type Props = RouteCatalogBrowserProps;
 
 /**
  * Lazy boundary for the optional all-routes disclosure.
@@ -13,5 +12,5 @@ type Props = Omit<RouteCatalogBrowserProps, 'officialSchedules'>;
  * its large static JSON payload from inflating the planner's initial chunk.
  */
 export function RouteCatalogBrowserWithOfficialSchedules(props: Props): React.ReactElement {
-  return <RouteCatalogBrowser {...props} officialSchedules={officialScheduleCatalog} />;
+  return <RouteCatalogBrowser {...props} />;
 }

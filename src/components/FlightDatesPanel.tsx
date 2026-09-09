@@ -5,10 +5,9 @@ import { fetchFlightSchedules } from '../lib/flight-schedule-client.ts';
 import { flightDayView } from '../lib/rtw/dated-flight-status.ts';
 import { humanizeDays, todayIso } from '../lib/rtw/schedule-days.ts';
 import type { DatedScheduleDay, FlightSelection, FlightQueryResponse } from '../lib/schemas/dated-schedules.ts';
-import { officialScheduleCatalog } from '../lib/official-schedule-catalog.ts';
 import { mergeOfficialSchedules, queryOfficialSchedules } from '../lib/rtw/official-schedules.ts';
 import type { ScheduleEntry } from '../lib/schemas/flight-schedules.ts';
-import type { TimetableReference } from '../lib/schemas/published-schedules.ts';
+import type { OfficialScheduleCatalog, TimetableReference } from '../lib/schemas/published-schedules.ts';
 import './FlightDatesPanel.css';
 
 interface Props {
@@ -17,6 +16,7 @@ interface Props {
   readonly initialDate: string;
   readonly carriers: ReadonlySet<string>;
   readonly schedules: ReadonlyArray<ScheduleEntry>;
+  readonly officialSchedules?: OfficialScheduleCatalog | null;
   /** Optional operating flight-number suffix selected before date/time (e.g.
    * `024` for BR024). When present, the calendar/results are scoped to this
    * exact designator instead of mixing every flight on the city pair. */
@@ -47,11 +47,11 @@ function filterDayByFlightNumber(
 /** An explicit query, never one request per route card/render. Network and
  * weekly reference catalogs cannot populate the verified calendar states. */
 export function FlightDatesPanel({
-  from, to, initialDate, carriers, schedules, flightNumber, onChoose, onClose, apiBase,
+  from, to, initialDate, carriers, schedules, officialSchedules = null, flightNumber, onChoose, onClose, apiBase,
 }: Props): React.ReactElement {
   const { locale, t } = useLocale();
   const base = apiBase ?? import.meta.env.VITE_SCHEDULE_API_BASE ?? '';
-  const hasOfficialPair = officialScheduleCatalog.services.some((row) => row.from === from && row.to === to && carriers.has(row.carrier));
+  const hasOfficialPair = officialSchedules?.services.some((row) => row.from === from && row.to === to && carriers.has(row.carrier)) ?? false;
   const anchorDate = isCalendarDate(initialDate) ? initialDate : todayIso();
   const [month, setMonth] = useState(anchorDate.slice(0, 7));
   const [selectedDate, setSelectedDate] = useState(anchorDate);
@@ -111,9 +111,12 @@ export function FlightDatesPanel({
     setState('loading'); setResponse(null); setCopyState('idle');
     try {
       const query = { from, to, start: dates[0]!, end: dates.at(-1)! };
-      const fallback = queryOfficialSchedules(officialScheduleCatalog, query, Date.now());
+      const fallback = officialSchedules
+        ? queryOfficialSchedules(officialSchedules, query, Date.now())
+        : null;
       const primary = base ? await fetchFlightSchedules(base, query, controller.signal) : fallback;
-      const next = base ? mergeOfficialSchedules(primary, fallback, Date.now()) : fallback;
+      if (!primary) return;
+      const next = base && fallback ? mergeOfficialSchedules(primary, fallback, Date.now()) : primary;
       if (serial.current !== id) return;
       const receivedAt = Date.now();
       setClock(receivedAt); setResponse(next); setState('ready');
@@ -140,11 +143,13 @@ export function FlightDatesPanel({
     } catch {
       if (serial.current === id) {
         setClock(Date.now());
-        setResponse(queryOfficialSchedules(officialScheduleCatalog, { from, to, start: dates[0]!, end: dates.at(-1)! }, Date.now()));
+        setResponse(officialSchedules
+          ? queryOfficialSchedules(officialSchedules, { from, to, start: dates[0]!, end: dates.at(-1)! }, Date.now())
+          : null);
         setState('error');
       }
     } finally { clearTimeout(timeout); }
-  }, [base, hasOfficialPair, from, to, dates, carriers, flightNumber]);
+  }, [base, hasOfficialPair, from, to, dates, carriers, flightNumber, officialSchedules]);
 
   const choose = useCallback((flight: FlightSelection): void => {
     const fresh = flightDayView(

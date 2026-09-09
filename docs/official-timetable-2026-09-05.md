@@ -6,7 +6,7 @@
 
 無須 API 金鑰／後端即可在日期月曆查詢已收錄的 ANA 官方季節班表，並選取日期、航班號、加入既有行程或新航段、複製給客服、分享後重載。這不是 synthetic demo；正式資料是人工核對公開來源後的班表事實轉錄。
 
-`src/data/official-schedules.json`：37 個分季服務紀錄（15 個有方向機場對，不是完整 ANA 航網）。涵蓋 TSA↔HND、NRT↔BRU、HND↔VIE/LHR/FRA/SFO/JFK，以及冬季 LAX→HND NH125。部分航線每日多個班號，彼此保留。這份小型資料明確編入前端 bundle，放在 src/data，避免直接匯入 public 檔案造成 Vite 開發伺服器警告；gateway 與測試共用同一來源，不另留重複副本。
+`public/data/official-schedules.json`：37 個分季服務紀錄（15 個有方向機場對，不是完整 ANA 航網）。涵蓋 TSA↔HND、NRT↔BRU、HND↔VIE/LHR/FRA/SFO/JFK，以及冬季 LAX→HND NH125。部分航線每日多個班號，彼此保留。自 2026-09-09 起這份 catalog 與其他 runtime data 一樣由 app loader 載入並以 schema 驗證，不再編入主 JavaScript bundle；gateway、報表與測試仍共用同一份檔案。
 
 夏季有效期 2026-03-29～2026-10-24，冬季 2026-10-25～2027-03-27。夏季來源表標更新於 2026-02-04；冬季表標更新於 2026-08-20。本輪來源核對日為 2026-09-05，必須於 2026-10-05 複查，否則停止以此快照產生正面日期。這是應用的維護期限，不是航空公司保證，也沒有設定自動排程替人重新驗證。
 

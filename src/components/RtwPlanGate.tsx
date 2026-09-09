@@ -3,6 +3,7 @@ import { useLocale } from '../i18n/use-locale.ts';
 import type { AllianceCatalog } from '../lib/schemas/alliance.ts';
 import type { ContinentId } from '../lib/schemas/country-continent.ts';
 import type { ScheduleEntry } from '../lib/schemas/flight-schedules.ts';
+import type { OfficialScheduleCatalog } from '../lib/schemas/published-schedules.ts';
 import type { MarketProfile } from '../lib/schemas/market.ts';
 import { parseRouteNetworkCatalog, type RouteNetworkCatalog } from '../lib/schemas/route-network.ts';
 import type { RtwRuleSet, RtwTicketingProgram } from '../lib/schemas/rtw-rule.ts';
@@ -25,6 +26,7 @@ interface Props {
   readonly routeCountsByCarrier?: ReadonlyMap<string, number> | null | undefined;
   readonly routeNetworkDetailsUrl?: string | undefined;
   readonly schedules?: ReadonlyArray<ScheduleEntry> | null | undefined;
+  readonly officialSchedules?: OfficialScheduleCatalog | null | undefined;
   readonly airportLookup?: ReadonlyMap<string, Airport> | null | undefined;
   readonly countryContinents?: ReadonlyMap<string, ContinentId> | null | undefined;
   readonly airportContinentOverrides?: ReadonlyMap<string, ContinentId> | null | undefined;
@@ -157,6 +159,7 @@ export function RtwPlanGate({
   routeCountsByCarrier,
   routeNetworkDetailsUrl,
   schedules,
+  officialSchedules,
   airportLookup,
   countryContinents,
   airportContinentOverrides,
@@ -397,6 +400,7 @@ export function RtwPlanGate({
                   <LazyRouteCatalogBrowser
                     routeNetwork={detailedRouteNetwork}
                     schedules={schedules}
+                    officialSchedules={officialSchedules}
                     memberCodes={memberCodes}
                     airports={airportLookup}
                     countryContinents={countryContinents}

@@ -11,7 +11,7 @@ FlightConnections is used as an external completeness/QA benchmark only. Its pub
 - `public/data/alliances/current.json`
 - `public/data/route-network/current.json`
 - `public/data/schedules/current.json`
-- `src/data/official-schedules.json`
+- `public/data/official-schedules.json`
 
 No supplier request, TDX authentication, AeroDataBox request or inferred reverse route is made.
 
@@ -50,7 +50,7 @@ Three different measurements are intentionally separated:
 - 40 of 452 known routes have active exact schedule evidence: **8.8% of the known partial universe**, not global coverage. The lower percentage reflects useful route discovery advancing ahead of dated schedule evidence, not a regression in verified schedules.
 - Missing carrier route evidence: **none**.
 
-The NH increase fixes a prior data-silo omission: `src/data/official-schedules.json` already contained bounded ANA Summer/Winter 2026 exact route + flight-number publications, but the coverage command previously read only `public/data/schedules/current.json`. The ledger now unions both schedule catalogs. It also preserves ANA's explicit Summer-2026 suspension of NRT↔TPE instead of counting that pair as active. SQ now contributes a bounded source-backed SIN-origin nonstop subset plus the independently evidenced TPE→SIN direction; no flight-number or weekday schedule has been inferred from route/network text.
+The NH increase fixes a prior data-silo omission: `public/data/official-schedules.json` already contained bounded ANA Summer/Winter 2026 exact route + flight-number publications, but the coverage command previously read only `public/data/schedules/current.json`. The ledger now unions both schedule catalogs. It also preserves ANA's explicit Summer-2026 suspension of NRT↔TPE instead of counting that pair as active. SQ now contributes a bounded source-backed SIN-origin nonstop subset plus the independently evidenced TPE→SIN direction; no flight-number or weekday schedule has been inferred from route/network text.
 
 QR now contributes eight independently directional high-value hub routes: DOH↔HKG, DOH↔NRT, DOH↔LHR and DOH↔JFK. Each direction is backed by a current Qatar Airways-owned route page rather than inferred from its opposite. Qatar Airways also publishes a broad network map/schedule poster, but the reviewed April edition is explicitly valid only through 2026-06-15 while the later Summer-2026 announcement describes 150+ destinations through 2026-09-15 without exposing a complete operator-resolved airport denominator in the evidence currently checked into GCMP. QR therefore remains `partial`, not `complete`.
 

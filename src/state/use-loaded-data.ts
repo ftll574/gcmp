@@ -24,6 +24,10 @@ import {
 } from '../lib/schemas/flight-schedules.ts';
 import { MarketProfileSchema, type MarketProfile } from '../lib/schemas/market.ts';
 import {
+  OfficialScheduleCatalogSchema,
+  type OfficialScheduleCatalog,
+} from '../lib/schemas/published-schedules.ts';
+import {
   parseNetworkGapCatalog,
   type NetworkGapEntry,
 } from '../lib/schemas/network-gaps.ts';
@@ -77,6 +81,7 @@ export interface LoadedData {
    * (same degrade-to-null contract as `networkGaps`).
    */
   schedules: ReadonlyArray<ScheduleEntry> | null;
+  officialSchedules: OfficialScheduleCatalog;
   /** Published route observations, never a substitute for dated schedules. */
   routeNetwork: RouteNetworkCatalog | null;
   /** Build-time global route counts used by the plan gate without loading the
@@ -152,6 +157,7 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
           geoRaw,
           networkGapsRaw,
           schedulesRaw,
+          officialSchedulesRaw,
           ciZonesRaw,
           routeNetworkRaw,
           runtimeRouteNetworkMetaRaw,
@@ -166,6 +172,7 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
           fetchJsonOptional(`${baseUrl}/data/geo/current.json`),
           fetchJsonOptional(`${baseUrl}/data/network-gaps/current.json`),
           fetchJsonOptional(`${baseUrl}/data/schedules/current.json`),
+          fetchJsonStrict(`${baseUrl}/data/official-schedules.json`),
           fetchJsonOptional(`${baseUrl}/data/geo/ci-zones.json`),
           fetchJsonOptional(`${baseUrl}/data/route-network/current.json`),
           fetchJsonOptional(`${baseUrl}/data/route-network/runtime-current.meta.json`),
@@ -239,6 +246,8 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
           }
         }
 
+        const officialSchedules = OfficialScheduleCatalogSchema.parse(officialSchedulesRaw);
+
         let ciZones: CiZoneMap | null = null;
         if (ciZonesRaw !== null && ciZonesRaw !== undefined) {
           try {
@@ -289,6 +298,7 @@ export function useLoadedData(baseUrlOverride?: string): LoadState {
             airportContinentOverrides,
             networkGaps,
             schedules,
+            officialSchedules,
             routeNetwork,
             routeNetworkCounts,
             routeNetworkRuntimeUrl: `${baseUrl}/data/route-network/runtime-current.json`,

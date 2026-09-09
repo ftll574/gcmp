@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import raw from '../../src/data/official-schedules.json';
+import raw from '../../public/data/official-schedules.json';
 import airports from '../../public/data/airports.json';
 import routeNetworkRaw from '../../public/data/route-network/current.json';
 import { OfficialScheduleCatalogSchema, PublishedFlightSchema } from '../../src/lib/schemas/published-schedules.ts';

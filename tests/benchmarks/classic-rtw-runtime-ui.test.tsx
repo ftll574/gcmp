@@ -2,8 +2,13 @@ import '@testing-library/jest-dom/vitest';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { FlightDatesPanel } from '../../src/components/FlightDatesPanel.tsx';
+import { readFileSync } from 'node:fs';
+import { OfficialScheduleCatalogSchema } from '../../src/lib/schemas/published-schedules.ts';
 
 const NOW = Date.parse('2026-09-09T00:00:00Z');
+const officialSchedules = OfficialScheduleCatalogSchema.parse(
+  JSON.parse(readFileSync('public/data/official-schedules.json', 'utf8')),
+);
 
 beforeEach(() => {
   vi.useFakeTimers({ toFake: ['Date'] });
@@ -30,6 +35,7 @@ describe('classic RTW dated flights in the product calendar', () => {
       initialDate="2026-11-02"
       carriers={new Set(['BR'])}
       schedules={[]}
+      officialSchedules={officialSchedules}
       apiBase=""
       onChoose={onChoose}
       onClose={vi.fn()}
@@ -53,6 +59,7 @@ describe('classic RTW dated flights in the product calendar', () => {
       initialDate="2026-11-08"
       carriers={new Set(['UA'])}
       schedules={[]}
+      officialSchedules={officialSchedules}
       apiBase=""
       onChoose={vi.fn()}
       onClose={vi.fn()}
@@ -72,6 +79,7 @@ describe('classic RTW dated flights in the product calendar', () => {
       initialDate="2026-11-02"
       carriers={new Set(['BR'])}
       schedules={[]}
+      officialSchedules={officialSchedules}
       apiBase="/api"
       onChoose={vi.fn()}
       onClose={vi.fn()}

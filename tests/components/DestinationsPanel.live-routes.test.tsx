@@ -3,6 +3,8 @@ import { cleanup, fireEvent, render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import { DestinationsPanel } from '../../src/components/DestinationsPanel.tsx';
 import { RouteNetworkCatalogSchema } from '../../src/lib/schemas/route-network.ts';
+import { OfficialScheduleCatalogSchema } from '../../src/lib/schemas/published-schedules.ts';
+import { readFileSync } from 'node:fs';
 
 afterEach(() => {
   cleanup();
@@ -14,6 +16,9 @@ const airports = [
   { iata: 'TPE', name: 'Taoyuan', city: 'Taipei', country: 'TW', lat: 25.08, lon: 121.23 },
   { iata: 'BKK', name: 'Suvarnabhumi', city: 'Bangkok', country: 'TH', lat: 13.69, lon: 100.75 },
 ];
+const officialSchedules = OfficialScheduleCatalogSchema.parse(
+  JSON.parse(readFileSync('public/data/official-schedules.json', 'utf8')),
+);
 const emptyNetwork = RouteNetworkCatalogSchema.parse({
   version: '2026.3',
   coverage: 'curated-not-complete',
@@ -48,6 +53,7 @@ test('current EVA TPE-BKK route is upgraded by official evidence and exposes rea
   render(<DestinationsPanel
     airports={airports}
     schedules={[]}
+    officialSchedules={officialSchedules}
     carriers={[{ code: 'BR', name: 'EVA Air' }]}
     lookupAirport={(iata) => airports.find((airport) => airport.iata === iata)}
     network={emptyNetwork}

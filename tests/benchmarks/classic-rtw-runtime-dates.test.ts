@@ -1,7 +1,11 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, test } from 'vitest';
-import { officialScheduleCatalog } from '../../src/lib/official-schedule-catalog.ts';
+import { OfficialScheduleCatalogSchema } from '../../src/lib/schemas/published-schedules.ts';
 import { queryOfficialSchedules } from '../../src/lib/rtw/official-schedules.ts';
+
+const officialScheduleCatalog = OfficialScheduleCatalogSchema.parse(
+  JSON.parse(readFileSync('public/data/official-schedules.json', 'utf8')),
+);
 
 interface BenchmarkFlight {
   readonly date: string;

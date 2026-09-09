@@ -2,7 +2,7 @@ import { expect, test } from 'vitest';
 import allianceRaw from '../../../public/data/alliances/current.json' with { type: 'json' };
 import networkRaw from '../../../public/data/route-network/current.json' with { type: 'json' };
 import schedulesRaw from '../../../public/data/schedules/current.json' with { type: 'json' };
-import officialSchedulesRaw from '../../../src/data/official-schedules.json' with { type: 'json' };
+import officialSchedulesRaw from '../../../public/data/official-schedules.json' with { type: 'json' };
 import { summarizeAllianceCoverage, summarizeTargetAllianceCoverage } from '../../../src/lib/rtw/alliance-coverage.ts';
 import { AllianceCatalogSchema } from '../../../src/lib/schemas/alliance.ts';
 import { parseScheduleCatalog } from '../../../src/lib/schemas/flight-schedules.ts';

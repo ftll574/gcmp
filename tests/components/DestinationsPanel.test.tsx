@@ -3,7 +3,9 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 import '@testing-library/jest-dom/vitest';
 import type { ScheduleEntry } from '../../src/lib/schemas/flight-schedules.ts';
 import { RouteNetworkCatalogSchema } from '../../src/lib/schemas/route-network.ts';
+import { OfficialScheduleCatalogSchema } from '../../src/lib/schemas/published-schedules.ts';
 import { DestinationsPanel } from '../../src/components/DestinationsPanel.tsx';
+import { readFileSync } from 'node:fs';
 
 afterEach(cleanup);
 
@@ -31,8 +33,11 @@ const schedules = [
   entry({ carrier: 'BR', pair: ['TPE', 'LHR'], flightNumbers: ['BR067'] }),
   entry({ carrier: 'BR', pair: ['TPE', 'CDG'], flightNumbers: ['BR087'] }),
 ];
+const officialSchedules = OfficialScheduleCatalogSchema.parse(
+  JSON.parse(readFileSync('public/data/official-schedules.json', 'utf8')),
+);
 const baseProps = {
-  airports: [...airports.values()], schedules, carriers,
+  airports: [...airports.values()], schedules, officialSchedules, carriers,
   lookupAirport: (iata: string) => airports.get(iata),
   onAddPair: vi.fn(),
   onAddSurface: vi.fn(),
