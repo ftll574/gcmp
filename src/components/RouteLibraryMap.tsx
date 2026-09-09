@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as maplibregl from 'maplibre-gl';
-import type { GeoJSONSource, Map as MapLibreMap, StyleSpecification } from 'maplibre-gl';
+import type { GeoJSONSource, Map as MapLibreMap } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import './RouteLibraryMap.css';
@@ -14,12 +14,11 @@ import {
   type RouteMapModel,
 } from '../lib/rtw/route-library-map.ts';
 import type { RouteLibraryEntitySelection, RouteLibraryRouteCard, RouteLibrarySearchResult } from '../lib/rtw/route-library-entities.ts';
-import type { WorldFeatures } from '../state/use-world-map.ts';
-import { useWorldMap } from '../state/use-world-map.ts';
 import { useLocale } from '../i18n/use-locale.ts';
 
 const EMPTY_FEATURES: FeatureCollection<Geometry> = { type: 'FeatureCollection', features: [] };
-const WORLD_SOURCE = 'gcmp-world';
+const BASEMAP_LIGHT_STYLE = 'https://tiles.openfreemap.org/styles/liberty';
+const BASEMAP_DARK_STYLE = 'https://tiles.openfreemap.org/styles/dark';
 const ROUTE_SOURCE = 'gcmp-routes';
 const FOCUS_ROUTE_SOURCE = 'gcmp-focused-routes';
 const AIRPORT_SOURCE = 'gcmp-airports';
@@ -41,6 +40,8 @@ interface RouteMapControls {
   readonly onAllianceChange: (alliance: RouteMapAllianceTheme) => void;
   readonly query: string;
   readonly onQueryChange: (query: string) => void;
+  readonly searchOpen: boolean;
+  readonly onSearchOpenChange: (open: boolean) => void;
   readonly searchPlaceholder: string;
   readonly searchResults: ReadonlyArray<RouteLibrarySearchResult>;
   readonly onSearchResultSelect: (selection: RouteLibraryEntitySelection) => void;
@@ -90,16 +91,8 @@ function isWebGlAvailable(): boolean {
   }
 }
 
-function mapStyle(dark: boolean): StyleSpecification {
-  return {
-    version: 8,
-    sources: {},
-    layers: [{
-      id: 'background',
-      type: 'background',
-      paint: { 'background-color': dark ? '#111a16' : '#e8eee9' },
-    }],
-  };
+function mapStyle(dark: boolean): string {
+  return dark ? BASEMAP_DARK_STYLE : BASEMAP_LIGHT_STYLE;
 }
 
 function source(map: MapLibreMap, id: string): GeoJSONSource | null {
@@ -107,7 +100,6 @@ function source(map: MapLibreMap, id: string): GeoJSONSource | null {
 }
 
 function addSourcesAndLayers(map: MapLibreMap, dark: boolean): void {
-  map.addSource(WORLD_SOURCE, { type: 'geojson', data: EMPTY_FEATURES });
   map.addSource(ROUTE_SOURCE, { type: 'geojson', data: EMPTY_FEATURES, lineMetrics: true });
   map.addSource(FOCUS_ROUTE_SOURCE, { type: 'geojson', data: EMPTY_FEATURES, lineMetrics: true });
   map.addSource(AIRPORT_SOURCE, {
@@ -119,18 +111,6 @@ function addSourcesAndLayers(map: MapLibreMap, dark: boolean): void {
   });
   map.addSource(FOCUS_AIRPORT_SOURCE, { type: 'geojson', data: EMPTY_FEATURES });
 
-  map.addLayer({
-    id: 'gcmp-world-fill',
-    type: 'fill',
-    source: WORLD_SOURCE,
-    paint: { 'fill-color': dark ? '#1b2821' : '#f7faf7', 'fill-opacity': 0.86 },
-  });
-  map.addLayer({
-    id: 'gcmp-world-line',
-    type: 'line',
-    source: WORLD_SOURCE,
-    paint: { 'line-color': dark ? '#4d6156' : '#a8b5ac', 'line-width': 0.7, 'line-opacity': 0.85 },
-  });
   map.addLayer({
     id: ROUTE_LAYER,
     type: 'line',
@@ -320,10 +300,11 @@ export function RouteEntityMap({
   controls,
 }: RouteEntityMapProps): React.ReactElement {
   const { locale } = useLocale();
-  const { features: worldFeatures } = useWorldMap();
   const cardRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
+  const didInitialFitRef = useRef(false);
+  const lastSelectionKeyRef = useRef<string | null>(null);
   const [ready, setReady] = useState(false);
   const [selection, setSelection] = useState<InspectorSelection>(
     selectedRouteId ? { kind: 'route', routeId: selectedRouteId } : selectedAirport ? { kind: 'airport', iata: selectedAirport.iata } : null,
@@ -382,6 +363,7 @@ export function RouteEntityMap({
     });
     mapRef.current = map;
     map.addControl(new maplibregl.NavigationControl({ showCompass: false, visualizePitch: false }), 'top-right');
+    map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-right');
     map.on('load', () => {
       try {
         addSourcesAndLayers(map, dark);
@@ -398,7 +380,9 @@ export function RouteEntityMap({
       const card = cardRef.current;
       if (!card || !map.isStyleLoaded() || !map.getLayer(CLUSTER_LAYER)) return;
       const clusters = map.queryRenderedFeatures({ layers: [CLUSTER_LAYER] });
+      const center = map.getCenter();
       card.dataset.mapZoom = map.getZoom().toFixed(2);
+      card.dataset.mapCenter = `${center.lng.toFixed(3)},${center.lat.toFixed(3)}`;
       card.dataset.mapClusters = String(clusters.length);
       card.dataset.mapVisibleAirports = String(map.queryRenderedFeatures({ layers: [AIRPORT_LAYER] }).length);
       const firstCluster = clusters.find((feature) => feature.geometry.type === 'Point');
@@ -433,20 +417,26 @@ export function RouteEntityMap({
     const map = mapRef.current;
     const container = containerRef.current;
     if (!ready || !map || !container) return;
-    source(map, WORLD_SOURCE)?.setData((worldFeatures ?? EMPTY_FEATURES) as WorldFeatures);
     source(map, ROUTE_SOURCE)?.setData(model.routes);
     source(map, AIRPORT_SOURCE)?.setData(model.airports);
     setFocusSources(map, model, null);
     const initial: InspectorSelection = selectedRouteId
       ? { kind: 'route', routeId: selectedRouteId }
       : selectedAirport ? { kind: 'airport', iata: selectedAirport.iata } : null;
+    const selectionKey = initial?.kind === 'route'
+      ? `route:${initial.routeId}`
+      : initial?.kind === 'airport' ? `airport:${initial.iata}` : null;
+    const shouldMoveCamera = !didInitialFitRef.current || lastSelectionKeyRef.current !== selectionKey;
     setSelection(initial);
-    if (initial) {
+    setFocusSources(map, model, initial);
+    if (initial && shouldMoveCamera) {
       window.requestAnimationFrame(() => focusSelection(initial, false));
-    } else {
+    } else if (!initial && shouldMoveCamera) {
       fitModel(map, container, model, routes, selectedAirport);
     }
-  }, [focusSelection, model, ready, routes, selectedAirport, selectedRouteId, worldFeatures]);
+    didInitialFitRef.current = true;
+    lastSelectionKeyRef.current = selectionKey;
+  }, [focusSelection, model, ready, routes, selectedAirport, selectedRouteId]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -573,11 +563,11 @@ export function RouteEntityMap({
         <div className="entity-map-search-wrap">
           <label className="entity-map-search">
             <span aria-hidden="true">⌕</span>
-            <input type="search" value={controls.query} onChange={(event) => controls.onQueryChange(event.target.value)} placeholder={controls.searchPlaceholder} aria-label={controls.searchPlaceholder} />
-            {controls.query && <button type="button" aria-label={locale === 'zh-TW' ? '清除搜尋' : 'Clear search'} onClick={() => controls.onQueryChange('')}>×</button>}
+            <input type="search" value={controls.query} onFocus={() => controls.onSearchOpenChange(controls.query.length > 0)} onChange={(event) => controls.onQueryChange(event.target.value)} placeholder={controls.searchPlaceholder} aria-label={controls.searchPlaceholder} />
+            {controls.query && <button type="button" aria-label={locale === 'zh-TW' ? '清除搜尋' : 'Clear search'} onClick={() => { controls.onQueryChange(''); controls.onSearchOpenChange(false); }}>×</button>}
           </label>
-          {controls.query && <div className="entity-map-search-results" role="listbox">
-            {controls.searchResults.length > 0 ? controls.searchResults.map((result) => <button type="button" role="option" key={result.key} onClick={() => controls.onSearchResultSelect(result.selection)}><span>{result.kind}</span><strong>{result.title}</strong><small>{result.subtitle}</small></button>) : <p>{locale === 'zh-TW' ? '沒有符合的結果' : 'No matching result'}</p>}
+          {controls.query && controls.searchOpen && <div className="entity-map-search-results" role="listbox">
+            {controls.searchResults.length > 0 ? controls.searchResults.map((result) => <button type="button" role="option" key={result.key} onClick={() => { controls.onSearchOpenChange(false); controls.onSearchResultSelect(result.selection); }}><span>{result.kind}</span><strong>{result.title}</strong><small>{result.subtitle}</small></button>) : <p>{locale === 'zh-TW' ? '沒有符合的結果' : 'No matching result'}</p>}
           </div>}
         </div>
       </div>}

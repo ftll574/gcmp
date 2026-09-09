@@ -116,7 +116,6 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
               alliance={alliance}
               onAllianceChange={(value) => {
                 setAlliance(value);
-                selectEntity(null);
               }}
               countryContinents={data.countryContinents}
               airportContinentOverrides={data.airportContinentOverrides}

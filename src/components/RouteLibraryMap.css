@@ -116,6 +116,16 @@
 
 .maplibre-route-map .entity-map-stats { top: 68px; }
 
+.maplibre-route-map .maplibregl-ctrl-attrib {
+  border-radius: 8px 0 0 0;
+  background: color-mix(in srgb, var(--system-background, #fff) 82%, transparent);
+  color: var(--secondary-label, #6d756f);
+  font-size: 8px;
+  backdrop-filter: blur(8px);
+}
+
+.maplibre-route-map .maplibregl-ctrl-attrib a { color: inherit; }
+
 .entity-map-fingerprint-key {
   position: absolute;
   z-index: 7;

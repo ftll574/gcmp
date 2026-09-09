@@ -95,6 +95,30 @@ test('route library searches a confirmed flight and hands it to the planner', as
   expect(window.location.hash).toContain('fn=198');
 });
 
+test('route library keeps the searched airport selected while comparing alliances', async () => {
+  render(<SiteApp />);
+  await screen.findByRole('heading', { name: /把世界變成一條/ });
+  fireEvent.click(screen.getByRole('button', { name: '瀏覽所有航線' }));
+  await screen.findByRole('heading', { name: '全球航網，一張地圖看懂。' });
+
+  const search = await screen.findByRole('searchbox', { name: /搜尋機場、城市、航空公司、航線或班號/ });
+  fireEvent.change(search, { target: { value: 'TPE' } });
+  fireEvent.click(await screen.findByRole('option', { name: /TPE · Taoyuan/ }));
+  expect(await screen.findByRole('heading', { name: /TPE.*Taoyuan/ })).toBeInTheDocument();
+  expect(screen.getByRole('searchbox', { name: /搜尋機場、城市、航空公司、航線或班號/ }).getAttribute('value')).toBe('TPE');
+
+  const map = document.querySelector('.entity-map-card');
+  const allianceControls = map?.querySelector('[aria-label="Alliance filter"]');
+  expect(allianceControls).not.toBeNull();
+  fireEvent.click(within(allianceControls as HTMLElement).getByRole('button', { name: 'Star' }));
+
+  await waitFor(() => expect(document.querySelector('.entity-map-card')?.getAttribute('data-map-alliance')).toBe('star'));
+  expect(new URLSearchParams(window.location.search).get('entity')).toBe('airport');
+  expect(new URLSearchParams(window.location.search).get('id')).toBe('TPE');
+  expect(screen.getByRole('searchbox', { name: /搜尋機場、城市、航空公司、航線或班號/ }).getAttribute('value')).toBe('TPE');
+  expect(await screen.findByRole('heading', { name: /TPE.*Taoyuan/ })).toBeInTheDocument();
+});
+
 test('site navigation remains available after entering the planner and returns to public pages', async () => {
   render(<SiteApp />);
   await screen.findByRole('heading', { name: /把世界變成一條/ });

@@ -99,6 +99,8 @@ describe('RouteEntityMap MapLibre model', () => {
         onAllianceChange: vi.fn(),
         query: '',
         onQueryChange: vi.fn(),
+        searchOpen: false,
+        onSearchOpenChange: vi.fn(),
         searchPlaceholder: 'Search airport',
         searchResults: [],
         onSearchResultSelect: vi.fn(),

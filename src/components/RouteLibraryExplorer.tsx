@@ -75,6 +75,7 @@ export function RouteLibraryExplorer({
   const { locale, t } = useLocale();
   const zh = locale === 'zh-TW';
   const [query, setQuery] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
   const [showRouteIndex, setShowRouteIndex] = useState(false);
   const entityInput = useMemo(() => ({ network, airports, carrierNames, memberCodes }), [network, airports, carrierNames, memberCodes]);
   const searchResults = useMemo(() => searchRouteLibraryEntities({ ...entityInput, query, locale: zh ? 'zh-TW' : 'en' }), [entityInput, query, zh]);
@@ -96,7 +97,7 @@ export function RouteLibraryExplorer({
     ? (zh ? '未分類' : 'Unmapped')
     : t(`rtw.continent.${continent}`);
   const choose = (next: RouteLibraryEntitySelection): void => {
-    setQuery('');
+    setSearchOpen(false);
     setShowRouteIndex(false);
     onSelect(next);
   };
@@ -104,12 +105,16 @@ export function RouteLibraryExplorer({
   const mapControls = {
     alliance,
     onAllianceChange: (next: RouteMapAllianceTheme): void => {
-      setQuery('');
       setShowRouteIndex(false);
       onAllianceChange(next);
     },
     query,
-    onQueryChange: setQuery,
+    onQueryChange: (value: string): void => {
+      setQuery(value);
+      setSearchOpen(value.length > 0);
+    },
+    searchOpen,
+    onSearchOpenChange: setSearchOpen,
     searchPlaceholder: zh
       ? '搜尋機場、城市、航空公司、航線或班號'
       : 'Search airport, city, airline, route or flight number',
