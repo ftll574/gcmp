@@ -667,6 +667,7 @@ function Ready({
           officialSchedules={data.officialSchedules}
           airportLookup={airportIndex.byIata}
           countryContinents={data.countryContinents}
+          countrySubregions={data.countrySubregions}
           airportContinentOverrides={data.airportContinentOverrides}
           marketProfile={data.marketProfile}
           initialProductId={routing.rtwProductId}

@@ -29,7 +29,7 @@ have different product behavior.
      after the local VRS/BTS/affiliate layers still have no number for that
      exact directional carrier-route.
    - A 2026-09-09 Chrome audit of FlightsFrom direct-route pages contributed
-     150 same-brand candidate routes. The same audit now contributes 787
+     150 same-brand candidate routes. The same audit now contributes 829
      confirmed designator routes only where GCMP already had independent
      operating-carrier evidence; FlightsFrom never promotes a provider-listed
      route by itself.
@@ -86,14 +86,14 @@ relationships).
 After the bounded 2026-09-09 refresh and identity audit:
 
 - sourced directional carrier-route relationships: **29,796**
-- current plannable routes: **29,568**
+- current plannable routes: **29,494**
 - current plannable routes with at least one confirmed or candidate designator:
-  **29,568 / 29,568 = 100%**
-- routes with route-level confirmed-number evidence: **14,935**
-- routes with candidate-number evidence: **24,234** (some also have confirmed
+  **29,494 / 29,494 = 100%**
+- routes with route-level confirmed-number evidence: **14,977**
+- routes with candidate-number evidence: **24,152** (some also have confirmed
   evidence, so these two counts intentionally overlap)
-- relationships retained as `identity-unresolved`: **220**
-- relationships retained as `suspended`: **36**
+- relationships retained as `identity-unresolved`: **272**
+- relationships retained as `suspended`: **58**
 - unresolved current-plannable number gaps: **0**
 
 The `identity-unresolved` and `suspended` relationships are not deleted. They
@@ -134,9 +134,9 @@ A follow-up Chrome audit then targeted every remaining operating +
 candidate-only route for ten high-frequency RTW carriers: LH, TK, AC, AF, UA,
 AA, DL, BA, QF and QR. All **744 / 744** current direct-route pages returned
 successfully. Same-carrier timetable designators were present on **602** routes,
-which were promoted to confirmed route-level flight numbers. The other **142**
-routes remain candidate-only instead of being guessed or promoted from stale
-standing references.
+which were promoted to confirmed route-level flight numbers. The remaining 142
+were deliberately left unpromoted for a deeper operator-identity pass rather
+than being guessed from stale standing references.
 
 Promotions by carrier:
 
@@ -157,6 +157,38 @@ independent operating-carrier evidence is: LH **525 / 560 (93.8%)**, TK
 UA **1329 / 1332 (99.8%)**, AA **1268 / 1271 (99.8%)**, DL
 **1270 / 1287 (98.7%)**, BA **310 / 313 (99.0%)**, QF **198 / 202 (98.0%)**,
 and QR **368 / 372 (98.9%)**.
+
+### Deep operator-identity pass for AC / LH / TK / DL
+
+The next pass revisited the **118** candidate-only routes still concentrated in
+Air Canada, Lufthansa, Turkish Airlines and Delta. Instead of treating every
+row as a missing-number problem, the audit parsed the current direct-route page
+for its actual listed airline operators and then extracted same-prefix
+commercial designators only when the exact member airline was present.
+
+Results:
+
+- **42 routes** exposed the exact member airline plus a current commercial
+  designator and were promoted to confirmed numbers. Examples include
+  `AC1893 CTG-YUL`, `LH1005/1007/1009/1011/1015/1017 BRU-FRA`,
+  `DL64 AKL-LAX` and `TK882 IST-TBZ`.
+- **52 routes** are retained as `identity-unresolved` because the present
+  nonstop is listed under other operators. Examples include `AC CLT-IAD`
+  (American / United), `DL BDL-BNA` (Southwest) and `TK SAW-ADB`
+  (Pegasus / AJet).
+- **22 routes** are retained as `suspended` because the current direct-route
+  page no longer lists an operating airline for that directional pair, such as
+  `LH FRA-BOD`.
+- **2 routes** deliberately remain candidate-only because the exact airline is
+  present but the current page did not expose a safe same-prefix designator:
+  `AC YZF-YYZ` and `DL BOS-PUJ`.
+
+After removing the misattributed/stale rows from the current planner, confirmed
+flight-number coverage among remaining independently confirmed operating routes
+is now Lufthansa **532 / 532 (100%)**, Turkish Airlines **637 / 637 (100%)**,
+Air Canada **470 / 471 (99.8%)** and Delta **1278 / 1279 (99.9%)**. The runtime
+still preserves all corrected relationships and their 2026-09-09 FlightsFrom
+provenance for audit instead of deleting historical/provider evidence.
 
 Any remaining rows must stay explicit. A current public route page that only
 shows another airline's designator (for example a provider-listed alliance brand

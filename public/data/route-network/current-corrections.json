@@ -3,10 +3,467 @@
   "coverage": "curated-not-complete",
   "sources": [
     {
+      "id": "ai-sfo-del-past-20260909",
+      "url": "https://www.flightsfrom.com/SFO-DEL",
+      "checkedOn": "2026-09-09",
+      "note": "The SFO-DEL direct page lists Air India service only in the past, so the edge is not current."
+    },
+    {
       "id": "et-add-atl-nondirect-20260909",
       "url": "https://info.flightmapper.net/route/Ethiopian_Airlines_ET_ADD_ATL",
       "checkedOn": "2026-09-09",
       "note": "Current ET518 ADD-ATL schedule is published as a 1-stop service, so the ADD-ATL relationship must not remain a current nonstop planner edge."
+    },
+    {
+      "id": "fj-nan-dfw-ended-20260906",
+      "url": "https://www.aeroroutes.com/eng/260428-fjsep26dfw",
+      "checkedOn": "2026-09-09",
+      "publishedOn": "2026-04-29",
+      "note": "Fiji Airways announced NAN-DFW discontinuation with the final FJ890 service scheduled for 2026-09-05; the route is no longer current from 2026-09-06."
+    },
+    {
+      "id": "flightsfrom-ac-clt-iad-operator-20260909",
+      "url": "https://www.flightsfrom.com/CLT-IAD",
+      "checkedOn": "2026-09-09",
+      "note": "The current CLT-IAD direct-route page lists American Airlines, United Airlines rather than AC; the AC carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-ac-dal-den-operator-20260909",
+      "url": "https://www.flightsfrom.com/DAL-DEN",
+      "checkedOn": "2026-09-09",
+      "note": "The current DAL-DEN direct-route page lists Southwest Airlines rather than AC; the AC carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-ac-hkg-yyz-operator-20260909",
+      "url": "https://www.flightsfrom.com/HKG-YYZ",
+      "checkedOn": "2026-09-09",
+      "note": "The current HKG-YYZ direct-route page lists Cathay Pacific rather than AC; the AC carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-ac-iad-phl-operator-20260909",
+      "url": "https://www.flightsfrom.com/IAD-PHL",
+      "checkedOn": "2026-09-09",
+      "note": "The current IAD-PHL direct-route page lists United Airlines rather than AC; the AC carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-ac-ont-sjc-operator-20260909",
+      "url": "https://www.flightsfrom.com/ONT-SJC",
+      "checkedOn": "2026-09-09",
+      "note": "The current ONT-SJC direct-route page lists Southwest Airlines rather than AC; the AC carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-ac-pbi-yul-operator-20260909",
+      "url": "https://www.flightsfrom.com/PBI-YUL",
+      "checkedOn": "2026-09-09",
+      "note": "The current PBI-YUL direct-route page lists no operating airline, so the AC relationship must not remain a current nonstop planner edge."
+    },
+    {
+      "id": "flightsfrom-ac-pit-iad-operator-20260909",
+      "url": "https://www.flightsfrom.com/PIT-IAD",
+      "checkedOn": "2026-09-09",
+      "note": "The current PIT-IAD direct-route page lists United Airlines rather than AC; the AC carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-ac-tpa-iad-operator-20260909",
+      "url": "https://www.flightsfrom.com/TPA-IAD",
+      "checkedOn": "2026-09-09",
+      "note": "The current TPA-IAD direct-route page lists United Airlines, Frontier Airlines rather than AC; the AC carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-ac-yhm-yyz-operator-20260909",
+      "url": "https://www.flightsfrom.com/YHM-YYZ",
+      "checkedOn": "2026-09-09",
+      "note": "The current YHM-YYZ direct-route page lists no operating airline, so the AC relationship must not remain a current nonstop planner edge."
+    },
+    {
+      "id": "flightsfrom-ac-yhz-yqm-operator-20260909",
+      "url": "https://www.flightsfrom.com/YHZ-YQM",
+      "checkedOn": "2026-09-09",
+      "note": "The current YHZ-YQM direct-route page lists no operating airline, so the AC relationship must not remain a current nonstop planner edge."
+    },
+    {
+      "id": "flightsfrom-ac-yyz-bed-operator-20260909",
+      "url": "https://www.flightsfrom.com/YYZ-BED",
+      "checkedOn": "2026-09-09",
+      "note": "The current YYZ-BED direct-route page lists no operating airline, so the AC relationship must not remain a current nonstop planner edge."
+    },
+    {
+      "id": "flightsfrom-ac-yyz-yzf-operator-20260909",
+      "url": "https://www.flightsfrom.com/YYZ-YZF",
+      "checkedOn": "2026-09-09",
+      "note": "The current YYZ-YZF direct-route page lists Air North rather than AC; the AC carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-dl-bdl-bna-operator-20260909",
+      "url": "https://www.flightsfrom.com/BDL-BNA",
+      "checkedOn": "2026-09-09",
+      "note": "The current BDL-BNA direct-route page lists Southwest Airlines rather than DL; the DL carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-dl-bwi-msy-operator-20260909",
+      "url": "https://www.flightsfrom.com/BWI-MSY",
+      "checkedOn": "2026-09-09",
+      "note": "The current BWI-MSY direct-route page lists Southwest Airlines rather than DL; the DL carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-dl-clt-phl-operator-20260909",
+      "url": "https://www.flightsfrom.com/CLT-PHL",
+      "checkedOn": "2026-09-09",
+      "note": "The current CLT-PHL direct-route page lists American Airlines, Frontier Airlines rather than DL; the DL carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-dl-dal-pdx-operator-20260909",
+      "url": "https://www.flightsfrom.com/DAL-PDX",
+      "checkedOn": "2026-09-09",
+      "note": "The current DAL-PDX direct-route page lists Southwest Airlines rather than DL; the DL carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-dl-hou-msp-operator-20260909",
+      "url": "https://www.flightsfrom.com/HOU-MSP",
+      "checkedOn": "2026-09-09",
+      "note": "The current HOU-MSP direct-route page lists Sun Country Airlines rather than DL; the DL carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-dl-jfk-iah-operator-20260909",
+      "url": "https://www.flightsfrom.com/JFK-IAH",
+      "checkedOn": "2026-09-09",
+      "note": "The current JFK-IAH direct-route page lists JetBlue Airways rather than DL; the DL carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-dl-lax-oak-operator-20260909",
+      "url": "https://www.flightsfrom.com/LAX-OAK",
+      "checkedOn": "2026-09-09",
+      "note": "The current LAX-OAK direct-route page lists Southwest Airlines rather than DL; the DL carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-dl-lgw-kef-operator-20260909",
+      "url": "https://www.flightsfrom.com/LGW-KEF",
+      "checkedOn": "2026-09-09",
+      "note": "The current LGW-KEF direct-route page lists Icelandair, easyJet rather than DL; the DL carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-lh-bod-fra-operator-20260909",
+      "url": "https://www.flightsfrom.com/BOD-FRA",
+      "checkedOn": "2026-09-09",
+      "note": "The current BOD-FRA direct-route page lists no operating airline, so the LH relationship must not remain a current nonstop planner edge."
+    },
+    {
+      "id": "flightsfrom-lh-bzg-fra-operator-20260909",
+      "url": "https://www.flightsfrom.com/BZG-FRA",
+      "checkedOn": "2026-09-09",
+      "note": "The current BZG-FRA direct-route page lists no operating airline, so the LH relationship must not remain a current nonstop planner edge."
+    },
+    {
+      "id": "flightsfrom-lh-chq-fra-operator-20260909",
+      "url": "https://www.flightsfrom.com/CHQ-FRA",
+      "checkedOn": "2026-09-09",
+      "note": "The current CHQ-FRA direct-route page lists Condor, Discover Airlines rather than LH; the LH carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-lh-fra-bod-operator-20260909",
+      "url": "https://www.flightsfrom.com/FRA-BOD",
+      "checkedOn": "2026-09-09",
+      "note": "The current FRA-BOD direct-route page lists no operating airline, so the LH relationship must not remain a current nonstop planner edge."
+    },
+    {
+      "id": "flightsfrom-lh-fra-bzg-operator-20260909",
+      "url": "https://www.flightsfrom.com/FRA-BZG",
+      "checkedOn": "2026-09-09",
+      "note": "The current FRA-BZG direct-route page lists no operating airline, so the LH relationship must not remain a current nonstop planner edge."
+    },
+    {
+      "id": "flightsfrom-lh-fra-gla-operator-20260909",
+      "url": "https://www.flightsfrom.com/FRA-GLA",
+      "checkedOn": "2026-09-09",
+      "note": "The current FRA-GLA direct-route page lists Discover Airlines rather than LH; the LH carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-lh-fra-hel-operator-20260909",
+      "url": "https://www.flightsfrom.com/FRA-HEL",
+      "checkedOn": "2026-09-09",
+      "note": "The current FRA-HEL direct-route page lists Finnair, Lufthansa City Airlines rather than LH; the LH carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-lh-fra-lpa-operator-20260909",
+      "url": "https://www.flightsfrom.com/FRA-LPA",
+      "checkedOn": "2026-09-09",
+      "note": "The current FRA-LPA direct-route page lists Condor, TUI fly Deutschland, Discover Airlines rather than LH; the LH carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-lh-fra-mrs-operator-20260909",
+      "url": "https://www.flightsfrom.com/FRA-MRS",
+      "checkedOn": "2026-09-09",
+      "note": "The current FRA-MRS direct-route page lists Lufthansa City Airlines rather than LH; the LH carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-lh-fra-ncl-operator-20260909",
+      "url": "https://www.flightsfrom.com/FRA-NCL",
+      "checkedOn": "2026-09-09",
+      "note": "The current FRA-NCL direct-route page lists no operating airline, so the LH relationship must not remain a current nonstop planner edge."
+    },
+    {
+      "id": "flightsfrom-lh-fra-rak-operator-20260909",
+      "url": "https://www.flightsfrom.com/FRA-RAK",
+      "checkedOn": "2026-09-09",
+      "note": "The current FRA-RAK direct-route page lists Discover Airlines rather than LH; the LH carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-lh-fra-rze-operator-20260909",
+      "url": "https://www.flightsfrom.com/FRA-RZE",
+      "checkedOn": "2026-09-09",
+      "note": "The current FRA-RZE direct-route page lists no operating airline, so the LH relationship must not remain a current nonstop planner edge."
+    },
+    {
+      "id": "flightsfrom-lh-fra-str-operator-20260909",
+      "url": "https://www.flightsfrom.com/FRA-STR",
+      "checkedOn": "2026-09-09",
+      "note": "The current FRA-STR direct-route page lists no operating airline, so the LH relationship must not remain a current nonstop planner edge."
+    },
+    {
+      "id": "flightsfrom-lh-fra-svg-operator-20260909",
+      "url": "https://www.flightsfrom.com/FRA-SVG",
+      "checkedOn": "2026-09-09",
+      "note": "The current FRA-SVG direct-route page lists no operating airline, so the LH relationship must not remain a current nonstop planner edge."
+    },
+    {
+      "id": "flightsfrom-lh-gdn-muc-operator-20260909",
+      "url": "https://www.flightsfrom.com/GDN-MUC",
+      "checkedOn": "2026-09-09",
+      "note": "The current GDN-MUC direct-route page lists no operating airline, so the LH relationship must not remain a current nonstop planner edge."
+    },
+    {
+      "id": "flightsfrom-lh-gla-fra-operator-20260909",
+      "url": "https://www.flightsfrom.com/GLA-FRA",
+      "checkedOn": "2026-09-09",
+      "note": "The current GLA-FRA direct-route page lists Discover Airlines rather than LH; the LH carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-lh-hel-fra-operator-20260909",
+      "url": "https://www.flightsfrom.com/HEL-FRA",
+      "checkedOn": "2026-09-09",
+      "note": "The current HEL-FRA direct-route page lists Finnair, Lufthansa City Airlines rather than LH; the LH carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-lh-lpa-fra-operator-20260909",
+      "url": "https://www.flightsfrom.com/LPA-FRA",
+      "checkedOn": "2026-09-09",
+      "note": "The current LPA-FRA direct-route page lists Condor, TUI fly Deutschland, Discover Airlines rather than LH; the LH carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-lh-mrs-fra-operator-20260909",
+      "url": "https://www.flightsfrom.com/MRS-FRA",
+      "checkedOn": "2026-09-09",
+      "note": "The current MRS-FRA direct-route page lists Lufthansa City Airlines rather than LH; the LH carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-lh-muc-gdn-operator-20260909",
+      "url": "https://www.flightsfrom.com/MUC-GDN",
+      "checkedOn": "2026-09-09",
+      "note": "The current MUC-GDN direct-route page lists no operating airline, so the LH relationship must not remain a current nonstop planner edge."
+    },
+    {
+      "id": "flightsfrom-lh-muc-trs-operator-20260909",
+      "url": "https://www.flightsfrom.com/MUC-TRS",
+      "checkedOn": "2026-09-09",
+      "note": "The current MUC-TRS direct-route page lists no operating airline, so the LH relationship must not remain a current nonstop planner edge."
+    },
+    {
+      "id": "flightsfrom-lh-ncl-fra-operator-20260909",
+      "url": "https://www.flightsfrom.com/NCL-FRA",
+      "checkedOn": "2026-09-09",
+      "note": "The current NCL-FRA direct-route page lists no operating airline, so the LH relationship must not remain a current nonstop planner edge."
+    },
+    {
+      "id": "flightsfrom-lh-rak-fra-operator-20260909",
+      "url": "https://www.flightsfrom.com/RAK-FRA",
+      "checkedOn": "2026-09-09",
+      "note": "The current RAK-FRA direct-route page lists Discover Airlines rather than LH; the LH carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-lh-rze-fra-operator-20260909",
+      "url": "https://www.flightsfrom.com/RZE-FRA",
+      "checkedOn": "2026-09-09",
+      "note": "The current RZE-FRA direct-route page lists no operating airline, so the LH relationship must not remain a current nonstop planner edge."
+    },
+    {
+      "id": "flightsfrom-lh-sbz-muc-operator-20260909",
+      "url": "https://www.flightsfrom.com/SBZ-MUC",
+      "checkedOn": "2026-09-09",
+      "note": "The current SBZ-MUC direct-route page lists no operating airline, so the LH relationship must not remain a current nonstop planner edge."
+    },
+    {
+      "id": "flightsfrom-lh-str-fra-operator-20260909",
+      "url": "https://www.flightsfrom.com/STR-FRA",
+      "checkedOn": "2026-09-09",
+      "note": "The current STR-FRA direct-route page lists no operating airline, so the LH relationship must not remain a current nonstop planner edge."
+    },
+    {
+      "id": "flightsfrom-lh-svg-fra-operator-20260909",
+      "url": "https://www.flightsfrom.com/SVG-FRA",
+      "checkedOn": "2026-09-09",
+      "note": "The current SVG-FRA direct-route page lists no operating airline, so the LH relationship must not remain a current nonstop planner edge."
+    },
+    {
+      "id": "flightsfrom-lh-trs-muc-operator-20260909",
+      "url": "https://www.flightsfrom.com/TRS-MUC",
+      "checkedOn": "2026-09-09",
+      "note": "The current TRS-MUC direct-route page lists no operating airline, so the LH relationship must not remain a current nonstop planner edge."
+    },
+    {
+      "id": "flightsfrom-tk-adb-esb-operator-20260909",
+      "url": "https://www.flightsfrom.com/ADB-ESB",
+      "checkedOn": "2026-09-09",
+      "note": "The current ADB-ESB direct-route page lists Pegasus, AJet rather than TK; the TK carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-tk-adb-saw-operator-20260909",
+      "url": "https://www.flightsfrom.com/ADB-SAW",
+      "checkedOn": "2026-09-09",
+      "note": "The current ADB-SAW direct-route page lists Pegasus, AJet rather than TK; the TK carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-tk-ayt-cdg-operator-20260909",
+      "url": "https://www.flightsfrom.com/AYT-CDG",
+      "checkedOn": "2026-09-09",
+      "note": "The current AYT-CDG direct-route page lists Pegasus, SunExpress rather than TK; the TK carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-tk-ayt-ecn-operator-20260909",
+      "url": "https://www.flightsfrom.com/AYT-ECN",
+      "checkedOn": "2026-09-09",
+      "note": "The current AYT-ECN direct-route page lists Pegasus, SunExpress, AJet rather than TK; the TK carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-tk-ayt-lej-operator-20260909",
+      "url": "https://www.flightsfrom.com/AYT-LEJ",
+      "checkedOn": "2026-09-09",
+      "note": "The current AYT-LEJ direct-route page lists SunExpress, Pegasus, Corendon Airlines rather than TK; the TK carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-tk-ayt-rix-operator-20260909",
+      "url": "https://www.flightsfrom.com/AYT-RIX",
+      "checkedOn": "2026-09-09",
+      "note": "The current AYT-RIX direct-route page lists Air Baltic rather than TK; the TK carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-tk-ayt-rmo-operator-20260909",
+      "url": "https://www.flightsfrom.com/AYT-RMO",
+      "checkedOn": "2026-09-09",
+      "note": "The current AYT-RMO direct-route page lists Pegasus, Fly One, Freebird Airlines, SunExpress, JSC Avion Express rather than TK; the TK carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-tk-ayt-saw-operator-20260909",
+      "url": "https://www.flightsfrom.com/AYT-SAW",
+      "checkedOn": "2026-09-09",
+      "note": "The current AYT-SAW direct-route page lists Pegasus, AJet rather than TK; the TK carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-tk-ayt-stn-operator-20260909",
+      "url": "https://www.flightsfrom.com/AYT-STN",
+      "checkedOn": "2026-09-09",
+      "note": "The current AYT-STN direct-route page lists Jet2, Pegasus, Corendon Airlines, SunExpress rather than TK; the TK carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-tk-bah-tzx-operator-20260909",
+      "url": "https://www.flightsfrom.com/BAH-TZX",
+      "checkedOn": "2026-09-09",
+      "note": "The current BAH-TZX direct-route page lists SunExpress rather than TK; the TK carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-tk-ber-adb-operator-20260909",
+      "url": "https://www.flightsfrom.com/BER-ADB",
+      "checkedOn": "2026-09-09",
+      "note": "The current BER-ADB direct-route page lists SunExpress, Pegasus rather than TK; the TK carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-tk-bjv-esb-operator-20260909",
+      "url": "https://www.flightsfrom.com/BJV-ESB",
+      "checkedOn": "2026-09-09",
+      "note": "The current BJV-ESB direct-route page lists Pegasus, AJet rather than TK; the TK carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-tk-bjv-led-operator-20260909",
+      "url": "https://www.flightsfrom.com/BJV-LED",
+      "checkedOn": "2026-09-09",
+      "note": "The current BJV-LED direct-route page lists no operating airline, so the TK relationship must not remain a current nonstop planner edge."
+    },
+    {
+      "id": "flightsfrom-tk-ecn-ayt-operator-20260909",
+      "url": "https://www.flightsfrom.com/ECN-AYT",
+      "checkedOn": "2026-09-09",
+      "note": "The current ECN-AYT direct-route page lists Pegasus, SunExpress, AJet rather than TK; the TK carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-tk-esb-saw-operator-20260909",
+      "url": "https://www.flightsfrom.com/ESB-SAW",
+      "checkedOn": "2026-09-09",
+      "note": "The current ESB-SAW direct-route page lists Pegasus, AJet rather than TK; the TK carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-tk-gzt-esb-operator-20260909",
+      "url": "https://www.flightsfrom.com/GZT-ESB",
+      "checkedOn": "2026-09-09",
+      "note": "The current GZT-ESB direct-route page lists AJet rather than TK; the TK carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-tk-ist-aer-operator-20260909",
+      "url": "https://www.flightsfrom.com/IST-AER",
+      "checkedOn": "2026-09-09",
+      "note": "The current IST-AER direct-route page lists Aeroflot, Azimuth rather than TK; the TK carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-tk-rmo-ayt-operator-20260909",
+      "url": "https://www.flightsfrom.com/RMO-AYT",
+      "checkedOn": "2026-09-09",
+      "note": "The current RMO-AYT direct-route page lists Pegasus, Fly One, Freeird Airlines, SunExpress, JSC Avion Express rather than TK; the TK carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-tk-saw-adb-operator-20260909",
+      "url": "https://www.flightsfrom.com/SAW-ADB",
+      "checkedOn": "2026-09-09",
+      "note": "The current SAW-ADB direct-route page lists Pegasus, AJet rather than TK; the TK carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-tk-saw-asr-operator-20260909",
+      "url": "https://www.flightsfrom.com/SAW-ASR",
+      "checkedOn": "2026-09-09",
+      "note": "The current SAW-ASR direct-route page lists Pegasus, AJet rather than TK; the TK carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-tk-saw-ayt-operator-20260909",
+      "url": "https://www.flightsfrom.com/SAW-AYT",
+      "checkedOn": "2026-09-09",
+      "note": "The current SAW-AYT direct-route page lists Pegasus, AJet rather than TK; the TK carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-tk-saw-bjv-operator-20260909",
+      "url": "https://www.flightsfrom.com/SAW-BJV",
+      "checkedOn": "2026-09-09",
+      "note": "The current SAW-BJV direct-route page lists Pegasus, AJet rather than TK; the TK carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-tk-saw-esb-operator-20260909",
+      "url": "https://www.flightsfrom.com/SAW-ESB",
+      "checkedOn": "2026-09-09",
+      "note": "The current SAW-ESB direct-route page lists Pegasus, AJet rather than TK; the TK carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-tk-saw-tzx-operator-20260909",
+      "url": "https://www.flightsfrom.com/SAW-TZX",
+      "checkedOn": "2026-09-09",
+      "note": "The current SAW-TZX direct-route page lists Pegasus, AJet rather than TK; the TK carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-tk-saw-vas-operator-20260909",
+      "url": "https://www.flightsfrom.com/SAW-VAS",
+      "checkedOn": "2026-09-09",
+      "note": "The current SAW-VAS direct-route page lists Pegasus, AJet rather than TK; the TK carrier attribution is unresolved and must not be treated as operating-carrier evidence."
+    },
+    {
+      "id": "flightsfrom-tk-vko-dlm-operator-20260909",
+      "url": "https://www.flightsfrom.com/VKO-DLM",
+      "checkedOn": "2026-09-09",
+      "note": "The current VKO-DLM direct-route page lists Pobeda, AZUR air, Pegasus rather than TK; the TK carrier attribution is unresolved and must not be treated as operating-carrier evidence."
     },
     {
       "id": "ou-puy-lhr-past-20260909",
@@ -73,142 +530,1217 @@
       "url": "https://www.flightsfrom.com/SAW-SJJ",
       "checkedOn": "2026-09-09",
       "note": "Current SAW-SJJ direct flights are published as Pegasus/AJet services (PC/VF designators), not TK; the Turkish Airlines carrier attribution is unresolved."
-    },
-    {
-      "id": "ai-sfo-del-past-20260909",
-      "url": "https://www.flightsfrom.com/SFO-DEL",
-      "checkedOn": "2026-09-09",
-      "note": "The SFO-DEL direct page lists Air India service only in the past, so the edge is not current."
-    },
-    {
-      "id": "fj-nan-dfw-ended-20260906",
-      "url": "https://www.aeroroutes.com/eng/260428-fjsep26dfw",
-      "checkedOn": "2026-09-09",
-      "publishedOn": "2026-04-29",
-      "note": "Fiji Airways announced NAN-DFW discontinuation with the final FJ890 service scheduled for 2026-09-05; the route is no longer current from 2026-09-06."
     }
   ],
   "carrierUniverses": [],
   "routes": [
     {
-      "carrier": "AI",
-      "pair": ["SFO", "DEL"],
+      "carrier": "AC",
+      "pair": [
+        "CLT",
+        "IAD"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-ac-clt-iad-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "AC",
+      "pair": [
+        "DAL",
+        "DEN"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-ac-dal-den-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "AC",
+      "pair": [
+        "HKG",
+        "YYZ"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-ac-hkg-yyz-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "AC",
+      "pair": [
+        "IAD",
+        "PHL"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-ac-iad-phl-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "AC",
+      "pair": [
+        "ONT",
+        "SJC"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-ac-ont-sjc-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "AC",
+      "pair": [
+        "PBI",
+        "YUL"
+      ],
       "service": "nonstop",
       "status": "suspended",
-      "sourceIds": ["ai-sfo-del-past-20260909"],
+      "sourceIds": [
+        "flightsfrom-ac-pbi-yul-operator-20260909"
+      ],
       "effectiveFrom": "2026-09-09"
     },
     {
-      "carrier": "ET",
-      "pair": ["ADD", "ATL"],
+      "carrier": "AC",
+      "pair": [
+        "PIT",
+        "IAD"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-ac-pit-iad-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "AC",
+      "pair": [
+        "TPA",
+        "IAD"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-ac-tpa-iad-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "AC",
+      "pair": [
+        "YHM",
+        "YYZ"
+      ],
       "service": "nonstop",
       "status": "suspended",
-      "sourceIds": ["et-add-atl-nondirect-20260909"],
+      "sourceIds": [
+        "flightsfrom-ac-yhm-yyz-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "AC",
+      "pair": [
+        "YHZ",
+        "YQM"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "flightsfrom-ac-yhz-yqm-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "AC",
+      "pair": [
+        "YYZ",
+        "BED"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "flightsfrom-ac-yyz-bed-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "AC",
+      "pair": [
+        "YYZ",
+        "YZF"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-ac-yyz-yzf-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "AI",
+      "pair": [
+        "SFO",
+        "DEL"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "ai-sfo-del-past-20260909"
+      ],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "DL",
+      "pair": [
+        "BDL",
+        "BNA"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-dl-bdl-bna-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "DL",
+      "pair": [
+        "BWI",
+        "MSY"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-dl-bwi-msy-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "DL",
+      "pair": [
+        "CLT",
+        "PHL"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-dl-clt-phl-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "DL",
+      "pair": [
+        "DAL",
+        "PDX"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-dl-dal-pdx-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "DL",
+      "pair": [
+        "HOU",
+        "MSP"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-dl-hou-msp-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "DL",
+      "pair": [
+        "JFK",
+        "IAH"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-dl-jfk-iah-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "DL",
+      "pair": [
+        "LAX",
+        "OAK"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-dl-lax-oak-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "DL",
+      "pair": [
+        "LGW",
+        "KEF"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-dl-lgw-kef-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "ET",
+      "pair": [
+        "ADD",
+        "ATL"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "et-add-atl-nondirect-20260909"
+      ],
       "effectiveFrom": "2026-09-09"
     },
     {
       "carrier": "FJ",
-      "pair": ["NAN", "DFW"],
+      "pair": [
+        "NAN",
+        "DFW"
+      ],
       "service": "nonstop",
       "status": "suspended",
-      "sourceIds": ["fj-nan-dfw-ended-20260906"],
+      "sourceIds": [
+        "fj-nan-dfw-ended-20260906"
+      ],
       "effectiveFrom": "2026-09-06"
     },
     {
-      "carrier": "OU",
-      "pair": ["PUY", "LHR"],
+      "carrier": "LH",
+      "pair": [
+        "BOD",
+        "FRA"
+      ],
       "service": "nonstop",
       "status": "suspended",
-      "sourceIds": ["ou-puy-lhr-past-20260909"],
+      "sourceIds": [
+        "flightsfrom-lh-bod-fra-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "BZG",
+        "FRA"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "flightsfrom-lh-bzg-fra-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "CHQ",
+        "FRA"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-lh-chq-fra-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "FRA",
+        "BOD"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "flightsfrom-lh-fra-bod-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "FRA",
+        "BZG"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "flightsfrom-lh-fra-bzg-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "FRA",
+        "GLA"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-lh-fra-gla-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "FRA",
+        "HEL"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-lh-fra-hel-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "FRA",
+        "LPA"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-lh-fra-lpa-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "FRA",
+        "MRS"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-lh-fra-mrs-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "FRA",
+        "NCL"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "flightsfrom-lh-fra-ncl-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "FRA",
+        "RAK"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-lh-fra-rak-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "FRA",
+        "RZE"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "flightsfrom-lh-fra-rze-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "FRA",
+        "STR"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "flightsfrom-lh-fra-str-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "FRA",
+        "SVG"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "flightsfrom-lh-fra-svg-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "GDN",
+        "MUC"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "flightsfrom-lh-gdn-muc-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "GLA",
+        "FRA"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-lh-gla-fra-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "HEL",
+        "FRA"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-lh-hel-fra-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "LPA",
+        "FRA"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-lh-lpa-fra-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "MRS",
+        "FRA"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-lh-mrs-fra-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "MUC",
+        "GDN"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "flightsfrom-lh-muc-gdn-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "MUC",
+        "TRS"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "flightsfrom-lh-muc-trs-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "NCL",
+        "FRA"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "flightsfrom-lh-ncl-fra-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "RAK",
+        "FRA"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-lh-rak-fra-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "RZE",
+        "FRA"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "flightsfrom-lh-rze-fra-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "SBZ",
+        "MUC"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "flightsfrom-lh-sbz-muc-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "STR",
+        "FRA"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "flightsfrom-lh-str-fra-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "SVG",
+        "FRA"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "flightsfrom-lh-svg-fra-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "LH",
+      "pair": [
+        "TRS",
+        "MUC"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "flightsfrom-lh-trs-muc-operator-20260909"
+      ],
       "effectiveFrom": "2026-09-09"
     },
     {
       "carrier": "OU",
-      "pair": ["ZAD", "LHR"],
+      "pair": [
+        "PUY",
+        "LHR"
+      ],
       "service": "nonstop",
       "status": "suspended",
-      "sourceIds": ["ou-zad-lhr-no-current-20260909"],
+      "sourceIds": [
+        "ou-puy-lhr-past-20260909"
+      ],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "OU",
+      "pair": [
+        "ZAD",
+        "LHR"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "ou-zad-lhr-no-current-20260909"
+      ],
       "effectiveFrom": "2026-09-09"
     },
     {
       "carrier": "QR",
-      "pair": ["DOH", "JIB"],
+      "pair": [
+        "DOH",
+        "JIB"
+      ],
       "service": "nonstop",
       "status": "suspended",
-      "sourceIds": ["qr-doh-jib-past-20260909"],
+      "sourceIds": [
+        "qr-doh-jib-past-20260909"
+      ],
       "effectiveFrom": "2026-09-09"
     },
     {
       "carrier": "SN",
-      "pair": ["BGO", "BRU"],
+      "pair": [
+        "BGO",
+        "BRU"
+      ],
       "service": "nonstop",
       "status": "identity-unresolved",
       "carrierIdentity": "provider-listed",
-      "sourceIds": ["sn-bgo-bru-wideroe-20260909"],
+      "sourceIds": [
+        "sn-bgo-bru-wideroe-20260909"
+      ],
       "effectiveFrom": "2026-09-09"
     },
     {
       "carrier": "SN",
-      "pair": ["BRU", "BGO"],
+      "pair": [
+        "BRU",
+        "BGO"
+      ],
       "service": "nonstop",
       "status": "identity-unresolved",
       "carrierIdentity": "provider-listed",
-      "sourceIds": ["sn-bru-bgo-wideroe-20260909"],
+      "sourceIds": [
+        "sn-bru-bgo-wideroe-20260909"
+      ],
       "effectiveFrom": "2026-09-09"
     },
     {
       "carrier": "SN",
-      "pair": ["BRU", "ORD"],
+      "pair": [
+        "BRU",
+        "ORD"
+      ],
       "service": "nonstop",
       "status": "published",
       "carrierIdentity": "provider-listed",
-      "flightNumberCandidates": ["SN8803"],
-      "flightNumberCandidateSourceIds": ["sn-bru-ord-ua-20260909"],
-      "sourceIds": ["sn-bru-ord-ua-20260909"],
+      "flightNumberCandidates": [
+        "SN8803"
+      ],
+      "flightNumberCandidateSourceIds": [
+        "sn-bru-ord-ua-20260909"
+      ],
+      "sourceIds": [
+        "sn-bru-ord-ua-20260909"
+      ],
       "effectiveFrom": "2026-09-09"
     },
     {
       "carrier": "SN",
-      "pair": ["BTS", "BRU"],
+      "pair": [
+        "BTS",
+        "BRU"
+      ],
       "service": "nonstop",
       "status": "suspended",
-      "sourceIds": ["sn-bts-bru-no-current-20260909"],
+      "sourceIds": [
+        "sn-bts-bru-no-current-20260909"
+      ],
       "effectiveFrom": "2026-09-09"
     },
     {
       "carrier": "TK",
-      "pair": ["DSS", "NKC"],
+      "pair": [
+        "ADB",
+        "ESB"
+      ],
       "service": "nonstop",
       "status": "identity-unresolved",
-      "carrierIdentity": "provider-listed",
-      "sourceIds": ["tk-dss-nkc-other-operators-20260909"],
-      "effectiveFrom": "2026-09-09"
+      "sourceIds": [
+        "flightsfrom-tk-adb-esb-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
     },
     {
       "carrier": "TK",
-      "pair": ["IST", "HRG"],
+      "pair": [
+        "ADB",
+        "SAW"
+      ],
       "service": "nonstop",
       "status": "identity-unresolved",
-      "carrierIdentity": "provider-listed",
-      "sourceIds": ["tk-ist-hrg-air-cairo-20260909"],
-      "effectiveFrom": "2026-09-09"
+      "sourceIds": [
+        "flightsfrom-tk-adb-saw-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
     },
     {
       "carrier": "TK",
-      "pair": ["LED", "DLM"],
+      "pair": [
+        "AYT",
+        "CDG"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-tk-ayt-cdg-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "AYT",
+        "ECN"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-tk-ayt-ecn-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "AYT",
+        "LEJ"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-tk-ayt-lej-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "AYT",
+        "RIX"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-tk-ayt-rix-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "AYT",
+        "RMO"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-tk-ayt-rmo-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "AYT",
+        "SAW"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-tk-ayt-saw-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "AYT",
+        "STN"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-tk-ayt-stn-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "BAH",
+        "TZX"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-tk-bah-tzx-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "BER",
+        "ADB"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-tk-ber-adb-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "BJV",
+        "ESB"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-tk-bjv-esb-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "BJV",
+        "LED"
+      ],
       "service": "nonstop",
       "status": "suspended",
-      "sourceIds": ["tk-led-dlm-past-20260909"],
+      "sourceIds": [
+        "flightsfrom-tk-bjv-led-operator-20260909"
+      ],
       "effectiveFrom": "2026-09-09"
     },
     {
       "carrier": "TK",
-      "pair": ["SAW", "SJJ"],
+      "pair": [
+        "DSS",
+        "NKC"
+      ],
       "service": "nonstop",
       "status": "identity-unresolved",
       "carrierIdentity": "provider-listed",
-      "sourceIds": ["tk-saw-sjj-other-operators-20260909"],
+      "sourceIds": [
+        "tk-dss-nkc-other-operators-20260909"
+      ],
       "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "ECN",
+        "AYT"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-tk-ecn-ayt-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "ESB",
+        "SAW"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-tk-esb-saw-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "GZT",
+        "ESB"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-tk-gzt-esb-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "IST",
+        "AER"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-tk-ist-aer-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "IST",
+        "HRG"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "tk-ist-hrg-air-cairo-20260909"
+      ],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "LED",
+        "DLM"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "tk-led-dlm-past-20260909"
+      ],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "RMO",
+        "AYT"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-tk-rmo-ayt-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "SAW",
+        "ADB"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-tk-saw-adb-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "SAW",
+        "ASR"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-tk-saw-asr-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "SAW",
+        "AYT"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-tk-saw-ayt-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "SAW",
+        "BJV"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-tk-saw-bjv-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "SAW",
+        "ESB"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-tk-saw-esb-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "SAW",
+        "SJJ"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "tk-saw-sjj-other-operators-20260909"
+      ],
+      "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "SAW",
+        "TZX"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-tk-saw-tzx-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "SAW",
+        "VAS"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-tk-saw-vas-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "TK",
+      "pair": [
+        "VKO",
+        "DLM"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "sourceIds": [
+        "flightsfrom-tk-vko-dlm-operator-20260909"
+      ],
+      "effectiveFrom": "2026-09-09",
+      "carrierIdentity": "provider-listed"
     }
   ]
 }

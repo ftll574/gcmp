@@ -5,6 +5,19 @@ import type { Airport } from '../types.ts';
 
 export type RouteCatalogGroupMode = 'from' | 'to';
 export type RouteCatalogContinent = ContinentId | 'unmapped';
+export type RouteCatalogRegionFilter = 'all' | `continent:${RouteCatalogContinent}` | `subregion:${string}`;
+
+export interface RouteCatalogCarrierOption {
+  readonly carrier: string;
+  readonly routeCount: number;
+}
+
+export interface RouteCatalogRegionOption {
+  readonly value: Exclude<RouteCatalogRegionFilter, 'all'>;
+  readonly kind: 'continent' | 'subregion';
+  readonly id: string;
+  readonly routeCount: number;
+}
 
 /** Minimal publication shape consumed by the browser. Kept structural so the
  * browser stays independent from the dated-schedule subsystem's schema. */
@@ -380,6 +393,103 @@ function continentOf(
   overrides: ReadonlyMap<string, ContinentId> | null | undefined,
 ): RouteCatalogContinent {
   return overrides?.get(iata) ?? (airport ? countryContinents?.get(airport.country) : undefined) ?? 'unmapped';
+}
+
+export function listRouteCatalogCarrierOptions(
+  pairs: ReadonlyArray<RouteCatalogPairView>,
+): ReadonlyArray<RouteCatalogCarrierOption> {
+  const routesByCarrier = new Map<string, number>();
+  for (const pair of pairs) {
+    for (const carrier of pair.carriers) {
+      routesByCarrier.set(carrier.carrier, (routesByCarrier.get(carrier.carrier) ?? 0) + 1);
+    }
+  }
+  return [...routesByCarrier.entries()]
+    .map(([carrier, routeCount]) => ({ carrier, routeCount }))
+    .sort((a, b) => a.carrier.localeCompare(b.carrier));
+}
+
+export interface RouteCatalogRegionOptionsInput {
+  readonly pairs: ReadonlyArray<RouteCatalogPairView>;
+  readonly mode: RouteCatalogGroupMode;
+  readonly countryContinents?: ReadonlyMap<string, ContinentId> | null | undefined;
+  readonly countrySubregions?: ReadonlyMap<string, string> | null | undefined;
+  readonly airportContinentOverrides?: ReadonlyMap<string, ContinentId> | null | undefined;
+}
+
+export function listRouteCatalogRegionOptions(
+  input: RouteCatalogRegionOptionsInput,
+): ReadonlyArray<RouteCatalogRegionOption> {
+  const counts = new Map<Exclude<RouteCatalogRegionFilter, 'all'>, number>();
+  for (const pair of input.pairs) {
+    const iata = input.mode === 'from' ? pair.from : pair.to;
+    const airport = input.mode === 'from' ? pair.fromAirport : pair.toAirport;
+    const continent = continentOf(iata, airport, input.countryContinents, input.airportContinentOverrides);
+    const continentKey = `continent:${continent}` as const;
+    counts.set(continentKey, (counts.get(continentKey) ?? 0) + 1);
+    const subregion = airport ? input.countrySubregions?.get(airport.country) : undefined;
+    if (subregion) {
+      const subregionKey = `subregion:${subregion}` as const;
+      counts.set(subregionKey, (counts.get(subregionKey) ?? 0) + 1);
+    }
+  }
+  return [...counts.entries()]
+    .map(([value, routeCount]): RouteCatalogRegionOption => {
+      const [kind, ...idParts] = value.split(':');
+      return {
+        value,
+        kind: kind as 'continent' | 'subregion',
+        id: idParts.join(':'),
+        routeCount,
+      };
+    })
+    .sort((a, b) => {
+      if (a.kind !== b.kind) return a.kind === 'continent' ? -1 : 1;
+      if (a.kind === 'continent' && b.kind === 'continent') {
+        return CONTINENT_ORDER.indexOf(a.id as RouteCatalogContinent)
+          - CONTINENT_ORDER.indexOf(b.id as RouteCatalogContinent);
+      }
+      return a.id.localeCompare(b.id);
+    });
+}
+
+export interface FilterRouteCatalogPairsInput extends RouteCatalogRegionOptionsInput {
+  readonly carrier?: string | 'all' | undefined;
+  readonly region?: RouteCatalogRegionFilter | undefined;
+}
+
+export function filterRouteCatalogPairs(
+  input: FilterRouteCatalogPairsInput,
+): ReadonlyArray<RouteCatalogPairView> {
+  const selectedCarrier = input.carrier && input.carrier !== 'all' ? input.carrier : null;
+  const selectedRegion = input.region ?? 'all';
+  return input.pairs.flatMap((pair): ReadonlyArray<RouteCatalogPairView> => {
+    const iata = input.mode === 'from' ? pair.from : pair.to;
+    const airport = input.mode === 'from' ? pair.fromAirport : pair.toAirport;
+    if (selectedRegion !== 'all') {
+      const [kind, ...idParts] = selectedRegion.split(':');
+      const id = idParts.join(':');
+      if (kind === 'continent') {
+        const continent = continentOf(iata, airport, input.countryContinents, input.airportContinentOverrides);
+        if (continent !== id) return [];
+      } else {
+        const subregion = airport ? input.countrySubregions?.get(airport.country) : undefined;
+        if (subregion !== id) return [];
+      }
+    }
+    const carriers = selectedCarrier
+      ? pair.carriers.filter((carrier) => carrier.carrier === selectedCarrier)
+      : pair.carriers;
+    if (carriers.length === 0) return [];
+    return [{
+      ...pair,
+      carriers,
+      flightCount: new Set(carriers.flatMap((carrier) => [
+        ...carrier.flightNumbers,
+        ...carrier.candidateFlightNumbers,
+      ])).size,
+    }];
+  });
 }
 
 export function groupRouteCatalog(input: GroupRouteCatalogInput): ReadonlyArray<RouteCatalogContinentGroup> {

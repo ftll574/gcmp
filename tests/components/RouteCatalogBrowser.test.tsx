@@ -11,6 +11,7 @@ afterEach(cleanup);
 const airports = new Map<string, Airport>([
   ['TPE', { iata: 'TPE', name: 'Taiwan Taoyuan', city: 'Taoyuan', country: 'TW', lat: 25, lon: 121 }],
   ['BKK', { iata: 'BKK', name: 'Suvarnabhumi', city: 'Bangkok', country: 'TH', lat: 14, lon: 101 }],
+  ['NRT', { iata: 'NRT', name: 'Narita', city: 'Tokyo', country: 'JP', lat: 36, lon: 141 }],
 ]);
 
 const routeNetwork: RouteNetworkCatalog = {
@@ -19,10 +20,14 @@ const routeNetwork: RouteNetworkCatalog = {
     { id: 'routes', url: 'https://example.com/routes', checkedOn: '2026-09-08', note: 'Route source' },
     { id: 'numbers', url: 'https://example.com/numbers', checkedOn: '2026-09-09', note: 'Candidate flight-number source' },
   ],
-  routes: [{
-    carrier: 'BR', pair: ['TPE', 'BKK'], service: 'nonstop', status: 'published', sourceIds: ['routes'],
-    flightNumberCandidates: ['BR75'], flightNumberCandidateSourceIds: ['numbers'],
-  }],
+  routes: [
+    {
+      carrier: 'BR', pair: ['TPE', 'BKK'], service: 'nonstop', status: 'published', sourceIds: ['routes'],
+      flightNumberCandidates: ['BR75'], flightNumberCandidateSourceIds: ['numbers'],
+    },
+    { carrier: 'TG', pair: ['TPE', 'BKK'], service: 'nonstop', status: 'published', sourceIds: ['routes'] },
+    { carrier: 'BR', pair: ['TPE', 'NRT'], service: 'nonstop', status: 'published', sourceIds: ['routes'] },
+  ],
 };
 
 const officialSchedules: RouteBrowserOfficialCatalog = {
@@ -46,9 +51,11 @@ function setup() {
       routeNetwork={routeNetwork}
       schedules={[]}
       officialSchedules={officialSchedules}
-      memberCodes={new Set(['BR'])}
+      memberCodes={new Set(['BR', 'TG'])}
       airports={airports}
-      countryContinents={new Map([['TW', 'asia'], ['TH', 'asia']])}
+      countryContinents={new Map([['TW', 'asia'], ['TH', 'asia'], ['JP', 'asia']])}
+      countrySubregions={new Map([['TW', 'northeast-asia'], ['TH', 'southeast-asia'], ['JP', 'northeast-asia']])}
+      carrierNames={new Map([['BR', 'EVA Air'], ['TG', 'Thai Airways']])}
     />,
   );
 }
@@ -101,4 +108,21 @@ test('can regroup the same directional routes by destination', () => {
   toggle(document.querySelector<HTMLDetailsElement>('[data-country="TH"]')!);
   expect(document.querySelector('[data-airport="BKK"]')).toBeInTheDocument();
   expect(document.querySelector('[data-airport="TPE"]')).toBeNull();
+});
+
+test('can narrow the long country list by airline and subregion', () => {
+  setup();
+  fireEvent.click(screen.getByRole('button', { name: 'Group by destination' }));
+  fireEvent.change(screen.getByRole('combobox', { name: 'Airline' }), { target: { value: 'BR' } });
+  expect(screen.getByRole('option', { name: /BR · EVA Air/ })).toBeInTheDocument();
+  fireEvent.change(screen.getByRole('combobox', { name: 'Region' }), {
+    target: { value: 'subregion:southeast-asia' },
+  });
+  expect(screen.getByText(/Showing/)).toHaveTextContent('1 of 2 routes');
+  toggle(document.querySelector<HTMLDetailsElement>('[data-continent="asia"]')!);
+  expect(document.querySelector('[data-country="TH"]')).toBeInTheDocument();
+  expect(document.querySelector('[data-country="JP"]')).toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: 'Clear filters' }));
+  expect(screen.getByRole('combobox', { name: 'Airline' })).toHaveValue('all');
+  expect(screen.getByRole('combobox', { name: 'Region' })).toHaveValue('all');
 });

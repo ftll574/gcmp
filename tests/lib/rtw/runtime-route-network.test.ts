@@ -67,6 +67,56 @@ test('current corrections keep stale or mismatched carrier routes out of the pla
     carrierIdentity: 'provider-listed',
     flightNumberCandidates: expect.arrayContaining(['SN8803']),
   });
+
+  // The deep 2026-09-09 operator pass must not let stale brand/codeshare rows
+  // back into current planning merely because an older standing number exists.
+  expect(find('AC', 'CLT', 'IAD')).toMatchObject({
+    status: 'identity-unresolved',
+    carrierIdentity: 'provider-listed',
+  });
+  expect(find('TK', 'SAW', 'ADB')).toMatchObject({
+    status: 'identity-unresolved',
+    carrierIdentity: 'provider-listed',
+  });
+  expect(find('DL', 'BDL', 'BNA')).toMatchObject({
+    status: 'identity-unresolved',
+    carrierIdentity: 'provider-listed',
+  });
+  expect(find('LH', 'FRA', 'BOD')?.status).toBe('suspended');
+});
+
+test('deep operator audit promotes only exact-current member designators', () => {
+  const runtime = parseRouteNetworkCatalog(JSON.parse(readFileSync(`${ROOT}/runtime-current.json`, 'utf8')));
+  const find = (carrier: string, from: string, to: string) => runtime.routes.find(
+    (route) => route.carrier === carrier && route.pair[0] === from && route.pair[1] === to,
+  );
+
+  expect(find('AC', 'CTG', 'YUL')).toMatchObject({
+    status: 'published',
+    flightNumbers: expect.arrayContaining(['AC1893']),
+  });
+  expect(find('LH', 'BRU', 'FRA')).toMatchObject({
+    status: 'published',
+    flightNumbers: expect.arrayContaining(['LH1005', 'LH1017']),
+  });
+  expect(find('DL', 'AKL', 'LAX')).toMatchObject({
+    status: 'published',
+    flightNumbers: expect.arrayContaining(['DL64']),
+  });
+  expect(find('TK', 'IST', 'TBZ')).toMatchObject({
+    status: 'published',
+    flightNumbers: expect.arrayContaining(['TK882']),
+  });
+  expect(find('AC', 'YZF', 'YYZ')).toMatchObject({
+    status: 'published',
+    flightNumberCandidates: expect.arrayContaining(['AC1168']),
+  });
+  expect(find('AC', 'YZF', 'YYZ')?.flightNumbers).toBeUndefined();
+  expect(find('DL', 'BOS', 'PUJ')).toMatchObject({
+    status: 'published',
+    flightNumberCandidates: expect.arrayContaining(['DL1973']),
+  });
+  expect(find('DL', 'BOS', 'PUJ')?.flightNumbers).toBeUndefined();
 });
 
 test('every current plannable runtime route exposes a confirmed or candidate flight designator', () => {

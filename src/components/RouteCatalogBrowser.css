@@ -6,7 +6,7 @@
 
 .route-browser-toolbar {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-3);
   padding: var(--space-3);
@@ -15,12 +15,32 @@
   background: var(--secondary-grouped-background);
 }
 
+.route-browser-toolbar-copy {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
 .route-browser-toolbar p {
   max-width: 680px;
   margin: 0;
   color: var(--secondary-label);
   font-size: var(--type-footnote);
   line-height: 1.5;
+}
+
+.route-browser-result-count {
+  color: var(--tertiary-label);
+  font-size: var(--type-caption);
+}
+
+.route-browser-result-count strong { color: var(--secondary-label); }
+
+.route-browser-controls {
+  display: grid;
+  justify-items: end;
+  gap: var(--space-2);
+  min-width: min(100%, 440px);
 }
 
 .route-browser-mode {
@@ -49,6 +69,53 @@
   background: var(--tint-fill-soft);
   color: var(--tint);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tint) 30%, transparent);
+}
+
+.route-browser-filters {
+  display: flex;
+  align-items: end;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.route-browser-filters label {
+  display: grid;
+  gap: 4px;
+  min-width: 170px;
+  flex: 1 1 170px;
+}
+
+.route-browser-filters label > span {
+  color: var(--tertiary-label);
+  font-size: var(--type-caption);
+  font-weight: 700;
+}
+
+.route-browser-filters select {
+  width: 100%;
+  min-height: 36px;
+  padding: 0 30px 0 10px;
+  border: 1px solid var(--separator);
+  border-radius: 7px;
+  background: var(--system-background);
+  color: var(--label);
+  font: inherit;
+  font-size: var(--type-footnote);
+}
+
+.route-browser-reset {
+  min-height: 36px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--separator);
+  border-radius: 7px;
+  background: var(--system-background);
+  color: var(--tint);
+  font: inherit;
+  font-size: var(--type-caption);
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .route-browser-continents {
@@ -298,7 +365,19 @@
     align-items: stretch;
     flex-direction: column;
   }
-  .route-browser-mode { align-self: flex-start; }
+  .route-browser-controls {
+    justify-items: stretch;
+    min-width: 0;
+    width: 100%;
+  }
+  .route-browser-mode { justify-self: flex-start; }
+  .route-browser-filters {
+    align-items: stretch;
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .route-browser-filters label { min-width: 0; }
+  .route-browser-reset { width: 100%; }
   .route-browser-continent > summary,
   .route-browser-country > summary,
   .route-browser-airport > summary,

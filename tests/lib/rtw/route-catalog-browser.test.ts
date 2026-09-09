@@ -3,7 +3,10 @@ import type { RouteNetworkCatalog } from '../../../src/lib/schemas/route-network
 import type { Airport } from '../../../src/lib/types.ts';
 import {
   buildRouteCatalogPairs,
+  filterRouteCatalogPairs,
   groupRouteCatalog,
+  listRouteCatalogCarrierOptions,
+  listRouteCatalogRegionOptions,
   type RouteBrowserOfficialCatalog,
 } from '../../../src/lib/rtw/route-catalog-browser.ts';
 
@@ -81,6 +84,37 @@ describe('route catalog browser model', () => {
     expect(byDestination[0]?.countries.map((country) => country.country)).toEqual(['TH']);
     expect(byDestination[0]?.countries[0]?.airports[0]?.iata).toBe('BKK');
     expect(byDestination[0]?.countries[0]?.airports[0]?.routeCount).toBe(2);
+  });
+
+  test('filters the catalog by airline and geographic region before country grouping', () => {
+    const pairs = buildRouteCatalogPairs({ routeNetwork, officialSchedules, memberCodes: new Set(['BR', 'TG']), airports });
+    const continents = new Map([['TW', 'asia'], ['TH', 'asia'], ['GB', 'europe']] as const);
+    const subregions = new Map([['TW', 'northeast-asia'], ['TH', 'southeast-asia'], ['GB', 'western-europe']]);
+    expect(listRouteCatalogCarrierOptions(pairs)).toEqual([
+      { carrier: 'BR', routeCount: 2 },
+      { carrier: 'TG', routeCount: 1 },
+    ]);
+    expect(listRouteCatalogRegionOptions({
+      pairs,
+      mode: 'from',
+      countryContinents: continents,
+      countrySubregions: subregions,
+    })).toEqual(expect.arrayContaining([
+      { value: 'continent:asia', kind: 'continent', id: 'asia', routeCount: 1 },
+      { value: 'subregion:northeast-asia', kind: 'subregion', id: 'northeast-asia', routeCount: 1 },
+      { value: 'subregion:western-europe', kind: 'subregion', id: 'western-europe', routeCount: 1 },
+    ]));
+    const filtered = filterRouteCatalogPairs({
+      pairs,
+      mode: 'from',
+      carrier: 'BR',
+      region: 'subregion:northeast-asia',
+      countryContinents: continents,
+      countrySubregions: subregions,
+    });
+    expect(filtered.map((pair) => `${pair.from}-${pair.to}`)).toEqual(['TPE-BKK']);
+    expect(filtered[0]?.carriers.map((carrier) => carrier.carrier)).toEqual(['BR']);
+    expect(filtered[0]?.flightCount).toBe(3);
   });
 
   test('a current route correction cannot be resurrected by an older official flight-number reference', () => {

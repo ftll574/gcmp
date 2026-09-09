@@ -6,12 +6,16 @@ import type { RouteNetworkCatalog } from '../lib/schemas/route-network.ts';
 import type { Airport } from '../lib/types.ts';
 import {
   buildRouteCatalogPairs,
+  filterRouteCatalogPairs,
   groupRouteCatalog,
+  listRouteCatalogCarrierOptions,
+  listRouteCatalogRegionOptions,
   type RouteBrowserOfficialCatalog,
   type RouteCatalogCarrierView,
   type RouteCatalogContinent,
   type RouteCatalogEvidenceView,
   type RouteCatalogGroupMode,
+  type RouteCatalogRegionFilter,
 } from '../lib/rtw/route-catalog-browser.ts';
 import './RouteCatalogBrowser.css';
 
@@ -22,7 +26,9 @@ export interface RouteCatalogBrowserProps {
   readonly memberCodes: ReadonlySet<string>;
   readonly airports?: ReadonlyMap<string, Airport> | null | undefined;
   readonly countryContinents?: ReadonlyMap<string, ContinentId> | null | undefined;
+  readonly countrySubregions?: ReadonlyMap<string, string> | null | undefined;
   readonly airportContinentOverrides?: ReadonlyMap<string, ContinentId> | null | undefined;
+  readonly carrierNames?: ReadonlyMap<string, string> | null | undefined;
 }
 
 interface LazyDisclosureProps {
@@ -49,9 +55,18 @@ function LazyDisclosure({ className, summary, renderChildren, data }: LazyDisclo
 
 const COPY = {
   'zh-TW': {
-    intro: '先選分群方式，再逐層展開洲別、國家／地區、機場與航線；班號與來源只在最深層顯示。',
+    intro: '先選方向，再用航空公司與區域縮小範圍；結果仍可逐層展開國家／地區、機場與航線，班號與來源只在最深層顯示。',
     byFrom: '依出發地',
     byTo: '依抵達地',
+    carrierFilter: '航空公司',
+    allCarriers: '全部航空公司',
+    regionFilter: '區域',
+    allRegions: '全部區域',
+    continents: '洲別',
+    subregions: '區域',
+    resetFilters: '清除篩選',
+    showing: '顯示',
+    of: '／共',
     airport: '機場',
     airports: '機場',
     countries: '國家／地區',
@@ -77,11 +92,21 @@ const COPY = {
     source: '來源',
     unmapped: '未分類',
     empty: '這個聯盟目前沒有可瀏覽的航線資料。',
+    noMatches: '目前沒有符合這組航空公司與區域條件的航線。',
   },
   en: {
-    intro: 'Choose a grouping, then expand continent, country/region, airport and route levels. Flight numbers and evidence stay hidden until the deepest level.',
+    intro: 'Choose a direction, then narrow the catalog by airline and region. Results still expand through country/region, airport and route levels; flight numbers and evidence stay hidden until the deepest level.',
     byFrom: 'Group by origin',
     byTo: 'Group by destination',
+    carrierFilter: 'Airline',
+    allCarriers: 'All airlines',
+    regionFilter: 'Region',
+    allRegions: 'All regions',
+    continents: 'Continents',
+    subregions: 'Subregions',
+    resetFilters: 'Clear filters',
+    showing: 'Showing',
+    of: 'of',
     airport: 'airport',
     airports: 'airports',
     countries: 'countries/regions',
@@ -107,6 +132,7 @@ const COPY = {
     source: 'Source',
     unmapped: 'Unmapped',
     empty: 'No browsable route data is available for this alliance.',
+    noMatches: 'No routes match this airline and region combination.',
   },
 } as const;
 
@@ -202,12 +228,16 @@ export function RouteCatalogBrowser({
   memberCodes,
   airports,
   countryContinents,
+  countrySubregions,
   airportContinentOverrides,
+  carrierNames,
 }: RouteCatalogBrowserProps): React.ReactElement {
   const { locale: appLocale, t } = useLocale();
   const locale: 'en' | 'zh-TW' = appLocale === 'zh-TW' ? 'zh-TW' : 'en';
   const copy = COPY[locale];
   const [mode, setMode] = useState<RouteCatalogGroupMode>('from');
+  const [carrierFilter, setCarrierFilter] = useState<string>('all');
+  const [regionFilter, setRegionFilter] = useState<RouteCatalogRegionFilter>('all');
   const pairs = useMemo(() => buildRouteCatalogPairs({
     routeNetwork,
     schedules,
@@ -215,12 +245,37 @@ export function RouteCatalogBrowser({
     memberCodes,
     airports,
   }), [routeNetwork, schedules, officialSchedules, memberCodes, airports]);
-  const groups = useMemo(() => groupRouteCatalog({
+  const carrierOptions = useMemo(() => listRouteCatalogCarrierOptions(pairs), [pairs]);
+  const carrierFilteredPairs = useMemo(() => filterRouteCatalogPairs({
     pairs,
+    mode,
+    carrier: carrierFilter,
+    countryContinents,
+    countrySubregions,
+    airportContinentOverrides,
+  }), [pairs, mode, carrierFilter, countryContinents, countrySubregions, airportContinentOverrides]);
+  const regionOptions = useMemo(() => listRouteCatalogRegionOptions({
+    pairs: carrierFilteredPairs,
+    mode,
+    countryContinents,
+    countrySubregions,
+    airportContinentOverrides,
+  }), [carrierFilteredPairs, mode, countryContinents, countrySubregions, airportContinentOverrides]);
+  const filteredPairs = useMemo(() => filterRouteCatalogPairs({
+    pairs,
+    mode,
+    carrier: carrierFilter,
+    region: regionFilter,
+    countryContinents,
+    countrySubregions,
+    airportContinentOverrides,
+  }), [pairs, mode, carrierFilter, regionFilter, countryContinents, countrySubregions, airportContinentOverrides]);
+  const groups = useMemo(() => groupRouteCatalog({
+    pairs: filteredPairs,
     mode,
     countryContinents,
     airportContinentOverrides,
-  }), [pairs, mode, countryContinents, airportContinentOverrides]);
+  }), [filteredPairs, mode, countryContinents, airportContinentOverrides]);
 
   function continentLabel(continent: RouteCatalogContinent): string {
     return continent === 'unmapped' ? copy.unmapped : t(`rtw.continent.${continent}`);
@@ -238,18 +293,95 @@ export function RouteCatalogBrowser({
     return regionNames?.of(country) ?? country;
   }
 
+  function subregionLabel(subregion: string): string {
+    const label = t(`rtw.subregion.${subregion}`);
+    return label.startsWith('rtw.subregion.')
+      ? subregion.replaceAll('-', ' ').replace(/\b\w/g, (letter) => letter.toUpperCase())
+      : label;
+  }
+
+  function regionOptionLabel(kind: 'continent' | 'subregion', id: string): string {
+    if (kind === 'continent') return continentLabel(id as RouteCatalogContinent);
+    return subregionLabel(id);
+  }
+
   if (pairs.length === 0) return <p className="route-browser-empty">{copy.empty}</p>;
 
   return (
     <section className="route-browser" aria-label={locale === 'zh-TW' ? '已收錄航線瀏覽器' : 'Cataloged route browser'}>
       <div className="route-browser-toolbar">
-        <p>{copy.intro}</p>
-        <div className="route-browser-mode" role="group" aria-label={locale === 'zh-TW' ? '航線分群方式' : 'Route grouping'}>
-          <button type="button" aria-pressed={mode === 'from'} onClick={() => setMode('from')}>{copy.byFrom}</button>
-          <button type="button" aria-pressed={mode === 'to'} onClick={() => setMode('to')}>{copy.byTo}</button>
+        <div className="route-browser-toolbar-copy">
+          <p>{copy.intro}</p>
+          <small className="route-browser-result-count">
+            {copy.showing} <strong>{filteredPairs.length}</strong> {copy.of} <strong>{pairs.length}</strong> {copy.routes}
+          </small>
+        </div>
+        <div className="route-browser-controls">
+          <div className="route-browser-mode" role="group" aria-label={locale === 'zh-TW' ? '航線分群方式' : 'Route grouping'}>
+            <button type="button" aria-pressed={mode === 'from'} onClick={() => { setMode('from'); setRegionFilter('all'); }}>{copy.byFrom}</button>
+            <button type="button" aria-pressed={mode === 'to'} onClick={() => { setMode('to'); setRegionFilter('all'); }}>{copy.byTo}</button>
+          </div>
+          <div className="route-browser-filters">
+            <label>
+              <span>{copy.carrierFilter}</span>
+              <select
+                aria-label={copy.carrierFilter}
+                value={carrierFilter}
+                onChange={(event) => {
+                  setCarrierFilter(event.target.value);
+                  setRegionFilter('all');
+                }}
+              >
+                <option value="all">{copy.allCarriers}</option>
+                {carrierOptions.map((option) => {
+                  const name = carrierNames?.get(option.carrier);
+                  return (
+                    <option key={option.carrier} value={option.carrier}>
+                      {option.carrier}{name ? ` · ${name}` : ''} · {option.routeCount} {copy.routes}
+                    </option>
+                  );
+                })}
+              </select>
+            </label>
+            <label>
+              <span>{copy.regionFilter}</span>
+              <select
+                aria-label={copy.regionFilter}
+                value={regionFilter}
+                onChange={(event) => setRegionFilter(event.target.value as RouteCatalogRegionFilter)}
+              >
+                <option value="all">{copy.allRegions}</option>
+                <optgroup label={copy.continents}>
+                  {regionOptions.filter((option) => option.kind === 'continent').map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {regionOptionLabel(option.kind, option.id)} · {option.routeCount} {copy.routes}
+                    </option>
+                  ))}
+                </optgroup>
+                {regionOptions.some((option) => option.kind === 'subregion') && (
+                  <optgroup label={copy.subregions}>
+                    {regionOptions.filter((option) => option.kind === 'subregion').map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {regionOptionLabel(option.kind, option.id)} · {option.routeCount} {copy.routes}
+                      </option>
+                    ))}
+                  </optgroup>
+                )}
+              </select>
+            </label>
+            {(carrierFilter !== 'all' || regionFilter !== 'all') && (
+              <button
+                type="button"
+                className="route-browser-reset"
+                onClick={() => { setCarrierFilter('all'); setRegionFilter('all'); }}
+              >
+                {copy.resetFilters}
+              </button>
+            )}
+          </div>
         </div>
       </div>
-      <div className="route-browser-continents">
+      {filteredPairs.length === 0 ? <p className="route-browser-empty">{copy.noMatches}</p> : <div className="route-browser-continents">
         {groups.map((continent) => (
           <LazyDisclosure
             key={continent.continent}
@@ -350,7 +482,7 @@ export function RouteCatalogBrowser({
             )}
           />
         ))}
-      </div>
+      </div>}
     </section>
   );
 }

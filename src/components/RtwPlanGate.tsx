@@ -29,6 +29,7 @@ interface Props {
   readonly officialSchedules?: OfficialScheduleCatalog | null | undefined;
   readonly airportLookup?: ReadonlyMap<string, Airport> | null | undefined;
   readonly countryContinents?: ReadonlyMap<string, ContinentId> | null | undefined;
+  readonly countrySubregions?: ReadonlyMap<string, string> | null | undefined;
   readonly airportContinentOverrides?: ReadonlyMap<string, ContinentId> | null | undefined;
   readonly marketProfile: MarketProfile;
   readonly ticketingPrograms: ReadonlyArray<RtwTicketingProgram>;
@@ -162,6 +163,7 @@ export function RtwPlanGate({
   officialSchedules,
   airportLookup,
   countryContinents,
+  countrySubregions,
   airportContinentOverrides,
   marketProfile,
   ticketingPrograms,
@@ -212,6 +214,10 @@ export function RtwPlanGate({
     [alliance, allianceCatalog.memberships],
   );
   const memberCodes = useMemo(() => new Set(rawMemberships.map((membership) => membership.airline)), [rawMemberships]);
+  const memberNames = useMemo(
+    () => new Map(rawMemberships.map((membership) => [membership.airline, membership.airlineName] as const)),
+    [rawMemberships],
+  );
   const routeCountByCarrier = useMemo(() => {
     if (routeCountsByCarrier) return routeCountsByCarrier;
     const counts = new Map<string, number>();
@@ -404,7 +410,9 @@ export function RtwPlanGate({
                     memberCodes={memberCodes}
                     airports={airportLookup}
                     countryContinents={countryContinents}
+                    countrySubregions={countrySubregions}
                     airportContinentOverrides={airportContinentOverrides}
+                    carrierNames={memberNames}
                   />
                 </Suspense>
               )}
