@@ -1,7 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { geoEqualEarth, geoPath } from 'd3-geo';
 import type { LineString } from 'geojson';
 import { greatCirclePath } from '../lib/calc/haversine.ts';
+import { fitProjectedPoints, type MapPanZoom } from '../lib/map-layout.ts';
 import type { ContinentId } from '../lib/schemas/country-continent.ts';
 import type { RouteNetworkCatalog } from '../lib/schemas/route-network.ts';
 import type { Airport } from '../lib/types.ts';
@@ -40,12 +41,13 @@ interface Props {
 
 const MAP_W = 1200;
 const MAP_H = 560;
+const MAP_IDENTITY: MapPanZoom = { scale: 1, tx: 0, ty: 0 };
 
 function routeId(route: RouteLibraryRouteCard): string {
   return `${route.from.iata}-${route.to.iata}`;
 }
 
-function RouteEntityMap({
+export function RouteEntityMap({
   routes,
   hubs,
   selectedAirport,
@@ -56,39 +58,164 @@ function RouteEntityMap({
   readonly selectedAirport?: Airport | undefined;
   readonly onAirportSelect: (airport: Airport) => void;
 }): React.ReactElement {
+  const { locale } = useLocale();
   const { features } = useWorldMap();
-  const projection = useMemo(() => geoEqualEarth().scale(198).translate([MAP_W / 2, MAP_H / 2 + 8]), []);
+  const focusLon = routes.length === 0
+    ? 0
+    : selectedAirport?.lon ?? hubs[0]?.airport.lon ?? routes[0]?.from.lon ?? 0;
+  const projection = useMemo(
+    () => geoEqualEarth().rotate([-focusLon, 0]).scale(198).translate([MAP_W / 2, MAP_H / 2 + 8]),
+    [focusLon],
+  );
   const path = useMemo(() => geoPath(projection), [projection]);
   const worldPath = features ? path(features) ?? '' : '';
-  const routePaths = useMemo(() => routes.slice(0, 320).map((route) => {
+  const routeGeometry = useMemo(() => routes.slice(0, 320).map((route) => {
+    const samples = greatCirclePath(route.from, route.to, 36);
     const line: LineString = {
       type: 'LineString',
-      coordinates: greatCirclePath(route.from, route.to, 36).map((point) => [point.lon, point.lat]),
+      coordinates: samples.map((point) => [point.lon, point.lat]),
     };
-    return { id: routeId(route), d: path(line) ?? '' };
-  }).filter((row) => row.d), [routes, path]);
+    const projected = samples.flatMap((point, index) => {
+      const xy = projection([point.lon, point.lat]);
+      return xy && Number.isFinite(xy[0]) && Number.isFinite(xy[1])
+        ? [{ id: `${routeId(route)}:${index}`, x: xy[0], y: xy[1] }]
+        : [];
+    });
+    return { id: routeId(route), d: path(line) ?? '', projected };
+  }).filter((row) => row.d), [routes, path, projection]);
   const maxConnections = Math.max(1, ...hubs.map((hub) => hub.connections));
   const hubPoints = hubs.map((hub) => {
     const point = projection([hub.airport.lon, hub.airport.lat]);
     return point ? { ...hub, x: point[0], y: point[1] } : null;
   }).filter((hub): hub is NonNullable<typeof hub> => hub !== null);
+  const fitPoints = useMemo(() => [
+    ...routeGeometry.flatMap((route) => route.projected),
+    ...hubPoints.map((hub) => ({ id: `hub:${hub.airport.iata}`, x: hub.x, y: hub.y })),
+  ], [routeGeometry, hubPoints]);
+  const preferredPanZoom = useMemo<MapPanZoom>(() => {
+    if (routes.length === 0) return MAP_IDENTITY;
+    const routeDistance = routes.length === 1 ? routes[0]?.distanceNm ?? 0 : 0;
+    const maxScale = routes.length === 1
+      ? routeDistance <= 30 ? 120 : routeDistance <= 100 ? 70 : routeDistance <= 300 ? 35 : routeDistance <= 900 ? 20 : 14
+      : routes.length <= 8 ? 12 : routes.length <= 40 ? 7 : 4.5;
+    return fitProjectedPoints(fitPoints, { width: MAP_W, height: MAP_H }, {
+      padding: { top: 64, right: 82, bottom: 64, left: 82 },
+      minScale: 0.8,
+      maxScale,
+    }) ?? MAP_IDENTITY;
+  }, [fitPoints, routes]);
+  const fitKey = `${focusLon}:${routes.map(routeId).join('|')}:${hubs.map((hub) => hub.airport.iata).join('|')}`;
+  const [panZoom, setPanZoom] = useState<MapPanZoom>(preferredPanZoom);
+  const [dragging, setDragging] = useState(false);
+  const lastFitKeyRef = useRef<string | null>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
+  const dragRef = useRef<{ startX: number; startY: number; origin: MapPanZoom; moved: boolean } | null>(null);
+  const suppressHubClickRef = useRef(false);
+
+  useEffect(() => {
+    if (lastFitKeyRef.current === fitKey) return;
+    lastFitKeyRef.current = fitKey;
+    setPanZoom(preferredPanZoom);
+  }, [fitKey, preferredPanZoom]);
+
+  const maxManualScale = 160;
+  const zoomAt = (factor: number, px: number, py: number): void => {
+    setPanZoom((current) => {
+      const nextScale = Math.max(0.5, Math.min(maxManualScale, current.scale * factor));
+      const worldX = (px - current.tx) / current.scale;
+      const worldY = (py - current.ty) / current.scale;
+      return {
+        scale: nextScale,
+        tx: px - worldX * nextScale,
+        ty: py - worldY * nextScale,
+      };
+    });
+  };
+  const zoomCenter = (factor: number): void => zoomAt(factor, MAP_W / 2, MAP_H / 2);
+
+  const onPointerDown = (event: React.PointerEvent<SVGSVGElement>): void => {
+    if (event.button !== 0) return;
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+    dragRef.current = { startX: event.clientX, startY: event.clientY, origin: panZoom, moved: false };
+    setDragging(true);
+  };
+  const onPointerMove = (event: React.PointerEvent<SVGSVGElement>): void => {
+    const drag = dragRef.current;
+    if (!drag) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const dx = (event.clientX - drag.startX) * (MAP_W / Math.max(1, rect.width));
+    const dy = (event.clientY - drag.startY) * (MAP_H / Math.max(1, rect.height));
+    if (Math.abs(dx) + Math.abs(dy) > 3) drag.moved = true;
+    setPanZoom({ scale: drag.origin.scale, tx: drag.origin.tx + dx, ty: drag.origin.ty + dy });
+  };
+  const endPointerDrag = (event: React.PointerEvent<SVGSVGElement>): void => {
+    event.currentTarget.releasePointerCapture?.(event.pointerId);
+    suppressHubClickRef.current = dragRef.current?.moved ?? false;
+    dragRef.current = null;
+    setDragging(false);
+    window.setTimeout(() => { suppressHubClickRef.current = false; }, 0);
+  };
+  const onWheel = (event: React.WheelEvent<SVGSVGElement>): void => {
+    event.preventDefault();
+    const rect = svgRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const px = (event.clientX - rect.left) * (MAP_W / Math.max(1, rect.width));
+    const py = (event.clientY - rect.top) * (MAP_H / Math.max(1, rect.height));
+    zoomAt(Math.exp(-event.deltaY * 0.001), px, py);
+  };
+  const inverseScale = 1 / Math.max(0.001, panZoom.scale);
+  const transform = `translate(${panZoom.tx} ${panZoom.ty}) scale(${panZoom.scale})`;
+  const mapCopy = locale === 'zh-TW'
+    ? { hint: '拖曳移動 · 滾輪縮放', zoomIn: '放大地圖', zoomOut: '縮小地圖', fit: '適合目前航線' }
+    : { hint: 'Drag to pan · scroll to zoom', zoomIn: 'Zoom in', zoomOut: 'Zoom out', fit: 'Fit current routes' };
 
   return (
-    <div className="entity-map-card">
-      <svg viewBox={`0 0 ${MAP_W} ${MAP_H}`} role="img" aria-label="Route network map">
-        {worldPath && <path className="entity-map-world" d={worldPath} />}
-        <g className="entity-map-routes">{routePaths.map((route) => <path key={route.id} d={route.d} />)}</g>
-        <g className="entity-map-hubs">
-          {hubPoints.map((hub) => (
-            <g key={hub.airport.iata} transform={`translate(${hub.x} ${hub.y})`} onClick={() => onAirportSelect(hub.airport)}>
-              <circle r={4 + (hub.connections / maxConnections) * 8} />
-              <text x="10" y="4">{hub.airport.iata}</text>
-            </g>
-          ))}
-          {selectedAirport && (() => {
-            const point = projection([selectedAirport.lon, selectedAirport.lat]);
-            return point ? <circle className="entity-map-selected" cx={point[0]} cy={point[1]} r="10" /> : null;
-          })()}
+    <div className={`entity-map-card${dragging ? ' dragging' : ''}`}>
+      <div className="entity-map-interaction-hint">{mapCopy.hint}</div>
+      <div className="entity-map-controls" aria-label={locale === 'zh-TW' ? '地圖控制' : 'Map controls'}>
+        <button type="button" aria-label={mapCopy.zoomIn} onClick={() => zoomCenter(1.35)}>+</button>
+        <button type="button" aria-label={mapCopy.zoomOut} onClick={() => zoomCenter(1 / 1.35)}>−</button>
+        <button type="button" className="fit" aria-label={mapCopy.fit} onClick={() => setPanZoom(preferredPanZoom)}>⌖</button>
+        <span>{panZoom.scale >= 10 ? panZoom.scale.toFixed(0) : panZoom.scale.toFixed(1)}×</span>
+      </div>
+      <svg
+        ref={svgRef}
+        viewBox={`0 0 ${MAP_W} ${MAP_H}`}
+        role="img"
+        aria-label="Route network map"
+        data-map-scale={panZoom.scale.toFixed(4)}
+        data-map-tx={panZoom.tx.toFixed(2)}
+        data-map-ty={panZoom.ty.toFixed(2)}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endPointerDrag}
+        onPointerCancel={endPointerDrag}
+        onWheel={onWheel}
+      >
+        <g className="entity-map-viewport" transform={transform}>
+          {worldPath && <path className="entity-map-world" d={worldPath} />}
+          <g className="entity-map-routes">{routeGeometry.map((route) => <path key={route.id} d={route.d} />)}</g>
+          <g className="entity-map-hubs">
+            {hubPoints.map((hub) => (
+              <g
+                key={hub.airport.iata}
+                transform={`translate(${hub.x} ${hub.y})`}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  if (!suppressHubClickRef.current) onAirportSelect(hub.airport);
+                }}
+              >
+                <g transform={`scale(${inverseScale})`}>
+                  <circle r={4 + (hub.connections / maxConnections) * 8} />
+                  <text x="10" y="4">{hub.airport.iata}</text>
+                </g>
+              </g>
+            ))}
+            {selectedAirport && (() => {
+              const point = projection([selectedAirport.lon, selectedAirport.lat]);
+              return point ? <circle className="entity-map-selected" cx={point[0]} cy={point[1]} r={10 * inverseScale} /> : null;
+            })()}
+          </g>
         </g>
       </svg>
     </div>
