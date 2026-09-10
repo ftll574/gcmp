@@ -93,19 +93,28 @@ export function RouteLibraryExplorer({
   const [showRouteIndex, setShowRouteIndex] = useState(false);
   const entityInput = useMemo(() => ({ network, airports, carrierNames, memberCodes }), [network, airports, carrierNames, memberCodes]);
   const searchResults = useMemo(() => searchRouteLibraryEntities({ ...entityInput, query, locale: zh ? 'zh-TW' : 'en' }), [entityInput, query, zh]);
-  const overview = useMemo(() => buildRouteLibraryOverview({
-    network,
-    memberCodes,
-    airports,
-    carrierNames,
-    countryContinents,
-    airportContinentOverrides,
-  }), [network, memberCodes, airports, carrierNames, countryContinents, airportContinentOverrides]);
-  const fingerprint = useMemo(() => buildRouteLibraryFingerprint(entityInput, alliance === 'all' ? 150 : 120), [alliance, entityInput]);
-
-  const airportProfile = selection?.kind === 'airport' ? buildAirportEntityProfile(entityInput, selection.id) : null;
-  const airlineProfile = selection?.kind === 'airline' ? buildAirlineEntityProfile(entityInput, selection.id) : null;
-  const routeProfile = selection?.kind === 'route' ? buildRouteEntityProfile(entityInput, selection.id) : null;
+  const homeModel = useMemo(() => {
+    if (selection) return null;
+    return {
+      overview: buildRouteLibraryOverview({
+        network,
+        memberCodes,
+        airports,
+        carrierNames,
+        countryContinents,
+        airportContinentOverrides,
+      }),
+      fingerprint: buildRouteLibraryFingerprint(entityInput, alliance === 'all' ? 150 : 120),
+    };
+  }, [selection, network, memberCodes, airports, carrierNames, countryContinents, airportContinentOverrides, entityInput, alliance]);
+  const profiles = useMemo(() => ({
+    airport: selection?.kind === 'airport' ? buildAirportEntityProfile(entityInput, selection.id) : null,
+    airline: selection?.kind === 'airline' ? buildAirlineEntityProfile(entityInput, selection.id) : null,
+    route: selection?.kind === 'route' ? buildRouteEntityProfile(entityInput, selection.id) : null,
+  }), [entityInput, selection]);
+  const airportProfile = profiles.airport;
+  const airlineProfile = profiles.airline;
+  const routeProfile = profiles.route;
 
   const continentLabel = (continent: ContinentId | 'unmapped'): string => continent === 'unmapped'
     ? (zh ? '未分類' : 'Unmapped')
@@ -239,7 +248,7 @@ export function RouteLibraryExplorer({
 
       {!selection ? (
         <div className="entity-explore-home">
-          <Suspense fallback={<RouteMapLoading zh={zh} />}><LazyRouteEntityMap routes={fingerprint.routes} hubs={fingerprint.hubs} allianceTheme={alliance} fingerprint controls={mapControls} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={[{ value: overview.routeCount, label: copy.routes }, { value: overview.airportCount, label: copy.airports }, { value: overview.carrierCount, label: copy.airlines }, { value: overview.confirmedNumberCount, label: copy.confirmed }]} /></Suspense>
+          <Suspense fallback={<RouteMapLoading zh={zh} />}><LazyRouteEntityMap routes={homeModel!.fingerprint.routes} hubs={homeModel!.fingerprint.hubs} allianceTheme={alliance} fingerprint controls={mapControls} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={[{ value: homeModel!.overview.routeCount, label: copy.routes }, { value: homeModel!.overview.airportCount, label: copy.airports }, { value: homeModel!.overview.carrierCount, label: copy.airlines }, { value: homeModel!.overview.confirmedNumberCount, label: copy.confirmed }]} /></Suspense>
         </div>
       ) : entityContent}
     </section>
