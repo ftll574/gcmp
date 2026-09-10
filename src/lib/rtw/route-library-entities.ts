@@ -77,10 +77,9 @@ function publishedRows(input: BuildRouteLibraryEntityInput): ReadonlyArray<Route
 
 function carriersForPair(
   rows: ReadonlyArray<RouteNetworkEntry>,
-  network: RouteNetworkCatalog,
+  sourceById: ReadonlyMap<string, RouteNetworkSource>,
   carrierNames: ReadonlyMap<string, string>,
 ): ReadonlyArray<RouteLibraryCarrierRoute> {
-  const sourceById = new Map(network.sources.map((source) => [source.id, source] as const));
   return rows.map((row) => {
     const sourceIds = new Set([
       ...row.sourceIds,
@@ -102,6 +101,7 @@ function carriersForPair(
 }
 
 function buildPairCards(input: BuildRouteLibraryEntityInput, rows: ReadonlyArray<RouteNetworkEntry>): ReadonlyArray<RouteLibraryRouteCard> {
+  const sourceById = new Map(input.network.sources.map((source) => [source.id, source] as const));
   const grouped = new Map<string, RouteNetworkEntry[]>();
   for (const row of rows) {
     const key = `${row.pair[0]}-${row.pair[1]}`;
@@ -118,7 +118,7 @@ function buildPairCards(input: BuildRouteLibraryEntityInput, rows: ReadonlyArray
     return [{
       from,
       to,
-      carriers: carriersForPair(pairRows, input.network, input.carrierNames),
+      carriers: carriersForPair(pairRows, sourceById, input.carrierNames),
       distanceNm: Math.round(distanceNm(from, to)),
     }];
   });

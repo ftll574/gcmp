@@ -74,6 +74,53 @@ test('route library is a separate page and keeps the heavy catalog out of the ho
   expect(map?.querySelector('input[type="search"]')).not.toBeNull();
   expect(screen.queryByText('不要翻資料庫，直接探索航網。')).not.toBeInTheDocument();
   expect(new URLSearchParams(window.location.search).get('view')).toBe('routes');
+  const routeRequests = vi.mocked(fetch).mock.calls.map(([input]) => String(input));
+  expect(routeRequests.some((url) => url.includes('/programs/'))).toBe(false);
+  expect(routeRequests.some((url) => url.includes('/rtw-products/'))).toBe(false);
+  expect(routeRequests.some((url) => url.includes('/award-pricing/'))).toBe(false);
+  expect(routeRequests.some((url) => url.includes('/markets/'))).toBe(false);
+});
+
+test('route library reports a core data failure without loading planner datasets', async () => {
+  window.history.replaceState({}, '', '/?lang=zh-TW&view=routes');
+  vi.mocked(fetch).mockImplementation(async (input: RequestInfo | URL) => {
+    const path = String(input).split('?')[0] ?? '';
+    if (path === '/data/airports.json') {
+      return { ok: false, status: 503, json: async () => undefined } as Response;
+    }
+    const file = join(PUBLIC, path);
+    if (!path.startsWith('/data/') || !path.endsWith('.json') || !existsSync(file)) {
+      return { ok: false, status: 404, json: async () => undefined } as Response;
+    }
+    return { ok: true, status: 200, json: async () => JSON.parse(readFileSync(file, 'utf8')) } as Response;
+  });
+
+  render(<SiteApp />);
+  expect(await screen.findByRole('alert')).toHaveTextContent('Fetch /data/airports.json failed: HTTP 503');
+  const routeRequests = vi.mocked(fetch).mock.calls.map(([input]) => String(input));
+  expect(routeRequests.some((url) => url.includes('/programs/'))).toBe(false);
+  expect(routeRequests.some((url) => url.includes('/rtw-products/'))).toBe(false);
+});
+
+test('advanced route data failure does not take down the core route library', async () => {
+  window.history.replaceState({}, '', '/?lang=zh-TW&view=routes&advanced=1&entity=airport&id=TPE');
+  vi.mocked(fetch).mockImplementation(async (input: RequestInfo | URL) => {
+    const path = String(input).split('?')[0] ?? '';
+    if (path === '/data/official-schedules.json') {
+      return { ok: false, status: 503, json: async () => undefined } as Response;
+    }
+    const file = join(PUBLIC, path);
+    if (!path.startsWith('/data/') || !path.endsWith('.json') || !existsSync(file)) {
+      return { ok: false, status: 404, json: async () => undefined } as Response;
+    }
+    return { ok: true, status: 200, json: async () => JSON.parse(readFileSync(file, 'utf8')) } as Response;
+  });
+
+  render(<SiteApp />);
+  expect(await screen.findByRole('heading', { name: /TPE.*Taoyuan/ }, { timeout: 5_000 })).toBeInTheDocument();
+  expect(await screen.findByText('詳細航線資料載入失敗', {}, { timeout: 5_000 })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: '重新載入' })).toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: /TPE.*Taoyuan/ })).toBeInTheDocument();
 });
 
 test('route library searches a confirmed flight and hands it to the planner', async () => {
@@ -128,8 +175,11 @@ test('route library restores shareable search, alliance, entity and advanced-fil
   window.history.replaceState({}, '', '/?lang=zh-TW&view=routes&alliance=star&q=TPE&advanced=1&entity=airport&id=TPE');
   render(<SiteApp />);
 
-  expect(await screen.findByRole('heading', { name: /TPE.*Taoyuan/ })).toBeInTheDocument();
-  expect(screen.getByRole('combobox', { name: /搜尋機場、城市、航空公司、航線或班號/ })).toHaveValue('TPE');
+  // This cold integration path parses the multi-megabyte runtime graph from
+  // disk in jsdom. Correctness should not depend on Testing Library's 1s
+  // default; route-load performance is measured separately in the browser.
+  expect(await screen.findByRole('heading', { name: /TPE.*Taoyuan/ }, { timeout: 5_000 })).toBeInTheDocument();
+  expect(await screen.findByRole('combobox', { name: /搜尋機場、城市、航空公司、航線或班號/ }, { timeout: 5_000 })).toHaveValue('TPE');
   expect(screen.getByRole('button', { name: 'Star' })).toHaveAttribute('aria-pressed', 'true');
   expect(screen.getByRole('button', { name: /收起詳細篩選/ })).toHaveAttribute('aria-expanded', 'true');
 });

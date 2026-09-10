@@ -45,6 +45,22 @@ describe('entity-first route library model', () => {
     expect(route?.route.carriers.find((carrier) => carrier.carrier === 'BR')?.confirmedNumbers).toContain('BR198');
   });
 
+  test('keeps route source attribution attached to the correct carrier', () => {
+    const route = buildRouteEntityProfile(input, 'TPE-NRT');
+    const br = route?.route.carriers.find((carrier) => carrier.carrier === 'BR');
+    const row = network.routes.find((entry) => entry.carrier === 'BR'
+      && entry.pair[0] === 'TPE'
+      && entry.pair[1] === 'NRT'
+      && entry.status === 'published');
+    expect(row).toBeDefined();
+    const expectedIds = new Set([
+      ...row!.sourceIds,
+      ...(row!.flightNumberSourceIds ?? []),
+      ...(row!.flightNumberCandidateSourceIds ?? []),
+    ]);
+    expect(new Set(br?.sources.map((source) => source.id))).toEqual(expectedIds);
+  });
+
   test('searches airports, airlines, routes and exact flight designators', () => {
     expect(searchRouteLibraryEntities({ ...input, query: 'TPE' })[0]?.selection).toEqual({ kind: 'airport', id: 'TPE' });
     expect(searchRouteLibraryEntities({ ...input, query: 'BR' })[0]?.selection).toEqual({ kind: 'airline', id: 'BR' });

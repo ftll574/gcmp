@@ -2,19 +2,19 @@ import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { buildAirportIndex } from '../lib/airport-index.ts';
 import { parseRouteNetworkCatalog, type RouteNetworkCatalog } from '../lib/schemas/route-network.ts';
 import type { RouteLibraryEntitySelection } from '../lib/rtw/route-library-entities.ts';
-import type { LoadedData } from '../state/use-loaded-data.ts';
+import type { RouteLibraryData } from '../state/use-route-library-data.ts';
 import { RouteLibraryExplorer } from './RouteLibraryExplorer.tsx';
 import { SiteHeader, type SiteView } from './SiteHeader.tsx';
 import { useLocale } from '../i18n/use-locale.ts';
 
 type AllianceFilter = 'all' | 'star' | 'oneworld' | 'skyteam';
 
-const LazyRouteCatalogBrowser = lazy(() =>
-  import('./RouteCatalogBrowser.tsx').then((module) => ({ default: module.RouteCatalogBrowser })),
+const LazyRouteCatalogBrowserLoader = lazy(() =>
+  import('./RouteCatalogBrowserLoader.tsx').then((module) => ({ default: module.RouteCatalogBrowserLoader })),
 );
 
 interface Props {
-  readonly data: LoadedData;
+  readonly data: RouteLibraryData;
   readonly onNavigate: (view: SiteView) => void;
   readonly onPlanRoute: (route: { from: string; to: string; carrier: string; flightNumber?: string | undefined }) => void;
 }
@@ -181,15 +181,12 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
               </button>
               {advancedOpen && <section className="routes-browser-shell">
                 <Suspense fallback={<div className="routes-loading" role="status">{copy.loading}</div>}>
-                  <LazyRouteCatalogBrowser
+                  <LazyRouteCatalogBrowserLoader
                     routeNetwork={network}
-                    schedules={data.schedules}
-                    officialSchedules={data.officialSchedules}
                     memberCodes={memberCodes}
                     airports={airports}
                     countryContinents={data.countryContinents}
                     countrySubregions={data.countrySubregions}
-                    airportBrowseRegions={data.airportBrowseRegions}
                     airportContinentOverrides={data.airportContinentOverrides}
                     carrierNames={carrierNames}
                   />

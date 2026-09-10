@@ -3,8 +3,11 @@ import { LandingPage } from './components/LandingPage.tsx';
 import type { SiteView } from './components/SiteHeader.tsx';
 import { useLocaleState } from './i18n/use-locale-state.ts';
 
-const LazyLoadedApp = lazy(() =>
+const LazyPlannerApp = lazy(() =>
   import('./App.tsx').then((module) => ({ default: module.App })),
+);
+const LazyRoutesApp = lazy(() =>
+  import('./RoutesApp.tsx').then((module) => ({ default: module.RoutesApp })),
 );
 
 function viewFromLocation(): SiteView {
@@ -46,7 +49,9 @@ export function SiteApp(): React.ReactElement {
 
   return (
     <Suspense fallback={<div className="app-loading site-app-loading" role="status"><p>{locale === 'zh-TW' ? '載入中…' : 'Loading…'}</p></div>}>
-      <LazyLoadedApp siteView={view} onNavigateSite={navigate} />
+      {view === 'routes'
+        ? <LazyRoutesApp onNavigateSite={navigate} />
+        : <LazyPlannerApp siteView="planner" onNavigateSite={navigate} />}
     </Suspense>
   );
 }
