@@ -1,0 +1,586 @@
+{
+  "version": 1,
+  "source": "https://github.com/MrAirspace/aircraft-flight-schedules",
+  "license": "ODbL-1.0",
+  "note": "Observed ADS-B callsign/route candidates. Current route existence is independently validated elsewhere; these rows do not establish a future schedule or physical operating carrier.",
+  "entries": [
+    {
+      "carrier": "MU",
+      "from": "SWA",
+      "to": "ZHA",
+      "quarter": "2026Q2",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter2",
+      "flightNumbers": [
+        "MU9139",
+        "MU9065"
+      ],
+      "observations": 658,
+      "seasons": [
+        "2025Q1",
+        "2025Q2",
+        "2025Q3",
+        "2025Q4",
+        "2026Q1",
+        "2026Q2"
+      ]
+    },
+    {
+      "carrier": "UA",
+      "from": "IAH",
+      "to": "TQO",
+      "quarter": "2026Q2",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter2",
+      "flightNumbers": [
+        "UA1600"
+      ],
+      "observations": 621,
+      "seasons": [
+        "2025Q1",
+        "2025Q2",
+        "2025Q3",
+        "2025Q4",
+        "2026Q1",
+        "2026Q2"
+      ]
+    },
+    {
+      "carrier": "MU",
+      "from": "ZHA",
+      "to": "SWA",
+      "quarter": "2026Q2",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter2",
+      "flightNumbers": [
+        "MU9140",
+        "MU9066"
+      ],
+      "observations": 550,
+      "seasons": [
+        "2025Q1",
+        "2025Q2",
+        "2025Q3",
+        "2026Q1",
+        "2026Q2"
+      ]
+    },
+    {
+      "carrier": "UA",
+      "from": "TQO",
+      "to": "IAH",
+      "quarter": "2026Q2",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter2",
+      "flightNumbers": [
+        "UA1601"
+      ],
+      "observations": 533,
+      "seasons": [
+        "2025Q1",
+        "2025Q2",
+        "2025Q3",
+        "2025Q4",
+        "2026Q1",
+        "2026Q2"
+      ]
+    },
+    {
+      "carrier": "UA",
+      "from": "IAD",
+      "to": "PBI",
+      "quarter": "2026Q1",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter1",
+      "flightNumbers": [
+        "UA2668",
+        "UA1643"
+      ],
+      "observations": 453,
+      "seasons": [
+        "2025Q4",
+        "2026Q1"
+      ]
+    },
+    {
+      "carrier": "UA",
+      "from": "PLS",
+      "to": "IAD",
+      "quarter": "2026Q2",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter2",
+      "flightNumbers": [
+        "UA1820"
+      ],
+      "observations": 398,
+      "seasons": [
+        "2025Q1",
+        "2025Q2",
+        "2025Q4",
+        "2026Q1",
+        "2026Q2"
+      ]
+    },
+    {
+      "carrier": "UA",
+      "from": "IAD",
+      "to": "PLS",
+      "quarter": "2026Q2",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter2",
+      "flightNumbers": [
+        "UA1817"
+      ],
+      "observations": 384,
+      "seasons": [
+        "2025Q1",
+        "2025Q2",
+        "2025Q4",
+        "2026Q1",
+        "2026Q2"
+      ]
+    },
+    {
+      "carrier": "UA",
+      "from": "CLE",
+      "to": "TPA",
+      "quarter": "2026Q1",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter1",
+      "flightNumbers": [
+        "UA231"
+      ],
+      "observations": 269,
+      "seasons": [
+        "2025Q1",
+        "2025Q4",
+        "2026Q1"
+      ]
+    },
+    {
+      "carrier": "DL",
+      "from": "MSP",
+      "to": "TUS",
+      "quarter": "2025Q4",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2025_quarter4",
+      "flightNumbers": [
+        "DL1059",
+        "DL1621"
+      ],
+      "observations": 268,
+      "seasons": [
+        "2025Q4"
+      ]
+    },
+    {
+      "carrier": "DL",
+      "from": "TUS",
+      "to": "MSP",
+      "quarter": "2025Q4",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2025_quarter4",
+      "flightNumbers": [
+        "DL1021"
+      ],
+      "observations": 261,
+      "seasons": [
+        "2025Q1",
+        "2025Q4"
+      ]
+    },
+    {
+      "carrier": "UA",
+      "from": "MBJ",
+      "to": "ORD",
+      "quarter": "2026Q2",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter2",
+      "flightNumbers": [
+        "UA1160"
+      ],
+      "observations": 252,
+      "seasons": [
+        "2025Q1",
+        "2025Q2",
+        "2026Q1",
+        "2026Q2"
+      ]
+    },
+    {
+      "carrier": "UA",
+      "from": "PBI",
+      "to": "IAD",
+      "quarter": "2026Q1",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter1",
+      "flightNumbers": [
+        "UA1813"
+      ],
+      "observations": 208,
+      "seasons": [
+        "2025Q4",
+        "2026Q1"
+      ]
+    },
+    {
+      "carrier": "MU",
+      "from": "NKG",
+      "to": "CTU",
+      "quarter": "2026Q1",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter1",
+      "flightNumbers": [
+        "MU2671",
+        "MU9858",
+        "MU7737"
+      ],
+      "observations": 199,
+      "seasons": [
+        "2025Q1",
+        "2025Q2",
+        "2025Q3",
+        "2025Q4",
+        "2026Q1"
+      ]
+    },
+    {
+      "carrier": "UA",
+      "from": "ORD",
+      "to": "MBJ",
+      "quarter": "2026Q2",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter2",
+      "flightNumbers": [
+        "UA1146"
+      ],
+      "observations": 195,
+      "seasons": [
+        "2025Q1",
+        "2025Q2",
+        "2026Q1",
+        "2026Q2"
+      ]
+    },
+    {
+      "carrier": "DL",
+      "from": "MCO",
+      "to": "AMS",
+      "quarter": "2026Q1",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter1",
+      "flightNumbers": [
+        "DL90"
+      ],
+      "observations": 163,
+      "seasons": [
+        "2025Q4",
+        "2026Q1"
+      ]
+    },
+    {
+      "carrier": "DL",
+      "from": "POP",
+      "to": "ATL",
+      "quarter": "2026Q1",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter1",
+      "flightNumbers": [
+        "DL1778"
+      ],
+      "observations": 156,
+      "seasons": [
+        "2025Q1",
+        "2026Q1"
+      ]
+    },
+    {
+      "carrier": "MF",
+      "from": "PKX",
+      "to": "HAK",
+      "quarter": "2026Q1",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter1",
+      "flightNumbers": [
+        "MF8329"
+      ],
+      "observations": 137,
+      "seasons": [
+        "2025Q1",
+        "2025Q3",
+        "2025Q4",
+        "2026Q1"
+      ]
+    },
+    {
+      "carrier": "DL",
+      "from": "SMF",
+      "to": "DTW",
+      "quarter": "2025Q2",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2025_quarter2",
+      "flightNumbers": [
+        "DL566",
+        "DL2507"
+      ],
+      "observations": 137,
+      "seasons": [
+        "2025Q2"
+      ]
+    },
+    {
+      "carrier": "MU",
+      "from": "SZX",
+      "to": "TFU",
+      "quarter": "2026Q1",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter1",
+      "flightNumbers": [
+        "MU9810"
+      ],
+      "observations": 120,
+      "seasons": [
+        "2025Q1",
+        "2025Q2",
+        "2025Q4",
+        "2026Q1"
+      ]
+    },
+    {
+      "carrier": "MF",
+      "from": "HAK",
+      "to": "PKX",
+      "quarter": "2026Q1",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter1",
+      "flightNumbers": [
+        "MF8330"
+      ],
+      "observations": 118,
+      "seasons": [
+        "2025Q3",
+        "2025Q4",
+        "2026Q1"
+      ]
+    },
+    {
+      "carrier": "MU",
+      "from": "CKG",
+      "to": "TAO",
+      "quarter": "2026Q1",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter1",
+      "flightNumbers": [
+        "MU5254"
+      ],
+      "observations": 112,
+      "seasons": [
+        "2025Q4",
+        "2026Q1"
+      ]
+    },
+    {
+      "carrier": "UA",
+      "from": "DOM",
+      "to": "EWR",
+      "quarter": "2026Q1",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter1",
+      "flightNumbers": [
+        "UA2848"
+      ],
+      "observations": 109,
+      "seasons": [
+        "2025Q1",
+        "2025Q2",
+        "2025Q4",
+        "2026Q1"
+      ]
+    },
+    {
+      "carrier": "DL",
+      "from": "MXP",
+      "to": "BOS",
+      "quarter": "2025Q3",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2025_quarter3",
+      "flightNumbers": [
+        "DL187"
+      ],
+      "observations": 79,
+      "seasons": [
+        "2025Q2",
+        "2025Q3"
+      ]
+    },
+    {
+      "carrier": "MF",
+      "from": "TSN",
+      "to": "SHA",
+      "quarter": "2026Q1",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter1",
+      "flightNumbers": [
+        "MF8569"
+      ],
+      "observations": 76,
+      "seasons": [
+        "2025Q3",
+        "2026Q1"
+      ]
+    },
+    {
+      "carrier": "UA",
+      "from": "TPA",
+      "to": "CLE",
+      "quarter": "2026Q1",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter1",
+      "flightNumbers": [
+        "UA2144"
+      ],
+      "observations": 75,
+      "seasons": [
+        "2026Q1"
+      ]
+    },
+    {
+      "carrier": "MU",
+      "from": "TAO",
+      "to": "CKG",
+      "quarter": "2026Q1",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter1",
+      "flightNumbers": [
+        "MU5253"
+      ],
+      "observations": 52,
+      "seasons": [
+        "2025Q4",
+        "2026Q1"
+      ]
+    },
+    {
+      "carrier": "UA",
+      "from": "EWR",
+      "to": "DOM",
+      "quarter": "2026Q1",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter1",
+      "flightNumbers": [
+        "UA2849"
+      ],
+      "observations": 50,
+      "seasons": [
+        "2025Q4",
+        "2026Q1"
+      ]
+    },
+    {
+      "carrier": "TK",
+      "from": "VAS",
+      "to": "IST",
+      "quarter": "2026Q2",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter2",
+      "flightNumbers": [
+        "TK3255"
+      ],
+      "observations": 49,
+      "seasons": [
+        "2025Q1",
+        "2025Q2",
+        "2025Q3",
+        "2025Q4",
+        "2026Q2"
+      ]
+    },
+    {
+      "carrier": "AA",
+      "from": "SDF",
+      "to": "PHX",
+      "quarter": "2026Q2",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter2",
+      "flightNumbers": [
+        "AA943"
+      ],
+      "observations": 31,
+      "seasons": [
+        "2026Q2"
+      ]
+    },
+    {
+      "carrier": "MU",
+      "from": "SWA",
+      "to": "TFU",
+      "quarter": "2026Q1",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter1",
+      "flightNumbers": [
+        "MU6716"
+      ],
+      "observations": 25,
+      "seasons": [
+        "2026Q1"
+      ]
+    },
+    {
+      "carrier": "MU",
+      "from": "SHE",
+      "to": "CZX",
+      "quarter": "2026Q2",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter2",
+      "flightNumbers": [
+        "MU2928"
+      ],
+      "observations": 22,
+      "seasons": [
+        "2025Q3",
+        "2025Q4",
+        "2026Q1",
+        "2026Q2"
+      ]
+    },
+    {
+      "carrier": "SV",
+      "from": "RUH",
+      "to": "EJH",
+      "quarter": "2025Q4",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2025_quarter4",
+      "flightNumbers": [
+        "SV1569"
+      ],
+      "observations": 22,
+      "seasons": [
+        "2025Q4"
+      ]
+    },
+    {
+      "carrier": "KL",
+      "from": "AMS",
+      "to": "TLV",
+      "quarter": "2026Q1",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter1",
+      "flightNumbers": [
+        "KL463"
+      ],
+      "observations": 22,
+      "seasons": [
+        "2026Q1"
+      ]
+    },
+    {
+      "carrier": "MU",
+      "from": "TFU",
+      "to": "SWA",
+      "quarter": "2026Q1",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter1",
+      "flightNumbers": [
+        "MU6715"
+      ],
+      "observations": 21,
+      "seasons": [
+        "2026Q1"
+      ]
+    },
+    {
+      "carrier": "MU",
+      "from": "KHN",
+      "to": "TNA",
+      "quarter": "2025Q1",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2025_quarter1",
+      "flightNumbers": [
+        "MU6550"
+      ],
+      "observations": 9,
+      "seasons": [
+        "2025Q1"
+      ]
+    },
+    {
+      "carrier": "MU",
+      "from": "TNA",
+      "to": "KHN",
+      "quarter": "2025Q1",
+      "sourceUrl": "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2025_quarter1",
+      "flightNumbers": [
+        "MU6549"
+      ],
+      "observations": 8,
+      "seasons": [
+        "2025Q1"
+      ]
+    }
+  ]
+}

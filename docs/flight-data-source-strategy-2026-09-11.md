@@ -80,6 +80,14 @@ route-discovery input to both the runtime builder and the flight-number builder.
 Provider-listed rows without source-backed flight identity remain unresolved in
 the runtime; flight-number enrichment runs only after this route graph exists.
 
+For unresolved route identities, GCMP also uses a small attributed candidate
+overlay derived from MrAirspace's ODbL-1.0 quarterly aircraft-flight-schedules
+dataset. The research pass range-queries the large Parquet releases outside the
+repository and joins only already-current GCMP routes by airline ICAO and exact
+validated ICAO airport pair. The tracked overlay keeps only routes with at least
+two observations, chooses flight numbers from the most recent matching quarter,
+and never promotes operating-carrier identity or future schedule status.
+
 ## Next collection steps
 
 ### P0 — establish the global dated backbone

@@ -1,6 +1,7 @@
 import { createReadStream, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createInterface } from 'node:readline';
+import { pathToFileURL } from 'node:url';
 import airportsRaw from '../public/data/airports.json' with { type: 'json' };
 import { mergeRouteNetworkCatalogs } from '../src/lib/rtw/route-network-merge.ts';
 import {
@@ -34,6 +35,7 @@ const STANDING_SOURCE_ID = 'flight-numbers-vrs-standing-20260907';
 const AFFILIATE_STANDING_SOURCE_ID = 'flight-numbers-vrs-affiliate-standing-20260907';
 const BTS_SOURCE_ID = 'flight-numbers-bts-marketing-202606';
 const FLIGHTSFROM_SNAPSHOT = 'public/data/route-network/flightsfrom-flight-numbers-20260909.json';
+const MRAIRSPACE_SNAPSHOT = 'public/data/route-network/mrairspace-flight-number-candidates.json';
 const CORRECTIONS_INPUT = 'public/data/route-network/current-corrections.json';
 
 interface FlightsFromSnapshot {
@@ -83,6 +85,23 @@ interface FlightInformationCache {
   sourceUrl: string;
   status: number;
   flightNumbers: string[];
+}
+
+interface MrAirspaceSnapshot {
+  version: 1;
+  source: 'https://github.com/MrAirspace/aircraft-flight-schedules';
+  license: 'ODbL-1.0';
+  note: string;
+  entries: Array<{
+    carrier: string;
+    from: string;
+    to: string;
+    quarter: string;
+    sourceUrl: string;
+    flightNumbers: string[];
+    observations: number;
+    seasons: string[];
+  }>;
 }
 
 function argValue(name: string): string | undefined {
@@ -529,6 +548,68 @@ function parseFlightInformationNumbers(html: string, from: string, to: string): 
   return [...numbers].sort();
 }
 
+export function parseMrAirspaceSnapshot(raw: unknown): MrAirspaceSnapshot {
+  const snapshot = raw as Partial<MrAirspaceSnapshot>;
+  if (snapshot.version !== 1
+    || snapshot.source !== 'https://github.com/MrAirspace/aircraft-flight-schedules'
+    || snapshot.license !== 'ODbL-1.0'
+    || !Array.isArray(snapshot.entries)) {
+    throw new Error('Unexpected MrAirspace flight-number snapshot metadata');
+  }
+  const seen = new Set<string>();
+  for (const entry of snapshot.entries) {
+    const key = routeKey(entry.carrier, entry.from, entry.to);
+    if (seen.has(key)) throw new Error(`Duplicate MrAirspace route ${key}`);
+    seen.add(key);
+    if (!/^[A-Z0-9]{2,3}$/.test(entry.carrier)
+      || !/^[A-Z]{3}$/.test(entry.from)
+      || !/^[A-Z]{3}$/.test(entry.to)
+      || !/^20\d{2}Q[1-4]$/.test(entry.quarter)
+      || !entry.sourceUrl.startsWith('https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/')
+      || !Number.isInteger(entry.observations)
+      || entry.observations < 2
+      || !Array.isArray(entry.seasons)
+      || entry.seasons.length === 0
+      || !Array.isArray(entry.flightNumbers)
+      || entry.flightNumbers.length === 0) {
+      throw new Error(`Invalid MrAirspace route ${key}`);
+    }
+    for (const number of entry.flightNumbers) {
+      if (!number.startsWith(entry.carrier) || !/^\d{1,4}[A-Z]?$/.test(number.slice(entry.carrier.length))) {
+        throw new Error(`Invalid MrAirspace designator ${number} for ${key}`);
+      }
+    }
+  }
+  return snapshot as MrAirspaceSnapshot;
+}
+
+function enrichMrAirspace(
+  publishedRoutes: ReadonlyMap<string, RouteNetworkEntry>,
+  accumulators: Map<string, FlightAccumulator>,
+  sources: Map<string, RouteNetworkSource>,
+): { matchedRoutes: number } {
+  const snapshot = parseMrAirspaceSnapshot(JSON.parse(readFileSync(MRAIRSPACE_SNAPSHOT, 'utf8')));
+  let matchedRoutes = 0;
+  for (const entry of snapshot.entries) {
+    const key = routeKey(entry.carrier, entry.from, entry.to);
+    if (!publishedRoutes.has(key)) throw new Error(`MrAirspace snapshot references non-published route ${key}`);
+    const value = accumulators.get(key);
+    if (value?.confirmed.size || value?.candidates.size) continue;
+    const sourceId = `mrairspace-${entry.quarter.toLowerCase()}`;
+    if (!sources.has(sourceId)) {
+      sources.set(sourceId, {
+        id: sourceId,
+        url: entry.sourceUrl,
+        checkedOn: '2026-09-11',
+        note: `MrAirspace aircraft-flight-schedules ${entry.quarter} ADS-B observed callsign/route data (ODbL-1.0). Converted from same-airline ICAO callsign suffix to an IATA-style candidate designator only; current route existence is independently validated and future schedule/operator identity is not inferred.`,
+      });
+    }
+    for (const number of entry.flightNumbers) addCandidate(accumulators, key, number, sourceId);
+    matchedRoutes++;
+  }
+  return { matchedRoutes };
+}
+
 function flightInformationSourceId(from: string, to: string): string {
   return `flightinformation-${from.toLowerCase()}-${to.toLowerCase()}-${CHECKED_ON.replaceAll('-', '')}`;
 }
@@ -738,6 +819,7 @@ async function main(): Promise<void> {
   const flightInformation = await enrichFlightInformation(
     workRoot, allowFlightInformationFetch, publishedRoutes, accumulators, existingKeys, sources,
   );
+  const mrAirspace = enrichMrAirspace(publishedRoutes, accumulators, sources);
 
   const numberRoutes = [...publishedRoutes.entries()].flatMap(([key, route]) => {
     const value = accumulators.get(key);
@@ -807,8 +889,9 @@ async function main(): Promise<void> {
     auditedCurrentReferences,
     flightConnections,
     flightInformation,
+    mrAirspace,
     unresolvedByCarrier: Object.fromEntries([...unresolvedByCarrier.entries()].sort((a, b) => b[1] - a[1])),
   }, null, 2));
 }
 
-await main();
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) await main();
