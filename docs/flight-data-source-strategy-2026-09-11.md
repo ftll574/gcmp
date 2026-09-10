@@ -73,6 +73,13 @@ routes absent from the current provider response, and unresolved origins. Exact
 matches can be exported as a separate provider-listed route catalog, but they do
 not establish the physical operating carrier or a flight number.
 
+After the full targeted validation pass completes, the independently confirmed
+carrier-route matches may be materialized as
+`public/data/route-network/validated-static-current.json`. That catalog is a
+route-discovery input to both the runtime builder and the flight-number builder.
+Provider-listed rows without source-backed flight identity remain unresolved in
+the runtime; flight-number enrichment runs only after this route graph exists.
+
 ## Next collection steps
 
 ### P0 — establish the global dated backbone

@@ -11,7 +11,10 @@ const INPUTS = [
   'bts-marketing-current.json',
   'standing-current.json',
 ] as const;
-const OPTIONAL_INPUTS = ['aviation-edge-global-current.json'] as const;
+const OPTIONAL_INPUTS = [
+  'aviation-edge-global-current.json',
+  'validated-static-current.json',
+] as const;
 const NUMBER_INPUT = 'flight-numbers-current.json';
 const CORRECTIONS_INPUT = 'current-corrections.json';
 

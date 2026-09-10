@@ -21,7 +21,10 @@ const BASE_INPUTS = [
   'bts-marketing-current.json',
   'standing-current.json',
 ] as const;
-const OPTIONAL_ROUTE_INPUTS = ['aviation-edge-global-current.json'] as const;
+const OPTIONAL_ROUTE_INPUTS = [
+  'aviation-edge-global-current.json',
+  'validated-static-current.json',
+] as const;
 const BTS_TARGETS = new Set(['AA', 'AS', 'DL', 'UA']);
 const DEFAULT_WORK_ROOT = 'E:/workspace/.gcmp-route-work';
 const DEFAULT_OUTPUT = 'public/data/route-network/flight-numbers-current.json';
