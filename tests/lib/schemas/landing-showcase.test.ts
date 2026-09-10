@@ -22,7 +22,7 @@ describe('landing showcase catalog', () => {
     expect(landing.showcases).toHaveLength(4);
     expect(landing.airports).toHaveLength(15);
     expect(landing.showcases.reduce((sum, showcase) => sum + showcase.legs.length, 0)).toBe(24);
-    expect(landing.stats).toMatchObject({ publishedRoutes: 29_987, allianceMembers: 60, alliances: 3 });
+    expect(landing.stats).toMatchObject({ publishedRoutes: 30_014, allianceMembers: 60, alliances: 3 });
     expect(landing.builtOn).toBe(runtimeMeta.builtOn);
   });
 

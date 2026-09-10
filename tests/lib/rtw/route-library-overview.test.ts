@@ -31,12 +31,12 @@ describe('route library overview model', () => {
       countryContinents,
       airportContinentOverrides: airportOverrides,
     });
-    expect(model.routeCount).toBe(29_987);
+    expect(model.routeCount).toBe(30_014);
     expect(model.carrierCount).toBe(60);
     expect(model.operatingCount).toBe(17_744);
-    expect(model.providerListedCount).toBe(12_243);
+    expect(model.providerListedCount).toBe(12_270);
     expect(model.confirmedNumberCount).toBe(14_977);
-    expect(model.candidateOnlyCount).toBe(15_010);
+    expect(model.candidateOnlyCount).toBe(15_037);
     expect(model.airportCount).toBeGreaterThan(1_000);
     expect(model.hubs).toHaveLength(model.airportCount);
     expect(model.topCarriers).toHaveLength(10);

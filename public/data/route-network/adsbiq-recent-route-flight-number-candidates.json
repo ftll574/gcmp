@@ -12,6 +12,20 @@
   "note": "Recent ADSBiq direct route_origin/route_dest observations. Each included candidate designator appears on the exact independently validated GCMP route on at least two distinct UTC dates. Candidate flight identity only; no future schedule or operating-carrier promotion is inferred.",
   "entries": [
     {
+      "carrier": "AZ",
+      "from": "OLB",
+      "to": "GOA",
+      "airlineIcao": "ITY",
+      "flightNumbers": [
+        "AZ1232"
+      ],
+      "observedDates": [
+        "2026-08-01",
+        "2026-08-08"
+      ],
+      "observationRows": 4
+    },
+    {
       "carrier": "ET",
       "from": "BUQ",
       "to": "ADD",
@@ -25,6 +39,439 @@
         "2026-09-04"
       ],
       "observationRows": 4
+    },
+    {
+      "carrier": "GA",
+      "from": "CGK",
+      "to": "SRG",
+      "airlineIcao": "GIA",
+      "flightNumbers": [
+        "GA232"
+      ],
+      "observedDates": [
+        "2026-09-03",
+        "2026-09-05"
+      ],
+      "observationRows": 3
+    },
+    {
+      "carrier": "GA",
+      "from": "SRG",
+      "to": "CGK",
+      "airlineIcao": "GIA",
+      "flightNumbers": [
+        "GA231",
+        "GA235",
+        "GA237"
+      ],
+      "observedDates": [
+        "2026-09-02",
+        "2026-09-03",
+        "2026-09-04"
+      ],
+      "observationRows": 8
+    },
+    {
+      "carrier": "JL",
+      "from": "DLC",
+      "to": "HND",
+      "airlineIcao": "JAL",
+      "flightNumbers": [
+        "JL24"
+      ],
+      "observedDates": [
+        "2026-08-04",
+        "2026-08-06",
+        "2026-08-17",
+        "2026-08-18",
+        "2026-08-21",
+        "2026-09-02",
+        "2026-09-05",
+        "2026-09-08",
+        "2026-09-09"
+      ],
+      "observationRows": 14
+    },
+    {
+      "carrier": "JL",
+      "from": "HND",
+      "to": "DLC",
+      "airlineIcao": "JAL",
+      "flightNumbers": [
+        "JL23"
+      ],
+      "observedDates": [
+        "2026-08-02",
+        "2026-08-05",
+        "2026-08-08",
+        "2026-08-13",
+        "2026-08-14",
+        "2026-08-15",
+        "2026-08-16",
+        "2026-08-17",
+        "2026-08-21",
+        "2026-08-22",
+        "2026-08-25",
+        "2026-08-26",
+        "2026-08-28",
+        "2026-08-29",
+        "2026-09-01",
+        "2026-09-04",
+        "2026-09-05",
+        "2026-09-09"
+      ],
+      "observationRows": 31
+    },
+    {
+      "carrier": "KQ",
+      "from": "NBO",
+      "to": "VFA",
+      "airlineIcao": "KQA",
+      "flightNumbers": [
+        "KQ792"
+      ],
+      "observedDates": [
+        "2026-08-03",
+        "2026-08-28"
+      ],
+      "observationRows": 3
+    },
+    {
+      "carrier": "KQ",
+      "from": "VFA",
+      "to": "CPT",
+      "airlineIcao": "KQA",
+      "flightNumbers": [
+        "KQ792"
+      ],
+      "observedDates": [
+        "2026-08-12",
+        "2026-08-24"
+      ],
+      "observationRows": 5
+    },
+    {
+      "carrier": "LH",
+      "from": "FRA",
+      "to": "NBJ",
+      "airlineIcao": "DLH",
+      "flightNumbers": [
+        "LH560"
+      ],
+      "observedDates": [
+        "2026-08-02",
+        "2026-08-09"
+      ],
+      "observationRows": 4
+    },
+    {
+      "carrier": "LH",
+      "from": "NBJ",
+      "to": "FRA",
+      "airlineIcao": "DLH",
+      "flightNumbers": [
+        "LH561"
+      ],
+      "observedDates": [
+        "2026-08-01",
+        "2026-08-06",
+        "2026-08-11",
+        "2026-08-20",
+        "2026-08-22",
+        "2026-08-29",
+        "2026-09-01"
+      ],
+      "observationRows": 12
+    },
+    {
+      "carrier": "MS",
+      "from": "DME",
+      "to": "HRG",
+      "airlineIcao": "MSR",
+      "flightNumbers": [
+        "MS728"
+      ],
+      "observedDates": [
+        "2026-08-02",
+        "2026-08-06",
+        "2026-08-16",
+        "2026-08-18",
+        "2026-08-25",
+        "2026-09-01"
+      ],
+      "observationRows": 8
+    },
+    {
+      "carrier": "OS",
+      "from": "OHD",
+      "to": "VIE",
+      "airlineIcao": "AUA",
+      "flightNumbers": [
+        "OS766N"
+      ],
+      "observedDates": [
+        "2026-08-20",
+        "2026-08-23"
+      ],
+      "observationRows": 2
+    },
+    {
+      "carrier": "OS",
+      "from": "PDL",
+      "to": "VIE",
+      "airlineIcao": "AUA",
+      "flightNumbers": [
+        "OS498"
+      ],
+      "observedDates": [
+        "2026-08-11",
+        "2026-08-18",
+        "2026-08-25",
+        "2026-09-01"
+      ],
+      "observationRows": 7
+    },
+    {
+      "carrier": "OS",
+      "from": "VIE",
+      "to": "PDL",
+      "airlineIcao": "AUA",
+      "flightNumbers": [
+        "OS497"
+      ],
+      "observedDates": [
+        "2026-08-11",
+        "2026-08-18",
+        "2026-08-25"
+      ],
+      "observationRows": 8
+    },
+    {
+      "carrier": "OZ",
+      "from": "ICN",
+      "to": "UKB",
+      "airlineIcao": "AAR",
+      "flightNumbers": [
+        "OZ1163"
+      ],
+      "observedDates": [
+        "2026-09-03",
+        "2026-09-05",
+        "2026-09-06"
+      ],
+      "observationRows": 4
+    },
+    {
+      "carrier": "QF",
+      "from": "AKL",
+      "to": "APW",
+      "airlineIcao": "QFA",
+      "flightNumbers": [
+        "QF145"
+      ],
+      "observedDates": [
+        "2026-08-02",
+        "2026-08-09",
+        "2026-08-13",
+        "2026-08-16",
+        "2026-08-20",
+        "2026-08-23",
+        "2026-08-27",
+        "2026-09-06"
+      ],
+      "observationRows": 15
+    },
+    {
+      "carrier": "QF",
+      "from": "AKL",
+      "to": "OOL",
+      "airlineIcao": "QFA",
+      "flightNumbers": [
+        "QF210"
+      ],
+      "observedDates": [
+        "2026-08-01",
+        "2026-08-17",
+        "2026-08-18",
+        "2026-09-02"
+      ],
+      "observationRows": 5
+    },
+    {
+      "carrier": "QF",
+      "from": "APW",
+      "to": "AKL",
+      "airlineIcao": "QFA",
+      "flightNumbers": [
+        "QF144"
+      ],
+      "observedDates": [
+        "2026-08-13",
+        "2026-08-14"
+      ],
+      "observationRows": 3
+    },
+    {
+      "carrier": "QF",
+      "from": "BNE",
+      "to": "ROR",
+      "airlineIcao": "QFA",
+      "flightNumbers": [
+        "QF165"
+      ],
+      "observedDates": [
+        "2026-08-15",
+        "2026-08-22",
+        "2026-08-29"
+      ],
+      "observationRows": 4
+    },
+    {
+      "carrier": "SV",
+      "from": "CCJ",
+      "to": "RUH",
+      "airlineIcao": "SVA",
+      "flightNumbers": [
+        "SV713"
+      ],
+      "observedDates": [
+        "2026-08-06",
+        "2026-08-07",
+        "2026-08-12",
+        "2026-08-15",
+        "2026-08-16",
+        "2026-08-18",
+        "2026-08-19",
+        "2026-08-24",
+        "2026-08-27",
+        "2026-08-29",
+        "2026-09-03"
+      ],
+      "observationRows": 16
+    },
+    {
+      "carrier": "SV",
+      "from": "DMM",
+      "to": "LHR",
+      "airlineIcao": "SVA",
+      "flightNumbers": [
+        "SV117"
+      ],
+      "observedDates": [
+        "2026-08-04",
+        "2026-08-06",
+        "2026-08-13",
+        "2026-09-08"
+      ],
+      "observationRows": 9
+    },
+    {
+      "carrier": "SV",
+      "from": "LHR",
+      "to": "DMM",
+      "airlineIcao": "SVA",
+      "flightNumbers": [
+        "SV118"
+      ],
+      "observedDates": [
+        "2026-08-04",
+        "2026-08-05",
+        "2026-08-07",
+        "2026-08-10",
+        "2026-08-15",
+        "2026-08-19",
+        "2026-08-20",
+        "2026-08-31",
+        "2026-09-07",
+        "2026-09-08"
+      ],
+      "observationRows": 16
+    },
+    {
+      "carrier": "SV",
+      "from": "MED",
+      "to": "KUL",
+      "airlineIcao": "SVA",
+      "flightNumbers": [
+        "SV834"
+      ],
+      "observedDates": [
+        "2026-08-08",
+        "2026-08-18",
+        "2026-08-20",
+        "2026-08-22",
+        "2026-08-25",
+        "2026-08-29",
+        "2026-09-01",
+        "2026-09-05",
+        "2026-09-08"
+      ],
+      "observationRows": 11
+    },
+    {
+      "carrier": "SV",
+      "from": "RUH",
+      "to": "CCJ",
+      "airlineIcao": "SVA",
+      "flightNumbers": [
+        "SV712"
+      ],
+      "observedDates": [
+        "2026-08-02",
+        "2026-08-03",
+        "2026-08-08",
+        "2026-08-10",
+        "2026-08-11",
+        "2026-08-13",
+        "2026-08-14",
+        "2026-08-17",
+        "2026-08-22",
+        "2026-08-26",
+        "2026-08-27",
+        "2026-08-29",
+        "2026-09-02",
+        "2026-09-05"
+      ],
+      "observationRows": 21
+    },
+    {
+      "carrier": "SV",
+      "from": "RUH",
+      "to": "ISB",
+      "airlineIcao": "SVA",
+      "flightNumbers": [
+        "SV724"
+      ],
+      "observedDates": [
+        "2026-08-03",
+        "2026-08-04",
+        "2026-08-08",
+        "2026-08-14",
+        "2026-08-15",
+        "2026-08-24",
+        "2026-08-28"
+      ],
+      "observationRows": 11
+    },
+    {
+      "carrier": "SV",
+      "from": "ZRH",
+      "to": "JED",
+      "airlineIcao": "SVA",
+      "flightNumbers": [
+        "SV232"
+      ],
+      "observedDates": [
+        "2026-08-04",
+        "2026-08-06",
+        "2026-08-08",
+        "2026-08-11",
+        "2026-08-15",
+        "2026-08-18",
+        "2026-08-20",
+        "2026-08-22"
+      ],
+      "observationRows": 15
     },
     {
       "carrier": "TK",
@@ -56,6 +503,24 @@
         "2026-08-19"
       ],
       "observationRows": 7
+    },
+    {
+      "carrier": "TP",
+      "from": "SFO",
+      "to": "TER",
+      "airlineIcao": "TAP",
+      "flightNumbers": [
+        "TP240"
+      ],
+      "observedDates": [
+        "2026-08-05",
+        "2026-08-12",
+        "2026-08-19",
+        "2026-08-26",
+        "2026-09-02",
+        "2026-09-09"
+      ],
+      "observationRows": 58
     },
     {
       "carrier": "UA",
@@ -203,6 +668,20 @@
         "2026-09-09"
       ],
       "observationRows": 521
+    },
+    {
+      "carrier": "WY",
+      "from": "DXB",
+      "to": "SLL",
+      "airlineIcao": "OMA",
+      "flightNumbers": [
+        "WY618"
+      ],
+      "observedDates": [
+        "2026-08-18",
+        "2026-08-25"
+      ],
+      "observationRows": 2
     }
   ]
 }
