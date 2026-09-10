@@ -39,6 +39,21 @@ describe('live route gateway', () => {
     expect(result.source.url).toBe('https://air-routes.com/developers');
   });
 
+  test('one malformed carrier token does not discard valid routes for the origin', () => {
+    const result = normalizeLiveRoutes({
+      from: 'TPE',
+      destinations: [{
+        route_id: 'TPE-HKG', from: 'TPE', to: 'HKG', status: 'active', seasonality_label: null,
+        airlines: [
+          { airline_code: 'INVALID', airline: 'Bad row', schedule: [], service_type: 'scheduled' },
+          { airline_code: 'BR', airline: 'EVA Air', schedule: [{ day: 'Mon', times: ['08:00'] }], service_type: 'scheduled' },
+        ],
+      }],
+    }, 'TPE', CLOCK);
+    expect(result.routes).toHaveLength(1);
+    expect(result.routes[0]?.carriers.map((carrier) => carrier.code)).toEqual(['BR']);
+  });
+
   test('caches an origin and rejects a response for a different origin', async () => {
     const fetchImpl = vi.fn(async () => new Response(JSON.stringify(raw), { status: 200, headers: { 'content-type': 'application/json' } }));
     const gateway = createLiveRouteGateway({ fetchImpl: fetchImpl as typeof fetch, now: () => CLOCK });

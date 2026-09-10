@@ -7,7 +7,10 @@ const RawScheduleSchema = z.object({
   times: z.array(z.string().max(20)).max(40),
 }).passthrough();
 const RawAirlineSchema = z.object({
-  airline_code: z.string().regex(/^[A-Z0-9]{2,3}$/),
+  // A provider origin payload can contain one malformed/non-IATA carrier
+  // token alongside otherwise valid routes. Parse the bounded string here and
+  // reject it per carrier below so one bad token cannot discard the origin.
+  airline_code: z.string().max(12),
   airline: z.string().min(1).max(120),
   schedule: z.array(RawScheduleSchema).max(14).default([]),
   seasonal_note: z.string().max(300).nullable().optional(),
@@ -50,6 +53,8 @@ export function normalizeLiveRoutes(raw: unknown, origin: string, now: number, t
     if (destination.from !== origin || destination.from === destination.to || destination.status !== 'active') return [];
     const carriers = [...new Map(destination.airlines.flatMap((airline) => {
       if (airline.service_type && airline.service_type !== 'scheduled') return [];
+      const carrierCode = airline.airline_code.trim().toUpperCase();
+      if (!/^[A-Z0-9]{2,3}$/.test(carrierCode)) return [];
       const scheduleByDay = new Map<string, Set<string>>();
       for (const row of airline.schedule) {
         const times = scheduleByDay.get(row.day) ?? new Set<string>();
@@ -59,8 +64,8 @@ export function normalizeLiveRoutes(raw: unknown, origin: string, now: number, t
       const weeklySchedule = [...scheduleByDay.entries()]
         .sort(([a], [b]) => (DAY_ORDER.get(a) ?? 99) - (DAY_ORDER.get(b) ?? 99))
         .map(([day, times]) => ({ day, times: [...times].sort() }));
-      return [[airline.airline_code, {
-        code: airline.airline_code,
+      return [[carrierCode, {
+        code: carrierCode,
         name: airline.airline,
         days: weeklySchedule.map((row) => row.day),
         weeklySchedule,

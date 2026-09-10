@@ -56,6 +56,23 @@ configured, the slower air-routes.com airport scan remains a resumable research
 fallback, but incomplete scans cannot write the production current artifact by
 default.
 
+### Static candidate validation
+
+`npm run routes:research-static` can use the independently maintained
+Jonty/airline-route-data snapshot as a local research-only gap detector. The
+source repository has no explicit license, so its dataset is never copied into
+the GCMP repository or promoted directly to production evidence. A 2026-09-11
+research pass found 3,455 target-carrier relationships missing from the current
+published runtime graph.
+
+`npm run routes:validate-static -- --fetch` then queries only the unique origins
+behind those gaps and caches current air-routes.com responses outside the repo.
+This avoids rescanning all 5,097 known airports. Validation distinguishes exact
+current carrier-route matches, route pairs where that carrier is not listed,
+routes absent from the current provider response, and unresolved origins. Exact
+matches can be exported as a separate provider-listed route catalog, but they do
+not establish the physical operating carrier or a flight number.
+
 ## Next collection steps
 
 ### P0 — establish the global dated backbone
