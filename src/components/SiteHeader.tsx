@@ -1,5 +1,6 @@
 import { LanguagePicker } from './LanguagePicker.tsx';
 import { useLocale } from '../i18n/use-locale.ts';
+import { shouldHandleSiteLink, siteViewHref } from '../lib/site-navigation.ts';
 
 export type SiteView = 'home' | 'planner' | 'routes';
 
@@ -15,14 +16,27 @@ export function SiteHeader({ active, onNavigate }: Props): React.ReactElement {
     : { home: 'Home', planner: 'Planner', routes: 'Route library', tagline: 'Round the world, clearly.' };
   return (
     <header className="site-header">
-      <button type="button" className="site-brand" onClick={() => onNavigate('home')} aria-label="gcmp home">
+      <a className="skip-link" href="#main-content">{locale === 'zh-TW' ? '跳到主要內容' : 'Skip to main content'}</a>
+      <a className="site-brand" href={siteViewHref('home')} onClick={(event) => {
+        if (!shouldHandleSiteLink(event.nativeEvent)) return;
+        event.preventDefault();
+        onNavigate('home');
+      }} aria-label="gcmp home">
         <span className="site-brand-mark">gcmp</span>
         <span>{copy.tagline}</span>
-      </button>
+      </a>
       <nav className="site-nav" aria-label="Primary navigation">
-        <button type="button" className={active === 'home' ? 'active' : ''} onClick={() => onNavigate('home')}>{copy.home}</button>
-        <button type="button" className={active === 'planner' ? 'active' : ''} onClick={() => onNavigate('planner')}>{copy.planner}</button>
-        <button type="button" className={active === 'routes' ? 'active' : ''} onClick={() => onNavigate('routes')}>{copy.routes}</button>
+        {(['home', 'planner', 'routes'] as const).map((view) => <a
+          key={view}
+          href={siteViewHref(view)}
+          className={active === view ? 'active' : ''}
+          aria-current={active === view ? 'page' : undefined}
+          onClick={(event) => {
+            if (!shouldHandleSiteLink(event.nativeEvent)) return;
+            event.preventDefault();
+            onNavigate(view);
+          }}
+        >{view === 'home' ? copy.home : view === 'planner' ? copy.planner : copy.routes}</a>)}
       </nav>
       <div className="site-header-tools"><LanguagePicker /></div>
     </header>

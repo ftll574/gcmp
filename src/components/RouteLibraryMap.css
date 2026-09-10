@@ -67,7 +67,6 @@
 .entity-map-search input {
   min-width: 0;
   border: 0;
-  outline: 0;
   background: transparent;
   color: #26372e;
   font: 500 11px/1 var(--font-sans);
@@ -199,4 +198,53 @@
     left: 10px;
     bottom: 10px;
   }
+}
+
+/* Design-quality pass: compact map chrome, readable controls, visible focus. */
+.entity-map-commandbar { right: 96px; }
+.entity-map-alliance-filter {
+  border-radius: var(--radius-control);
+  background: color-mix(in srgb, var(--system-background) 94%, transparent);
+}
+.entity-map-alliance-filter button {
+  min-height: 40px;
+  padding: 0 12px;
+  border-radius: calc(var(--radius-control) - 2px);
+  color: var(--secondary-label);
+  font: 650 11px/1 var(--font-sans);
+}
+.entity-map-alliance-filter button.active { background: var(--label); color: var(--system-background); }
+.entity-map-search {
+  min-height: 48px;
+  padding-inline: 14px;
+  border-radius: var(--radius-input);
+  background: color-mix(in srgb, var(--system-background) 95%, transparent);
+}
+.entity-map-search:focus-within {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  border-color: var(--focus-ring-color);
+}
+.entity-map-search input { color: var(--label); font: 500 13px/1.2 var(--font-sans); }
+.entity-map-search-results {
+  border-radius: var(--radius-card);
+  background: color-mix(in srgb, var(--system-background) 98%, transparent);
+}
+.entity-map-search-results button { min-height: 52px; padding: 10px 12px; color: var(--label); }
+.entity-map-search-results button:hover,
+.entity-map-search-results button[aria-selected="true"] { background: var(--tint-fill-soft); }
+.entity-map-search-results button > span { color: var(--secondary-label); font: 600 11px/1.2 var(--font-sans); text-transform: none; }
+.entity-map-search-results button strong { font-size: 12px; }
+.entity-map-search-results button small,
+.entity-map-search-results p { color: var(--secondary-label); font-size: 11px; }
+.maplibre-route-map .entity-map-stats { top: 72px; }
+.entity-map-fingerprint-key { display: none; }
+
+@media (prefers-color-scheme: dark) {
+  .entity-map-alliance-filter button.active { background: var(--label); color: var(--system-background); }
+}
+
+@media (max-width: 700px) {
+  .entity-map-commandbar { right: 54px; }
+  .maplibre-route-map .entity-map-stats { top: 122px; }
 }

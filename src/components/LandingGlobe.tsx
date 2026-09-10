@@ -10,6 +10,7 @@ import type {
   LandingShowcaseLeg,
 } from '../lib/schemas/landing-showcase.ts';
 import { useLocale } from '../i18n/use-locale.ts';
+import { shouldHandleSiteLink, siteViewHref } from '../lib/site-navigation.ts';
 
 interface Props {
   readonly catalog: LandingShowcaseCatalog;
@@ -401,6 +402,10 @@ export function LandingGlobe({ catalog, onPlan }: Props): React.ReactElement {
     const pointer = new THREE.Vector2();
     const pointerDown = (event: PointerEvent): void => {
       if (event.button !== 0) return;
+      // On touch screens the globe sits in the main page scroll path. Leave
+      // single-finger touch and pinch gestures to the browser; mouse/pen drag
+      // keeps the direct grab-to-rotate interaction on larger screens.
+      if (event.pointerType === 'touch') return;
       runtime.dragging = true;
       runtime.dragPointerId = event.pointerId;
       runtime.dragLastX = event.clientX;
@@ -412,6 +417,7 @@ export function LandingGlobe({ catalog, onPlan }: Props): React.ReactElement {
       setHoveredAirport(null);
     };
     const pointerMove = (event: PointerEvent): void => {
+      if (event.pointerType === 'touch' && !runtime.dragging) return;
       const rect = canvas.getBoundingClientRect();
       runtime.pointerX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
       runtime.pointerY = -(((event.clientY - rect.top) / rect.height) * 2 - 1);
@@ -670,7 +676,6 @@ export function LandingGlobe({ catalog, onPlan }: Props): React.ReactElement {
             aria-pressed={index === activeIndex}
             onClick={() => setActiveIndex(index)}
           >
-            <span>{String(index + 1).padStart(2, '0')}</span>
             {locale === 'zh-TW' ? showcase.titleZh : showcase.titleEn}
           </button>
         ))}
@@ -678,7 +683,11 @@ export function LandingGlobe({ catalog, onPlan }: Props): React.ReactElement {
 
       <div className="landing-three-description">
         <p>{description}</p>
-        <button type="button" onClick={onPlan}>{locale === 'zh-TW' ? '拿這條結構開始規劃' : 'Start from this structure'} <span>↗</span></button>
+        <a href={siteViewHref('planner')} onClick={(event) => {
+          if (!shouldHandleSiteLink(event.nativeEvent)) return;
+          event.preventDefault();
+          onPlan();
+        }}>{locale === 'zh-TW' ? '用這條路線開始規劃' : 'Plan from this route'}</a>
       </div>
     </div>
   );

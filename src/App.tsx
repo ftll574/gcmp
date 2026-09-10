@@ -170,7 +170,7 @@ function LoadedSiteApp({ siteView, onNavigateSite }: LoadedSiteAppProps): React.
     return (
       <div className="site-page planner-site-page">
         <SiteHeader active={siteView} onNavigate={onNavigateSite} />
-        <div className="app-loading" role="status">
+        <div id="main-content" className="app-loading" role="status">
           <p>{t('loading')}</p>
         </div>
       </div>
@@ -181,7 +181,7 @@ function LoadedSiteApp({ siteView, onNavigateSite }: LoadedSiteAppProps): React.
     return (
       <div className="site-page planner-site-page">
         <SiteHeader active={siteView} onNavigate={onNavigateSite} />
-        <div className="app-error" role="alert">
+        <div id="main-content" className="app-error" role="alert">
           <h1>gcmp</h1>
           <p>{t('errors.loadFailed', { message: load.error })}</p>
           <p>{t('errors.loadFailedHelp')}</p>
@@ -791,6 +791,7 @@ function Ready({
         </div>
       )}
       <main
+        id="main-content"
         className="app-workbench"
         style={{
           '--editor-width': `${editorWidth}px`,

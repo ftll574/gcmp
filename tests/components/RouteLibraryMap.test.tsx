@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { Airport } from '../../src/lib/types.ts';
 import type { RouteLibraryRouteCard } from '../../src/lib/rtw/route-library-entities.ts';
@@ -93,7 +93,7 @@ describe('RouteEntityMap MapLibre model', () => {
 
   test('renders the MapLibre shell and a truthful fallback when WebGL is unavailable', () => {
     const result = render(<RouteEntityMap routes={[route(TPE, TSA, 17)]} hubs={[]} selectedAirport={TPE} onAirportSelect={vi.fn()} />);
-    const map = screen.getByRole('application', { name: 'Route network map' });
+    const map = screen.getByRole('region', { name: /Route network map|航線地圖/ });
     expect(result.container.querySelector('[data-map-engine="maplibre"]')).not.toBeNull();
     expect(map).not.toBeNull();
     expect(screen.getByText(/Interactive map is unavailable|此瀏覽器無法啟用互動地圖/)).not.toBeNull();
@@ -124,7 +124,40 @@ describe('RouteEntityMap MapLibre model', () => {
     />);
     const mapCard = result.container.querySelector('.entity-map-card');
     expect(mapCard?.querySelector('[aria-label="Alliance filter"]')).not.toBeNull();
-    expect(mapCard?.querySelector('input[placeholder="Search airport"]')).not.toBeNull();
+    const search = screen.getByRole('combobox', { name: 'Search airport' });
+    expect(search.getAttribute('name')).toBe('route-search');
+    expect(search.getAttribute('autocomplete')).toBe('off');
+    expect(search.getAttribute('aria-autocomplete')).toBe('list');
     expect(screen.getByRole('button', { name: 'Star' }).getAttribute('aria-pressed')).toBe('true');
+  });
+
+  test('map search supports keyboard listbox navigation and selection', () => {
+    const onSearchResultSelect = vi.fn();
+    render(<RouteEntityMap
+      routes={[route(TPE, TSA, 17)]}
+      hubs={[]}
+      onAirportSelect={vi.fn()}
+      controls={{
+        alliance: 'all',
+        onAllianceChange: vi.fn(),
+        query: 'T',
+        onQueryChange: vi.fn(),
+        searchOpen: true,
+        onSearchOpenChange: vi.fn(),
+        searchPlaceholder: 'Search airport',
+        searchResults: [
+          { key: 'airport:TPE', selection: { kind: 'airport', id: 'TPE' }, kind: 'airport', title: 'TPE · Taoyuan', subtitle: 'Taiwan Taoyuan International Airport' },
+          { key: 'airport:TSA', selection: { kind: 'airport', id: 'TSA' }, kind: 'airport', title: 'TSA · Taipei', subtitle: 'Taipei Songshan Airport' },
+        ],
+        onSearchResultSelect,
+      }}
+    />);
+    const search = screen.getByRole('combobox', { name: 'Search airport' });
+    expect(search.getAttribute('aria-expanded')).toBe('true');
+    expect(search.getAttribute('aria-activedescendant')).toBeNull();
+    fireEvent.keyDown(search, { key: 'ArrowDown' });
+    expect(screen.getByRole('option', { name: /TPE · Taoyuan/ }).getAttribute('aria-selected')).toBe('true');
+    fireEvent.keyDown(search, { key: 'Enter' });
+    expect(onSearchResultSelect).toHaveBeenCalledWith({ kind: 'airport', id: 'TPE' });
   });
 });

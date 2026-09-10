@@ -26,26 +26,40 @@ function selectionFromLocation(): RouteLibraryEntitySelection | null {
   return null;
 }
 
+function allianceFromLocation(): AllianceFilter {
+  const value = new URLSearchParams(window.location.search).get('alliance');
+  return value === 'star' || value === 'oneworld' || value === 'skyteam' ? value : 'all';
+}
+
+function queryFromLocation(): string {
+  return new URLSearchParams(window.location.search).get('q') ?? '';
+}
+
+function advancedFromLocation(): boolean {
+  return new URLSearchParams(window.location.search).get('advanced') === '1';
+}
+
 export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.ReactElement {
   const { locale } = useLocale();
   const copy = locale === 'zh-TW' ? {
-    eyebrow: 'GCMP ROUTE LIBRARY', title: '全球航網，一張地圖看懂。',
-    intro: '搜尋機場、城市、航空公司或班號，查看航線、實際營運航空公司與班號資訊。',
-    published: '目前顯示的 published routes', all: '全部聯盟', loading: '正在載入完整航線資料庫…', error: '航線資料載入失敗',
+    eyebrow: '航線資料庫', title: '探索全球航網',
+    intro: '從機場、城市、航空公司、航線或班號，直接進入目前收錄的航網資料。',
+    all: '全部聯盟', loading: '正在載入航線資料…', error: '航線資料載入失敗', retry: '重新載入',
     advanced: '詳細篩選', advancedBody: '依出發地、抵達地、航空公司與區域篩選完整航線。', closeAdvanced: '收起詳細篩選',
     footer: '航線證據會隨時間變動。開票前請再次確認日期與實際營運航空公司。',
   } : {
-    eyebrow: 'GCMP ROUTE LIBRARY', title: 'The global route network, on one map.',
-    intro: 'Search airports, cities, airlines or flight numbers and inspect routes, operating carriers and flight-number information.',
-    published: 'published routes shown', all: 'All alliances', loading: 'Loading the complete route library…', error: 'Route library failed to load',
+    eyebrow: 'Route library', title: 'Explore the global route network',
+    intro: 'Start from an airport, city, airline, route or flight number and move directly through the network in the current catalog.',
+    all: 'All alliances', loading: 'Loading route data…', error: 'Route library failed to load', retry: 'Reload',
     advanced: 'Detailed filters', advancedBody: 'Filter the complete network by origin, destination, airline and region.', closeAdvanced: 'Close detailed filters',
     footer: 'Route evidence changes over time. Always recheck date and operating carrier before ticketing.',
   };
   const [network, setNetwork] = useState<RouteNetworkCatalog | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [alliance, setAlliance] = useState<AllianceFilter>('all');
+  const [alliance, setAlliance] = useState<AllianceFilter>(allianceFromLocation);
   const [selection, setSelection] = useState<RouteLibraryEntitySelection | null>(selectionFromLocation);
-  const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [query, setQuery] = useState(queryFromLocation);
+  const [advancedOpen, setAdvancedOpen] = useState(advancedFromLocation);
   const airports = useMemo(() => buildAirportIndex(data.airports).byIata, [data.airports]);
 
   useEffect(() => {
@@ -64,10 +78,43 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
   }, [data.routeNetworkRuntimeUrl, airports]);
 
   useEffect(() => {
-    const sync = (): void => setSelection(selectionFromLocation());
+    const sync = (): void => {
+      setSelection(selectionFromLocation());
+      setAlliance(allianceFromLocation());
+      setQuery(queryFromLocation());
+      setAdvancedOpen(advancedFromLocation());
+    };
     window.addEventListener('popstate', sync);
     return () => window.removeEventListener('popstate', sync);
   }, []);
+
+  const replaceUiState = (next: { alliance?: AllianceFilter; query?: string; advanced?: boolean }): void => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('view', 'routes');
+    if (next.alliance !== undefined) {
+      if (next.alliance === 'all') url.searchParams.delete('alliance');
+      else url.searchParams.set('alliance', next.alliance);
+    }
+    if (next.query !== undefined) {
+      if (next.query.trim() === '') url.searchParams.delete('q');
+      else url.searchParams.set('q', next.query);
+    }
+    if (next.advanced !== undefined) {
+      if (next.advanced) url.searchParams.set('advanced', '1');
+      else url.searchParams.delete('advanced');
+    }
+    window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+  };
+
+  const changeAlliance = (value: AllianceFilter): void => {
+    setAlliance(value);
+    replaceUiState({ alliance: value });
+  };
+
+  const changeQuery = (value: string): void => {
+    setQuery(value);
+    replaceUiState({ query: value });
+  };
 
   const memberships = data.allianceCatalog.memberships.filter((membership) => membership.status === 'member');
   const memberCodes = useMemo(() => new Set(
@@ -76,8 +123,6 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
       .map((membership) => membership.airline),
   ), [memberships, alliance]);
   const carrierNames = useMemo(() => new Map(memberships.map((membership) => [membership.airline, membership.airlineName] as const)), [memberships]);
-  const published = network?.routes.filter((route) => route.status === 'published' && memberCodes.has(route.carrier)).length ?? 0;
-
   const selectEntity = (next: RouteLibraryEntitySelection | null): void => {
     const url = new URL(window.location.href);
     url.searchParams.set('view', 'routes');
@@ -96,16 +141,15 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
   return (
     <div className="site-page routes-page">
       <SiteHeader active="routes" onNavigate={onNavigate} />
-      <main className="routes-page-main">
+      <main id="main-content" className="routes-page-main">
         <section className="routes-page-intro">
-          <span className="landing-eyebrow">{copy.eyebrow}</span>
+          <span className="routes-page-kicker">{copy.eyebrow}</span>
           <h1>{copy.title}</h1>
           <p>{copy.intro}</p>
-          <div className="routes-page-metrics"><strong>{published.toLocaleString()}</strong><span>{copy.published}</span></div>
         </section>
 
         {!network && !error && <div className="routes-loading routes-loading-hero" role="status">{copy.loading}</div>}
-        {error && <div className="routes-error" role="alert">{copy.error}: {error}</div>}
+        {error && <div className="routes-error" role="alert"><strong>{copy.error}</strong><span>{error}</span><button type="button" onClick={() => window.location.reload()}>{copy.retry}</button></div>}
         {network && (
           <>
             <RouteLibraryExplorer
@@ -114,9 +158,9 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
               carrierNames={carrierNames}
               memberCodes={memberCodes}
               alliance={alliance}
-              onAllianceChange={(value) => {
-                setAlliance(value);
-              }}
+              onAllianceChange={changeAlliance}
+              query={query}
+              onQueryChange={changeQuery}
               countryContinents={data.countryContinents}
               airportContinentOverrides={data.airportContinentOverrides}
               selection={selection}
@@ -125,7 +169,11 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
             />
 
             <section className="routes-advanced-shell">
-              <button type="button" className="routes-advanced-toggle" onClick={() => setAdvancedOpen((value) => !value)}>
+              <button type="button" className="routes-advanced-toggle" aria-expanded={advancedOpen} onClick={() => {
+                const next = !advancedOpen;
+                setAdvancedOpen(next);
+                replaceUiState({ advanced: next });
+              }}>
                 <span>{advancedOpen ? copy.closeAdvanced : copy.advanced}</span><small>{copy.advancedBody}</small>
               </button>
               {advancedOpen && <section className="routes-browser-shell">

@@ -296,7 +296,7 @@ export function RtwPlanGate({
   );
 
   return (
-    <main className="rtw-gate" aria-label={t('rtw.onboarding.ariaLabel')}>
+    <main id="main-content" className="rtw-gate" aria-label={t('rtw.onboarding.ariaLabel')}>
       <section className="rtw-gate-intro">
         <p className="rtw-eyebrow">{t('rtw.onboarding.eyebrow')}</p>
         <h1>{t('rtw.onboarding.title')}</h1>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import * as maplibregl from 'maplibre-gl';
 import type { ExpressionSpecification, GeoJSONSource, Map as MapLibreMap } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -352,11 +352,18 @@ export function RouteEntityMap({
     selectedRouteId ? { kind: 'route', routeId: selectedRouteId } : selectedAirport ? { kind: 'airport', iata: selectedAirport.iata } : null,
   );
   const [hover, setHover] = useState<HoverInfo | null>(null);
+  const [activeSearchIndex, setActiveSearchIndex] = useState(-1);
   const [webGlAvailable] = useState(isWebGlAvailable);
+  const searchListId = useId();
+  const mapHelpId = useId();
   const model = useMemo(() => buildRouteMapModel(routes, hubs), [routes, hubs]);
   const copy = locale === 'zh-TW'
-    ? { fit: '顯示完整航網', airport: '機場資訊', route: '航線詳情', confirmed: '已確認班號', noConfirmed: '尚無 confirmed 班號', fallback: '此瀏覽器無法啟用互動地圖。', coreHubs: '核心樞紐', all: '全部', clusters: '個機場', zoomCluster: '點擊放大查看' }
-    : { fit: 'Fit network', airport: 'Airport details', route: 'Route details', confirmed: 'Confirmed flights', noConfirmed: 'No confirmed flight number', fallback: 'Interactive map is unavailable in this browser.', coreHubs: 'Core hubs', all: 'All', clusters: 'airports', zoomCluster: 'Click to zoom in' };
+    ? { fit: '顯示完整航網', airport: '機場資訊', route: '航線詳情', confirmed: '已確認班號', noConfirmed: '尚無 confirmed 班號', fallback: '此瀏覽器無法啟用互動地圖。', fallbackHelp: '仍可使用搜尋與下方列表瀏覽航線。', mapHelp: '使用搜尋欄可用鍵盤選擇任何機場、航空公司、航線或班號；地圖提供拖曳與縮放瀏覽。', all: '全部', clusters: '個機場', zoomCluster: '點擊放大查看' }
+    : { fit: 'Fit network', airport: 'Airport details', route: 'Route details', confirmed: 'Confirmed flights', noConfirmed: 'No confirmed flight number', fallback: 'Interactive map is unavailable in this browser.', fallbackHelp: 'Use search or the route list below to keep exploring.', mapHelp: 'Use the search field to select any airport, airline, route or flight number with the keyboard; the map supports pan and zoom.', all: 'All', clusters: 'airports', zoomCluster: 'Click to zoom in' };
+
+  const safeActiveSearchIndex = controls && controls.searchResults.length > 0 && activeSearchIndex >= 0
+    ? Math.min(activeSearchIndex, controls.searchResults.length - 1)
+    : -1;
 
   const focusSelection = useCallback((next: InspectorSelection, animate = true): void => {
     setSelection(next);
@@ -630,8 +637,9 @@ export function RouteEntityMap({
 
   return (
     <div ref={cardRef} className={`entity-map-card maplibre-route-map alliance-${allianceTheme}${fingerprint ? ' fingerprint' : ''}`} data-map-engine="maplibre" data-map-ready={ready ? 'true' : 'false'} data-map-routes={model.routes.features.length} data-map-airports={model.airports.features.length} data-map-alliance={allianceTheme} data-map-mode={fingerprint ? 'fingerprint' : 'detail'}>
-      <div ref={containerRef} className="entity-map-maplibre" role="application" aria-label="Route network map" />
-      {!webGlAvailable && <div className="entity-map-fallback">{copy.fallback}</div>}
+      <p id={mapHelpId} className="sr-only">{copy.mapHelp}</p>
+      <div ref={containerRef} className="entity-map-maplibre" role="region" aria-label={locale === 'zh-TW' ? '航線地圖' : 'Route network map'} aria-describedby={mapHelpId} />
+      {!webGlAvailable && <div className="entity-map-fallback"><strong>{copy.fallback}</strong><span>{copy.fallbackHelp}</span></div>}
       {controls && <div className="entity-map-commandbar">
         <div className="entity-map-alliance-filter" role="group" aria-label="Alliance filter">
           {(['all', 'star', 'oneworld', 'skyteam'] as const).map((value) => <button
@@ -645,19 +653,55 @@ export function RouteEntityMap({
         <div className="entity-map-search-wrap">
           <label className="entity-map-search">
             <span aria-hidden="true">⌕</span>
-            <input type="search" value={controls.query} onFocus={() => controls.onSearchOpenChange(controls.query.length > 0)} onChange={(event) => controls.onQueryChange(event.target.value)} placeholder={controls.searchPlaceholder} aria-label={controls.searchPlaceholder} />
+            <input
+              type="search"
+              role="combobox"
+              name="route-search"
+              autoComplete="off"
+              spellCheck={false}
+              enterKeyHint="search"
+              value={controls.query}
+              aria-expanded={controls.searchOpen}
+              aria-controls={searchListId}
+              aria-autocomplete="list"
+              aria-activedescendant={controls.searchOpen && safeActiveSearchIndex >= 0 ? `${searchListId}-option-${safeActiveSearchIndex}` : undefined}
+              onFocus={() => controls.onSearchOpenChange(controls.query.length > 0)}
+              onChange={(event) => {
+                setActiveSearchIndex(-1);
+                controls.onQueryChange(event.target.value);
+              }}
+              onKeyDown={(event) => {
+                const count = controls.searchResults.length;
+                if (event.key === 'ArrowDown' && count > 0) {
+                  event.preventDefault();
+                  controls.onSearchOpenChange(true);
+                  setActiveSearchIndex((index) => index < 0 ? 0 : Math.min(count - 1, index + 1));
+                } else if (event.key === 'ArrowUp' && count > 0) {
+                  event.preventDefault();
+                  controls.onSearchOpenChange(true);
+                  setActiveSearchIndex((index) => index < 0 ? count - 1 : Math.max(0, index - 1));
+                } else if (event.key === 'Enter' && controls.searchOpen && count > 0 && safeActiveSearchIndex >= 0) {
+                  event.preventDefault();
+                  const result = controls.searchResults[safeActiveSearchIndex];
+                  if (result) {
+                    controls.onSearchOpenChange(false);
+                    controls.onSearchResultSelect(result.selection);
+                  }
+                } else if (event.key === 'Escape') {
+                  controls.onSearchOpenChange(false);
+                }
+              }}
+              placeholder={controls.searchPlaceholder}
+              aria-label={controls.searchPlaceholder}
+            />
             {controls.query && <button type="button" aria-label={locale === 'zh-TW' ? '清除搜尋' : 'Clear search'} onClick={() => { controls.onQueryChange(''); controls.onSearchOpenChange(false); }}>×</button>}
           </label>
-          {controls.query && controls.searchOpen && <div className="entity-map-search-results" role="listbox">
-            {controls.searchResults.length > 0 ? controls.searchResults.map((result) => <button type="button" role="option" key={result.key} onClick={() => { controls.onSearchOpenChange(false); controls.onSearchResultSelect(result.selection); }}><span>{result.kind}</span><strong>{result.title}</strong><small>{result.subtitle}</small></button>) : <p>{locale === 'zh-TW' ? '沒有符合的結果' : 'No matching result'}</p>}
+          {controls.query && controls.searchOpen && <div id={searchListId} className="entity-map-search-results" role="listbox">
+            {controls.searchResults.length > 0 ? controls.searchResults.map((result, index) => <button type="button" role="option" id={`${searchListId}-option-${index}`} aria-selected={index === safeActiveSearchIndex} key={result.key} onClick={() => { controls.onSearchOpenChange(false); controls.onSearchResultSelect(result.selection); }}><span>{result.kind}</span><strong>{result.title}</strong><small>{result.subtitle}</small></button>) : <p>{locale === 'zh-TW' ? '沒有符合的結果' : 'No matching result'}</p>}
           </div>}
         </div>
       </div>}
       {stats.length > 0 && <div className="entity-map-stats">{stats.map((stat) => <div key={stat.label}><strong>{typeof stat.value === 'number' ? stat.value.toLocaleString() : stat.value}</strong><span>{stat.label}</span></div>)}</div>}
-      {fingerprint && hubs.length > 0 && <div className="entity-map-fingerprint-key" aria-label={copy.coreHubs}>
-        <span>{copy.coreHubs}</span>
-        <strong>{hubs.slice(0, 4).map((hub) => hub.airport.iata).join(' · ')}</strong>
-      </div>}
       {ready && <button type="button" className="entity-map-fit-network" onClick={() => {
         const map = mapRef.current;
         const container = containerRef.current;
@@ -665,7 +709,7 @@ export function RouteEntityMap({
         setSelection(null);
         setFocusSources(map, model, null);
         fitModel(map, container, model, routes, selectedAirport);
-      }}>{copy.fit}</button>}
+      }} aria-label={copy.fit} title={copy.fit}>⌖</button>}
       {hover && <div className="entity-map-hover" style={{ left: hover.x, top: hover.y }}><strong>{hover.title}</strong><span>{hover.subtitle}</span></div>}
       {selection && <aside className="entity-map-inspector" aria-live="polite">
         <header>

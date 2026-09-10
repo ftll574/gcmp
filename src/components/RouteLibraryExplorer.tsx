@@ -37,6 +37,8 @@ interface Props {
   readonly onPlanRoute: (route: PlanRouteInput) => void;
   readonly alliance: RouteMapAllianceTheme;
   readonly onAllianceChange: (alliance: RouteMapAllianceTheme) => void;
+  readonly query: string;
+  readonly onQueryChange: (query: string) => void;
 }
 
 function routeId(route: RouteLibraryRouteCard): string {
@@ -71,10 +73,11 @@ export function RouteLibraryExplorer({
   onPlanRoute,
   alliance,
   onAllianceChange,
+  query,
+  onQueryChange,
 }: Props): React.ReactElement {
   const { locale, t } = useLocale();
   const zh = locale === 'zh-TW';
-  const [query, setQuery] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
   const [showRouteIndex, setShowRouteIndex] = useState(false);
   const entityInput = useMemo(() => ({ network, airports, carrierNames, memberCodes }), [network, airports, carrierNames, memberCodes]);
@@ -110,14 +113,14 @@ export function RouteLibraryExplorer({
     },
     query,
     onQueryChange: (value: string): void => {
-      setQuery(value);
+      onQueryChange(value);
       setSearchOpen(value.length > 0);
     },
     searchOpen,
     onSearchOpenChange: setSearchOpen,
     searchPlaceholder: zh
-      ? '搜尋機場、城市、航空公司、航線或班號'
-      : 'Search airport, city, airline, route or flight number',
+      ? '搜尋機場、城市、航空公司、航線或班號，例如 TPE / Tokyo / BR198…'
+      : 'Search airport, city, airline, route or flight number, e.g. TPE / Tokyo / BR198…',
     searchResults,
     onSearchResultSelect: choose,
   };
@@ -135,6 +138,7 @@ export function RouteLibraryExplorer({
     confirmedNumbers: '已確認班號', candidateNumbers: '候選班號', source: '資料來源', noNumber: '尚未確認班號',
     planCarrier: '用這家航空公司加入 Planner', planFlight: '用這個班號加入 Planner', reverse: '查看反方向',
     back: '返回航網', noEntity: '目前沒有符合條件的航線。',
+    airportLabel: '機場', airlineLabel: '航空公司', routeLabel: '航線',
   } : {
     searchPlaceholder: 'Search airport, city, airline, route or flight number — TPE / Tokyo / BR / TPE-NRT / BR198',
     exploreTitle: 'Global route network',
@@ -148,6 +152,7 @@ export function RouteLibraryExplorer({
     confirmedNumbers: 'Confirmed flight numbers', candidateNumbers: 'Candidate flight numbers', source: 'Sources', noNumber: 'No confirmed flight number yet',
     planCarrier: 'Use this airline in Planner', planFlight: 'Use this flight in Planner', reverse: 'View reverse route',
     back: 'Back to network', noEntity: 'No current route matches this selection.',
+    airportLabel: 'Airport', airlineLabel: 'Airline', routeLabel: 'Route',
   };
 
   let entityContent: React.ReactNode = null;
@@ -163,7 +168,7 @@ export function RouteLibraryExplorer({
     entityContent = (
       <article className="entity-detail airport-entity">
         <header className="entity-detail-hero map-first-hero">
-          <div><span>AIRPORT</span><h2><code>{airportProfile.airport.iata}</code> · {airportProfile.airport.city}</h2><p>{airportProfile.airport.name}</p></div>
+          <div><span>{copy.airportLabel}</span><h2><code>{airportProfile.airport.iata}</code> · {airportProfile.airport.city}</h2><p>{airportProfile.airport.name}</p></div>
         </header>
         <section className="entity-section map-primary-section"><RouteEntityMap routes={airportProfile.outgoingRoutes} hubs={hubs} selectedAirport={airportProfile.airport} allianceTheme={alliance} controls={mapControls} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={[{ value: airportProfile.destinationCount, label: copy.outbound }, { value: airportProfile.airlineCount, label: copy.airlines }, { value: airportProfile.countryCount, label: copy.countries }, { value: airportProfile.incomingRouteCount, label: copy.inbound }]} /></section>
         <details className="entity-secondary-index" open={showRouteIndex} onToggle={(event) => setShowRouteIndex(event.currentTarget.open)}>
@@ -181,7 +186,7 @@ export function RouteLibraryExplorer({
     entityContent = (
       <article className="entity-detail airline-entity">
         <header className="entity-detail-hero map-first-hero">
-          <div><span>AIRLINE</span><h2><code>{airlineProfile.carrier}</code> · {airlineProfile.name}</h2><p>{copy.airlineNetwork}</p></div>
+          <div><span>{copy.airlineLabel}</span><h2><code>{airlineProfile.carrier}</code> · {airlineProfile.name}</h2><p>{copy.airlineNetwork}</p></div>
         </header>
         <section className="entity-section map-primary-section"><RouteEntityMap routes={airlineProfile.routes} hubs={airlineProfile.topHubs} allianceTheme={alliance} controls={mapControls} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={[{ value: airlineProfile.routes.length, label: copy.routes }, { value: airlineProfile.airportCount, label: copy.airports }, { value: airlineProfile.countryCount, label: copy.countries }, { value: airlineProfile.operatingRouteCount, label: copy.operating }]} /></section>
         <details className="entity-secondary-index" open={showRouteIndex} onToggle={(event) => setShowRouteIndex(event.currentTarget.open)}>
@@ -197,7 +202,7 @@ export function RouteLibraryExplorer({
     entityContent = (
       <article className="entity-detail route-entity">
         <header className="entity-detail-hero route-detail-hero map-first-hero">
-          <div><span>ROUTE</span><h2><code>{route.from.iata}</code><b>→</b><code>{route.to.iata}</code></h2><p>{route.from.city} → {route.to.city}</p></div>
+          <div><span>{copy.routeLabel}</span><h2><code>{route.from.iata}</code><b>→</b><code>{route.to.iata}</code></h2><p>{route.from.city} → {route.to.city}</p></div>
         </header>
         <section className="entity-section map-primary-section"><RouteEntityMap routes={[route]} hubs={[{ airport: route.from, connections: 1 }, { airport: route.to, connections: 1 }]} selectedRouteId={routeId(route)} allianceTheme={alliance} controls={mapControls} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={[{ value: `${route.distanceNm.toLocaleString()} nm`, label: copy.distance }, { value: route.carriers.length, label: copy.airlines }, { value: route.carriers.filter((carrier) => carrier.confirmedNumbers.length > 0).length, label: copy.confirmed }]} /></section>
         <section className="entity-section route-carrier-list"><div className="entity-section-heading"><h3>{copy.routeDetail}</h3>{reverseExists && <button type="button" className="entity-inline-button" onClick={() => choose({ kind: 'route', id: reverseId })}>{copy.reverse}</button>}</div>
@@ -219,7 +224,7 @@ export function RouteLibraryExplorer({
 
   return (
     <section className="route-library-entity-explorer">
-      {selection && <div className="entity-breadcrumb"><button type="button" onClick={() => onSelect(null)}>← {copy.back}</button><span>{selection.kind}</span><strong>{selection.id.replace('-', ' → ')}</strong></div>}
+      {selection && <div className="entity-breadcrumb"><button type="button" onClick={() => onSelect(null)}>← {copy.back}</button><span>{selection.kind === 'airport' ? copy.airportLabel : selection.kind === 'airline' ? copy.airlineLabel : copy.routeLabel}</span><strong>{selection.id.replace('-', ' → ')}</strong></div>}
 
       {!selection ? (
         <div className="entity-explore-home">
