@@ -1,14 +1,17 @@
-import { useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { buildAirportIndex } from '../lib/airport-index.ts';
 import { parseRouteNetworkCatalog, type RouteNetworkCatalog } from '../lib/schemas/route-network.ts';
 import type { RouteLibraryEntitySelection } from '../lib/rtw/route-library-entities.ts';
 import type { LoadedData } from '../state/use-loaded-data.ts';
-import { RouteCatalogBrowser } from './RouteCatalogBrowser.tsx';
 import { RouteLibraryExplorer } from './RouteLibraryExplorer.tsx';
 import { SiteHeader, type SiteView } from './SiteHeader.tsx';
 import { useLocale } from '../i18n/use-locale.ts';
 
 type AllianceFilter = 'all' | 'star' | 'oneworld' | 'skyteam';
+
+const LazyRouteCatalogBrowser = lazy(() =>
+  import('./RouteCatalogBrowser.tsx').then((module) => ({ default: module.RouteCatalogBrowser })),
+);
 
 interface Props {
   readonly data: LoadedData;
@@ -177,18 +180,20 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
                 <span>{advancedOpen ? copy.closeAdvanced : copy.advanced}</span><small>{copy.advancedBody}</small>
               </button>
               {advancedOpen && <section className="routes-browser-shell">
-                <RouteCatalogBrowser
-                  routeNetwork={network}
-                  schedules={data.schedules}
-                  officialSchedules={data.officialSchedules}
-                  memberCodes={memberCodes}
-                  airports={airports}
-                  countryContinents={data.countryContinents}
-                  countrySubregions={data.countrySubregions}
-                  airportBrowseRegions={data.airportBrowseRegions}
-                  airportContinentOverrides={data.airportContinentOverrides}
-                  carrierNames={carrierNames}
-                />
+                <Suspense fallback={<div className="routes-loading" role="status">{copy.loading}</div>}>
+                  <LazyRouteCatalogBrowser
+                    routeNetwork={network}
+                    schedules={data.schedules}
+                    officialSchedules={data.officialSchedules}
+                    memberCodes={memberCodes}
+                    airports={airports}
+                    countryContinents={data.countryContinents}
+                    countrySubregions={data.countrySubregions}
+                    airportBrowseRegions={data.airportBrowseRegions}
+                    airportContinentOverrides={data.airportContinentOverrides}
+                    carrierNames={carrierNames}
+                  />
+                </Suspense>
               </section>}
             </section>
           </>

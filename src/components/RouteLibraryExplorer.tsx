@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { lazy, Suspense, useMemo, useState } from 'react';
 import type { ContinentId } from '../lib/schemas/country-continent.ts';
 import type { RouteNetworkCatalog } from '../lib/schemas/route-network.ts';
 import type { Airport } from '../lib/types.ts';
@@ -14,9 +14,20 @@ import {
   type RouteLibraryRouteCard,
 } from '../lib/rtw/route-library-entities.ts';
 import { useLocale } from '../i18n/use-locale.ts';
-import { RouteEntityMap } from './RouteLibraryMap.tsx';
 import type { RouteMapAllianceTheme } from './RouteLibraryMap.tsx';
 import './RouteLibraryExplorer.css';
+
+const LazyRouteEntityMap = lazy(() =>
+  import('./RouteLibraryMap.tsx').then((module) => ({ default: module.RouteEntityMap })),
+);
+
+function RouteMapLoading({ zh }: { readonly zh: boolean }): React.ReactElement {
+  return (
+    <div className="entity-map-card maplibre-route-map entity-map-loading" role="status">
+      <span>{zh ? '正在載入互動航線地圖…' : 'Loading interactive route map…'}</span>
+    </div>
+  );
+}
 
 interface PlanRouteInput {
   readonly from: string;
@@ -170,7 +181,7 @@ export function RouteLibraryExplorer({
         <header className="entity-detail-hero map-first-hero">
           <div><span>{copy.airportLabel}</span><h2><code>{airportProfile.airport.iata}</code> · {airportProfile.airport.city}</h2><p>{airportProfile.airport.name}</p></div>
         </header>
-        <section className="entity-section map-primary-section"><RouteEntityMap routes={airportProfile.outgoingRoutes} hubs={hubs} selectedAirport={airportProfile.airport} allianceTheme={alliance} controls={mapControls} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={[{ value: airportProfile.destinationCount, label: copy.outbound }, { value: airportProfile.airlineCount, label: copy.airlines }, { value: airportProfile.countryCount, label: copy.countries }, { value: airportProfile.incomingRouteCount, label: copy.inbound }]} /></section>
+        <section className="entity-section map-primary-section"><Suspense fallback={<RouteMapLoading zh={zh} />}><LazyRouteEntityMap routes={airportProfile.outgoingRoutes} hubs={hubs} selectedAirport={airportProfile.airport} allianceTheme={alliance} controls={mapControls} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={[{ value: airportProfile.destinationCount, label: copy.outbound }, { value: airportProfile.airlineCount, label: copy.airlines }, { value: airportProfile.countryCount, label: copy.countries }, { value: airportProfile.incomingRouteCount, label: copy.inbound }]} /></Suspense></section>
         <details className="entity-secondary-index" open={showRouteIndex} onToggle={(event) => setShowRouteIndex(event.currentTarget.open)}>
           <summary>{copy.destinationIndex} · {airportProfile.destinationCount}</summary>
           {showRouteIndex && [...grouped.entries()].map(([continent, routes]) => (
@@ -188,7 +199,7 @@ export function RouteLibraryExplorer({
         <header className="entity-detail-hero map-first-hero">
           <div><span>{copy.airlineLabel}</span><h2><code>{airlineProfile.carrier}</code> · {airlineProfile.name}</h2><p>{copy.airlineNetwork}</p></div>
         </header>
-        <section className="entity-section map-primary-section"><RouteEntityMap routes={airlineProfile.routes} hubs={airlineProfile.topHubs} allianceTheme={alliance} controls={mapControls} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={[{ value: airlineProfile.routes.length, label: copy.routes }, { value: airlineProfile.airportCount, label: copy.airports }, { value: airlineProfile.countryCount, label: copy.countries }, { value: airlineProfile.operatingRouteCount, label: copy.operating }]} /></section>
+        <section className="entity-section map-primary-section"><Suspense fallback={<RouteMapLoading zh={zh} />}><LazyRouteEntityMap routes={airlineProfile.routes} hubs={airlineProfile.topHubs} allianceTheme={alliance} controls={mapControls} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={[{ value: airlineProfile.routes.length, label: copy.routes }, { value: airlineProfile.airportCount, label: copy.airports }, { value: airlineProfile.countryCount, label: copy.countries }, { value: airlineProfile.operatingRouteCount, label: copy.operating }]} /></Suspense></section>
         <details className="entity-secondary-index" open={showRouteIndex} onToggle={(event) => setShowRouteIndex(event.currentTarget.open)}>
           <summary>{copy.routeIndex} · {airlineProfile.routes.length}</summary>
           {showRouteIndex && <div className="entity-route-grid">{airlineProfile.routes.map((route) => <RouteCard key={routeId(route)} route={route} onSelect={choose} compact />)}</div>}
@@ -204,7 +215,7 @@ export function RouteLibraryExplorer({
         <header className="entity-detail-hero route-detail-hero map-first-hero">
           <div><span>{copy.routeLabel}</span><h2><code>{route.from.iata}</code><b>→</b><code>{route.to.iata}</code></h2><p>{route.from.city} → {route.to.city}</p></div>
         </header>
-        <section className="entity-section map-primary-section"><RouteEntityMap routes={[route]} hubs={[{ airport: route.from, connections: 1 }, { airport: route.to, connections: 1 }]} selectedRouteId={routeId(route)} allianceTheme={alliance} controls={mapControls} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={[{ value: `${route.distanceNm.toLocaleString()} nm`, label: copy.distance }, { value: route.carriers.length, label: copy.airlines }, { value: route.carriers.filter((carrier) => carrier.confirmedNumbers.length > 0).length, label: copy.confirmed }]} /></section>
+        <section className="entity-section map-primary-section"><Suspense fallback={<RouteMapLoading zh={zh} />}><LazyRouteEntityMap routes={[route]} hubs={[{ airport: route.from, connections: 1 }, { airport: route.to, connections: 1 }]} selectedRouteId={routeId(route)} allianceTheme={alliance} controls={mapControls} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={[{ value: `${route.distanceNm.toLocaleString()} nm`, label: copy.distance }, { value: route.carriers.length, label: copy.airlines }, { value: route.carriers.filter((carrier) => carrier.confirmedNumbers.length > 0).length, label: copy.confirmed }]} /></Suspense></section>
         <section className="entity-section route-carrier-list"><div className="entity-section-heading"><h3>{copy.routeDetail}</h3>{reverseExists && <button type="button" className="entity-inline-button" onClick={() => choose({ kind: 'route', id: reverseId })}>{copy.reverse}</button>}</div>
           {route.carriers.map((carrier) => (
             <article className="route-carrier-card" key={carrier.carrier}>
@@ -228,7 +239,7 @@ export function RouteLibraryExplorer({
 
       {!selection ? (
         <div className="entity-explore-home">
-          <RouteEntityMap routes={fingerprint.routes} hubs={fingerprint.hubs} allianceTheme={alliance} fingerprint controls={mapControls} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={[{ value: overview.routeCount, label: copy.routes }, { value: overview.airportCount, label: copy.airports }, { value: overview.carrierCount, label: copy.airlines }, { value: overview.confirmedNumberCount, label: copy.confirmed }]} />
+          <Suspense fallback={<RouteMapLoading zh={zh} />}><LazyRouteEntityMap routes={fingerprint.routes} hubs={fingerprint.hubs} allianceTheme={alliance} fingerprint controls={mapControls} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={[{ value: overview.routeCount, label: copy.routes }, { value: overview.airportCount, label: copy.airports }, { value: overview.carrierCount, label: copy.airlines }, { value: overview.confirmedNumberCount, label: copy.confirmed }]} /></Suspense>
         </div>
       ) : entityContent}
     </section>

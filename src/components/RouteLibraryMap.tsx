@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
-import * as maplibregl from 'maplibre-gl';
-import type { ExpressionSpecification, GeoJSONSource, Map as MapLibreMap } from 'maplibre-gl';
+import { AttributionControl, Map as MapLibreRuntime, NavigationControl, setWorkerUrl } from 'maplibre-gl';
+import type { ExpressionSpecification, GeoJSONSource, Map as MapLibreMap, MapGeoJSONFeature, MapMouseEvent, Point } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import './RouteLibraryMap.css';
@@ -34,6 +34,7 @@ const AIRPORT_LAYER = 'gcmp-airports';
 const FOCUS_AIRPORT_LAYER = 'gcmp-airport-focus';
 const HIT_SEARCH_RADIUS_PX = 10;
 const ROUTE_SELECT_RADIUS_PX = 18;
+const ROUTE_MAP_LABEL_FONT = ['Noto Sans Regular'];
 
 export type RouteMapAllianceTheme = 'all' | 'star' | 'oneworld' | 'skyteam';
 
@@ -159,6 +160,7 @@ function addSourcesAndLayers(map: MapLibreMap, dark: boolean): void {
     filter: ['has', 'point_count'],
     layout: {
       'text-field': ['get', 'point_count_abbreviated'],
+      'text-font': ROUTE_MAP_LABEL_FONT,
       'text-size': 10,
     },
     paint: {
@@ -185,6 +187,7 @@ function addSourcesAndLayers(map: MapLibreMap, dark: boolean): void {
     filter: ['all', ['!', ['has', 'point_count']], ['<', ['get', 'hubRank'], 12]],
     layout: {
       'text-field': ['get', 'iata'],
+      'text-font': ROUTE_MAP_LABEL_FONT,
       'text-size': 10,
       'text-offset': [0.9, 0],
       'text-anchor': 'left',
@@ -259,7 +262,7 @@ async function clusterRepresentatives(
   if (!airportSource || !map.getLayer(CLUSTER_LAYER)) return new Map();
 
   const clusters = map.queryRenderedFeatures({ layers: [CLUSTER_LAYER] });
-  const byId = new Map<number, maplibregl.MapGeoJSONFeature>();
+  const byId = new Map<number, MapGeoJSONFeature>();
   for (const cluster of clusters) {
     const clusterId = Number(cluster.properties?.cluster_id);
     if (Number.isFinite(clusterId) && !byId.has(clusterId)) byId.set(clusterId, cluster);
@@ -431,8 +434,8 @@ export function RouteEntityMap({
     setReady(false);
     const dark = window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
     const camera = mapCameraRef.current;
-    maplibregl.setWorkerUrl(maplibreWorkerUrl);
-    const map = new maplibregl.Map({
+    setWorkerUrl(maplibreWorkerUrl);
+    const map = new MapLibreRuntime({
       container: containerRef.current,
       style: mapStyle(dark),
       center: camera.center,
@@ -454,8 +457,8 @@ export function RouteEntityMap({
       } : {}),
     });
     mapRef.current = map;
-    map.addControl(new maplibregl.NavigationControl({ showCompass: false, visualizePitch: false }), 'top-right');
-    map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-right');
+    map.addControl(new NavigationControl({ showCompass: false, visualizePitch: false }), 'top-right');
+    map.addControl(new AttributionControl({ compact: true }), 'bottom-right');
     map.on('load', () => {
       try {
         addSourcesAndLayers(map, dark);
@@ -544,8 +547,8 @@ export function RouteEntityMap({
     const map = mapRef.current;
     if (!ready || !map) return;
     const canvas = map.getCanvas();
-    const nearestAirport = (features: ReadonlyArray<maplibregl.MapGeoJSONFeature>, point: maplibregl.Point): maplibregl.MapGeoJSONFeature | null => {
-      let best: { feature: maplibregl.MapGeoJSONFeature; distance: number } | null = null;
+    const nearestAirport = (features: ReadonlyArray<MapGeoJSONFeature>, point: Point): MapGeoJSONFeature | null => {
+      let best: { feature: MapGeoJSONFeature; distance: number } | null = null;
       for (const feature of features) {
         if (feature.layer.id !== AIRPORT_LAYER || feature.geometry.type !== 'Point') continue;
         const iata = String(feature.properties?.iata ?? '');
@@ -559,7 +562,7 @@ export function RouteEntityMap({
       }
       return best?.feature ?? null;
     };
-    const nearestRoute = (features: ReadonlyArray<maplibregl.MapGeoJSONFeature>, point: maplibregl.Point): maplibregl.MapGeoJSONFeature | null => {
+    const nearestRoute = (features: ReadonlyArray<MapGeoJSONFeature>, point: Point): MapGeoJSONFeature | null => {
       const routeFeatures = features.filter((feature) => feature.layer.id === ROUTE_HIT_LAYER);
       const routeId = nearestRouteIdByScreenDistance(
         model,
@@ -570,7 +573,7 @@ export function RouteEntityMap({
       );
       return routeId ? routeFeatures.find((feature) => String(feature.properties?.routeId ?? '') === routeId) ?? null : null;
     };
-    const featuresAt = (point: maplibregl.Point): { cluster: maplibregl.MapGeoJSONFeature | null; airport: maplibregl.MapGeoJSONFeature | null; route: maplibregl.MapGeoJSONFeature | null } => {
+    const featuresAt = (point: Point): { cluster: MapGeoJSONFeature | null; airport: MapGeoJSONFeature | null; route: MapGeoJSONFeature | null } => {
       const features = map.queryRenderedFeatures([
         [point.x - HIT_SEARCH_RADIUS_PX, point.y - HIT_SEARCH_RADIUS_PX],
         [point.x + HIT_SEARCH_RADIUS_PX, point.y + HIT_SEARCH_RADIUS_PX],
@@ -581,7 +584,7 @@ export function RouteEntityMap({
         route: nearestRoute(features, point),
       };
     };
-    const onMapMove = (event: maplibregl.MapMouseEvent): void => {
+    const onMapMove = (event: MapMouseEvent): void => {
       const { cluster, airport, route } = featuresAt(event.point);
       if (cluster) {
         canvas.style.cursor = 'pointer';
@@ -608,7 +611,7 @@ export function RouteEntityMap({
       canvas.style.cursor = '';
       setHover(null);
     };
-    const onMapClick = (event: maplibregl.MapMouseEvent): void => {
+    const onMapClick = (event: MapMouseEvent): void => {
       const { cluster, airport, route } = featuresAt(event.point);
       if (cluster && cluster.geometry.type === 'Point') {
         const clusterId = Number(cluster.properties?.cluster_id);
