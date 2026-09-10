@@ -4,8 +4,11 @@ import { FlightQuerySchema, FlightQueryResponseSchema, type FlightQueryResponse 
 import { createScheduleGateway } from './flight-schedules.ts';
 import { createTdxGateway } from './tdx-schedules.ts';
 
+export type ScheduleProvider = 'tdx' | 'official' | 'cirium';
+export const DEFAULT_SCHEDULE_PROVIDER: ScheduleProvider = 'tdx';
+
 interface Options {
-  provider?: 'tdx' | 'official' | 'cirium';
+  provider?: ScheduleProvider;
   clientId?: string | undefined; clientSecret?: string | undefined;
   appId?: string | undefined; appKey?: string | undefined;
   dailyBudget?: number; fetchImpl?: typeof fetch; now?: () => number;
@@ -14,7 +17,7 @@ interface Options {
  * A failure never silently spends a second supplier's quota. Official
  * publications remain available locally without credentials or a gateway. */
 export function createHybridScheduleGateway(options: Options = {}) {
-  const provider = options.provider ?? 'tdx';
+  const provider = options.provider ?? DEFAULT_SCHEDULE_PROVIDER;
   const now = options.now ?? Date.now;
   const gateway = provider === 'cirium' ? createScheduleGateway(options) : createTdxGateway(options);
   return {

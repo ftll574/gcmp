@@ -33,6 +33,8 @@ const SOURCE = {
 };
 const DEFAULT_TTL_MS = 5 * 60 * 1000;
 const MAX_RESPONSE_BYTES = 1_500_000;
+const DAY_ORDER = new Map(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, index) => [day, index]));
+const LOCAL_CLOCK = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
 
 export interface LiveRouteGatewayOptions {
   readonly fetchImpl?: typeof fetch;
@@ -48,10 +50,20 @@ export function normalizeLiveRoutes(raw: unknown, origin: string, now: number, t
     if (destination.from !== origin || destination.from === destination.to || destination.status !== 'active') return [];
     const carriers = [...new Map(destination.airlines.flatMap((airline) => {
       if (airline.service_type && airline.service_type !== 'scheduled') return [];
+      const scheduleByDay = new Map<string, Set<string>>();
+      for (const row of airline.schedule) {
+        const times = scheduleByDay.get(row.day) ?? new Set<string>();
+        for (const time of row.times) if (LOCAL_CLOCK.test(time)) times.add(time);
+        scheduleByDay.set(row.day, times);
+      }
+      const weeklySchedule = [...scheduleByDay.entries()]
+        .sort(([a], [b]) => (DAY_ORDER.get(a) ?? 99) - (DAY_ORDER.get(b) ?? 99))
+        .map(([day, times]) => ({ day, times: [...times].sort() }));
       return [[airline.airline_code, {
         code: airline.airline_code,
         name: airline.airline,
-        days: [...new Set(airline.schedule.map((row) => row.day))],
+        days: weeklySchedule.map((row) => row.day),
+        weeklySchedule,
         seasonalNote: airline.seasonal_note ?? null,
       }] as const];
     })).values()];

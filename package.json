@@ -38,6 +38,7 @@
     "schedules:controls:aerodatabox": "tsx scripts/aerodatabox-known-controls.ts",
     "coverage:alliances": "tsx scripts/report-alliance-coverage.ts",
     "coverage:flightconnections": "tsx scripts/report-flightconnections-parity.ts",
+    "coverage:flight-data": "tsx scripts/report-flight-data-quality.ts",
     "prebuild": "tsx scripts/build-runtime-route-network.ts && tsx scripts/build-landing-showcases.ts",
     "build": "tsc -b && tsx scripts/build-airline-pages.ts && vite build",
     "lint": "eslint .",

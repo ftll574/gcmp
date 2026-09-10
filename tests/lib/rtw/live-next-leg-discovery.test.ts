@@ -11,8 +11,8 @@ const live = LiveRouteResponseSchema.parse({
   expiresAt: '2026-09-08T01:05:00.000Z',
   routes: [
     { from: 'TPE', to: 'BKK', status: 'active', seasonalityLabel: null, sourceUrl: 'https://air-routes.com/r/TPE-BKK', carriers: [
-      { code: 'BR', name: 'EVA Air', days: ['Tue'], seasonalNote: null },
-      { code: 'CI', name: 'China Airlines', days: ['Tue'], seasonalNote: null },
+      { code: 'BR', name: 'EVA Air', days: ['Tue'], weeklySchedule: [{ day: 'Tue', times: ['08:10'] }], seasonalNote: null },
+      { code: 'CI', name: 'China Airlines', days: ['Tue'], weeklySchedule: [{ day: 'Tue', times: ['17:30'] }], seasonalNote: null },
     ] },
     { from: 'TPE', to: 'ZZZ', status: 'active', seasonalityLabel: null, sourceUrl: 'https://air-routes.com/r/TPE-ZZZ', carriers: [
       { code: 'BR', name: 'EVA Air', days: [], seasonalNote: null },
@@ -41,7 +41,9 @@ describe('live next-leg discovery merge', () => {
     const options = result[0]!.options;
     expect(options.map((option) => option.carrier)).toEqual(['BR', 'CI']);
     expect(options[0]?.identityStatus).toBeUndefined();
+    expect(options[0]?.liveWeeklySchedule).toEqual([{ day: 'Tue', times: ['08:10'] }]);
     expect(options[1]?.identityStatus).toBe('provider-listed');
+    expect(options[1]?.liveWeeklySchedule).toEqual([{ day: 'Tue', times: ['17:30'] }]);
     expect(options[1]?.networkSources[0]?.url).toBe('https://air-routes.com/r/TPE-BKK');
   });
 

@@ -25,7 +25,17 @@ export function mergeLiveNextLegDestinations(
     if (route.from !== live.origin || !knownAirports.has(route.to)) continue;
     const options = destinations.get(route.to) ?? [];
     for (const listed of route.carriers) {
-      if (!eligibleCarriers.has(listed.code) || options.some((option) => option.carrier === listed.code)) continue;
+      if (!eligibleCarriers.has(listed.code)) continue;
+      const liveSignal = {
+        liveWeeklySchedule: listed.weeklySchedule,
+        liveSeasonalityLabel: route.seasonalityLabel,
+        liveSeasonalNote: listed.seasonalNote,
+      } as const;
+      const existing = options.findIndex((option) => option.carrier === listed.code);
+      if (existing >= 0) {
+        options[existing] = { ...options[existing]!, ...liveSignal };
+        continue;
+      }
       const option: NextLegOption = {
         carrier: listed.code,
         from: route.from,
@@ -40,6 +50,7 @@ export function mergeLiveNextLegDestinations(
         candidateFlightNumberSources: [],
         routeWindow: null,
         identityStatus: 'provider-listed',
+        ...liveSignal,
       };
       options.push(option);
     }

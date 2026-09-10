@@ -1,4 +1,5 @@
 import type { ScheduleEntry } from '../schemas/flight-schedules.ts';
+import type { LiveRouteWeeklySchedule } from '../schemas/live-routes.ts';
 import type { NetworkGapEntry } from '../schemas/network-gaps.ts';
 import type {
   FlightNumberReference,
@@ -32,6 +33,12 @@ export interface NextLegOption {
   readonly routeFlightNumberSources: ReadonlyArray<RouteNetworkSource>;
   readonly candidateFlightNumberSources: ReadonlyArray<RouteNetworkSource>;
   readonly routeWindow: { readonly from?: string | undefined; readonly until?: string | undefined } | null;
+  /** Fresh current-week listing from the additive live route provider. It may
+   * include marketing/codeshare service, so it is display/research evidence
+   * only and never upgrades scheduleStatus or operating identity. */
+  readonly liveWeeklySchedule?: ReadonlyArray<LiveRouteWeeklySchedule> | undefined;
+  readonly liveSeasonalityLabel?: string | null | undefined;
+  readonly liveSeasonalNote?: string | null | undefined;
   /** Undefined / confirmed-operating is backed by the existing operating-carrier
    * evidence pipeline. provider-listed means a live route source listed this
    * airline on the route, but dated evidence has not yet confirmed operation. */
