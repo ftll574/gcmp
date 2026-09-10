@@ -38,6 +38,24 @@ global supplier only where it is needed, and removes the need to change provider
 configuration route-by-route. The default remains `tdx` for backwards
 compatibility; production must opt into `auto` explicitly.
 
+## Route collection now precedes flight-number collection
+
+The route graph is a separate first-stage denominator. Flight-number enrichment
+must never be responsible for discovering whether a route exists. The preferred
+bulk collection path is Aviation Edge Airline Routes: one provider dataset is
+normalized into `aviation-edge-global-current.json` as provider-listed active
+directional nonstop routes for the 60 target alliance carriers. Existing curated,
+ADS-B, standing, BTS and official layers retain higher evidentiary value and can
+override/corroborate the provider layer.
+
+`npm run routes:collect-global:bulk` reads `AVIATION_EDGE_API_KEY` only from the
+server-side local environment and saves the raw response outside the repository
+with its original capture timestamp. Offline rebuilds must use that timestamp;
+an old snapshot is never restamped as newly checked. If the bulk source is not
+configured, the slower air-routes.com airport scan remains a resumable research
+fallback, but incomplete scans cannot write the production current artifact by
+default.
+
 ## Next collection steps
 
 ### P0 — establish the global dated backbone

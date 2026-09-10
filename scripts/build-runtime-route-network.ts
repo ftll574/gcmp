@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { mkdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
 import { parseRouteNetworkCatalog, type RouteNetworkCatalog } from '../src/lib/schemas/route-network.ts';
 import { mergeRouteNetworkCatalogs, mergeRouteNumberEvidence } from '../src/lib/rtw/route-network-merge.ts';
 
@@ -11,6 +11,7 @@ const INPUTS = [
   'bts-marketing-current.json',
   'standing-current.json',
 ] as const;
+const OPTIONAL_INPUTS = ['aviation-edge-global-current.json'] as const;
 const NUMBER_INPUT = 'flight-numbers-current.json';
 const CORRECTIONS_INPUT = 'current-corrections.json';
 
@@ -33,16 +34,27 @@ const catalogs = INPUTS.map((file) => {
   rawByFile.set(file, raw);
   return parseRouteNetworkCatalog(JSON.parse(raw), airportCodes);
 });
+const optionalCatalogs = OPTIONAL_INPUTS.flatMap((file) => {
+  const path = `${root}/${file}`;
+  if (!existsSync(path)) return [];
+  const raw = readFileSync(path, 'utf8');
+  rawByFile.set(file, raw);
+  return [parseRouteNetworkCatalog(JSON.parse(raw), airportCodes)];
+});
 
 const baseRuntime = catalogs.slice(1).reduce<RouteNetworkCatalog>(
   (network, layer) => mergeRouteNetworkCatalogs(network, layer),
   catalogs[0]!,
 );
+const discoveredRuntime = optionalCatalogs.reduce<RouteNetworkCatalog>(
+  (network, layer) => mergeRouteNetworkCatalogs(network, layer),
+  baseRuntime,
+);
 const correctionsRaw = readFileSync(`${root}/${CORRECTIONS_INPUT}`, 'utf8');
 rawByFile.set(CORRECTIONS_INPUT, correctionsRaw);
 const correctedRuntime = mergeRouteNetworkCatalogs(
   parseRouteNetworkCatalog(JSON.parse(correctionsRaw), airportCodes),
-  baseRuntime,
+  discoveredRuntime,
 );
 const numberRaw = readFileSync(`${root}/${NUMBER_INPUT}`, 'utf8');
 rawByFile.set(NUMBER_INPUT, numberRaw);
@@ -130,7 +142,8 @@ for (const letter of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') {
 const meta = {
   version: 1,
   builtOn: '2026-09-09',
-  inputs: Object.fromEntries([...INPUTS, CORRECTIONS_INPUT, NUMBER_INPUT].map((file) => [file, sha256(rawByFile.get(file)!)])),
+  inputs: Object.fromEntries([...INPUTS, ...OPTIONAL_INPUTS.filter((file) => rawByFile.has(file)), CORRECTIONS_INPUT, NUMBER_INPUT]
+    .map((file) => [file, sha256(rawByFile.get(file)!)])),
   outputSha256: sha256(runtimeText),
   routes: runtime.routes.length,
   publishedRoutes: publishedRoutes.length,

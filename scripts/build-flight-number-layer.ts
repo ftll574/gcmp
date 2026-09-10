@@ -21,6 +21,7 @@ const BASE_INPUTS = [
   'bts-marketing-current.json',
   'standing-current.json',
 ] as const;
+const OPTIONAL_ROUTE_INPUTS = ['aviation-edge-global-current.json'] as const;
 const BTS_TARGETS = new Set(['AA', 'AS', 'DL', 'UA']);
 const DEFAULT_WORK_ROOT = 'E:/workspace/.gcmp-route-work';
 const DEFAULT_OUTPUT = 'public/data/route-network/flight-numbers-current.json';
@@ -671,11 +672,19 @@ function buildBaseRuntime(): RouteNetworkCatalog {
     (network, layer) => mergeRouteNetworkCatalogs(network, layer),
     catalogs[0]!,
   );
+  const discovered = OPTIONAL_ROUTE_INPUTS.reduce<RouteNetworkCatalog>((network, file) => {
+    const path = `public/data/route-network/${file}`;
+    if (!existsSync(path)) return network;
+    return mergeRouteNetworkCatalogs(
+      network,
+      parseRouteNetworkCatalog(JSON.parse(readFileSync(path, 'utf8')), airportCodes),
+    );
+  }, base);
   const corrections = parseRouteNetworkCatalog(
     JSON.parse(readFileSync(CORRECTIONS_INPUT, 'utf8')),
     airportCodes,
   );
-  return mergeRouteNetworkCatalogs(corrections, base);
+  return mergeRouteNetworkCatalogs(corrections, discovered);
 }
 
 async function main(): Promise<void> {
