@@ -61,6 +61,8 @@ import { useLoadedData } from './state/use-loaded-data.ts';
 import { useRoutingState } from './state/use-routing-state.ts';
 import { useSavedRoutings } from './state/use-saved-routings.ts';
 import { useViewportWidth } from './state/use-viewport.ts';
+import './left-panel-ux.css';
+import './map-polish.css';
 import './App.css';
 
 const LazyMapView = lazy(() =>
