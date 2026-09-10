@@ -238,6 +238,9 @@ export function LandingGlobe({ catalog, onPlan }: Props): React.ReactElement {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const runtimeRef = useRef<GlobeRuntime | null>(null);
+  const requestRenderRef = useRef<(() => void) | null>(null);
+  const sceneActiveRef = useRef(true);
+  const reducedMotionRef = useRef(false);
   const [sceneReady, setSceneReady] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [hoveredAirport, setHoveredAirport] = useState<string | null>(null);
@@ -263,9 +266,11 @@ export function LandingGlobe({ catalog, onPlan }: Props): React.ReactElement {
     if (!webglAvailable || !canvasRef.current || !containerRef.current) return;
     const canvas = canvasRef.current;
     const container = containerRef.current;
-    const reducedMotion = typeof window.matchMedia === 'function'
-      ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      : false;
+    const motionQuery = typeof window.matchMedia === 'function'
+      ? window.matchMedia('(prefers-reduced-motion: reduce)')
+      : null;
+    const reducedMotion = motionQuery?.matches ?? false;
+    reducedMotionRef.current = reducedMotion;
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.8));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -386,6 +391,7 @@ export function LandingGlobe({ catalog, onPlan }: Props): React.ReactElement {
         console.warn('Landing globe country outlines unavailable:', error);
       });
 
+    let requestRender = (): void => {};
     const resize = (): void => {
       const rect = container.getBoundingClientRect();
       const width = Math.max(320, Math.round(rect.width));
@@ -393,6 +399,7 @@ export function LandingGlobe({ catalog, onPlan }: Props): React.ReactElement {
       renderer.setSize(width, height, false);
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
+      requestRender();
     };
     resize();
     const resizeObserver = new ResizeObserver(resize);
@@ -434,6 +441,7 @@ export function LandingGlobe({ catalog, onPlan }: Props): React.ReactElement {
         canvas.dataset['globeYaw'] = runtime.spin.toFixed(4);
         canvas.dataset['globePitch'] = runtime.pitch.toFixed(4);
         setHoveredAirport(null);
+        requestRender();
         return;
       }
 
@@ -463,11 +471,20 @@ export function LandingGlobe({ catalog, onPlan }: Props): React.ReactElement {
     canvas.addEventListener('pointerleave', pointerLeave);
 
     let animationFrame = 0;
+    let inViewport = true;
     const start = performance.now();
     const up = new THREE.Vector3(0, 1, 0);
     const tangent = new THREE.Vector3();
+    const canRender = (): boolean => !disposed && inViewport && document.visibilityState !== 'hidden';
+    const stopRendering = (): void => {
+      if (animationFrame === 0) return;
+      cancelAnimationFrame(animationFrame);
+      animationFrame = 0;
+    };
     const animate = (now: number): void => {
-      const elapsed = (now - start) / 1000;
+      animationFrame = 0;
+      if (!canRender()) return;
+      const elapsed = runtime.reducedMotion ? 1.8 : (now - start) / 1000;
       const intro = Math.min(1, elapsed / 1.8);
       const easedIntro = 1 - Math.pow(1 - intro, 3);
       if (!runtime.dragging) {
@@ -498,14 +515,49 @@ export function LandingGlobe({ catalog, onPlan }: Props): React.ReactElement {
         plane.object.scale.setScalar(pulse);
       }
       renderer.render(scene, camera);
+      if (!runtime.reducedMotion || runtime.dragging) requestRender();
+    };
+    requestRender = (): void => {
+      if (animationFrame !== 0 || !canRender()) return;
       animationFrame = requestAnimationFrame(animate);
     };
-    animationFrame = requestAnimationFrame(animate);
+    requestRenderRef.current = requestRender;
+
+    const handleVisibilityChange = (): void => {
+      sceneActiveRef.current = canRender();
+      if (document.visibilityState === 'hidden') stopRendering();
+      else requestRender();
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    const handleMotionPreferenceChange = (event: MediaQueryListEvent): void => {
+      runtime.reducedMotion = event.matches;
+      reducedMotionRef.current = event.matches;
+      requestRender();
+    };
+    motionQuery?.addEventListener?.('change', handleMotionPreferenceChange);
+
+    let intersectionObserver: IntersectionObserver | null = null;
+    if ('IntersectionObserver' in window) {
+      intersectionObserver = new IntersectionObserver(([entry]) => {
+        inViewport = entry?.isIntersecting ?? true;
+        sceneActiveRef.current = canRender();
+        if (inViewport) requestRender();
+        else stopRendering();
+      }, { rootMargin: '180px 0px' });
+      intersectionObserver.observe(container);
+    }
+
+    sceneActiveRef.current = canRender();
+    requestRender();
     setSceneReady(true);
 
     return () => {
       disposed = true;
-      cancelAnimationFrame(animationFrame);
+      stopRendering();
+      intersectionObserver?.disconnect();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      motionQuery?.removeEventListener?.('change', handleMotionPreferenceChange);
       resizeObserver.disconnect();
       canvas.removeEventListener('pointerdown', pointerDown);
       canvas.removeEventListener('pointermove', pointerMove);
@@ -514,6 +566,8 @@ export function LandingGlobe({ catalog, onPlan }: Props): React.ReactElement {
       canvas.removeEventListener('pointerleave', pointerLeave);
       disposeObject(scene);
       renderer.dispose();
+      sceneActiveRef.current = false;
+      if (requestRenderRef.current === requestRender) requestRenderRef.current = null;
       runtimeRef.current = null;
     };
   }, [webglAvailable]);
@@ -589,12 +643,13 @@ export function LandingGlobe({ catalog, onPlan }: Props): React.ReactElement {
       runtime.markerLayer.add(visible, ring, hitTarget);
       runtime.markerMeshes.push(hitTarget);
     }
+    requestRenderRef.current?.();
   }, [active, activeAirportCodes, airportByIata, sceneReady]);
 
   useEffect(() => {
     if (interactionPaused || catalog.showcases.length <= 1) return;
-    if (typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const interval = window.setInterval(() => {
+      if (reducedMotionRef.current || !sceneActiveRef.current) return;
       setActiveIndex((current) => (current + 1) % catalog.showcases.length);
     }, 7600);
     return () => window.clearInterval(interval);
