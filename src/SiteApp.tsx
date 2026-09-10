@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { LandingPage } from './components/LandingPage.tsx';
 import type { SiteView } from './components/SiteHeader.tsx';
-import { useLocale } from './i18n/use-locale.ts';
+import { useLocaleState } from './i18n/use-locale-state.ts';
 
 const LazyLoadedApp = lazy(() =>
   import('./App.tsx').then((module) => ({ default: module.App })),
@@ -21,7 +21,7 @@ function viewFromLocation(): SiteView {
  * Planner / Route library or opens a legacy share hash directly.
  */
 export function SiteApp(): React.ReactElement {
-  const { t } = useLocale();
+  const { locale } = useLocaleState();
   const [view, setView] = useState<SiteView>(viewFromLocation);
 
   useEffect(() => {
@@ -45,7 +45,7 @@ export function SiteApp(): React.ReactElement {
   if (view === 'home') return <LandingPage onNavigate={navigate} />;
 
   return (
-    <Suspense fallback={<div className="app-loading site-app-loading" role="status"><p>{t('loading')}</p></div>}>
+    <Suspense fallback={<div className="app-loading site-app-loading" role="status"><p>{locale === 'zh-TW' ? '載入中…' : 'Loading…'}</p></div>}>
       <LazyLoadedApp siteView={view} onNavigateSite={navigate} />
     </Suspense>
   );

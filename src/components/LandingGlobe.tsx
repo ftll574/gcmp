@@ -9,7 +9,7 @@ import type {
   LandingShowcaseCatalog,
   LandingShowcaseLeg,
 } from '../lib/schemas/landing-showcase.ts';
-import { useLocale } from '../i18n/use-locale.ts';
+import { useLocaleState } from '../i18n/use-locale-state.ts';
 import { shouldHandleSiteLink, siteViewHref } from '../lib/site-navigation.ts';
 
 interface Props {
@@ -234,7 +234,7 @@ function formatAlliance(alliance: LandingShowcase['alliance']): string {
 }
 
 export function LandingGlobe({ catalog, onPlan }: Props): React.ReactElement {
-  const { locale } = useLocale();
+  const { locale } = useLocaleState();
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const runtimeRef = useRef<GlobeRuntime | null>(null);

@@ -2,13 +2,13 @@
  * Language picker — small select in the header.
  */
 
-import { useLocale } from '../i18n/use-locale.ts';
+import { useLocaleState } from '../i18n/use-locale-state.ts';
 import { LOCALE_LABELS, LOCALES, type Locale } from '../i18n/types.ts';
 
 export function LanguagePicker(): React.ReactElement {
-  const { locale, setLocale, t } = useLocale();
+  const { locale, setLocale } = useLocaleState();
   return (
-    <label className="lang-picker" aria-label={t('lang.label')}>
+    <label className="lang-picker" aria-label={locale === 'zh-TW' ? '語言' : 'Language'}>
       <span className="lang-picker-icon" aria-hidden="true">🌐</span>
       <select
         className="lang-picker-select"

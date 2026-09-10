@@ -8,7 +8,8 @@
  */
 
 import { useSyncExternalStore } from 'react';
-import { getLocale, setLocale, subscribeLocale, t } from './i18n.ts';
+import { t } from './i18n.ts';
+import { getLocale, setLocale, subscribeLocale } from './locale-state.ts';
 import type { Locale } from './types.ts';
 
 export function useLocale(): {

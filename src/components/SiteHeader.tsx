@@ -1,5 +1,5 @@
 import { LanguagePicker } from './LanguagePicker.tsx';
-import { useLocale } from '../i18n/use-locale.ts';
+import { useLocaleState } from '../i18n/use-locale-state.ts';
 import { shouldHandleSiteLink, siteViewHref } from '../lib/site-navigation.ts';
 
 export type SiteView = 'home' | 'planner' | 'routes';
@@ -10,7 +10,7 @@ interface Props {
 }
 
 export function SiteHeader({ active, onNavigate }: Props): React.ReactElement {
-  const { locale } = useLocale();
+  const { locale } = useLocaleState();
   const copy = locale === 'zh-TW'
     ? { home: '首頁', planner: '規劃', routes: '航線資料庫', tagline: '把世界航線變得清楚。', brand: 'gcmp 首頁', navigation: '主要導覽' }
     : { home: 'Home', planner: 'Planner', routes: 'Route library', tagline: 'Round the world, clearly.', brand: 'gcmp home', navigation: 'Primary navigation' };

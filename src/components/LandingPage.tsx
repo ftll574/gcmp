@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { SiteHeader, type SiteView } from './SiteHeader.tsx';
-import { useLocale } from '../i18n/use-locale.ts';
+import { useLocaleState } from '../i18n/use-locale-state.ts';
 import { useLandingData } from '../state/use-landing-data.ts';
 import { shouldHandleSiteLink, siteViewHref } from '../lib/site-navigation.ts';
 
@@ -13,7 +13,7 @@ const LazyLandingGlobe = lazy(() =>
 );
 
 export function LandingPage({ onNavigate }: Props): React.ReactElement {
-  const { locale } = useLocale();
+  const { locale } = useLocaleState();
   const landing = useLandingData();
   const copy = locale === 'zh-TW' ? {
     hero: <>把世界變成一條<br />看得懂的航線。</>,
