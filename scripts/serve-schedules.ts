@@ -10,7 +10,7 @@ if (!Number.isInteger(port) || port < 1024 || port > 65535) throw new Error('Inv
 const origins = new Set((process.env.SCHEDULE_ALLOWED_ORIGINS ?? 'http://localhost:5173,http://127.0.0.1:5173')
   .split(',').map((value) => new URL(value.trim()).origin));
 const provider = process.env.SCHEDULE_PROVIDER ?? DEFAULT_SCHEDULE_PROVIDER;
-if (!['tdx', 'official', 'cirium'].includes(provider)) throw new Error('Invalid SCHEDULE_PROVIDER');
+if (!['auto', 'tdx', 'official', 'cirium'].includes(provider)) throw new Error('Invalid SCHEDULE_PROVIDER');
 const gateway = createHybridScheduleGateway({
   provider: provider as ScheduleProvider,
   clientId: process.env.TDX_CLIENT_ID, clientSecret: process.env.TDX_CLIENT_SECRET,

@@ -23,6 +23,21 @@ The default live dated gateway is TDX. Its international GeneralSchedule adapter
 - Add the repeatable `coverage:flight-data` audit so future collection work is measured against active dated coverage and freshness rather than raw route volume.
 - Centralize the default schedule-provider constant so diagnostics and runtime cannot silently disagree about which provider is the default.
 
+## Automatic API mode
+
+The gateway now supports an explicit `SCHEDULE_PROVIDER=auto` mode. It is
+route-aware rather than a runtime failover chain:
+
+- if a query touches a Taiwan airport and TDX credentials are configured, use TDX;
+- otherwise, if Cirium credentials are configured, use Cirium as the global dated provider;
+- otherwise use bundled official publications only;
+- after a provider is chosen for a query, an upstream error never triggers a second paid-provider request.
+
+This keeps Taiwan queries on the government source when available, spends the
+global supplier only where it is needed, and removes the need to change provider
+configuration route-by-route. The default remains `tdx` for backwards
+compatibility; production must opt into `auto` explicitly.
+
 ## Next collection steps
 
 ### P0 — establish the global dated backbone
