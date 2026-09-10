@@ -62,12 +62,13 @@ export function RtwPlanningContext({
   onCabinChange,
   allianceCarriers,
 }: RtwPlanningContextProps): React.ReactElement {
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
+  const planningContextLabel = locale === 'zh-TW' ? '環球票規劃設定' : 'RTW planning context';
   const selectedProduct = products.find((product) => product.id === selectedProductId) ?? products[0];
 
   if (!selectedProduct) {
     return (
-      <section className="rtw-planning-context" aria-label="RTW planning context">
+      <section className="rtw-planning-context" aria-label={planningContextLabel}>
         <p>{t('rtw.noProducts')}</p>
       </section>
     );
@@ -93,7 +94,7 @@ export function RtwPlanningContext({
   );
 
   return (
-    <section className="rtw-planning-context" aria-label="RTW planning context">
+    <section className="rtw-planning-context" aria-label={planningContextLabel}>
       <div className="rtw-planning-head">
         <div>
           <p className="rtw-eyebrow">{t('rtw.planningEyebrow')}</p>

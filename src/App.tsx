@@ -261,7 +261,7 @@ function Ready({
   mapSize,
   shareUrl,
 }: ReadyProps): React.ReactElement {
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
   const hasAnyLegs = routing.groups.some((g) => g.legs.length > 0);
   const [activeGroupIndex, setActiveGroupIndex] = useState(0);
   const [showDistances, setShowDistances] = useState(false);
@@ -765,7 +765,7 @@ function Ready({
   return (
     <div className={`app${isMobile ? ' mobile' : ''}`}>
       <MobileBanner visible={isMobile} />
-      <div className="planner-action-toolbar" aria-label="Planner actions">
+      <div className="planner-action-toolbar" aria-label={locale === 'zh-TW' ? '規劃器操作' : 'Planner actions'}>
         <div className="planner-action-context">
           <span>{t('rtw.onboarding.currentPlan')}</span>
           <strong>{selectedRtwProduct?.label ?? t('rtw.noProducts')}</strong>
@@ -797,7 +797,7 @@ function Ready({
           '--editor-width': `${editorWidth}px`,
         } as React.CSSProperties}
       >
-        <section className="route-editor" aria-label="Routing input">
+        <section className="route-editor" aria-label={locale === 'zh-TW' ? '路線輸入' : 'Routing input'}>
           <div className="route-editor-scroll">
             <div className="route-plan-bar">
               <div>
@@ -1036,7 +1036,7 @@ function Ready({
         <aside
           id="route-inspector"
           className={`app-panel${inspectorOpen ? ' open' : ''}`}
-          aria-label="Route inspector"
+          aria-label={locale === 'zh-TW' ? '路線檢查器' : 'Route inspector'}
           aria-hidden={!inspectorOpen}
         >
           <div className="inspector-head">
@@ -1050,7 +1050,7 @@ function Ready({
               ×
             </button>
           </div>
-          <nav className="inspector-tabs" aria-label="Route inspector sections">
+          <nav className="inspector-tabs" aria-label={locale === 'zh-TW' ? '路線檢查器分頁' : 'Route inspector sections'}>
             {([
               ['rules', '✓', t('rtw.inspectorRules')],
               ['tools', '＋', t('rtw.inspectorTools')],

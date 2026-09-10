@@ -246,6 +246,22 @@ test('primary route flow keeps next-leg selection visible while flight details a
   expect(document.querySelector('.app-panel')?.classList.contains('open')).toBe(false);
 });
 
+test('route destinations can be reordered without drag-and-drop', async () => {
+  await mount(DATED);
+  const moveNrtEarlier = document.querySelector<HTMLButtonElement>('[data-move-airport="1:-1"]');
+  const moveNrtLater = document.querySelector<HTMLButtonElement>('[data-move-airport="1:1"]');
+  const moveLaxEarlier = document.querySelector<HTMLButtonElement>('[data-move-airport="2:-1"]');
+  const moveLaxLater = document.querySelector<HTMLButtonElement>('[data-move-airport="2:1"]');
+  expect(moveNrtEarlier?.disabled).toBe(true);
+  expect(moveNrtLater?.disabled).toBe(false);
+  expect(moveLaxEarlier?.disabled).toBe(false);
+  expect(moveLaxLater?.disabled).toBe(true);
+
+  fireEvent.click(moveLaxEarlier!);
+  expect(request().groups[0]?.legs.map((leg) => `${leg.from}-${leg.to}`)).toEqual(['TPE-LAX', 'LAX-NRT']);
+  expect(window.location.hash).toContain('TPE-LAX-NRT');
+});
+
 test('same-city airport change is a real surface leg and never exposes a fake flight carrier/cabin', async () => {
   await mount(`#/r/v1/TPE-NRT?op=BR&p=BR&c=J&rtw=${BR}`);
   const change = document.querySelector<HTMLButtonElement>('[data-select-surface="NRT-HND"]');

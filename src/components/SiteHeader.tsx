@@ -12,8 +12,8 @@ interface Props {
 export function SiteHeader({ active, onNavigate }: Props): React.ReactElement {
   const { locale } = useLocale();
   const copy = locale === 'zh-TW'
-    ? { home: '首頁', planner: '規劃', routes: '航線資料庫', tagline: '把世界航線變得清楚。' }
-    : { home: 'Home', planner: 'Planner', routes: 'Route library', tagline: 'Round the world, clearly.' };
+    ? { home: '首頁', planner: '規劃', routes: '航線資料庫', tagline: '把世界航線變得清楚。', brand: 'gcmp 首頁', navigation: '主要導覽' }
+    : { home: 'Home', planner: 'Planner', routes: 'Route library', tagline: 'Round the world, clearly.', brand: 'gcmp home', navigation: 'Primary navigation' };
   return (
     <header className="site-header">
       <a className="skip-link" href="#main-content">{locale === 'zh-TW' ? '跳到主要內容' : 'Skip to main content'}</a>
@@ -21,11 +21,11 @@ export function SiteHeader({ active, onNavigate }: Props): React.ReactElement {
         if (!shouldHandleSiteLink(event.nativeEvent)) return;
         event.preventDefault();
         onNavigate('home');
-      }} aria-label="gcmp home">
+      }} aria-label={copy.brand}>
         <span className="site-brand-mark">gcmp</span>
         <span>{copy.tagline}</span>
       </a>
-      <nav className="site-nav" aria-label="Primary navigation">
+      <nav className="site-nav" aria-label={copy.navigation}>
         {(['home', 'planner', 'routes'] as const).map((view) => <a
           key={view}
           href={siteViewHref(view)}

@@ -16,7 +16,7 @@
  * or arrow-select. Never silently auto-picks an ambiguous result.
  */
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useLocale } from '../i18n/use-locale.ts';
 import type { AirportIndex, SearchResult } from '../lib/airport-index.ts';
 import { resolveCityCode } from '../lib/city-codes.ts';
@@ -32,6 +32,9 @@ const RESULT_LIMIT = 8;
 
 export function AirportAutocomplete({ index, onCommit }: Props): React.ReactElement {
   const { locale, t } = useLocale();
+  const idPrefix = useId();
+  const inputId = `${idPrefix}-airport-search`;
+  const listboxId = `${idPrefix}-airport-results`;
   const [query, setQuery] = useState('');
   const [debounced, setDebounced] = useState('');
   const [open, setOpen] = useState(false);
@@ -103,10 +106,16 @@ export function AirportAutocomplete({ index, onCommit }: Props): React.ReactElem
 
   return (
     <div className="autocomplete">
+      <label className="sr-only" htmlFor={inputId}>
+        {t('input.addAirportPlaceholderPro')}
+      </label>
       <input
+        id={inputId}
         ref={inputRef}
         type="text"
         className="autocomplete-input"
+        name="airport-search"
+        role="combobox"
         placeholder={t('input.addAirportPlaceholderPro')}
         value={query}
         onChange={(e) => {
@@ -124,9 +133,11 @@ export function AirportAutocomplete({ index, onCommit }: Props): React.ReactElem
         aria-autocomplete="list"
         aria-expanded={showDropdown}
         aria-haspopup="listbox"
+        aria-controls={showDropdown ? listboxId : undefined}
+        aria-activedescendant={showDropdown && results[highlight] ? `${listboxId}-option-${highlight}` : undefined}
       />
       {showDropdown && (
-        <ul className="autocomplete-dropdown" role="listbox">
+        <ul id={listboxId} className="autocomplete-dropdown" role="listbox">
           {showCityCodeHint && (
             <li className="autocomplete-hint autocomplete-city-code-hint" aria-hidden="true">
               {t('input.cityCodeHint', { code: debounced.trim().toUpperCase() })}
@@ -139,6 +150,7 @@ export function AirportAutocomplete({ index, onCommit }: Props): React.ReactElem
           )}
           {results.map((r, i) => (
             <li
+              id={`${listboxId}-option-${i}`}
               key={r.airport.iata}
               role="option"
               aria-selected={i === highlight}

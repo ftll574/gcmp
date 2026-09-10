@@ -58,7 +58,7 @@ export function LegChain({
   onStopoverChange,
   onSurfaceChange,
 }: Props): React.ReactElement {
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [overIndex, setOverIndex] = useState<number | null>(null);
   const [expandedLegIndex, setExpandedLegIndex] = useState<number | null>(null);
@@ -89,11 +89,24 @@ export function LegChain({
     setDragIndex(null);
     setOverIndex(null);
   }
+  function moveAirport(index: number, delta: -1 | 1): void {
+    const target = index + delta;
+    // Match the existing drag behavior: the route origin stays fixed while
+    // destination occurrences can be reordered inside the chain.
+    if (index < 1 || index >= airports.length || target < 1 || target >= airports.length) return;
+    const next = airports.map((_, airportIndex) => airportIndex);
+    const [moved] = next.splice(index, 1);
+    if (moved === undefined) return;
+    next.splice(target, 0, moved);
+    onReorder(next);
+  }
+
+  const routingLegsLabel = locale === 'zh-TW' ? '路線航段' : 'Routing legs';
 
   if (airports.length === 1) {
     const airport = airports[0]!;
     return (
-      <ol className="leg-chain" aria-label="Routing legs">
+      <ol className="leg-chain" aria-label={routingLegsLabel}>
         <li className="leg-chip leg-chip-start" data-route-start={airport.iata}>
           <div className="leg-chip-route-line">
             <span className="leg-chip-handle is-placeholder" aria-hidden="true">⋮⋮</span>
@@ -116,7 +129,7 @@ export function LegChain({
   }
 
   return (
-    <ol className="leg-chain" aria-label="Routing legs">
+    <ol className="leg-chain" aria-label={routingLegsLabel}>
       {airports.slice(0, -1).map((airport, i) => {
         const toAirport = airports[i + 1]!;
         const legIndex = i;
@@ -163,6 +176,28 @@ export function LegChain({
               </span>
               <span className="leg-chip-city">{airport.city} → {toAirport.city}</span>
               <span className="leg-chip-route-actions">
+                <button
+                  type="button"
+                  className="leg-chip-move"
+                  data-move-airport={`${destinationIndex}:-1`}
+                  aria-label={locale === 'zh-TW' ? `往前移動 ${toAirport.iata}` : `Move ${toAirport.iata} earlier`}
+                  disabled={destinationIndex === 1}
+                  onPointerDown={(event) => event.stopPropagation()}
+                  onClick={() => moveAirport(destinationIndex, -1)}
+                >
+                  ↑
+                </button>
+                <button
+                  type="button"
+                  className="leg-chip-move"
+                  data-move-airport={`${destinationIndex}:1`}
+                  aria-label={locale === 'zh-TW' ? `往後移動 ${toAirport.iata}` : `Move ${toAirport.iata} later`}
+                  disabled={destinationIndex === airports.length - 1}
+                  onPointerDown={(event) => event.stopPropagation()}
+                  onClick={() => moveAirport(destinationIndex, 1)}
+                >
+                  ↓
+                </button>
                 {i === 0 && (
                   <button
                     type="button"

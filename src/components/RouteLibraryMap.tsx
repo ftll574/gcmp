@@ -344,6 +344,7 @@ export function RouteEntityMap({
   const cardRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
+  const mapCameraRef = useRef<{ center: [number, number]; zoom: number }>({ center: [0, 18], zoom: 0.55 });
   const routeBundleRevisionRef = useRef(0);
   const didInitialFitRef = useRef(false);
   const lastSelectionKeyRef = useRef<string | null>(null);
@@ -427,13 +428,15 @@ export function RouteEntityMap({
 
   useEffect(() => {
     if (!webGlAvailable || !containerRef.current || mapRef.current) return;
+    setReady(false);
     const dark = window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
+    const camera = mapCameraRef.current;
     maplibregl.setWorkerUrl(maplibreWorkerUrl);
     const map = new maplibregl.Map({
       container: containerRef.current,
       style: mapStyle(dark),
-      center: [0, 18],
-      zoom: 0.55,
+      center: camera.center,
+      zoom: camera.zoom,
       minZoom: 0,
       maxZoom: 12,
       attributionControl: false,
@@ -441,6 +444,14 @@ export function RouteEntityMap({
       dragRotate: false,
       pitchWithRotate: false,
       touchPitch: false,
+      ...(locale === 'zh-TW' ? {
+        locale: {
+          'Map.Title': '地圖',
+          'NavigationControl.ZoomIn': '放大',
+          'NavigationControl.ZoomOut': '縮小',
+          'AttributionControl.ToggleAttribution': '切換地圖資料來源',
+        },
+      } : {}),
     });
     mapRef.current = map;
     map.addControl(new maplibregl.NavigationControl({ showCompass: false, visualizePitch: false }), 'top-right');
@@ -481,11 +492,13 @@ export function RouteEntityMap({
     };
     map.on('idle', updateDiagnostics);
     return () => {
+      const center = map.getCenter();
+      mapCameraRef.current = { center: [center.lng, center.lat], zoom: map.getZoom() };
       map.off('idle', updateDiagnostics);
       map.remove();
       mapRef.current = null;
     };
-  }, [webGlAvailable]);
+  }, [locale, webGlAvailable]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -641,7 +654,7 @@ export function RouteEntityMap({
       <div ref={containerRef} className="entity-map-maplibre" role="region" aria-label={locale === 'zh-TW' ? '航線地圖' : 'Route network map'} aria-describedby={mapHelpId} />
       {!webGlAvailable && <div className="entity-map-fallback"><strong>{copy.fallback}</strong><span>{copy.fallbackHelp}</span></div>}
       {controls && <div className="entity-map-commandbar">
-        <div className="entity-map-alliance-filter" role="group" aria-label="Alliance filter">
+        <div className="entity-map-alliance-filter" role="group" aria-label={locale === 'zh-TW' ? '航空聯盟篩選' : 'Alliance filter'}>
           {(['all', 'star', 'oneworld', 'skyteam'] as const).map((value) => <button
             type="button"
             key={value}
@@ -651,7 +664,7 @@ export function RouteEntityMap({
           >{value === 'all' ? copy.all : value === 'star' ? 'Star' : value === 'oneworld' ? 'oneworld' : 'SkyTeam'}</button>)}
         </div>
         <div className="entity-map-search-wrap">
-          <label className="entity-map-search">
+          <div className="entity-map-search">
             <span aria-hidden="true">⌕</span>
             <input
               type="search"
@@ -695,7 +708,7 @@ export function RouteEntityMap({
               aria-label={controls.searchPlaceholder}
             />
             {controls.query && <button type="button" aria-label={locale === 'zh-TW' ? '清除搜尋' : 'Clear search'} onClick={() => { controls.onQueryChange(''); controls.onSearchOpenChange(false); }}>×</button>}
-          </label>
+          </div>
           {controls.query && controls.searchOpen && <div id={searchListId} className="entity-map-search-results" role="listbox">
             {controls.searchResults.length > 0 ? controls.searchResults.map((result, index) => <button type="button" role="option" id={`${searchListId}-option-${index}`} aria-selected={index === safeActiveSearchIndex} key={result.key} onClick={() => { controls.onSearchOpenChange(false); controls.onSearchResultSelect(result.selection); }}><span>{result.kind}</span><strong>{result.title}</strong><small>{result.subtitle}</small></button>) : <p>{locale === 'zh-TW' ? '沒有符合的結果' : 'No matching result'}</p>}
           </div>}
@@ -717,7 +730,7 @@ export function RouteEntityMap({
             <code>{activeRoute ? `${activeRoute.from.iata}→${activeRoute.to.iata}` : activeAirport?.iata}</code>
             <strong>{activeRoute ? `${activeRoute.from.city} → ${activeRoute.to.city}` : activeAirport?.city}</strong>
           </div>
-          <button type="button" aria-label="Close" onClick={() => {
+          <button type="button" aria-label={locale === 'zh-TW' ? '關閉' : 'Close'} onClick={() => {
             setSelection(null);
             const map = mapRef.current;
             if (map) setFocusSources(map, model, null);

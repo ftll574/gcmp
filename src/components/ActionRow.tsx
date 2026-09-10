@@ -73,9 +73,12 @@ export function ActionRow({
           <input
             type="text"
             className="action-save-input"
+            name="routing-name"
             value={saveName}
             onChange={(e) => setSaveName(e.target.value)}
             placeholder={t('save.promptName')}
+            aria-label={t('save.promptName')}
+            autoComplete="off"
             autoFocus
             onKeyDown={(e) => {
               if (e.key === 'Enter') commitSave();

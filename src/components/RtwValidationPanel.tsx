@@ -100,7 +100,7 @@ export function RtwValidationPanel({
   ciZones,
   selectedProductId,
 }: RtwValidationPanelProps): React.ReactElement {
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
   const products = useMemo(
     () => sortMileageRedemptionRtwProductsForMarket(rtwRuleCatalog.products, marketProfile),
     [rtwRuleCatalog.products, marketProfile],
@@ -229,7 +229,7 @@ export function RtwValidationPanel({
   const pricingProduct = awardPricingCatalog.products.find((product) => product.productId === selectedProduct.id);
 
   return (
-    <section className="rtw-panel" aria-label="RTW validation">
+    <section className="rtw-panel" aria-label={locale === 'zh-TW' ? '環球票規則檢查' : 'RTW validation'}>
       <div className="rtw-panel-header">
         <div>
           <p className="rtw-eyebrow">{t('rtw.validationEyebrow')}</p>

@@ -70,7 +70,7 @@
 .landing-flight-strip { position:absolute; z-index:6; left:28px; right:230px; bottom:130px; display:flex; gap:6px; overflow-x:auto; padding:2px 0 8px; scrollbar-width:none; }
 .landing-flight-strip::-webkit-scrollbar { display:none; }
 .landing-flight-strip button { flex:0 0 auto; display:grid; gap:3px; min-width:86px; padding:9px 10px; border:1px solid rgba(255,255,255,.09); border-radius:11px; background:rgba(4,12,14,.44); color:rgba(226,242,237,.65); text-align:left; cursor:pointer; backdrop-filter:blur(10px); transition:border-color 140ms ease,background 140ms ease,transform 140ms ease; }
-.landing-flight-strip button:hover,.landing-flight-strip button:focus-visible { outline:none; transform:translateY(-2px); border-color:rgba(var(--globe-accent-rgb),.6); background:rgba(var(--globe-accent-rgb),.12); }
+.landing-flight-strip button:hover,.landing-flight-strip button:focus-visible { transform:translateY(-2px); border-color:rgba(var(--globe-accent-rgb),.6); background:rgba(var(--globe-accent-rgb),.12); }
 .landing-flight-strip button span { font:600 9px/1.2 var(--font-mono); }
 .landing-flight-strip button strong { color:#f4fffb; font:750 11px/1.2 var(--font-mono); }
 .landing-showcase-switcher { position:absolute; z-index:7; top:50%; right:20px; transform:translateY(-45%); display:grid; gap:7px; width:190px; }

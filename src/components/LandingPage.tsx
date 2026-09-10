@@ -74,7 +74,7 @@ export function LandingPage({ onNavigate }: Props): React.ReactElement {
           </div>
           <div className="landing-globe-shell">
             {landing.status === 'ready' ? (
-              <Suspense fallback={<div className="landing-three-loading" aria-label="Loading 3D globe" />}>
+              <Suspense fallback={<div className="landing-three-loading" aria-label={locale === 'zh-TW' ? '正在載入 3D 地球' : 'Loading 3D globe'} />}>
                 <LazyLandingGlobe catalog={landing.data} onPlan={() => onNavigate('planner')} />
               </Suspense>
             ) : (

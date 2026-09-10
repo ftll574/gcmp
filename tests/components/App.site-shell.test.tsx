@@ -70,7 +70,7 @@ test('route library is a separate page and keeps the heavy catalog out of the ho
   expect(await screen.findByRole('region', { name: '航線地圖' })).toBeInTheDocument();
   expect(document.querySelector('.routes-alliance-tabs')).toBeNull();
   const map = document.querySelector('.entity-map-card');
-  expect(map?.querySelector('[aria-label="Alliance filter"]')).not.toBeNull();
+  expect(map?.querySelector('[aria-label="Alliance filter"], [aria-label="航空聯盟篩選"]')).not.toBeNull();
   expect(map?.querySelector('input[type="search"]')).not.toBeNull();
   expect(screen.queryByText('不要翻資料庫，直接探索航網。')).not.toBeInTheDocument();
   expect(new URLSearchParams(window.location.search).get('view')).toBe('routes');
@@ -111,7 +111,7 @@ test('route library keeps the searched airport selected while comparing alliance
   expect(screen.getByRole('combobox', { name: /搜尋機場、城市、航空公司、航線或班號/ })).toHaveValue('TPE');
 
   const map = document.querySelector('.entity-map-card');
-  const allianceControls = map?.querySelector('[aria-label="Alliance filter"]');
+  const allianceControls = map?.querySelector('[aria-label="Alliance filter"], [aria-label="航空聯盟篩選"]');
   expect(allianceControls).not.toBeNull();
   fireEvent.click(within(allianceControls as HTMLElement).getByRole('button', { name: 'Star' }));
 
@@ -140,13 +140,13 @@ test('site navigation remains available after entering the planner and returns t
   fireEvent.click(screen.getByRole('link', { name: '開始規劃' }));
   await waitFor(() => expect(document.querySelector('.rtw-gate')).not.toBeNull(), { timeout: 5_000 });
 
-  const plannerNav = screen.getByRole('navigation', { name: 'Primary navigation' });
+  const plannerNav = screen.getByRole('navigation', { name: '主要導覽' });
   expect(within(plannerNav).getByRole('link', { name: '規劃' })).toHaveAttribute('aria-current', 'page');
   fireEvent.click(within(plannerNav).getByRole('link', { name: '首頁' }));
   expect(await screen.findByRole('heading', { name: /把世界變成一條/ })).toBeInTheDocument();
   expect(new URLSearchParams(window.location.search).get('view')).toBe('home');
 
-  const homeNav = screen.getByRole('navigation', { name: 'Primary navigation' });
+  const homeNav = screen.getByRole('navigation', { name: '主要導覽' });
   fireEvent.click(within(homeNav).getByRole('link', { name: '航線資料庫' }));
   expect(await screen.findByRole('heading', { name: '探索全球航網' })).toBeInTheDocument();
   expect(new URLSearchParams(window.location.search).get('view')).toBe('routes');

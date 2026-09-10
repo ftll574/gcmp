@@ -51,7 +51,7 @@ export function RtwLegTable({
   if (airports.length < 2) return null;
 
   return (
-    <section className="rtw-leg-table-wrap" aria-label="RTW leg details">
+    <section className="rtw-leg-table-wrap" aria-label={locale === 'zh-TW' ? '環球票航段詳情' : 'RTW leg details'}>
       <div className="rtw-leg-table-heading">
         <div>
           <p className="rtw-eyebrow">{t('rtw.legTable.eyebrow')}</p>

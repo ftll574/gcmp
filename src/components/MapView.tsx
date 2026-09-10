@@ -21,6 +21,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { geoGraticule, geoPath, type GeoPath, type GeoProjection } from 'd3-geo';
 import { groupColor } from '../lib/group-colors.ts';
+import { useLocale } from '../i18n/use-locale.ts';
 import { distanceNm } from '../lib/calc/haversine.ts';
 import { greatCircleSvgPathProjected } from '../lib/calc/svg-arc.ts';
 import {
@@ -121,6 +122,7 @@ export function MapView({
   selectedNextStop: controlledNextStop,
   onNextLegSelect,
 }: Props): React.ReactElement {
+  const { locale } = useLocale();
   const { features, error: worldError } = useWorldMap();
 
   const isGlobe = projection === 'orthographic';
@@ -1049,7 +1051,9 @@ export function MapView({
                     data-map-cluster-size={cluster.items.length}
                     role="button"
                     tabIndex={0}
-                    aria-label={`${cluster.items.length} nearby destinations. Zoom in to inspect.`}
+                    aria-label={locale === 'zh-TW'
+                      ? `${cluster.items.length} 個鄰近目的地，放大查看。`
+                      : `${cluster.items.length} nearby destinations. Zoom in to inspect.`}
                     transform={`translate(${cluster.x}, ${cluster.y})`}
                     onPointerDown={(event) => event.stopPropagation()}
                     onClick={(event) => {

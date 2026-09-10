@@ -11,9 +11,9 @@ export function RtwTripDates({
   endDate,
   onChange,
 }: RtwTripDatesProps): React.ReactElement {
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
   return (
-    <section className="rtw-trip-dates" aria-label="RTW trip dates">
+    <section className="rtw-trip-dates" aria-label={locale === 'zh-TW' ? '環球旅行日期' : 'RTW trip dates'}>
       <div>
         <p className="rtw-eyebrow">{t('rtw.tripDates.eyebrow')}</p>
         <h2>{t('rtw.tripDates.title')}</h2>
