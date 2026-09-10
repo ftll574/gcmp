@@ -3,9 +3,11 @@
   "source": "https://github.com/Sky-Power-Services/adsbiq-data",
   "license": "ODbL-1.0",
   "window": {
-    "from": "2026-08-01",
+    "from": "2026-07-01",
     "to": "2026-09-09",
     "missingDates": [
+      "2026-07-08",
+      "2026-07-19",
       "2026-08-30"
     ]
   },
@@ -166,6 +168,20 @@
     },
     {
       "carrier": "LH",
+      "from": "MUC",
+      "to": "TIV",
+      "airlineIcao": "DLH",
+      "flightNumbers": [
+        "LH2636"
+      ],
+      "observedDates": [
+        "2026-07-29",
+        "2026-08-26"
+      ],
+      "observationRows": 3
+    },
+    {
+      "carrier": "LH",
       "from": "NBJ",
       "to": "FRA",
       "airlineIcao": "DLH",
@@ -323,6 +339,20 @@
         "2026-08-15",
         "2026-08-22",
         "2026-08-29"
+      ],
+      "observationRows": 4
+    },
+    {
+      "carrier": "QR",
+      "from": "DOH",
+      "to": "HAS",
+      "airlineIcao": "QTR",
+      "flightNumbers": [
+        "QR1228"
+      ],
+      "observedDates": [
+        "2026-07-27",
+        "2026-08-08"
       ],
       "observationRows": 4
     },

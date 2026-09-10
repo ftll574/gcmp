@@ -10,17 +10,17 @@
     "standing-current.json": "66427d01e4fca9d0a0932f2b4af191afd26cbcb46a339c5c4e332d9377b545c6",
     "validated-static-current.json": "10953c6f7975191ce577fbe6406768813684c6de284b2c2508070dd9bdd33712",
     "current-corrections.json": "3d65b72db0f3ee3b2290aa6b180c63375833ba12de8a2256854ea63bc4c605eb",
-    "flight-numbers-current.json": "7d4757cd7b7cc34142da1a1ed79af0b12f582867d11c3403e3cc33d3ea14222d"
+    "flight-numbers-current.json": "cdcdbfff75c2f1a033cb36fbc70fb4c545e8b92a1996393243d54717804eb029"
   },
-  "outputSha256": "b9f211adffd5fda6722f41e06034ceda8002865ff5c36abaf293d616dd88ee04",
+  "outputSha256": "0a277e59d5bac026e237ca0d83410368aabd4c7b158e6bc80f6e2da55da38c29",
   "routes": 30712,
-  "publishedRoutes": 30014,
+  "publishedRoutes": 30016,
   "carriers": 60,
   "confirmedOperatingRoutes": 17744,
-  "providerListedRoutes": 12270,
+  "providerListedRoutes": 12272,
   "confirmedFlightNumberRoutes": 14977,
-  "candidateFlightNumberRoutes": 24672,
-  "anyFlightNumberRoutes": 30014,
+  "candidateFlightNumberRoutes": 24674,
+  "anyFlightNumberRoutes": 30016,
   "routeCountByCarrier": {
     "A3": 578,
     "AA": 2355,
@@ -50,7 +50,7 @@
     "KE": 396,
     "KL": 539,
     "KQ": 117,
-    "LH": 1169,
+    "LH": 1170,
     "LO": 437,
     "LX": 424,
     "ME": 90,
@@ -64,7 +64,7 @@
     "OU": 172,
     "OZ": 259,
     "QF": 359,
-    "QR": 529,
+    "QR": 530,
     "RJ": 173,
     "RO": 181,
     "SA": 116,
@@ -174,7 +174,7 @@
     "KE": 149,
     "KL": 223,
     "KQ": 42,
-    "LH": 637,
+    "LH": 638,
     "LO": 147,
     "LX": 184,
     "ME": 14,
@@ -188,7 +188,7 @@
     "OU": 53,
     "OZ": 136,
     "QF": 157,
-    "QR": 157,
+    "QR": 158,
     "RJ": 40,
     "RO": 106,
     "SA": 84,
@@ -211,32 +211,32 @@
     "A": {
       "routes": 2263,
       "bytes": 1024495,
-      "sha256": "aa363c1811277e9ceec2d489dc07fb3b38f55afe04365b04b0e87914ca61aacb"
+      "sha256": "8e25443d49800be433be5b3e6b065159f0067d6c8c44301681ad653c8824dc50"
     },
     "B": {
       "routes": 2082,
       "bytes": 940141,
-      "sha256": "a2c76ef9f0a5a4307cd58f8d268acfa6438847dc0fdc499b101d3ec5acba3e00"
+      "sha256": "9e14ef8f183c064cc6b16a88ba1e376103a2ad394c706c076aa3fdada5c7c2ee"
     },
     "C": {
       "routes": 2470,
       "bytes": 1126918,
-      "sha256": "f29bc0101d354950a8f72e12903aeabec141a007b2ab533bf513ab362e1a1315"
+      "sha256": "17107747a3ff6043450a94fecd1772644e6afd3dc50015a17f5680a3b17f6025"
     },
     "D": {
       "routes": 1990,
-      "bytes": 915232,
-      "sha256": "2ddd84a97443934d244d779c73c87066ddbf0c378d08e9358ca2f69fc974c9db"
+      "bytes": 915333,
+      "sha256": "0aac6cbffe21b0d5ba3ca79df7034f92248d3ed6ee2ed898defd5aa248bcf676"
     },
     "E": {
       "routes": 551,
       "bytes": 253658,
-      "sha256": "358a61a9ab82c08c8e72ce7532c6a3f3c7ff02a689328d56d989434dfe832b7c"
+      "sha256": "e538ad3e1bdf006148319ad6fc797bf99aedb9567990bb00b39fa283a5cdf790"
     },
     "F": {
       "routes": 934,
       "bytes": 442335,
-      "sha256": "169428fa508eedcc45c6d80133d6fa2c5e89f675748589e1cb830ea60ffd0c18"
+      "sha256": "64493f289c1337e5f6a19f7ec1a131c93a8f1a8a092bc90cba100c5aa9105e28"
     },
     "G": {
       "routes": 614,
@@ -246,12 +246,12 @@
     "H": {
       "routes": 1559,
       "bytes": 690538,
-      "sha256": "dbde249a5f9f5d85726c75578c56aa32f580b7079bc1ba7ec7fbb1519b6ab6c6"
+      "sha256": "f9ecc4b87187266bfa4a8e4e21624f7d248288f30d8854ee202668c851763d12"
     },
     "I": {
       "routes": 1341,
       "bytes": 668837,
-      "sha256": "ab5b415005d148623338ee7a31dd3024f23d8cbe19f1aa723e2e37426b78f9ba"
+      "sha256": "57fb6695de7cd8f6b9b8bae0d49d5cd20f452afe1b1439d766071462c2378965"
     },
     "J": {
       "routes": 780,
@@ -266,27 +266,27 @@
     "L": {
       "routes": 1959,
       "bytes": 913124,
-      "sha256": "5a702d3916ec7dee6e03315fcf6303eb4d7cf4b7b362209a1e459c4bd526746b"
+      "sha256": "8d2868bb0d876f72d60da2eba3a908e79abaaac1580b3d2d2bb95ca8f404a1c5"
     },
     "M": {
       "routes": 2283,
-      "bytes": 1080836,
-      "sha256": "b9003dcf0f4b15cbd16e8db2b4336a6bd0707c8b5d3a1fa2d60cab8e9fbf3e0d"
+      "bytes": 1080937,
+      "sha256": "f633fed076f77e88811a227ec6595bddc922834a2ad5e753a2f1f55ac1ba924f"
     },
     "N": {
       "routes": 818,
       "bytes": 368422,
-      "sha256": "7efa4a676a35fbab5aa9cc6271106e97b346d835b185eb5fd63b16f0ffbca1fb"
+      "sha256": "469d9dc5bbfac1704691f40766250386eddeea2db20983faa7cebb0dde2aeca7"
     },
     "O": {
       "routes": 1209,
       "bytes": 578797,
-      "sha256": "ceaaf5e145e1c114a4654cdc1447c0c015e7cad7c59c1f6b725465bac0554104"
+      "sha256": "6e6b453b186ea586cdcccaf13319ca380c28937c703c24b95b713e68a3e7487e"
     },
     "P": {
       "routes": 1897,
       "bytes": 852546,
-      "sha256": "367de157f785b6e3687d4e2d0809926c7d020b1bbe6ad3343ac63b82b781e05e"
+      "sha256": "0cf76dba0aa4e33c652114f5a82def79f1da02fc05c7c296dfef336d2bdde14e"
     },
     "Q": {
       "routes": 3,
@@ -296,12 +296,12 @@
     "R": {
       "routes": 587,
       "bytes": 277295,
-      "sha256": "dc7e5a440e29fa2b229fc189702b787feb469ff19ce46395ecdc2e8cef3d5922"
+      "sha256": "f9469b3ae7a5a13f34c9212780fe76d10628945d2fbc52a328e5ec1131ed2184"
     },
     "S": {
       "routes": 2633,
       "bytes": 1184689,
-      "sha256": "41b61c99eb36b0e6f5512b7fcfb67ad70a601b9c7e8e397014188b6cf740528e"
+      "sha256": "3954a197e2c98d4efbe77a7aa64ecdcce0927120a1c8611ac08cc765266eafb7"
     },
     "T": {
       "routes": 1213,
@@ -316,7 +316,7 @@
     "V": {
       "routes": 466,
       "bytes": 225759,
-      "sha256": "11e17fb351cb01fad16f6aed14848eb0318e9c1b2d076a6354c968b50fc075e2"
+      "sha256": "a56cd861a5bac97d1d7088270727bd09797c8a4257de3047ba12826cad8b0574"
     },
     "W": {
       "routes": 459,
@@ -336,7 +336,7 @@
     "Z": {
       "routes": 370,
       "bytes": 181010,
-      "sha256": "51232300b8c5f9bee5ab349d5aef65e33f122a0d481566f8447976bb0f62ed1d"
+      "sha256": "39655f1cc850802c0bf5989cc7c44bd01d7ce9ccc91883c5451e4446e6f94e53"
     }
   }
 }
