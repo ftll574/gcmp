@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { AttributionControl, Map as MapLibreRuntime, NavigationControl, setWorkerUrl } from 'maplibre-gl';
 import type { ExpressionSpecification, GeoJSONSource, Map as MapLibreMap, MapGeoJSONFeature, MapMouseEvent, Point } from 'maplibre-gl';
-import 'maplibre-gl/dist/maplibre-gl.css';
 import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
+import './RouteLibraryMapBase.css';
 import './RouteLibraryMap.css';
 import type { FeatureCollection, Geometry } from 'geojson';
 import type { Airport } from '../lib/types.ts';
