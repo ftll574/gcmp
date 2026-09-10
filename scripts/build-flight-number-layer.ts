@@ -36,6 +36,7 @@ const AFFILIATE_STANDING_SOURCE_ID = 'flight-numbers-vrs-affiliate-standing-2026
 const BTS_SOURCE_ID = 'flight-numbers-bts-marketing-202606';
 const FLIGHTSFROM_SNAPSHOT = 'public/data/route-network/flightsfrom-flight-numbers-20260909.json';
 const MRAIRSPACE_SNAPSHOT = 'public/data/route-network/mrairspace-flight-number-candidates.json';
+const ADSBIQ_DIRECT_ROUTE_SNAPSHOT = 'public/data/route-network/adsbiq-recent-route-flight-number-candidates.json';
 const CORRECTIONS_INPUT = 'public/data/route-network/current-corrections.json';
 
 interface FlightsFromSnapshot {
@@ -101,6 +102,27 @@ interface MrAirspaceSnapshot {
     flightNumbers: string[];
     observations: number;
     seasons: string[];
+  }>;
+}
+
+interface AdsbIqDirectRouteSnapshot {
+  version: 1;
+  source: 'https://github.com/Sky-Power-Services/adsbiq-data';
+  license: 'ODbL-1.0';
+  window: {
+    from: string;
+    to: string;
+    missingDates: string[];
+  };
+  note: string;
+  entries: Array<{
+    carrier: string;
+    from: string;
+    to: string;
+    airlineIcao: string;
+    flightNumbers: string[];
+    observedDates: string[];
+    observationRows: number;
   }>;
 }
 
@@ -610,6 +632,78 @@ function enrichMrAirspace(
   return { matchedRoutes };
 }
 
+export function parseAdsbIqDirectRouteSnapshot(raw: unknown): AdsbIqDirectRouteSnapshot {
+  const snapshot = raw as Partial<AdsbIqDirectRouteSnapshot>;
+  if (snapshot.version !== 1
+    || snapshot.source !== 'https://github.com/Sky-Power-Services/adsbiq-data'
+    || snapshot.license !== 'ODbL-1.0'
+    || !snapshot.window
+    || !/^20\d{2}-\d{2}-\d{2}$/.test(snapshot.window.from)
+    || !/^20\d{2}-\d{2}-\d{2}$/.test(snapshot.window.to)
+    || !Array.isArray(snapshot.window.missingDates)
+    || !Array.isArray(snapshot.entries)) {
+    throw new Error('Unexpected ADSBiq direct-route flight-number snapshot metadata');
+  }
+  const seen = new Set<string>();
+  for (const entry of snapshot.entries) {
+    const key = routeKey(entry.carrier, entry.from, entry.to);
+    if (seen.has(key)) throw new Error(`Duplicate ADSBiq direct-route ${key}`);
+    seen.add(key);
+    const dates = Array.isArray(entry.observedDates) ? entry.observedDates : [];
+    if (!/^[A-Z0-9]{2,3}$/.test(entry.carrier)
+      || !/^[A-Z]{3}$/.test(entry.from)
+      || !/^[A-Z]{3}$/.test(entry.to)
+      || !/^[A-Z]{3}$/.test(entry.airlineIcao)
+      || !Array.isArray(entry.flightNumbers)
+      || entry.flightNumbers.length === 0
+      || dates.length < 2
+      || new Set(dates).size !== dates.length
+      || dates.some((date) => !/^20\d{2}-\d{2}-\d{2}$/.test(date)
+        || date < snapshot.window!.from!
+        || date > snapshot.window!.to!
+        || snapshot.window!.missingDates!.includes(date))
+      || !Number.isInteger(entry.observationRows)
+      || entry.observationRows < dates.length) {
+      throw new Error(`Invalid ADSBiq direct-route ${key}`);
+    }
+    for (const number of entry.flightNumbers) {
+      if (!number.startsWith(entry.carrier) || !/^\d{1,4}[A-Z]?$/.test(number.slice(entry.carrier.length))) {
+        throw new Error(`Invalid ADSBiq direct-route designator ${number} for ${key}`);
+      }
+    }
+  }
+  return snapshot as AdsbIqDirectRouteSnapshot;
+}
+
+function enrichAdsbIqDirectRoutes(
+  publishedRoutes: ReadonlyMap<string, RouteNetworkEntry>,
+  accumulators: Map<string, FlightAccumulator>,
+  sources: Map<string, RouteNetworkSource>,
+): { matchedRoutes: number } {
+  const snapshot = parseAdsbIqDirectRouteSnapshot(
+    JSON.parse(readFileSync(ADSBIQ_DIRECT_ROUTE_SNAPSHOT, 'utf8')),
+  );
+  const sourceId = `adsbiq-direct-route-${snapshot.window.from.replaceAll('-', '')}-${snapshot.window.to.replaceAll('-', '')}`;
+  let matchedRoutes = 0;
+  for (const entry of snapshot.entries) {
+    const key = routeKey(entry.carrier, entry.from, entry.to);
+    if (!publishedRoutes.has(key)) throw new Error(`ADSBiq direct-route snapshot references non-published route ${key}`);
+    const value = accumulators.get(key);
+    if (value?.confirmed.size || value?.candidates.size) continue;
+    if (!sources.has(sourceId)) {
+      sources.set(sourceId, {
+        id: sourceId,
+        url: snapshot.source,
+        checkedOn: snapshot.window.to,
+        note: `ADSBiq ODbL-1.0 daily ADS-B direct route_origin/route_dest observations from ${snapshot.window.from} through ${snapshot.window.to}. Candidate designators are included only after the exact independently validated GCMP route appears on at least two distinct UTC dates. Future schedule and operating-carrier identity are not inferred.`,
+      });
+    }
+    for (const number of entry.flightNumbers) addCandidate(accumulators, key, number, sourceId);
+    matchedRoutes++;
+  }
+  return { matchedRoutes };
+}
+
 function flightInformationSourceId(from: string, to: string): string {
   return `flightinformation-${from.toLowerCase()}-${to.toLowerCase()}-${CHECKED_ON.replaceAll('-', '')}`;
 }
@@ -820,6 +914,7 @@ async function main(): Promise<void> {
     workRoot, allowFlightInformationFetch, publishedRoutes, accumulators, existingKeys, sources,
   );
   const mrAirspace = enrichMrAirspace(publishedRoutes, accumulators, sources);
+  const adsbIqDirectRoutes = enrichAdsbIqDirectRoutes(publishedRoutes, accumulators, sources);
 
   const numberRoutes = [...publishedRoutes.entries()].flatMap(([key, route]) => {
     const value = accumulators.get(key);
@@ -890,6 +985,7 @@ async function main(): Promise<void> {
     flightConnections,
     flightInformation,
     mrAirspace,
+    adsbIqDirectRoutes,
     unresolvedByCarrier: Object.fromEntries([...unresolvedByCarrier.entries()].sort((a, b) => b[1] - a[1])),
   }, null, 2));
 }

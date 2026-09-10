@@ -1,5 +1,8 @@
 import { expect, test } from 'vitest';
-import { parseMrAirspaceSnapshot } from '../../scripts/build-flight-number-layer.ts';
+import {
+  parseAdsbIqDirectRouteSnapshot,
+  parseMrAirspaceSnapshot,
+} from '../../scripts/build-flight-number-layer.ts';
 
 const validSnapshot = {
   version: 1,
@@ -30,4 +33,33 @@ test('rejects weak, duplicate, and malformed observed designators', () => {
     ...validSnapshot,
     entries: [{ ...validSnapshot.entries[0], flightNumbers: ['DL1817'] }],
   })).toThrow('Invalid MrAirspace designator');
+});
+
+const validAdsbIqSnapshot = {
+  version: 1,
+  source: 'https://github.com/Sky-Power-Services/adsbiq-data',
+  license: 'ODbL-1.0',
+  window: { from: '2026-08-01', to: '2026-09-09', missingDates: ['2026-08-30'] },
+  note: 'fixture',
+  entries: [{
+    carrier: 'UA', from: 'EWR', to: 'ICN', airlineIcao: 'UAL',
+    flightNumbers: ['UA285'],
+    observedDates: ['2026-09-04', '2026-09-05'],
+    observationRows: 8,
+  }],
+} as const;
+
+test('accepts recent direct-route ADSBiq candidates seen on multiple dates', () => {
+  expect(parseAdsbIqDirectRouteSnapshot(validAdsbIqSnapshot)).toEqual(validAdsbIqSnapshot);
+});
+
+test('rejects one-day or malformed direct-route ADSBiq candidates', () => {
+  expect(() => parseAdsbIqDirectRouteSnapshot({
+    ...validAdsbIqSnapshot,
+    entries: [{ ...validAdsbIqSnapshot.entries[0], observedDates: ['2026-09-04'] }],
+  })).toThrow('Invalid ADSBiq direct-route');
+  expect(() => parseAdsbIqDirectRouteSnapshot({
+    ...validAdsbIqSnapshot,
+    entries: [{ ...validAdsbIqSnapshot.entries[0], flightNumbers: ['DL285'] }],
+  })).toThrow('Invalid ADSBiq direct-route designator');
 });

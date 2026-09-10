@@ -1,0 +1,208 @@
+{
+  "version": 1,
+  "source": "https://github.com/Sky-Power-Services/adsbiq-data",
+  "license": "ODbL-1.0",
+  "window": {
+    "from": "2026-08-01",
+    "to": "2026-09-09",
+    "missingDates": [
+      "2026-08-30"
+    ]
+  },
+  "note": "Recent ADSBiq direct route_origin/route_dest observations. Each included candidate designator appears on the exact independently validated GCMP route on at least two distinct UTC dates. Candidate flight identity only; no future schedule or operating-carrier promotion is inferred.",
+  "entries": [
+    {
+      "carrier": "ET",
+      "from": "BUQ",
+      "to": "ADD",
+      "airlineIcao": "ETH",
+      "flightNumbers": [
+        "ET829"
+      ],
+      "observedDates": [
+        "2026-08-13",
+        "2026-09-01",
+        "2026-09-04"
+      ],
+      "observationRows": 4
+    },
+    {
+      "carrier": "TK",
+      "from": "CKY",
+      "to": "IST",
+      "airlineIcao": "THY",
+      "flightNumbers": [
+        "TK575"
+      ],
+      "observedDates": [
+        "2026-08-03",
+        "2026-08-17",
+        "2026-08-24"
+      ],
+      "observationRows": 6
+    },
+    {
+      "carrier": "TK",
+      "from": "OUA",
+      "to": "CKY",
+      "airlineIcao": "THY",
+      "flightNumbers": [
+        "TK537"
+      ],
+      "observedDates": [
+        "2026-08-12",
+        "2026-08-14",
+        "2026-08-17",
+        "2026-08-19"
+      ],
+      "observationRows": 7
+    },
+    {
+      "carrier": "UA",
+      "from": "EWR",
+      "to": "BON",
+      "airlineIcao": "UAL",
+      "flightNumbers": [
+        "UA781"
+      ],
+      "observedDates": [
+        "2026-08-01",
+        "2026-08-08"
+      ],
+      "observationRows": 14
+    },
+    {
+      "carrier": "UA",
+      "from": "EWR",
+      "to": "ICN",
+      "airlineIcao": "UAL",
+      "flightNumbers": [
+        "UA285"
+      ],
+      "observedDates": [
+        "2026-09-04",
+        "2026-09-05",
+        "2026-09-06",
+        "2026-09-07",
+        "2026-09-08",
+        "2026-09-09"
+      ],
+      "observationRows": 26
+    },
+    {
+      "carrier": "UA",
+      "from": "IAH",
+      "to": "BON",
+      "airlineIcao": "UAL",
+      "flightNumbers": [
+        "UA256"
+      ],
+      "observedDates": [
+        "2026-08-01",
+        "2026-08-15",
+        "2026-08-22",
+        "2026-08-29"
+      ],
+      "observationRows": 9
+    },
+    {
+      "carrier": "UA",
+      "from": "ICN",
+      "to": "EWR",
+      "airlineIcao": "UAL",
+      "flightNumbers": [
+        "UA286"
+      ],
+      "observedDates": [
+        "2026-09-05",
+        "2026-09-07",
+        "2026-09-08",
+        "2026-09-09"
+      ],
+      "observationRows": 27
+    },
+    {
+      "carrier": "UA",
+      "from": "NRT",
+      "to": "ROR",
+      "airlineIcao": "UAL",
+      "flightNumbers": [
+        "UA143"
+      ],
+      "observedDates": [
+        "2026-08-01",
+        "2026-08-15",
+        "2026-08-19",
+        "2026-08-26",
+        "2026-08-29"
+      ],
+      "observationRows": 6
+    },
+    {
+      "carrier": "UA",
+      "from": "ROR",
+      "to": "NRT",
+      "airlineIcao": "UAL",
+      "flightNumbers": [
+        "UA142"
+      ],
+      "observedDates": [
+        "2026-08-06",
+        "2026-08-09",
+        "2026-08-20"
+      ],
+      "observationRows": 8
+    },
+    {
+      "carrier": "UA",
+      "from": "SFO",
+      "to": "YUL",
+      "airlineIcao": "UAL",
+      "flightNumbers": [
+        "UA2681"
+      ],
+      "observedDates": [
+        "2026-08-01",
+        "2026-08-02",
+        "2026-08-03",
+        "2026-08-04",
+        "2026-08-05",
+        "2026-08-06",
+        "2026-08-07",
+        "2026-08-08",
+        "2026-08-09",
+        "2026-08-10",
+        "2026-08-11",
+        "2026-08-12",
+        "2026-08-13",
+        "2026-08-14",
+        "2026-08-15",
+        "2026-08-16",
+        "2026-08-17",
+        "2026-08-18",
+        "2026-08-19",
+        "2026-08-20",
+        "2026-08-21",
+        "2026-08-22",
+        "2026-08-23",
+        "2026-08-24",
+        "2026-08-25",
+        "2026-08-26",
+        "2026-08-27",
+        "2026-08-28",
+        "2026-08-29",
+        "2026-08-31",
+        "2026-09-01",
+        "2026-09-02",
+        "2026-09-03",
+        "2026-09-04",
+        "2026-09-05",
+        "2026-09-06",
+        "2026-09-07",
+        "2026-09-08",
+        "2026-09-09"
+      ],
+      "observationRows": 521
+    }
+  ]
+}

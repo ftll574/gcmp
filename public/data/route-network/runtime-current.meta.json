@@ -10,17 +10,17 @@
     "standing-current.json": "66427d01e4fca9d0a0932f2b4af191afd26cbcb46a339c5c4e332d9377b545c6",
     "validated-static-current.json": "10953c6f7975191ce577fbe6406768813684c6de284b2c2508070dd9bdd33712",
     "current-corrections.json": "3d65b72db0f3ee3b2290aa6b180c63375833ba12de8a2256854ea63bc4c605eb",
-    "flight-numbers-current.json": "025a2afb5caa79fb274b042245b8f0bc359b57d1b66e7b12ebd2f1a9a7b92305"
+    "flight-numbers-current.json": "d57ab943833ab1a9717c9e3e3ea4958975262ee5dd8263054c294511badee022"
   },
-  "outputSha256": "2565190be6d115ca1ea27986c2bd9edbec8e097742782378c7e8a95e4f1e2ddc",
+  "outputSha256": "56da2a6d88a937b2d76ad5d5e2062c894bab2a4c4f47a106201972695d85ab56",
   "routes": 30712,
-  "publishedRoutes": 29977,
+  "publishedRoutes": 29987,
   "carriers": 60,
   "confirmedOperatingRoutes": 17744,
-  "providerListedRoutes": 12233,
+  "providerListedRoutes": 12243,
   "confirmedFlightNumberRoutes": 14977,
-  "candidateFlightNumberRoutes": 24635,
-  "anyFlightNumberRoutes": 29977,
+  "candidateFlightNumberRoutes": 24645,
+  "anyFlightNumberRoutes": 29987,
   "routeCountByCarrier": {
     "A3": 578,
     "AA": 2355,
@@ -41,7 +41,7 @@
     "CM": 217,
     "CX": 269,
     "DL": 1874,
-    "ET": 348,
+    "ET": 349,
     "FJ": 29,
     "GA": 156,
     "HA": 112,
@@ -73,9 +73,9 @@
     "SQ": 268,
     "SV": 376,
     "TG": 184,
-    "TK": 1098,
+    "TK": 1100,
     "TP": 298,
-    "UA": 2211,
+    "UA": 2218,
     "UL": 86,
     "UX": 374,
     "VN": 269,
@@ -165,7 +165,7 @@
     "CM": 97,
     "CX": 80,
     "DL": 595,
-    "ET": 126,
+    "ET": 127,
     "FJ": 14,
     "GA": 62,
     "HA": 109,
@@ -197,9 +197,9 @@
     "SQ": 88,
     "SV": 132,
     "TG": 64,
-    "TK": 461,
+    "TK": 463,
     "TP": 101,
-    "UA": 879,
+    "UA": 886,
     "UL": 43,
     "UX": 235,
     "VN": 122,
@@ -215,13 +215,13 @@
     },
     "B": {
       "routes": 2082,
-      "bytes": 939494,
-      "sha256": "7d4ffa3db8a53dab992e8c70b47d26b3f9a12fab6bd69bbac49cfa1e62418e07"
+      "bytes": 940041,
+      "sha256": "bf102f9431f1555732c136de3864998ca9d7e3550a4adb3d2db37a4c9882bf92"
     },
     "C": {
       "routes": 2470,
-      "bytes": 1126171,
-      "sha256": "34da7bf1c9ff98c35a68313504acb3c63ff7c48721bf22ea2d69db3561ed9206"
+      "bytes": 1126718,
+      "sha256": "912c0c141d6ecbbb3881f7f59b3a01ca94c6d336459a580216ac850bad66df2a"
     },
     "D": {
       "routes": 1990,
@@ -230,8 +230,8 @@
     },
     "E": {
       "routes": 551,
-      "bytes": 253011,
-      "sha256": "52d219789ac1bf3c99c53e8a50248ab15935145418d353715039107153122476"
+      "bytes": 253658,
+      "sha256": "358a61a9ab82c08c8e72ce7532c6a3f3c7ff02a689328d56d989434dfe832b7c"
     },
     "F": {
       "routes": 934,
@@ -250,8 +250,8 @@
     },
     "I": {
       "routes": 1341,
-      "bytes": 668089,
-      "sha256": "24dcf079ef4699aa1bc063f9575c58bd1d7df885db19fea379b5d8ea38f59125"
+      "bytes": 668736,
+      "sha256": "0c8e2ec4ace3fe62e9144c9969a954c02e46d6fd814d64bc024bfb95b1c69787"
     },
     "J": {
       "routes": 780,
@@ -275,13 +275,13 @@
     },
     "N": {
       "routes": 818,
-      "bytes": 367675,
-      "sha256": "31bd42826b80bec70e9d6465d4db1ff37c3fa78ab3fcf9fa1641714642af2db4"
+      "bytes": 368222,
+      "sha256": "929cfb327cf3e7fa093a08e52435cd32283d92a548e7b34fc7b8e9834837e3fd"
     },
     "O": {
       "routes": 1209,
-      "bytes": 578048,
-      "sha256": "d8a5e484c668a0d70c176e3f73e2d50abb96802663c7112fe198a490a10ba6dd"
+      "bytes": 578595,
+      "sha256": "a0e747ee1ac1e7c883e964bb8d931e1a7539b1d361a48a89ce987cbb9478f3a1"
     },
     "P": {
       "routes": 1897,
@@ -295,13 +295,13 @@
     },
     "R": {
       "routes": 587,
-      "bytes": 276548,
-      "sha256": "0a9468731661f83d6f6baeb48c09e7ca8e914aaa50ca37d7d5d07b06ae57ea57"
+      "bytes": 277095,
+      "sha256": "2b48fd536c7801960e6d6555e97ead9774007330cd769fa1c3bc422c3805535f"
     },
     "S": {
       "routes": 2633,
-      "bytes": 1183925,
-      "sha256": "214bcb9f4766d644381ba78e83e1833ce4d0f738f2b634d9ac109531061ba393"
+      "bytes": 1184473,
+      "sha256": "68effcfc2f6a978a993f8fcc3efb8e39f8562ea2531f59c5aadf6f2f49f3b177"
     },
     "T": {
       "routes": 1213,

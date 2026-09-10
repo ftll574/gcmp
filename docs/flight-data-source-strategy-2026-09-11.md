@@ -88,6 +88,15 @@ validated ICAO airport pair. The tracked overlay keeps only routes with at least
 two observations, chooses flight numbers from the most recent matching quarter,
 and never promotes operating-carrier identity or future schedule status.
 
+For higher-freshness recovery, GCMP can also derive a tiny candidate overlay
+from ADSBiq's ODbL-1.0 daily Parquet releases. The research pass reads only
+`flight`, `route_origin`, and `route_dest`, joins both IATA and ICAO airport
+codes to already-current unresolved routes, and keeps a designator only when
+that exact carrier-route pair is observed on at least two distinct UTC dates.
+The tracked snapshot records the observation window and any missing day so a
+partial daily archive cannot silently look complete. These rows remain flight-
+number candidates and do not establish a future schedule or physical operator.
+
 ## Next collection steps
 
 ### P0 — establish the global dated backbone
