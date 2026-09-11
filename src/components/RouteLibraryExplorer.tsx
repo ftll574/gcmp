@@ -152,10 +152,14 @@ export function RouteLibraryExplorer({
     searchDisabledLabel: zh ? '載入完整航網後可使用完整搜尋' : 'Full search is available after loading the full network',
     partialMapHelp: selection?.kind === 'airport'
       ? (zh ? '已載入此機場所有出發航線；可以拖曳與縮放地圖，載入完整航網後可使用完整搜尋與抵達統計。' : 'All outbound routes for this airport are loaded; pan and zoom the map, then load the full network for global search and inbound statistics.')
-      : (zh ? '目前只載入這條航線；可以拖曳與縮放地圖，載入完整航網後可使用完整搜尋。' : 'Only this route is loaded right now; pan and zoom the map, then load the full network for global search.'),
+      : selection?.kind === 'airline'
+        ? (zh ? '已載入此航空公司的完整航網；可以拖曳與縮放地圖，載入全球航網後可使用跨航空公司的完整搜尋。' : 'This airline’s complete network is loaded; pan and zoom the map, then load the global network for cross-airline search.')
+        : (zh ? '目前只載入這條航線；可以拖曳與縮放地圖，載入完整航網後可使用完整搜尋。' : 'Only this route is loaded right now; pan and zoom the map, then load the full network for global search.'),
     partialFallbackHelp: selection?.kind === 'airport'
       ? (zh ? '仍可使用下方目的地列表瀏覽此機場的完整出發航網。' : 'Use the destination list below to browse the airport’s complete outbound network.')
-      : (zh ? '仍可使用下方航線詳情與班號資料。' : 'Use the route details and flight-number data below.'),
+      : selection?.kind === 'airline'
+        ? (zh ? '仍可使用下方航線列表瀏覽此航空公司的完整航網。' : 'Use the route list below to browse this airline’s complete network.')
+        : (zh ? '仍可使用下方航線詳情與班號資料。' : 'Use the route details and flight-number data below.'),
     searchResults,
     onSearchResultSelect: choose,
   };
@@ -176,7 +180,9 @@ export function RouteLibraryExplorer({
     airportLabel: '機場', airlineLabel: '航空公司', routeLabel: '航線',
     routeShardNotice: '已先載入這條航線；進入完整航網功能時才會載入全球航網。',
     airportShardNotice: '已完整載入此機場的出發航線；抵達方向統計需要完整全球航網。',
+    airlineShardNotice: '已完整載入此航空公司的航網；跨航空公司的搜尋與詳細篩選才需要完整全球航網。',
     loadInbound: '補上抵達統計',
+    loadGlobalSearch: '啟用完整搜尋',
   } : {
     searchPlaceholder: 'Search airport, city, airline, route or flight number — TPE / Tokyo / BR / TPE-NRT / BR198',
     exploreTitle: 'Global route network',
@@ -193,7 +199,9 @@ export function RouteLibraryExplorer({
     airportLabel: 'Airport', airlineLabel: 'Airline', routeLabel: 'Route',
     routeShardNotice: 'This route loaded first; the full global network loads only when broader network features are needed.',
     airportShardNotice: 'All outbound routes for this airport are loaded; inbound statistics require the full global network.',
+    airlineShardNotice: 'This airline’s complete network is loaded; cross-airline search and detailed filters require the full global network.',
     loadInbound: 'Load inbound statistics',
+    loadGlobalSearch: 'Enable full search',
   };
 
   let entityContent: React.ReactNode = null;
@@ -237,6 +245,7 @@ export function RouteLibraryExplorer({
           <div><span>{copy.airlineLabel}</span><h2><code>{airlineProfile.carrier}</code> · {airlineProfile.name}</h2><p>{copy.airlineNetwork}</p></div>
         </header>
         <section className="entity-section map-primary-section"><Suspense fallback={<RouteMapLoading zh={zh} />}><LazyRouteEntityMap routes={airlineProfile.routes} hubs={airlineProfile.topHubs} allianceTheme={alliance} controls={mapControls} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={[{ value: airlineProfile.routes.length, label: copy.routes }, { value: airlineProfile.airportCount, label: copy.airports }, { value: airlineProfile.countryCount, label: copy.countries }, { value: airlineProfile.operatingRouteCount, label: copy.operating }]} /></Suspense></section>
+        {!networkComplete && <div className="entity-shard-notice entity-shard-notice--action" role="status"><span>{copy.airlineShardNotice}</span>{onRequestFullNetwork && <button type="button" className="entity-inline-button" onClick={onRequestFullNetwork}>{copy.loadGlobalSearch}</button>}</div>}
         <details className="entity-secondary-index" open={showRouteIndex} onToggle={(event) => setShowRouteIndex(event.currentTarget.open)}>
           <summary>{copy.routeIndex} · {airlineProfile.routes.length}</summary>
           {showRouteIndex && <div className="entity-route-grid">{airlineProfile.routes.map((route) => <RouteCard key={routeId(route)} route={route} onSelect={choose} compact />)}</div>}

@@ -1,10 +1,14 @@
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { describe, expect, test } from 'vitest';
 import {
   parseHashedRuntimeRouteNetwork,
+  parseHashedRuntimeRouteNetworkCarrierShard,
   parseHashedRuntimeRouteNetworkShard,
+  parseRuntimeRouteNetworkCarrierManifest,
   parseRuntimeRouteNetworkMeta,
 } from '../../src/lib/route-network-runtime.ts';
+import type { RouteNetworkCatalog } from '../../src/lib/schemas/route-network.ts';
 
 const runtimeBytes = readFileSync('public/data/route-network/runtime-current.json');
 const runtimeBuffer = runtimeBytes.buffer.slice(runtimeBytes.byteOffset, runtimeBytes.byteOffset + runtimeBytes.byteLength) as ArrayBuffer;
@@ -34,6 +38,42 @@ describe('hashed browser runtime route parser', () => {
     expect(parsed.routes.every((route) => route.pair[0].startsWith('T'))).toBe(true);
   });
 
+  test('accepts a hashed carrier shard and rejects a carrier mismatch', async () => {
+    const raw = JSON.parse(readFileSync('public/data/route-network/runtime-origins/T.json', 'utf8')) as RouteNetworkCatalog;
+    const routes = raw.routes.filter((route) => route.status === 'published' && route.carrier === 'BR');
+    const sourceIds = new Set(routes.flatMap((route) => [
+      ...route.sourceIds,
+      ...(route.flightNumberSourceIds ?? []),
+      ...(route.flightNumberCandidateSourceIds ?? []),
+    ]));
+    const shard: RouteNetworkCatalog = {
+      version: raw.version,
+      coverage: raw.coverage,
+      sources: raw.sources.filter((source) => sourceIds.has(source.id)),
+      carrierUniverses: [],
+      routes,
+    };
+    const text = `${JSON.stringify(shard)}\n`;
+    const bytes = Buffer.from(text);
+    const buffer = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
+    const shardMeta = {
+      routes: routes.length,
+      bytes: bytes.byteLength,
+      sha256: createHash('sha256').update(text).digest('hex'),
+    };
+    const manifest = parseRuntimeRouteNetworkCarrierManifest({
+      version: 1,
+      runtimeSha256: 'a'.repeat(64),
+      carriers: { BR: shardMeta },
+    });
+    expect(manifest.carriers.BR?.routes).toBe(routes.length);
+    const parsed = await parseHashedRuntimeRouteNetworkCarrierShard(buffer, shardMeta, 'BR', airportCodes);
+    expect(parsed.routes).toHaveLength(routes.length);
+    expect(parsed.routes.every((route) => route.carrier === 'BR' && route.status === 'published')).toBe(true);
+    await expect(parseHashedRuntimeRouteNetworkCarrierShard(buffer, shardMeta, 'AA', airportCodes))
+      .rejects.toThrow('outside its published carrier scope');
+  });
+
   test('rejects changed or truncated runtime bytes before parsing them', async () => {
     const meta = parseRuntimeRouteNetworkMeta(metaRaw);
     const changed = runtimeBytes.slice();
@@ -51,6 +91,16 @@ describe('hashed browser runtime route parser', () => {
       routes: 1,
       originShards: { T: { routes: 1, bytes: 1, sha256: 'bad' } },
     })).toThrow('originShards.T.sha256');
+    expect(() => parseRuntimeRouteNetworkCarrierManifest({
+      version: 2,
+      runtimeSha256: 'a'.repeat(64),
+      carriers: {},
+    })).toThrow('carrier metadata version');
+    expect(() => parseRuntimeRouteNetworkCarrierManifest({
+      version: 1,
+      runtimeSha256: 'a'.repeat(64),
+      carriers: { BR: { routes: 1, bytes: 1, sha256: 'bad' } },
+    })).toThrow('carrier metadata BR.sha256');
   });
 
   test('rejects a validly hashed deployment with a mismatched route count', async () => {

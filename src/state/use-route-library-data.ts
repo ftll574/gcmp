@@ -16,6 +16,8 @@ export interface RouteLibraryData {
   readonly airportContinentOverrides: ReadonlyMap<string, ContinentId> | null;
   readonly routeNetworkRuntimeUrl: string;
   readonly routeNetworkOriginShardBaseUrl: string;
+  readonly routeNetworkCarrierShardBaseUrl?: string;
+  readonly routeNetworkCarrierShardManifestUrl?: string;
   /** Public Route Library supplies this build hash for the fast runtime path.
    * Legacy/standalone callers may omit it and fall back to canonical Zod. */
   readonly routeNetworkRuntimeMeta?: RuntimeRouteNetworkMeta;
@@ -96,6 +98,8 @@ export function useRouteLibraryData(baseUrlOverride?: string): RouteLibraryLoadS
             airportContinentOverrides,
             routeNetworkRuntimeUrl: `${baseUrl}/data/route-network/runtime-current.json`,
             routeNetworkOriginShardBaseUrl: `${baseUrl}/data/route-network/runtime-origins`,
+            routeNetworkCarrierShardBaseUrl: `${baseUrl}/data/route-network/runtime-carriers`,
+            routeNetworkCarrierShardManifestUrl: `${baseUrl}/data/route-network/runtime-carriers.meta.json`,
             routeNetworkRuntimeMeta,
           },
         });

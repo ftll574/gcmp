@@ -12,6 +12,11 @@ export interface RuntimeRouteNetworkShardMeta {
   readonly sha256: string;
 }
 
+export interface RuntimeRouteNetworkCarrierManifest {
+  readonly runtimeSha256: string;
+  readonly carriers: Readonly<Record<string, RuntimeRouteNetworkShardMeta>>;
+}
+
 function fail(message: string): never {
   throw new Error(`runtime route-network: ${message}`);
 }
@@ -53,6 +58,30 @@ export function parseRuntimeRouteNetworkMeta(raw: unknown): RuntimeRouteNetworkM
     }
   }
   return { outputSha256: raw.outputSha256, routes: raw.routes as number, originShards };
+}
+
+export function parseRuntimeRouteNetworkCarrierManifest(raw: unknown): RuntimeRouteNetworkCarrierManifest {
+  if (!isRecord(raw)) fail('carrier metadata must be an object');
+  if (raw.version !== 1) fail('carrier metadata version is invalid');
+  if (typeof raw.runtimeSha256 !== 'string' || !/^[a-f0-9]{64}$/.test(raw.runtimeSha256)) {
+    fail('carrier metadata runtimeSha256 is invalid');
+  }
+  if (!isRecord(raw.carriers)) fail('carrier metadata carriers is invalid');
+  const carriers: Record<string, RuntimeRouteNetworkShardMeta> = {};
+  for (const [carrier, shard] of Object.entries(raw.carriers)) {
+    if (!/^[A-Z0-9]{2,3}$/.test(carrier) || !isRecord(shard)) fail('carrier metadata entry is invalid');
+    if (!Number.isInteger(shard.routes) || (shard.routes as number) < 0) fail(`carrier metadata ${carrier}.routes is invalid`);
+    if (!Number.isInteger(shard.bytes) || (shard.bytes as number) < 0) fail(`carrier metadata ${carrier}.bytes is invalid`);
+    if (typeof shard.sha256 !== 'string' || !/^[a-f0-9]{64}$/.test(shard.sha256)) {
+      fail(`carrier metadata ${carrier}.sha256 is invalid`);
+    }
+    carriers[carrier] = {
+      routes: shard.routes as number,
+      bytes: shard.bytes as number,
+      sha256: shard.sha256,
+    };
+  }
+  return { runtimeSha256: raw.runtimeSha256, carriers };
 }
 
 function parseRuntimeJson(text: string, expectedRoutes: number, knownAirports?: ReadonlySet<string>): RouteNetworkCatalog {
@@ -128,4 +157,18 @@ export async function parseHashedRuntimeRouteNetworkShard(
     routes: meta.routes,
     originShards: {},
   }, knownAirports);
+}
+
+/** Verify and parse one build-generated carrier shard. */
+export async function parseHashedRuntimeRouteNetworkCarrierShard(
+  bytes: ArrayBuffer,
+  meta: RuntimeRouteNetworkShardMeta,
+  carrier: string,
+  knownAirports?: ReadonlySet<string>,
+): Promise<RouteNetworkCatalog> {
+  const network = await parseHashedRuntimeRouteNetworkShard(bytes, meta, knownAirports);
+  if (network.routes.some((route) => route.carrier !== carrier || route.status !== 'published')) {
+    fail(`carrier shard ${carrier} contains routes outside its published carrier scope`);
+  }
+  return network;
 }

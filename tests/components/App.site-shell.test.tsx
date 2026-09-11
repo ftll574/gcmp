@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
@@ -5,8 +6,60 @@ import '@testing-library/jest-dom/vitest';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { SiteApp } from '../../src/SiteApp.tsx';
 import { setLocale } from '../../src/i18n/i18n.ts';
+import type { RouteNetworkCatalog } from '../../src/lib/schemas/route-network.ts';
 
 const PUBLIC = join(process.cwd(), 'public');
+
+function carrierShardFixture(carrier: string): { readonly manifest: unknown; readonly bytes: Buffer } {
+  const runtime = JSON.parse(readFileSync(join(PUBLIC, 'data/route-network/runtime-current.json'), 'utf8')) as RouteNetworkCatalog;
+  const runtimeMeta = JSON.parse(readFileSync(join(PUBLIC, 'data/route-network/runtime-current.meta.json'), 'utf8')) as { outputSha256: string };
+  const routes = runtime.routes.filter((route) => route.status === 'published' && route.carrier === carrier);
+  const carrierUniverses = runtime.carrierUniverses.filter((universe) => universe.carrier === carrier);
+  const sourceIds = new Set([
+    ...routes.flatMap((route) => [
+      ...route.sourceIds,
+      ...(route.flightNumberSourceIds ?? []),
+      ...(route.flightNumberCandidateSourceIds ?? []),
+    ]),
+    ...carrierUniverses.flatMap((universe) => universe.sourceIds),
+  ]);
+  const shard: RouteNetworkCatalog = {
+    version: runtime.version,
+    coverage: runtime.coverage,
+    sources: runtime.sources.filter((source) => sourceIds.has(source.id)),
+    carrierUniverses,
+    routes,
+  };
+  const text = `${JSON.stringify(shard)}\n`;
+  const bytes = Buffer.from(text);
+  return {
+    bytes,
+    manifest: {
+      version: 1,
+      runtimeSha256: runtimeMeta.outputSha256,
+      carriers: {
+        [carrier]: {
+          routes: routes.length,
+          bytes: bytes.byteLength,
+          sha256: createHash('sha256').update(text).digest('hex'),
+        },
+      },
+    },
+  };
+}
+
+function jsonResponse(value: unknown): Response {
+  return { ok: true, status: 200, json: async () => value } as Response;
+}
+
+function bufferResponse(bytes: Buffer): Response {
+  return {
+    ok: true,
+    status: 200,
+    json: async () => JSON.parse(bytes.toString('utf8')),
+    arrayBuffer: async () => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer,
+  } as Response;
+}
 
 beforeEach(() => {
   setLocale('zh-TW');
@@ -322,6 +375,52 @@ test('route shard failures fall back to the full runtime graph', async () => {
   expect(requests).toContain('/data/route-network/runtime-origins/T.json');
   expect(requests).toContain('/data/route-network/runtime-current.json');
   expect(screen.queryByText(/已先載入這條航線/)).not.toBeInTheDocument();
+});
+
+test('airline deep-links load a carrier shard before the full global graph', async () => {
+  window.history.replaceState({}, '', '/?lang=zh-TW&view=routes&q=BR&entity=airline&id=BR');
+  const fixture = carrierShardFixture('BR');
+  const originalFetch = vi.mocked(fetch).getMockImplementation();
+  const requests: string[] = [];
+  vi.mocked(fetch).mockImplementation(async (input: RequestInfo | URL) => {
+    const path = String(input).split('?')[0] ?? '';
+    requests.push(path);
+    if (path === '/data/route-network/runtime-carriers.meta.json') return jsonResponse(fixture.manifest);
+    if (path === '/data/route-network/runtime-carriers/BR.json') return bufferResponse(fixture.bytes);
+    return originalFetch!(input);
+  });
+
+  render(<SiteApp />);
+  expect(await screen.findByRole('heading', { name: /BR.*EVA Air/ }, { timeout: 5_000 })).toBeInTheDocument();
+  expect(requests).toContain('/data/route-network/runtime-carriers.meta.json');
+  expect(requests).toContain('/data/route-network/runtime-carriers/BR.json');
+  expect(requests).not.toContain('/data/route-network/runtime-current.json');
+  expect(screen.getByText(/已完整載入此航空公司的航網/)).toBeInTheDocument();
+  expect(screen.getByRole('combobox', { name: '載入完整航網後可使用完整搜尋' })).toBeDisabled();
+
+  fireEvent.click(screen.getByRole('button', { name: '啟用完整搜尋' }));
+  await waitFor(() => expect(requests).toContain('/data/route-network/runtime-current.json'), { timeout: 5_000 });
+  expect(await screen.findByRole('combobox', { name: /搜尋機場、城市、航空公司、航線或班號/ }, { timeout: 5_000 })).toBeEnabled();
+});
+
+test('stale carrier shard metadata falls back to the full runtime graph', async () => {
+  window.history.replaceState({}, '', '/?lang=zh-TW&view=routes&entity=airline&id=BR');
+  const fixture = carrierShardFixture('BR');
+  const staleManifest = { ...(fixture.manifest as Record<string, unknown>), runtimeSha256: '0'.repeat(64) };
+  const originalFetch = vi.mocked(fetch).getMockImplementation();
+  const requests: string[] = [];
+  vi.mocked(fetch).mockImplementation(async (input: RequestInfo | URL) => {
+    const path = String(input).split('?')[0] ?? '';
+    requests.push(path);
+    if (path === '/data/route-network/runtime-carriers.meta.json') return jsonResponse(staleManifest);
+    return originalFetch!(input);
+  });
+
+  render(<SiteApp />);
+  expect(await screen.findByRole('heading', { name: /BR.*EVA Air/ }, { timeout: 5_000 })).toBeInTheDocument();
+  expect(requests).toContain('/data/route-network/runtime-carriers.meta.json');
+  expect(requests).toContain('/data/route-network/runtime-current.json');
+  expect(requests).not.toContain('/data/route-network/runtime-carriers/BR.json');
 });
 
 test('site navigation remains available after entering the planner and returns to public pages', async () => {

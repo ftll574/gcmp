@@ -1,7 +1,13 @@
 import { lazy, Suspense, useEffect, useId, useMemo, useState } from 'react';
 import { buildAirportIndex, type AirportIndex } from '../lib/airport-index.ts';
 import type { RouteNetworkCatalog } from '../lib/schemas/route-network.ts';
-import { parseHashedRuntimeRouteNetwork, parseHashedRuntimeRouteNetworkShard } from '../lib/route-network-runtime.ts';
+import {
+  parseHashedRuntimeRouteNetwork,
+  parseHashedRuntimeRouteNetworkCarrierShard,
+  parseHashedRuntimeRouteNetworkShard,
+  parseRuntimeRouteNetworkCarrierManifest,
+  type RuntimeRouteNetworkCarrierManifest,
+} from '../lib/route-network-runtime.ts';
 import type { RouteLibraryEntitySelection } from '../lib/rtw/route-library-entities.ts';
 import type { Airport } from '../lib/types.ts';
 import type { RouteLibraryData } from '../state/use-route-library-data.ts';
@@ -13,7 +19,8 @@ type AllianceFilter = 'all' | 'star' | 'oneworld' | 'skyteam';
 
 type LoadedNetwork =
   | { readonly scope: 'full'; readonly network: RouteNetworkCatalog }
-  | { readonly scope: 'origin-shard'; readonly originLetter: string; readonly network: RouteNetworkCatalog };
+  | { readonly scope: 'origin-shard'; readonly originLetter: string; readonly network: RouteNetworkCatalog }
+  | { readonly scope: 'carrier-shard'; readonly carrier: string; readonly network: RouteNetworkCatalog };
 
 const LazyRouteCatalogBrowserLoader = lazy(() =>
   import('./RouteCatalogBrowserLoader.tsx').then((module) => ({ default: module.RouteCatalogBrowserLoader })),
@@ -215,6 +222,9 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
   const [loadedNetwork, setLoadedNetwork] = useState<LoadedNetwork | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [shardFailureLetter, setShardFailureLetter] = useState<string | null>(null);
+  const [carrierShardManifest, setCarrierShardManifest] = useState<RuntimeRouteNetworkCarrierManifest | null>(null);
+  const [carrierManifestFailed, setCarrierManifestFailed] = useState(false);
+  const [carrierShardFailureCode, setCarrierShardFailureCode] = useState<string | null>(null);
   const [fullNetworkRequested, setFullNetworkRequested] = useState(false);
   const [alliance, setAlliance] = useState<AllianceFilter>(allianceFromLocation);
   const [selection, setSelection] = useState<RouteLibraryEntitySelection | null>(selectionFromLocation);
@@ -227,7 +237,14 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
     : selection?.kind === 'airport'
       ? selection.id.slice(0, 1)
       : null;
+  const selectedCarrier = selection?.kind === 'airline' ? selection.id : null;
   const originShardMeta = selectionOriginLetter ? data.routeNetworkRuntimeMeta?.originShards[selectionOriginLetter] : undefined;
+  const carrierShardMeta = selectedCarrier ? carrierShardManifest?.carriers[selectedCarrier] : undefined;
+  const carrierShardSupportAvailable = Boolean(
+    data.routeNetworkRuntimeMeta
+    && data.routeNetworkCarrierShardBaseUrl
+    && data.routeNetworkCarrierShardManifestUrl,
+  );
   const fullNetworkReady = loadedNetwork?.scope === 'full';
   const displayNetwork = loadedNetwork?.scope === 'full'
     ? loadedNetwork.network
@@ -235,7 +252,41 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
       && (selection?.kind === 'route' || selection?.kind === 'airport')
       && selectionOriginLetter === loadedNetwork.originLetter
       ? loadedNetwork.network
+      : loadedNetwork?.scope === 'carrier-shard'
+        && selection?.kind === 'airline'
+        && selectedCarrier === loadedNetwork.carrier
+        ? loadedNetwork.network
       : null;
+
+  useEffect(() => {
+    if (fullNetworkReady || fullNetworkRequested || selection?.kind !== 'airline') return;
+    if (carrierShardManifest || carrierManifestFailed || !carrierShardSupportAvailable || !data.routeNetworkCarrierShardManifestUrl) return;
+    const controller = new AbortController();
+    void fetch(data.routeNetworkCarrierShardManifestUrl, { signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const manifest = parseRuntimeRouteNetworkCarrierManifest(await response.json());
+        if (manifest.runtimeSha256 !== data.routeNetworkRuntimeMeta?.outputSha256) {
+          throw new Error('carrier shard manifest does not match the current runtime graph');
+        }
+        return manifest;
+      })
+      .then(setCarrierShardManifest)
+      .catch((reason: unknown) => {
+        if ((reason as { name?: string }).name === 'AbortError') return;
+        setCarrierManifestFailed(true);
+      });
+    return () => controller.abort();
+  }, [
+    carrierManifestFailed,
+    carrierShardManifest,
+    data.routeNetworkCarrierShardManifestUrl,
+    data.routeNetworkRuntimeMeta,
+    carrierShardSupportAvailable,
+    fullNetworkReady,
+    fullNetworkRequested,
+    selection?.kind,
+  ]);
 
   useEffect(() => {
     if (fullNetworkReady || fullNetworkRequested) return;
@@ -277,13 +328,69 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
     shardFailureLetter,
   ]);
 
+  useEffect(() => {
+    if (fullNetworkReady || fullNetworkRequested || selection?.kind !== 'airline' || !selectedCarrier || !carrierShardMeta || !data.routeNetworkCarrierShardBaseUrl) return;
+    if (carrierShardFailureCode === selectedCarrier) return;
+    if (loadedNetwork?.scope === 'carrier-shard' && loadedNetwork.carrier === selectedCarrier) return;
+    const controller = new AbortController();
+    const shardUrl = `${data.routeNetworkCarrierShardBaseUrl}/${selectedCarrier}.json`;
+    void fetch(shardUrl, { signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const knownAirports = new Set(airports.keys());
+        if (globalThis.crypto?.subtle) {
+          return parseHashedRuntimeRouteNetworkCarrierShard(
+            await response.arrayBuffer(),
+            carrierShardMeta,
+            selectedCarrier,
+            knownAirports,
+          );
+        }
+        const { parseRouteNetworkCatalog } = await import('../lib/schemas/route-network.ts');
+        const network = parseRouteNetworkCatalog(await response.json(), knownAirports);
+        if (network.routes.some((route) => route.carrier !== selectedCarrier || route.status !== 'published')) {
+          throw new Error(`carrier shard ${selectedCarrier} contains routes outside its published carrier scope`);
+        }
+        return network;
+      })
+      .then((network) => {
+        setLoadedNetwork((current) => current?.scope === 'full'
+          ? current
+          : { scope: 'carrier-shard', carrier: selectedCarrier, network });
+      })
+      .catch((reason: unknown) => {
+        if ((reason as { name?: string }).name === 'AbortError') return;
+        setCarrierShardFailureCode(selectedCarrier);
+      });
+    return () => controller.abort();
+  }, [
+    airports,
+    carrierShardFailureCode,
+    carrierShardMeta,
+    data.routeNetworkCarrierShardBaseUrl,
+    fullNetworkReady,
+    fullNetworkRequested,
+    loadedNetwork,
+    selectedCarrier,
+    selection?.kind,
+  ]);
+
+  const airlineNeedsFullNetwork = selection?.kind === 'airline' && (
+    !data.routeNetworkRuntimeMeta
+    || !carrierShardSupportAvailable
+    || carrierManifestFailed
+    || (carrierShardManifest !== null && !carrierShardMeta)
+    || carrierShardFailureCode === selectedCarrier
+  );
+  const originSelectionNeedsFullNetwork = (selection?.kind === 'route' || selection?.kind === 'airport')
+    && (!originShardMeta || shardFailureLetter === selectionOriginLetter);
+
   const shouldLoadFullNetwork = !fullNetworkReady && (
     fullNetworkRequested
-    || (selection?.kind !== 'route' && selection?.kind !== 'airport')
+    || selection === null
     || advancedOpen
-    || query.trim() !== ''
-    || !originShardMeta
-    || shardFailureLetter === selectionOriginLetter
+    || airlineNeedsFullNetwork
+    || originSelectionNeedsFullNetwork
   );
 
   useEffect(() => {

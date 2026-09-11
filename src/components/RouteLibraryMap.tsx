@@ -657,7 +657,9 @@ export function RouteEntityMap({
   const fitLabel = controls?.searchDisabled
     ? selectedAirport
       ? (locale === 'zh-TW' ? '顯示完整出發航網' : 'Fit outbound network')
-      : (locale === 'zh-TW' ? '顯示整條航線' : 'Fit this route')
+      : selectedRouteId
+        ? (locale === 'zh-TW' ? '顯示整條航線' : 'Fit this route')
+        : (locale === 'zh-TW' ? '顯示此航空公司航網' : 'Fit airline network')
     : copy.fit;
 
   return (

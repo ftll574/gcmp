@@ -34,6 +34,11 @@ playwright-report/
 # Build-time generated static SEO pages — regenerated from program JSONs
 public/airline/
 
+# Build-time Route Library carrier shards. These duplicate the runtime graph
+# by carrier and are regenerated from runtime-current.json on dev/build.
+public/data/route-network/runtime-carriers/
+public/data/route-network/runtime-carriers.meta.json
+
 # Tooling workspace artifacts (not project source)
 .dsh-vision-toolkit/
 design/
