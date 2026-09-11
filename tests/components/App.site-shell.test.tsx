@@ -230,6 +230,30 @@ test('route deep-links keep their context visible while the full network is stil
   expect(await screen.findByRole('region', { name: '航線地圖' }, { timeout: 5_000 })).toBeInTheDocument();
 });
 
+test('airport search works before the full route network finishes loading', async () => {
+  window.history.replaceState({}, '', '/?lang=zh-TW&view=routes');
+  const originalFetch = vi.mocked(fetch).getMockImplementation();
+  let releaseRuntime!: () => void;
+  const runtimeGate = new Promise<void>((resolve) => { releaseRuntime = resolve; });
+  vi.mocked(fetch).mockImplementation(async (input: RequestInfo | URL) => {
+    const path = String(input).split('?')[0] ?? '';
+    if (path === '/data/route-network/runtime-current.json') await runtimeGate;
+    return originalFetch!(input);
+  });
+
+  render(<SiteApp />);
+  const search = await screen.findByRole('combobox', { name: '先找機場' }, { timeout: 5_000 });
+  fireEvent.change(search, { target: { value: 'TYO' } });
+  const narita = await screen.findByRole('option', { name: /NRT.*Narita/ });
+  fireEvent.click(narita);
+  expect(new URLSearchParams(window.location.search).get('entity')).toBe('airport');
+  expect(new URLSearchParams(window.location.search).get('id')).toBe('NRT');
+  expect(screen.getByText('NRT · Narita')).toBeInTheDocument();
+
+  releaseRuntime();
+  expect(await screen.findByRole('region', { name: '航線地圖' }, { timeout: 5_000 })).toBeInTheDocument();
+});
+
 test('route deep-links show their requested entity before core route data is ready', async () => {
   window.history.replaceState({}, '', '/?lang=zh-TW&view=routes&entity=route&id=TPE-NRT');
   const originalFetch = vi.mocked(fetch).getMockImplementation();

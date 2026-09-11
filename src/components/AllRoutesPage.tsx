@@ -1,5 +1,5 @@
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
-import { buildAirportIndex } from '../lib/airport-index.ts';
+import { lazy, Suspense, useEffect, useId, useMemo, useState } from 'react';
+import { buildAirportIndex, type AirportIndex } from '../lib/airport-index.ts';
 import type { RouteNetworkCatalog } from '../lib/schemas/route-network.ts';
 import { parseHashedRuntimeRouteNetwork } from '../lib/route-network-runtime.ts';
 import type { RouteLibraryEntitySelection } from '../lib/rtw/route-library-entities.ts';
@@ -23,16 +23,20 @@ interface Props {
 
 function RouteNetworkLoading({
   selection,
+  airportIndex,
   airports,
   carrierNames,
   routeCount,
   zh,
+  onSelectAirport,
 }: {
   readonly selection: RouteLibraryEntitySelection | null;
+  readonly airportIndex: AirportIndex;
   readonly airports: ReadonlyMap<string, Airport>;
   readonly carrierNames: ReadonlyMap<string, string>;
   readonly routeCount?: number | undefined;
   readonly zh: boolean;
+  readonly onSelectAirport: (iata: string) => void;
 }): React.ReactElement {
   let label = zh ? '全球航網' : 'Global network';
   let title = zh ? '正在準備航線資料' : 'Preparing route data';
@@ -66,9 +70,102 @@ function RouteNetworkLoading({
         <strong>{title}</strong>
         <small>{detail}</small>
       </div>
+      <EarlyAirportSearch airportIndex={airportIndex} zh={zh} onSelectAirport={onSelectAirport} />
       <div className="route-context-loading__map" aria-hidden="true"><i /><i /><i /></div>
       <p>{zh ? '正在接上互動地圖與完整航線結果…' : 'Connecting the interactive map and complete route results…'}</p>
     </section>
+  );
+}
+
+function EarlyAirportSearch({
+  airportIndex,
+  zh,
+  onSelectAirport,
+}: {
+  readonly airportIndex: AirportIndex;
+  readonly zh: boolean;
+  readonly onSelectAirport: (iata: string) => void;
+}): React.ReactElement {
+  const id = useId();
+  const listboxId = `${id}-route-airport-results`;
+  const [query, setQuery] = useState('');
+  const [open, setOpen] = useState(false);
+  const [highlight, setHighlight] = useState(0);
+  const results = useMemo(
+    () => query.trim() === '' ? [] : airportIndex.search(query, { limit: 6, locale: zh ? 'zh-TW' : 'en' }),
+    [airportIndex, query, zh],
+  );
+  const showResults = open && query.trim() !== '';
+
+  const choose = (iata: string): void => {
+    setQuery('');
+    setOpen(false);
+    setHighlight(0);
+    onSelectAirport(iata);
+  };
+
+  return (
+    <div className="route-loading-search">
+      <label htmlFor={`${id}-input`}>{zh ? '先找機場' : 'Find an airport now'}</label>
+      <div className="route-loading-search__input">
+        <span aria-hidden="true">⌕</span>
+        <input
+          id={`${id}-input`}
+          type="search"
+          role="combobox"
+          value={query}
+          placeholder={zh ? '搜尋 TPE、TYO、東京、NRT…' : 'Search TPE, TYO, Narita, NRT…'}
+          autoComplete="off"
+          spellCheck={false}
+          aria-autocomplete="list"
+          aria-expanded={showResults && results.length > 0}
+          aria-controls={showResults && results.length > 0 ? listboxId : undefined}
+          aria-activedescendant={showResults && results[highlight] ? `${listboxId}-${highlight}` : undefined}
+          onFocus={() => setOpen(true)}
+          onChange={(event) => {
+            setQuery(event.target.value);
+            setOpen(true);
+            setHighlight(0);
+          }}
+          onKeyDown={(event) => {
+            if (event.key === 'ArrowDown') {
+              event.preventDefault();
+              setOpen(true);
+              setHighlight((value) => Math.min(value + 1, Math.max(results.length - 1, 0)));
+            } else if (event.key === 'ArrowUp') {
+              event.preventDefault();
+              setHighlight((value) => Math.max(value - 1, 0));
+            } else if (event.key === 'Enter' && results.length > 0) {
+              event.preventDefault();
+              const result = results[highlight] ?? results[0];
+              if (result) choose(result.airport.iata);
+            } else if (event.key === 'Escape') {
+              setOpen(false);
+            }
+          }}
+        />
+      </div>
+      {showResults && (
+        <div id={listboxId} className="route-loading-search__results" role="listbox">
+          {results.length > 0 ? results.map((result, index) => (
+            <button
+              id={`${listboxId}-${index}`}
+              key={result.airport.iata}
+              type="button"
+              role="option"
+              aria-selected={index === highlight}
+              onMouseEnter={() => setHighlight(index)}
+              onClick={() => choose(result.airport.iata)}
+            >
+              <code>{result.airport.iata}</code>
+              <span><strong>{result.airport.city}</strong><small>{result.airport.name}</small></span>
+              <em>{result.airport.country}</em>
+            </button>
+          )) : <p>{zh ? `找不到「${query}」` : `No airport matches “${query}”`}</p>}
+        </div>
+      )}
+      <small>{zh ? '完整航線與班號仍在背景載入。' : 'Full routes and flight numbers continue loading in the background.'}</small>
+    </div>
   );
 }
 
@@ -117,7 +214,8 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
   const [selection, setSelection] = useState<RouteLibraryEntitySelection | null>(selectionFromLocation);
   const [query, setQuery] = useState(queryFromLocation);
   const [advancedOpen, setAdvancedOpen] = useState(advancedFromLocation);
-  const airports = useMemo(() => buildAirportIndex(data.airports).byIata, [data.airports]);
+  const airportIndex = useMemo(() => buildAirportIndex(data.airports), [data.airports]);
+  const airports = airportIndex.byIata;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -218,10 +316,12 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
 
         {!network && !error && <RouteNetworkLoading
           selection={selection}
+          airportIndex={airportIndex}
           airports={airports}
           carrierNames={carrierNames}
           routeCount={data.routeNetworkRuntimeMeta?.routes}
           zh={zh}
+          onSelectAirport={(iata) => selectEntity({ kind: 'airport', id: iata })}
         />}
         {error && <div className="routes-error" role="alert"><strong>{copy.error}</strong><span>{error}</span><button type="button" onClick={() => window.location.reload()}>{copy.retry}</button></div>}
         {network && (
