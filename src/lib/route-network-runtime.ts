@@ -3,6 +3,13 @@ import type { RouteNetworkCatalog } from './schemas/route-network.ts';
 export interface RuntimeRouteNetworkMeta {
   readonly outputSha256: string;
   readonly routes: number;
+  readonly originShards: Readonly<Record<string, RuntimeRouteNetworkShardMeta>>;
+}
+
+export interface RuntimeRouteNetworkShardMeta {
+  readonly routes: number;
+  readonly bytes: number;
+  readonly sha256: string;
 }
 
 function fail(message: string): never {
@@ -28,7 +35,24 @@ export function parseRuntimeRouteNetworkMeta(raw: unknown): RuntimeRouteNetworkM
     fail('metadata outputSha256 is invalid');
   }
   if (!Number.isInteger(raw.routes) || (raw.routes as number) < 0) fail('metadata routes is invalid');
-  return { outputSha256: raw.outputSha256, routes: raw.routes as number };
+  const originShards: Record<string, RuntimeRouteNetworkShardMeta> = {};
+  if (raw.originShards !== undefined) {
+    if (!isRecord(raw.originShards)) fail('metadata originShards is invalid');
+    for (const [letter, shard] of Object.entries(raw.originShards)) {
+      if (!/^[A-Z]$/.test(letter) || !isRecord(shard)) fail('metadata originShards entry is invalid');
+      if (!Number.isInteger(shard.routes) || (shard.routes as number) < 0) fail(`metadata originShards.${letter}.routes is invalid`);
+      if (!Number.isInteger(shard.bytes) || (shard.bytes as number) < 0) fail(`metadata originShards.${letter}.bytes is invalid`);
+      if (typeof shard.sha256 !== 'string' || !/^[a-f0-9]{64}$/.test(shard.sha256)) {
+        fail(`metadata originShards.${letter}.sha256 is invalid`);
+      }
+      originShards[letter] = {
+        routes: shard.routes as number,
+        bytes: shard.bytes as number,
+        sha256: shard.sha256,
+      };
+    }
+  }
+  return { outputSha256: raw.outputSha256, routes: raw.routes as number, originShards };
 }
 
 function parseRuntimeJson(text: string, expectedRoutes: number, knownAirports?: ReadonlySet<string>): RouteNetworkCatalog {
@@ -91,4 +115,17 @@ export async function parseHashedRuntimeRouteNetwork(
   }
   if (actualHash !== meta.outputSha256) fail('SHA-256 does not match runtime metadata');
   return parseRuntimeJson(text ?? decoder.decode(bytes), meta.routes, knownAirports);
+}
+
+/** Verify and parse one build-generated origin shard without touching the full graph. */
+export async function parseHashedRuntimeRouteNetworkShard(
+  bytes: ArrayBuffer,
+  meta: RuntimeRouteNetworkShardMeta,
+  knownAirports?: ReadonlySet<string>,
+): Promise<RouteNetworkCatalog> {
+  return parseHashedRuntimeRouteNetwork(bytes, {
+    outputSha256: meta.sha256,
+    routes: meta.routes,
+    originShards: {},
+  }, knownAirports);
 }

@@ -131,6 +131,30 @@ describe('RouteEntityMap MapLibre model', () => {
     expect(screen.getByRole('button', { name: 'Star' }).getAttribute('aria-pressed')).toBe('true');
   });
 
+  test('can disable global search while keeping alliance controls usable', () => {
+    render(<RouteEntityMap
+      routes={[route(TPE, TSA, 17)]}
+      hubs={[]}
+      onAirportSelect={vi.fn()}
+      controls={{
+        alliance: 'star',
+        onAllianceChange: vi.fn(),
+        query: '',
+        onQueryChange: vi.fn(),
+        searchOpen: false,
+        onSearchOpenChange: vi.fn(),
+        searchPlaceholder: 'Search airport',
+        searchDisabled: true,
+        searchDisabledLabel: 'Full search loading',
+        searchResults: [],
+        onSearchResultSelect: vi.fn(),
+      }}
+    />);
+    expect((screen.getByRole('combobox', { name: 'Full search loading' }) as HTMLInputElement).disabled).toBe(true);
+    expect(screen.getByRole('button', { name: 'Star' }).getAttribute('aria-pressed')).toBe('true');
+    expect(screen.getByText(/Only this route is loaded right now/)).not.toBeNull();
+  });
+
   test('map search supports keyboard listbox navigation and selection', () => {
     const onSearchResultSelect = vi.fn();
     render(<RouteEntityMap

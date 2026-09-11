@@ -50,6 +50,7 @@ interface Props {
   readonly onAllianceChange: (alliance: RouteMapAllianceTheme) => void;
   readonly query: string;
   readonly onQueryChange: (query: string) => void;
+  readonly networkComplete?: boolean | undefined;
 }
 
 function routeId(route: RouteLibraryRouteCard): string {
@@ -86,13 +87,17 @@ export function RouteLibraryExplorer({
   onAllianceChange,
   query,
   onQueryChange,
+  networkComplete = true,
 }: Props): React.ReactElement {
   const { locale, t } = useLocale();
   const zh = locale === 'zh-TW';
   const [searchOpen, setSearchOpen] = useState(false);
   const [showRouteIndex, setShowRouteIndex] = useState(false);
   const entityInput = useMemo(() => ({ network, airports, carrierNames, memberCodes }), [network, airports, carrierNames, memberCodes]);
-  const searchResults = useMemo(() => searchRouteLibraryEntities({ ...entityInput, query, locale: zh ? 'zh-TW' : 'en' }), [entityInput, query, zh]);
+  const searchResults = useMemo(
+    () => networkComplete ? searchRouteLibraryEntities({ ...entityInput, query, locale: zh ? 'zh-TW' : 'en' }) : [],
+    [entityInput, query, zh, networkComplete],
+  );
   const homeModel = useMemo(() => {
     if (selection) return null;
     return {
@@ -141,6 +146,8 @@ export function RouteLibraryExplorer({
     searchPlaceholder: zh
       ? '搜尋機場、城市、航空公司、航線或班號，例如 TPE / Tokyo / BR198…'
       : 'Search airport, city, airline, route or flight number, e.g. TPE / Tokyo / BR198…',
+    searchDisabled: !networkComplete,
+    searchDisabledLabel: zh ? '返回航網後可使用完整搜尋' : 'Full search is available after returning to the network',
     searchResults,
     onSearchResultSelect: choose,
   };
@@ -159,6 +166,7 @@ export function RouteLibraryExplorer({
     planCarrier: '用這家航空公司加入 Planner', planFlight: '用這個班號加入 Planner', reverse: '查看反方向',
     back: '返回航網', noEntity: '目前沒有符合條件的航線。',
     airportLabel: '機場', airlineLabel: '航空公司', routeLabel: '航線',
+    shardNotice: '已先載入這條航線；返回航網或進入機場頁時才會載入完整全球航網。',
   } : {
     searchPlaceholder: 'Search airport, city, airline, route or flight number — TPE / Tokyo / BR / TPE-NRT / BR198',
     exploreTitle: 'Global route network',
@@ -173,6 +181,7 @@ export function RouteLibraryExplorer({
     planCarrier: 'Use this airline in Planner', planFlight: 'Use this flight in Planner', reverse: 'View reverse route',
     back: 'Back to network', noEntity: 'No current route matches this selection.',
     airportLabel: 'Airport', airlineLabel: 'Airline', routeLabel: 'Route',
+    shardNotice: 'This route loaded first; the full global network loads only when you return to the network or open an airport.',
   };
 
   let entityContent: React.ReactNode = null;
@@ -225,7 +234,8 @@ export function RouteLibraryExplorer({
           <div><span>{copy.routeLabel}</span><h2><code>{route.from.iata}</code><b>→</b><code>{route.to.iata}</code></h2><p>{route.from.city} → {route.to.city}</p></div>
         </header>
         <section className="entity-section map-primary-section"><Suspense fallback={<RouteMapLoading zh={zh} />}><LazyRouteEntityMap routes={[route]} hubs={[{ airport: route.from, connections: 1 }, { airport: route.to, connections: 1 }]} selectedRouteId={routeId(route)} allianceTheme={alliance} controls={mapControls} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={[{ value: `${route.distanceNm.toLocaleString()} nm`, label: copy.distance }, { value: route.carriers.length, label: copy.airlines }, { value: route.carriers.filter((carrier) => carrier.confirmedNumbers.length > 0).length, label: copy.confirmed }]} /></Suspense></section>
-        <section className="entity-section route-carrier-list"><div className="entity-section-heading"><h3>{copy.routeDetail}</h3>{reverseExists && <button type="button" className="entity-inline-button" onClick={() => choose({ kind: 'route', id: reverseId })}>{copy.reverse}</button>}</div>
+        {!networkComplete && <p className="entity-shard-notice" role="status">{copy.shardNotice}</p>}
+        <section className="entity-section route-carrier-list"><div className="entity-section-heading"><h3>{copy.routeDetail}</h3>{(reverseExists || !networkComplete) && <button type="button" className="entity-inline-button" onClick={() => choose({ kind: 'route', id: reverseId })}>{copy.reverse}</button>}</div>
           {route.carriers.map((carrier) => (
             <article className="route-carrier-card" key={carrier.carrier}>
               <header><div><code>{carrier.carrier}</code><strong>{carrier.name}</strong></div><span className={carrier.identity}>{carrier.identity === 'operating' ? copy.operatingCarrier : copy.provider}</span></header>

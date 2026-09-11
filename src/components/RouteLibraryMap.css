@@ -226,6 +226,7 @@
   border-color: var(--focus-ring-color);
 }
 .entity-map-search input { color: var(--label); font: 500 13px/1.2 var(--font-sans); }
+.entity-map-search input:disabled { cursor:wait; opacity:.68; }
 .entity-map-search-results {
   border-radius: var(--radius-card);
   background: color-mix(in srgb, var(--system-background) 98%, transparent);

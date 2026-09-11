@@ -46,6 +46,8 @@ interface RouteMapControls {
   readonly searchOpen: boolean;
   readonly onSearchOpenChange: (open: boolean) => void;
   readonly searchPlaceholder: string;
+  readonly searchDisabled?: boolean | undefined;
+  readonly searchDisabledLabel?: string | undefined;
   readonly searchResults: ReadonlyArray<RouteLibrarySearchResult>;
   readonly onSearchResultSelect: (selection: RouteLibraryEntitySelection) => void;
 }
@@ -650,10 +652,17 @@ export function RouteEntityMap({
   const activeAirport = selection?.kind === 'airport' ? model.airportByIata.get(selection.iata) ?? null : null;
   const activeRoutes = inspectorRoutes(model, selection);
   const activeRoute = selection?.kind === 'route' ? model.routeById.get(selection.routeId) ?? null : null;
+  const fitLabel = controls?.searchDisabled
+    ? (locale === 'zh-TW' ? '顯示整條航線' : 'Fit this route')
+    : copy.fit;
 
   return (
     <div ref={cardRef} className={`entity-map-card maplibre-route-map alliance-${allianceTheme}${fingerprint ? ' fingerprint' : ''}`} data-map-engine="maplibre" data-map-ready={ready ? 'true' : 'false'} data-map-routes={model.routes.features.length} data-map-airports={model.airports.features.length} data-map-alliance={allianceTheme} data-map-mode={fingerprint ? 'fingerprint' : 'detail'}>
-      <p id={mapHelpId} className="sr-only">{copy.mapHelp}</p>
+      <p id={mapHelpId} className="sr-only">{controls?.searchDisabled
+        ? (locale === 'zh-TW'
+          ? '目前只載入這條航線；可以拖曳與縮放地圖，返回航網後可使用完整搜尋。'
+          : 'Only this route is loaded right now; you can pan and zoom the map, and full search becomes available after returning to the network.')
+        : copy.mapHelp}</p>
       <div ref={containerRef} className="entity-map-maplibre" role="region" aria-label={locale === 'zh-TW' ? '航線地圖' : 'Route network map'} aria-describedby={mapHelpId} />
       {!webGlAvailable && <div className="entity-map-fallback"><strong>{copy.fallback}</strong><span>{copy.fallbackHelp}</span></div>}
       {controls && <div className="entity-map-commandbar">
@@ -677,11 +686,12 @@ export function RouteEntityMap({
               spellCheck={false}
               enterKeyHint="search"
               value={controls.query}
-              aria-expanded={controls.searchOpen}
-              aria-controls={searchListId}
+              disabled={controls.searchDisabled}
+              aria-expanded={controls.searchDisabled ? false : controls.searchOpen}
+              aria-controls={controls.searchDisabled ? undefined : searchListId}
               aria-autocomplete="list"
-              aria-activedescendant={controls.searchOpen && safeActiveSearchIndex >= 0 ? `${searchListId}-option-${safeActiveSearchIndex}` : undefined}
-              onFocus={() => controls.onSearchOpenChange(controls.query.length > 0)}
+              aria-activedescendant={!controls.searchDisabled && controls.searchOpen && safeActiveSearchIndex >= 0 ? `${searchListId}-option-${safeActiveSearchIndex}` : undefined}
+              onFocus={() => { if (!controls.searchDisabled) controls.onSearchOpenChange(controls.query.length > 0); }}
               onChange={(event) => {
                 setActiveSearchIndex(-1);
                 controls.onQueryChange(event.target.value);
@@ -707,12 +717,12 @@ export function RouteEntityMap({
                   controls.onSearchOpenChange(false);
                 }
               }}
-              placeholder={controls.searchPlaceholder}
-              aria-label={controls.searchPlaceholder}
+              placeholder={controls.searchDisabled ? controls.searchDisabledLabel ?? controls.searchPlaceholder : controls.searchPlaceholder}
+              aria-label={controls.searchDisabled ? controls.searchDisabledLabel ?? controls.searchPlaceholder : controls.searchPlaceholder}
             />
-            {controls.query && <button type="button" aria-label={locale === 'zh-TW' ? '清除搜尋' : 'Clear search'} onClick={() => { controls.onQueryChange(''); controls.onSearchOpenChange(false); }}>×</button>}
+            {!controls.searchDisabled && controls.query && <button type="button" aria-label={locale === 'zh-TW' ? '清除搜尋' : 'Clear search'} onClick={() => { controls.onQueryChange(''); controls.onSearchOpenChange(false); }}>×</button>}
           </div>
-          {controls.query && controls.searchOpen && <div id={searchListId} className="entity-map-search-results" role="listbox">
+          {!controls.searchDisabled && controls.query && controls.searchOpen && <div id={searchListId} className="entity-map-search-results" role="listbox">
             {controls.searchResults.length > 0 ? controls.searchResults.map((result, index) => <button type="button" role="option" id={`${searchListId}-option-${index}`} aria-selected={index === safeActiveSearchIndex} key={result.key} onClick={() => { controls.onSearchOpenChange(false); controls.onSearchResultSelect(result.selection); }}><span>{result.kind}</span><strong>{result.title}</strong><small>{result.subtitle}</small></button>) : <p>{locale === 'zh-TW' ? '沒有符合的結果' : 'No matching result'}</p>}
           </div>}
         </div>
@@ -725,7 +735,7 @@ export function RouteEntityMap({
         setSelection(null);
         setFocusSources(map, model, null);
         fitModel(map, container, model, routes, selectedAirport);
-      }} aria-label={copy.fit} title={copy.fit}>⌖</button>}
+      }} aria-label={fitLabel} title={fitLabel}>⌖</button>}
       {hover && <div className="entity-map-hover" style={{ left: hover.x, top: hover.y }}><strong>{hover.title}</strong><span>{hover.subtitle}</span></div>}
       {selection && <aside className="entity-map-inspector" aria-live="polite">
         <header>

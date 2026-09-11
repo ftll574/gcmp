@@ -272,6 +272,47 @@ test('route deep-links show their requested entity before core route data is rea
   expect(await screen.findByText('Taoyuan → Narita', {}, { timeout: 5_000 })).toBeInTheDocument();
 });
 
+test('route deep-links use an origin shard before requesting the full global graph', async () => {
+  window.history.replaceState({}, '', '/?lang=zh-TW&view=routes&entity=route&id=TPE-NRT');
+  const originalFetch = vi.mocked(fetch).getMockImplementation();
+  const requests: string[] = [];
+  vi.mocked(fetch).mockImplementation(async (input: RequestInfo | URL) => {
+    const path = String(input).split('?')[0] ?? '';
+    requests.push(path);
+    return originalFetch!(input);
+  });
+
+  render(<SiteApp />);
+  expect(await screen.findByRole('heading', { name: /TPE.*NRT/ }, { timeout: 5_000 })).toBeInTheDocument();
+  expect(requests).toContain('/data/route-network/runtime-origins/T.json');
+  expect(requests).not.toContain('/data/route-network/runtime-current.json');
+  expect(screen.getByText(/已先載入這條航線/)).toBeInTheDocument();
+  expect(screen.getByRole('combobox', { name: '返回航網後可使用完整搜尋' })).toBeDisabled();
+
+  fireEvent.click(screen.getByRole('button', { name: /返回航網/ }));
+  await waitFor(() => expect(requests).toContain('/data/route-network/runtime-current.json'), { timeout: 5_000 });
+});
+
+test('route shard failures fall back to the full runtime graph', async () => {
+  window.history.replaceState({}, '', '/?lang=zh-TW&view=routes&entity=route&id=TPE-NRT');
+  const originalFetch = vi.mocked(fetch).getMockImplementation();
+  const requests: string[] = [];
+  vi.mocked(fetch).mockImplementation(async (input: RequestInfo | URL) => {
+    const path = String(input).split('?')[0] ?? '';
+    requests.push(path);
+    if (path === '/data/route-network/runtime-origins/T.json') {
+      return { ok: false, status: 503, json: async () => undefined, arrayBuffer: async () => new ArrayBuffer(0) } as Response;
+    }
+    return originalFetch!(input);
+  });
+
+  render(<SiteApp />);
+  expect(await screen.findByRole('heading', { name: /TPE.*NRT/ }, { timeout: 5_000 })).toBeInTheDocument();
+  expect(requests).toContain('/data/route-network/runtime-origins/T.json');
+  expect(requests).toContain('/data/route-network/runtime-current.json');
+  expect(screen.queryByText(/已先載入這條航線/)).not.toBeInTheDocument();
+});
+
 test('site navigation remains available after entering the planner and returns to public pages', async () => {
   render(<SiteApp />);
   await screen.findByRole('heading', { name: /把世界變成一條/ });

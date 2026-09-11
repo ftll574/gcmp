@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useId, useMemo, useState } from 'react';
 import { buildAirportIndex, type AirportIndex } from '../lib/airport-index.ts';
 import type { RouteNetworkCatalog } from '../lib/schemas/route-network.ts';
-import { parseHashedRuntimeRouteNetwork } from '../lib/route-network-runtime.ts';
+import { parseHashedRuntimeRouteNetwork, parseHashedRuntimeRouteNetworkShard } from '../lib/route-network-runtime.ts';
 import type { RouteLibraryEntitySelection } from '../lib/rtw/route-library-entities.ts';
 import type { Airport } from '../lib/types.ts';
 import type { RouteLibraryData } from '../state/use-route-library-data.ts';
@@ -10,6 +10,10 @@ import { SiteHeader, type SiteView } from './SiteHeader.tsx';
 import { useLocale } from '../i18n/use-locale.ts';
 
 type AllianceFilter = 'all' | 'star' | 'oneworld' | 'skyteam';
+
+type LoadedNetwork =
+  | { readonly scope: 'full'; readonly network: RouteNetworkCatalog }
+  | { readonly scope: 'origin-shard'; readonly originLetter: string; readonly network: RouteNetworkCatalog };
 
 const LazyRouteCatalogBrowserLoader = lazy(() =>
   import('./RouteCatalogBrowserLoader.tsx').then((module) => ({ default: module.RouteCatalogBrowserLoader })),
@@ -208,16 +212,74 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
     advanced: 'Detailed filters', advancedBody: 'Filter the complete network by origin, destination, airline and region.', closeAdvanced: 'Close detailed filters',
     footer: 'Route evidence changes over time. Always recheck date and operating carrier before ticketing.',
   };
-  const [network, setNetwork] = useState<RouteNetworkCatalog | null>(null);
+  const [loadedNetwork, setLoadedNetwork] = useState<LoadedNetwork | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [shardFailureLetter, setShardFailureLetter] = useState<string | null>(null);
   const [alliance, setAlliance] = useState<AllianceFilter>(allianceFromLocation);
   const [selection, setSelection] = useState<RouteLibraryEntitySelection | null>(selectionFromLocation);
   const [query, setQuery] = useState(queryFromLocation);
   const [advancedOpen, setAdvancedOpen] = useState(advancedFromLocation);
   const airportIndex = useMemo(() => buildAirportIndex(data.airports), [data.airports]);
   const airports = airportIndex.byIata;
+  const routeOriginLetter = selection?.kind === 'route' ? selection.id.slice(0, 1) : null;
+  const originShardMeta = routeOriginLetter ? data.routeNetworkRuntimeMeta?.originShards[routeOriginLetter] : undefined;
+  const fullNetworkReady = loadedNetwork?.scope === 'full';
+  const displayNetwork = loadedNetwork?.scope === 'full'
+    ? loadedNetwork.network
+    : loadedNetwork?.scope === 'origin-shard'
+      && selection?.kind === 'route'
+      && routeOriginLetter === loadedNetwork.originLetter
+      ? loadedNetwork.network
+      : null;
 
   useEffect(() => {
+    if (fullNetworkReady || selection?.kind !== 'route' || !routeOriginLetter || !originShardMeta) return;
+    if (shardFailureLetter === routeOriginLetter) return;
+    if (loadedNetwork?.scope === 'origin-shard' && loadedNetwork.originLetter === routeOriginLetter) return;
+
+    const controller = new AbortController();
+    const shardUrl = `${data.routeNetworkOriginShardBaseUrl}/${routeOriginLetter}.json`;
+    void fetch(shardUrl, { signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const knownAirports = new Set(airports.keys());
+        if (globalThis.crypto?.subtle) {
+          return parseHashedRuntimeRouteNetworkShard(await response.arrayBuffer(), originShardMeta, knownAirports);
+        }
+        const { parseRouteNetworkCatalog } = await import('../lib/schemas/route-network.ts');
+        return parseRouteNetworkCatalog(await response.json(), knownAirports);
+      })
+      .then((network) => {
+        setLoadedNetwork((current) => current?.scope === 'full'
+          ? current
+          : { scope: 'origin-shard', originLetter: routeOriginLetter, network });
+      })
+      .catch((reason: unknown) => {
+        if ((reason as { name?: string }).name === 'AbortError') return;
+        setShardFailureLetter(routeOriginLetter);
+      });
+    return () => controller.abort();
+  }, [
+    airports,
+    data.routeNetworkOriginShardBaseUrl,
+    fullNetworkReady,
+    loadedNetwork,
+    originShardMeta,
+    routeOriginLetter,
+    selection?.kind,
+    shardFailureLetter,
+  ]);
+
+  const shouldLoadFullNetwork = !fullNetworkReady && (
+    selection?.kind !== 'route'
+    || advancedOpen
+    || query.trim() !== ''
+    || !originShardMeta
+    || shardFailureLetter === routeOriginLetter
+  );
+
+  useEffect(() => {
+    if (!shouldLoadFullNetwork || fullNetworkReady) return;
     const controller = new AbortController();
     void fetch(data.routeNetworkRuntimeUrl, { signal: controller.signal })
       .then(async (response) => {
@@ -235,13 +297,13 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
         const { parseRouteNetworkCatalog } = await import('../lib/schemas/route-network.ts');
         return parseRouteNetworkCatalog(await response.json(), knownAirports);
       })
-      .then(setNetwork)
+      .then((network) => setLoadedNetwork({ scope: 'full', network }))
       .catch((reason: unknown) => {
         if ((reason as { name?: string }).name === 'AbortError') return;
         setError(reason instanceof Error ? reason.message : String(reason));
       });
     return () => controller.abort();
-  }, [data.routeNetworkRuntimeUrl, data.routeNetworkRuntimeMeta, airports]);
+  }, [shouldLoadFullNetwork, fullNetworkReady, data.routeNetworkRuntimeUrl, data.routeNetworkRuntimeMeta, airports]);
 
   useEffect(() => {
     const sync = (): void => {
@@ -314,7 +376,7 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
           <p>{copy.intro}</p>
         </section>
 
-        {!network && !error && <RouteNetworkLoading
+        {!displayNetwork && !error && <RouteNetworkLoading
           selection={selection}
           airportIndex={airportIndex}
           airports={airports}
@@ -324,10 +386,10 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
           onSelectAirport={(iata) => selectEntity({ kind: 'airport', id: iata })}
         />}
         {error && <div className="routes-error" role="alert"><strong>{copy.error}</strong><span>{error}</span><button type="button" onClick={() => window.location.reload()}>{copy.retry}</button></div>}
-        {network && (
+        {displayNetwork && (
           <>
             <RouteLibraryExplorer
-              network={network}
+              network={displayNetwork}
               airports={airports}
               carrierNames={carrierNames}
               memberCodes={memberCodes}
@@ -340,6 +402,7 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
               selection={selection}
               onSelect={selectEntity}
               onPlanRoute={onPlanRoute}
+              networkComplete={fullNetworkReady}
             />
 
             <section className="routes-advanced-shell">
@@ -352,15 +415,15 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
               </button>
               {advancedOpen && <section className="routes-browser-shell">
                 <Suspense fallback={<div className="routes-loading" role="status">{copy.loading}</div>}>
-                  <LazyRouteCatalogBrowserLoader
-                    routeNetwork={network}
+                  {fullNetworkReady ? <LazyRouteCatalogBrowserLoader
+                    routeNetwork={displayNetwork}
                     memberCodes={memberCodes}
                     airports={airports}
                     countryContinents={data.countryContinents}
                     countrySubregions={data.countrySubregions}
                     airportContinentOverrides={data.airportContinentOverrides}
                     carrierNames={carrierNames}
-                  />
+                  /> : <div className="routes-loading" role="status">{copy.loading}</div>}
                 </Suspense>
               </section>}
             </section>
