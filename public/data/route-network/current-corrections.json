@@ -51,6 +51,18 @@
       "note": "The current LAX-SDF page no longer lists Delta as a current operator and records Delta service as ended in May 2026."
     },
     {
+      "id": "dl-psp-sea-dl2585-20260912",
+      "url": "https://aviability.com/en/airport/psp-palm-springs/destinations",
+      "checkedOn": "2026-09-12",
+      "note": "Current Palm Springs destination data identifies DL2585 as the Delta nonstop designator for PSP→SEA."
+    },
+    {
+      "id": "dl-psp-sea-future-20261109",
+      "url": "https://www.flightsfrom.com/PSP-SEA",
+      "checkedOn": "2026-09-12",
+      "note": "Current timetable lists Delta PSP→SEA service beginning 2026-11-09; keep the route published for future planning but outside-window before that date."
+    },
+    {
       "id": "dl-sdf-jfk-ended-20260912",
       "url": "https://www.directflights.com/SDF-JFK",
       "checkedOn": "2026-09-12",
@@ -73,6 +85,18 @@
       "url": "https://www.directflights.com/SLC-SDF",
       "checkedOn": "2026-09-12",
       "note": "The current SLC-SDF page has no published nonstop flights, so the special-event Delta edge must not remain current."
+    },
+    {
+      "id": "dl-tlv-atl-future-20261220",
+      "url": "https://www.flightsfrom.com/TLV-ATL",
+      "checkedOn": "2026-09-12",
+      "note": "Current timetable lists Delta TLV→ATL service beginning 2026-12-20 as DL271; keep the route published for future planning but outside-window before that date."
+    },
+    {
+      "id": "dl-tlv-atl-pause-20260912",
+      "url": "https://news.delta.com/delta-telaviv-flight-updates",
+      "checkedOn": "2026-09-12",
+      "note": "Delta states Atlanta–Tel Aviv service is suspended through 2026-12-18."
     },
     {
       "id": "et-add-atl-nondirect-20260909",
@@ -1010,6 +1034,21 @@
     {
       "carrier": "DL",
       "pair": [
+        "PSP",
+        "SEA"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "dl-psp-sea-future-20261109",
+        "dl-psp-sea-dl2585-20260912"
+      ],
+      "effectiveFrom": "2026-11-09"
+    },
+    {
+      "carrier": "DL",
+      "pair": [
         "SDF",
         "JFK"
       ],
@@ -1058,6 +1097,21 @@
         "dl-slc-sdf-no-current-20260912"
       ],
       "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "DL",
+      "pair": [
+        "TLV",
+        "ATL"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "dl-tlv-atl-pause-20260912",
+        "dl-tlv-atl-future-20261220"
+      ],
+      "effectiveFrom": "2026-12-20"
     },
     {
       "carrier": "ET",

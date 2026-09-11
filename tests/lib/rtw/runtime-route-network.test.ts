@@ -87,6 +87,18 @@ test('current corrections keep stale or mismatched carrier routes out of the pla
   expect(find('DL', 'BTR', 'GSP')?.status).toBe('suspended');
   expect(find('DL', 'GSP', 'BTR')?.status).toBe('suspended');
   expect(find('DL', 'SDF', 'LAX')?.status).toBe('suspended');
+  expect(find('DL', 'PSP', 'SEA')).toMatchObject({
+    status: 'published',
+    carrierIdentity: 'provider-listed',
+    effectiveFrom: '2026-11-09',
+    flightNumberCandidates: expect.arrayContaining(['DL2585']),
+  });
+  expect(find('DL', 'TLV', 'ATL')).toMatchObject({
+    status: 'published',
+    carrierIdentity: 'provider-listed',
+    effectiveFrom: '2026-12-20',
+    flightNumberCandidates: expect.arrayContaining(['DL271']),
+  });
   expect(find('DL', 'BNA', 'LAS')).toMatchObject({
     status: 'identity-unresolved',
     carrierIdentity: 'provider-listed',

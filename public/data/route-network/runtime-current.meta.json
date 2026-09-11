@@ -9,18 +9,18 @@
     "bts-marketing-current.json": "7b67464fd3bc4ffca57969d9a7e00d13e4090cc36742904beacfbb01ba6e9319",
     "standing-current.json": "66427d01e4fca9d0a0932f2b4af191afd26cbcb46a339c5c4e332d9377b545c6",
     "validated-static-current.json": "10953c6f7975191ce577fbe6406768813684c6de284b2c2508070dd9bdd33712",
-    "current-corrections.json": "f2ad10300e1a394ea5544238b6f79dd29a6e89bdaa1d8389c88608806115e1d5",
-    "flight-numbers-current.json": "ccb77dfb73cd6306218ec5dca155e86ec7016df640a72aa712768cedda5ded30"
+    "current-corrections.json": "83ea7e850f1a0b92bf54aeff41b94fc3db2f68e7b0498fae9e6167d210eb6fbd",
+    "flight-numbers-current.json": "a00aedd087c7c6d75bab16af0526df8f577b74f63a2d2f48f93929dcf4f370f8"
   },
-  "outputSha256": "bf7bef67ca1f76dee9fa723cf445f6648616a8e7fccbb28bd1524773fbd089f5",
+  "outputSha256": "e96c638cb6c197059daadf06a6201ad70ad3497c3a9bede10769682db44e8703",
   "routes": 30712,
-  "publishedRoutes": 30079,
+  "publishedRoutes": 30081,
   "carriers": 60,
   "confirmedOperatingRoutes": 17744,
-  "providerListedRoutes": 12335,
+  "providerListedRoutes": 12337,
   "confirmedFlightNumberRoutes": 14977,
-  "candidateFlightNumberRoutes": 24737,
-  "anyFlightNumberRoutes": 30079,
+  "candidateFlightNumberRoutes": 24739,
+  "anyFlightNumberRoutes": 30081,
   "routeCountByCarrier": {
     "A3": 578,
     "AA": 2355,
@@ -40,7 +40,7 @@
     "CI": 258,
     "CM": 217,
     "CX": 269,
-    "DL": 1881,
+    "DL": 1883,
     "ET": 378,
     "FJ": 36,
     "GA": 158,
@@ -164,7 +164,7 @@
     "CI": 94,
     "CM": 97,
     "CX": 80,
-    "DL": 602,
+    "DL": 604,
     "ET": 156,
     "FJ": 21,
     "GA": 64,
@@ -285,8 +285,8 @@
     },
     "P": {
       "routes": 1897,
-      "bytes": 853539,
-      "sha256": "cec5f0d0e253cf3f1dbb4d03fc9d98d201cbd162858fcc04b4f4e2f645723119"
+      "bytes": 854227,
+      "sha256": "b239801073474ce6a2110fd91fcac584c50c968f9562f1c50ffcfe7384dcb717"
     },
     "Q": {
       "routes": 3,
@@ -305,8 +305,8 @@
     },
     "T": {
       "routes": 1213,
-      "bytes": 545221,
-      "sha256": "d92e9318b7907ecb5fcc010f3bb4f862c8e9cec19c9ecf2ebed6408d901143c0"
+      "bytes": 546103,
+      "sha256": "6f3ec02d85e3d053073b86c46c4c5de9341d021ca61290fcc1d29b50cb9d77ee"
     },
     "U": {
       "routes": 136,

@@ -17,6 +17,18 @@
     },
     {
       "carrier": "DL",
+      "from": "PSP",
+      "to": "SEA",
+      "references": [
+        {
+          "flightNumber": "DL2585",
+          "url": "https://aviability.com/en/airport/psp-palm-springs/destinations",
+          "note": "Palm Springs destination data identifies DL2585 on PSP→SEA; the route restarts 2026-11-09, so this remains candidate-only flight-number evidence."
+        }
+      ]
+    },
+    {
+      "carrier": "DL",
       "from": "SEA",
       "to": "YVR",
       "references": [
@@ -65,6 +77,18 @@
           "flightNumber": "DL2965",
           "url": "https://www.flightsfrom.com/SRQ-DTW",
           "note": "Upcoming December 2026 nonstop schedule identifies DL2965 SRQ→DTW. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "DL",
+      "from": "TLV",
+      "to": "ATL",
+      "references": [
+        {
+          "flightNumber": "DL271",
+          "url": "https://www.flight.info/DL271",
+          "note": "Flight.info lists DL271 TLV→ATL beginning 2026-12-20; candidate only and valid only with the route future-effective window."
         }
       ]
     },
