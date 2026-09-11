@@ -53,3 +53,24 @@ The next adapter work should exploit the highest-reuse families first instead of
 5. Fiji Airways after locating the booking endpoint behind the AirTRFX/content shell.
 
 Official booking responses may expose marketing carrier, operating carrier, flight number, dates, weekdays and local times. GCMP must preserve those fields separately and must never promote a marketing carrier to physical operator merely because an official route is bookable.
+
+## Air France–KLM official Offers adapter
+
+The first family adapter uses the Air France–KLM Open Data Offers API rather than scraping the consumer booking UI:
+
+```text
+POST https://api.airfranceklm.com/opendata/offers/v1/available-offers
+```
+
+The adapter reads `AFKL_API_KEY` only on the server/research side and sends it in the documented `api-key` header. The normalized record deliberately keeps these identities separate:
+
+- marketing carrier;
+- marketing flight number;
+- operating carrier;
+- origin / destination;
+- local departure / arrival timestamps;
+- equipment type when published.
+
+Connecting itineraries are not converted into nonstop route evidence. Duplicate fare offers for the same physical segment collapse to one schedule record, and malformed direct rows make the result partial instead of being guessed.
+
+Local live validation is currently credential-blocked: `AFKL_API_KEY` is not configured and an unauthenticated Open Data request returns HTTP 403 (`Developer Inactive`). The research CLI therefore fails before network access when the key is absent. Parser, request builder, credential isolation and mocked official responses are test-covered; no live AF/KL schedule has been claimed yet.
