@@ -9,6 +9,24 @@
       "note": "The SFO-DEL direct page lists Air India service only in the past, so the edge is not current."
     },
     {
+      "id": "ay-hel-doh-other-operator-20260912",
+      "url": "https://www.flightsfrom.com/HEL-DOH",
+      "checkedOn": "2026-09-12",
+      "note": "Current HEL→DOH nonstop service is Qatar Airways; Finnair is not a current operator."
+    },
+    {
+      "id": "ay-kem-kok-ended-20260912",
+      "url": "https://www.flightsfrom.com/KEM-KOK",
+      "checkedOn": "2026-09-12",
+      "note": "Current KEM→KOK direct route is inactive and Finnair service is no longer current."
+    },
+    {
+      "id": "br-fra-rix-other-operator-20260912",
+      "url": "https://www.flightsfrom.com/FRA-RIX",
+      "checkedOn": "2026-09-12",
+      "note": "Current FRA→RIX nonstop operators are airBaltic and Lufthansa, not EVA Air."
+    },
+    {
       "id": "dl-bna-las-ended-20260912",
       "url": "https://www.directflights.com/BNA-LAS",
       "checkedOn": "2026-09-12",
@@ -103,6 +121,18 @@
       "url": "https://info.flightmapper.net/route/Ethiopian_Airlines_ET_ADD_ATL",
       "checkedOn": "2026-09-09",
       "note": "Current ET518 ADD-ATL schedule is published as a 1-stop service, so the ADD-ATL relationship must not remain a current nonstop planner edge."
+    },
+    {
+      "id": "et-add-gom-ended-20260912",
+      "url": "https://www.flightsfrom.com/ADD-GOM",
+      "checkedOn": "2026-09-12",
+      "note": "Current ADD→GOM direct route is inactive; FlightsFrom marks service ended in July 2026."
+    },
+    {
+      "id": "et-gom-add-ended-20260912",
+      "url": "https://www.flightsfrom.com/GOM-ADD",
+      "checkedOn": "2026-09-12",
+      "note": "Current GOM→ADD direct route is inactive; FlightsFrom marks service ended in July 2026."
     },
     {
       "id": "fj-nan-dfw-ended-20260906",
@@ -556,10 +586,34 @@
       "note": "The current VKO-DLM direct-route page lists Pobeda, AZUR air, Pegasus rather than TK; the TK carrier attribution is unresolved and must not be treated as operating-carrier evidence."
     },
     {
+      "id": "ha-hnl-rar-other-operator-20260912",
+      "url": "https://www.flightsfrom.com/HNL-RAR",
+      "checkedOn": "2026-09-12",
+      "note": "Current HNL→RAR nonstop service is Alaska Airlines; Hawaiian is not a current operator."
+    },
+    {
+      "id": "lo-fao-ktw-other-operator-20260912",
+      "url": "https://www.flightsfrom.com/FAO-KTW",
+      "checkedOn": "2026-09-12",
+      "note": "Current FAO→KTW nonstop service is Wizz Air, not LOT Polish Airlines."
+    },
+    {
+      "id": "lo-ssh-ktw-other-operator-20260912",
+      "url": "https://www.flightsfrom.com/SSH-KTW",
+      "checkedOn": "2026-09-12",
+      "note": "Future/current published SSH→KTW nonstop service is Wizz Air, not LOT Polish Airlines."
+    },
+    {
       "id": "ou-puy-lhr-past-20260909",
       "url": "https://www.flightsfrom.com/PUY-LHR",
       "checkedOn": "2026-09-09",
       "note": "The direct PUY-LHR page lists service only in the past and does not corroborate current Croatia Airlines nonstop operation."
+    },
+    {
+      "id": "ou-tia-zag-inactive-20260912",
+      "url": "https://www.flightsfrom.com/TIA-ZAG",
+      "checkedOn": "2026-09-12",
+      "note": "Current TIA→ZAG route is inactive with no nonstop operator; Croatia Airlines is not current."
     },
     {
       "id": "ou-zad-lhr-no-current-20260909",
@@ -568,10 +622,28 @@
       "note": "No current ZAD-LHR direct schedule is published on the checked route page."
     },
     {
+      "id": "ou-zag-tia-inactive-20260912",
+      "url": "https://www.flightsfrom.com/ZAG-TIA",
+      "checkedOn": "2026-09-12",
+      "note": "Current ZAG→TIA route is inactive with no nonstop operator; Croatia Airlines is not current."
+    },
+    {
       "id": "qr-doh-jib-past-20260909",
       "url": "https://www.flightsfrom.com/DOH-JIB",
       "checkedOn": "2026-09-09",
       "note": "The direct DOH-JIB page lists Qatar Airways service only in the past, so it is not a current nonstop planner edge."
+    },
+    {
+      "id": "sk-bom-cph-future-20261003",
+      "url": "https://www.flightsfrom.com/BOM-CPH",
+      "checkedOn": "2026-09-12",
+      "note": "SAS BOM→CPH nonstop service begins 2026-10-03 as SK970."
+    },
+    {
+      "id": "sk-cph-bom-future-20261001",
+      "url": "https://www.flightsfrom.com/CPH-BOM",
+      "checkedOn": "2026-09-12",
+      "note": "SAS CPH→BOM nonstop service begins 2026-10-01 as SK969."
     },
     {
       "id": "sn-bgo-bru-wideroe-20260909",
@@ -872,6 +944,47 @@
         "ai-sfo-del-past-20260909"
       ],
       "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "AY",
+      "pair": [
+        "HEL",
+        "DOH"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "ay-hel-doh-other-operator-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "AY",
+      "pair": [
+        "KEM",
+        "KOK"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "ay-kem-kok-ended-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "BR",
+      "pair": [
+        "FRA",
+        "RIX"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "br-fra-rix-other-operator-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
     },
     {
       "carrier": "DL",
@@ -1175,6 +1288,32 @@
       "effectiveFrom": "2026-09-09"
     },
     {
+      "carrier": "ET",
+      "pair": [
+        "ADD",
+        "GOM"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "et-add-gom-ended-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "ET",
+      "pair": [
+        "GOM",
+        "ADD"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "et-gom-add-ended-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
       "carrier": "FJ",
       "pair": [
         "NAN",
@@ -1186,6 +1325,20 @@
         "fj-nan-dfw-ended-20260906"
       ],
       "effectiveFrom": "2026-09-06"
+    },
+    {
+      "carrier": "HA",
+      "pair": [
+        "HNL",
+        "RAR"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "ha-hnl-rar-other-operator-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
     },
     {
       "carrier": "LH",
@@ -1563,6 +1716,34 @@
       "effectiveFrom": "2026-09-09"
     },
     {
+      "carrier": "LO",
+      "pair": [
+        "FAO",
+        "KTW"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "lo-fao-ktw-other-operator-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "LO",
+      "pair": [
+        "SSH",
+        "KTW"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "lo-ssh-ktw-other-operator-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
       "carrier": "OU",
       "pair": [
         "PUY",
@@ -1578,6 +1759,19 @@
     {
       "carrier": "OU",
       "pair": [
+        "TIA",
+        "ZAG"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "ou-tia-zag-inactive-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "OU",
+      "pair": [
         "ZAD",
         "LHR"
       ],
@@ -1587,6 +1781,19 @@
         "ou-zad-lhr-no-current-20260909"
       ],
       "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "OU",
+      "pair": [
+        "ZAG",
+        "TIA"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "ou-zag-tia-inactive-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
     },
     {
       "carrier": "QR",
@@ -1600,6 +1807,34 @@
         "qr-doh-jib-past-20260909"
       ],
       "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "SK",
+      "pair": [
+        "BOM",
+        "CPH"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "sk-bom-cph-future-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "SK",
+      "pair": [
+        "CPH",
+        "BOM"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "sk-cph-bom-future-20261001"
+      ],
+      "effectiveFrom": "2026-10-01"
     },
     {
       "carrier": "SN",

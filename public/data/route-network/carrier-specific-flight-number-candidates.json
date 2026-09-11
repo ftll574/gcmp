@@ -703,6 +703,98 @@
       ]
     },
     {
+      "carrier": "KE",
+      "from": "ICN",
+      "to": "KTI",
+      "references": [
+        {
+          "flightNumber": "KE689",
+          "url": "https://www.flightsfrom.com/ICN-KTI",
+          "note": "Current Korean Air ICN→KTI schedule identifies KE689. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "KE",
+      "from": "KTI",
+      "to": "ICN",
+      "references": [
+        {
+          "flightNumber": "KE690",
+          "url": "https://www.flightsfrom.com/KTI-ICN",
+          "note": "Current Korean Air KTI→ICN schedule identifies KE690. Candidate only."
+        },
+        {
+          "flightNumber": "KE8690",
+          "url": "https://www.flightsfrom.com/KTI-ICN",
+          "note": "Current KTI→ICN route page also lists KE8690 under Korean Air. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "KL",
+      "from": "AMS",
+      "to": "LIM",
+      "references": [
+        {
+          "flightNumber": "KL743",
+          "url": "https://www.flightsfrom.com/AMS-LIM",
+          "note": "Current daily KLM AMS→LIM schedule identifies KL743. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "KL",
+      "from": "LIM",
+      "to": "AMS",
+      "references": [
+        {
+          "flightNumber": "KL744",
+          "url": "https://www.flightsfrom.com/LIM-AMS",
+          "note": "Current daily KLM LIM→AMS schedule identifies KL744. Candidate only."
+        },
+        {
+          "flightNumber": "KL746",
+          "url": "https://www.flightsfrom.com/LIM-AMS",
+          "note": "Current daily KLM LIM→AMS schedule also lists KL746. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "MH",
+      "from": "KTI",
+      "to": "KUL",
+      "references": [
+        {
+          "flightNumber": "MH755",
+          "url": "https://www.flightsfrom.com/KTI-KUL",
+          "note": "Current Malaysia Airlines KTI→KUL schedule lists MH755. Candidate only."
+        },
+        {
+          "flightNumber": "MH763",
+          "url": "https://www.flightsfrom.com/KTI-KUL",
+          "note": "Current Malaysia Airlines KTI→KUL schedule lists MH763. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "MH",
+      "from": "KUL",
+      "to": "KTI",
+      "references": [
+        {
+          "flightNumber": "MH754",
+          "url": "https://www.flightsfrom.com/KUL-KTI",
+          "note": "Current Malaysia Airlines KUL→KTI schedule lists MH754. Candidate only."
+        },
+        {
+          "flightNumber": "MH762",
+          "url": "https://www.flightsfrom.com/KUL-KTI",
+          "note": "Current Malaysia Airlines KUL→KTI schedule lists MH762. Candidate only."
+        }
+      ]
+    },
+    {
       "carrier": "MU",
       "from": "HET",
       "to": "YNT",
@@ -841,6 +933,52 @@
           "flightNumber": "MU5930",
           "url": "https://www.flight.info/MU5930",
           "note": "Flight.info current September-October 2026 schedule identifies MU5930 ZAT→KMG. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "SK",
+      "from": "BOM",
+      "to": "CPH",
+      "references": [
+        {
+          "flightNumber": "SK970",
+          "url": "https://www.flightsfrom.com/BOM-CPH",
+          "note": "SAS BOM→CPH future schedule identifies SK970 beginning 2026-10-03. Candidate only with future route window."
+        }
+      ]
+    },
+    {
+      "carrier": "SK",
+      "from": "CPH",
+      "to": "BOM",
+      "references": [
+        {
+          "flightNumber": "SK969",
+          "url": "https://www.flightsfrom.com/CPH-BOM",
+          "note": "SAS CPH→BOM future schedule identifies SK969 beginning 2026-10-01. Candidate only with future route window."
+        }
+      ]
+    },
+    {
+      "carrier": "SQ",
+      "from": "KTI",
+      "to": "SIN",
+      "references": [
+        {
+          "flightNumber": "SQ153",
+          "url": "https://www.flightsfrom.com/KTI-SIN",
+          "note": "Current Singapore Airlines KTI→SIN schedule lists SQ153. Candidate only."
+        },
+        {
+          "flightNumber": "SQ155",
+          "url": "https://www.flightsfrom.com/KTI-SIN",
+          "note": "Current Singapore Airlines KTI→SIN schedule lists SQ155. Candidate only."
+        },
+        {
+          "flightNumber": "SQ157",
+          "url": "https://www.flightsfrom.com/KTI-SIN",
+          "note": "Current Singapore Airlines KTI→SIN schedule lists SQ157. Candidate only."
         }
       ]
     },
@@ -1038,6 +1176,18 @@
           "flightNumber": "UA6336",
           "url": "https://www.flightsfrom.com/TPQ-IAH",
           "note": "United future schedule identifies UA6336 TPQ→IAH beginning 2026-12-19. Candidate only and valid with route effective window."
+        }
+      ]
+    },
+    {
+      "carrier": "UL",
+      "from": "GAN",
+      "to": "CMB",
+      "references": [
+        {
+          "flightNumber": "UL120",
+          "url": "https://www.flightsfrom.com/GAN-CMB",
+          "note": "Current SriLankan Airlines GAN→CMB schedule identifies UL120. Candidate only."
         }
       ]
     }
