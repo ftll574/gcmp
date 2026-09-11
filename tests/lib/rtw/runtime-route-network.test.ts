@@ -84,6 +84,9 @@ test('current corrections keep stale or mismatched carrier routes out of the pla
   });
   expect(find('DL', 'JFK', 'SDF')?.status).toBe('suspended');
   expect(find('DL', 'SDF', 'SLC')?.status).toBe('suspended');
+  expect(find('DL', 'BTR', 'GSP')?.status).toBe('suspended');
+  expect(find('DL', 'GSP', 'BTR')?.status).toBe('suspended');
+  expect(find('DL', 'SDF', 'LAX')?.status).toBe('suspended');
   expect(find('DL', 'BNA', 'LAS')).toMatchObject({
     status: 'identity-unresolved',
     carrierIdentity: 'provider-listed',

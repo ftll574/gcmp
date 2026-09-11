@@ -15,10 +15,22 @@
       "note": "Current BNA-LAS schedules list Southwest, Frontier and American; Delta is listed as ended in May 2026, so the DL attribution is no longer a current carrier edge."
     },
     {
+      "id": "dl-btr-gsp-event-ended-20260912",
+      "url": "https://www.directflights.com/BTR-GSP",
+      "checkedOn": "2026-09-12",
+      "note": "Delta BTR-GSP was a September 2026 special-event nonstop and has ended; there is no current Delta schedule after the event flights."
+    },
+    {
       "id": "dl-eyw-bna-ended-20260912",
       "url": "https://www.directflights.com/EYW-BNA",
       "checkedOn": "2026-09-12",
       "note": "The current EYW-BNA page has no published nonstop service and lists Delta as ended in May 2026."
+    },
+    {
+      "id": "dl-gsp-btr-event-ended-20260912",
+      "url": "https://www.directflights.com/GSP-BTR",
+      "checkedOn": "2026-09-12",
+      "note": "Delta GSP-BTR was a September 2026 special-event nonstop and has ended; there is no current Delta schedule after the event flights."
     },
     {
       "id": "dl-jfk-sdf-ended-20260912",
@@ -43,6 +55,12 @@
       "url": "https://www.directflights.com/SDF-JFK",
       "checkedOn": "2026-09-12",
       "note": "The current SDF-JFK page has no published nonstop service and lists Delta as ended in May 2026."
+    },
+    {
+      "id": "dl-sdf-lax-ended-20260912",
+      "url": "https://www.flightsfrom.com/SDF-LAX",
+      "checkedOn": "2026-09-12",
+      "note": "Current SDF-LAX data shows no Delta nonstop service; the next published nonstop operator is Breeze beginning May 2027, so the DL edge is not current."
     },
     {
       "id": "dl-sdf-slc-no-current-20260912",
@@ -814,6 +832,19 @@
     {
       "carrier": "DL",
       "pair": [
+        "BTR",
+        "GSP"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "dl-btr-gsp-event-ended-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "DL",
+      "pair": [
         "BWI",
         "MSY"
       ],
@@ -863,6 +894,19 @@
       "status": "suspended",
       "sourceIds": [
         "dl-eyw-bna-ended-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "DL",
+      "pair": [
+        "GSP",
+        "BTR"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "dl-gsp-btr-event-ended-20260912"
       ],
       "effectiveFrom": "2026-09-12"
     },
@@ -973,6 +1017,19 @@
       "status": "suspended",
       "sourceIds": [
         "dl-sdf-jfk-ended-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "DL",
+      "pair": [
+        "SDF",
+        "LAX"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "dl-sdf-lax-ended-20260912"
       ],
       "effectiveFrom": "2026-09-12"
     },

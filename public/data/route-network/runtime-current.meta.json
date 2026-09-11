@@ -9,10 +9,10 @@
     "bts-marketing-current.json": "7b67464fd3bc4ffca57969d9a7e00d13e4090cc36742904beacfbb01ba6e9319",
     "standing-current.json": "66427d01e4fca9d0a0932f2b4af191afd26cbcb46a339c5c4e332d9377b545c6",
     "validated-static-current.json": "10953c6f7975191ce577fbe6406768813684c6de284b2c2508070dd9bdd33712",
-    "current-corrections.json": "670eefb1d9b9a6e179ff3e806b06645e9311040a99e55ccbacbebb64f1120ac1",
+    "current-corrections.json": "f2ad10300e1a394ea5544238b6f79dd29a6e89bdaa1d8389c88608806115e1d5",
     "flight-numbers-current.json": "ccb77dfb73cd6306218ec5dca155e86ec7016df640a72aa712768cedda5ded30"
   },
-  "outputSha256": "6f69740f36dbdd64fdf28a5b65cb7447ebefb82eaedc907426726a72114aec1a",
+  "outputSha256": "bf7bef67ca1f76dee9fa723cf445f6648616a8e7fccbb28bd1524773fbd089f5",
   "routes": 30712,
   "publishedRoutes": 30079,
   "carriers": 60,
@@ -215,8 +215,8 @@
     },
     "B": {
       "routes": 2082,
-      "bytes": 941135,
-      "sha256": "aa546574e6a9d6a54234d808ca5c8daf5ce78b6d5522ae841785411ff19af151"
+      "bytes": 941081,
+      "sha256": "bfbd402d2b05f58de2a405173b51185e0af17f3592fdb53f0904e903559278a2"
     },
     "C": {
       "routes": 2470,
@@ -240,8 +240,8 @@
     },
     "G": {
       "routes": 614,
-      "bytes": 293226,
-      "sha256": "0694e1dbf2ef934cd02f503482e845259033369c3c7e2ec341964303d33f566e"
+      "bytes": 293172,
+      "sha256": "8239fb6ca3ee66246e31c854ba1b300a72af18d46980c4bead38d6f084270be5"
     },
     "H": {
       "routes": 1559,
@@ -300,8 +300,8 @@
     },
     "S": {
       "routes": 2633,
-      "bytes": 1188690,
-      "sha256": "203c235a08d29ac9289d1cd7d295662acd3f1ef00c3da35e3361fbea6384eca4"
+      "bytes": 1188928,
+      "sha256": "68e3d44d8e8d1511621941dda52ffef16a7736e69199907c5834f016aa92e074"
     },
     "T": {
       "routes": 1213,
