@@ -97,6 +97,14 @@ The tracked snapshot records the observation window and any missing day so a
 partial daily archive cannot silently look complete. These rows remain flight-
 number candidates and do not establish a future schedule or physical operator.
 
+Carrier-specific recovery is kept as a separate attributed snapshot rather
+than turning fragile public pages into runtime dependencies. A route must
+already be independently current in GCMP. Each retained commercial designator
+then carries its own exact flight/route reference (or dated airport movement
+publication), while known regional/operator relationships are recorded only as
+supporting provenance. These rows remain candidates: an affiliate ATC callsign
+suffix is never assumed to equal the parent airline's marketing flight number.
+
 ## Next collection steps
 
 ### P0 — establish the global dated backbone

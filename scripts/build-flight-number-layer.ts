@@ -37,6 +37,7 @@ const BTS_SOURCE_ID = 'flight-numbers-bts-marketing-202606';
 const FLIGHTSFROM_SNAPSHOT = 'public/data/route-network/flightsfrom-flight-numbers-20260909.json';
 const MRAIRSPACE_SNAPSHOT = 'public/data/route-network/mrairspace-flight-number-candidates.json';
 const ADSBIQ_DIRECT_ROUTE_SNAPSHOT = 'public/data/route-network/adsbiq-recent-route-flight-number-candidates.json';
+const CARRIER_SPECIFIC_SNAPSHOT = 'public/data/route-network/carrier-specific-flight-number-candidates.json';
 const CORRECTIONS_INPUT = 'public/data/route-network/current-corrections.json';
 
 interface FlightsFromSnapshot {
@@ -123,6 +124,27 @@ interface AdsbIqDirectRouteSnapshot {
     flightNumbers: string[];
     observedDates: string[];
     observationRows: number;
+  }>;
+}
+
+interface CarrierSpecificSnapshot {
+  version: 1;
+  checkedOn: string;
+  note: string;
+  entries: Array<{
+    carrier: string;
+    from: string;
+    to: string;
+    operator?: {
+      icao: string;
+      name: string;
+      relationshipUrl: string;
+    };
+    references: Array<{
+      flightNumber: string;
+      url: string;
+      note: string;
+    }>;
   }>;
 }
 
@@ -704,6 +726,96 @@ function enrichAdsbIqDirectRoutes(
   return { matchedRoutes };
 }
 
+export function parseCarrierSpecificSnapshot(raw: unknown): CarrierSpecificSnapshot {
+  const snapshot = raw as Partial<CarrierSpecificSnapshot>;
+  if (snapshot.version !== 1
+    || typeof snapshot.checkedOn !== 'string'
+    || !/^20\d{2}-\d{2}-\d{2}$/.test(snapshot.checkedOn)
+    || typeof snapshot.note !== 'string'
+    || !Array.isArray(snapshot.entries)) {
+    throw new Error('Unexpected carrier-specific flight-number snapshot metadata');
+  }
+  const seenRoutes = new Set<string>();
+  for (const entry of snapshot.entries) {
+    const key = routeKey(entry.carrier, entry.from, entry.to);
+    if (seenRoutes.has(key)) throw new Error(`Duplicate carrier-specific route ${key}`);
+    seenRoutes.add(key);
+    if (!/^[A-Z0-9]{2,3}$/.test(entry.carrier)
+      || !/^[A-Z]{3}$/.test(entry.from)
+      || !/^[A-Z]{3}$/.test(entry.to)
+      || !Array.isArray(entry.references)
+      || entry.references.length === 0) {
+      throw new Error(`Invalid carrier-specific route ${key}`);
+    }
+    if (entry.operator && (!/^[A-Z]{3}$/.test(entry.operator.icao)
+      || !entry.operator.name
+      || !/^https:\/\//.test(entry.operator.relationshipUrl))) {
+      throw new Error(`Invalid carrier-specific operator for ${key}`);
+    }
+    const seenNumbers = new Set<string>();
+    for (const reference of entry.references) {
+      if (seenNumbers.has(reference.flightNumber)) {
+        throw new Error(`Duplicate carrier-specific designator ${reference.flightNumber} for ${key}`);
+      }
+      seenNumbers.add(reference.flightNumber);
+      if (!reference.flightNumber.startsWith(entry.carrier)
+        || !/^\d{1,4}[A-Z]?$/.test(reference.flightNumber.slice(entry.carrier.length))
+        || !/^https:\/\//.test(reference.url)
+        || !reference.note) {
+        throw new Error(`Invalid carrier-specific designator ${reference.flightNumber} for ${key}`);
+      }
+    }
+  }
+  return snapshot as CarrierSpecificSnapshot;
+}
+
+function enrichCarrierSpecificReferences(
+  publishedRoutes: ReadonlyMap<string, RouteNetworkEntry>,
+  accumulators: Map<string, FlightAccumulator>,
+  sources: Map<string, RouteNetworkSource>,
+): { matchedRoutes: number; designators: number } {
+  const snapshot = parseCarrierSpecificSnapshot(
+    JSON.parse(readFileSync(CARRIER_SPECIFIC_SNAPSHOT, 'utf8')),
+  );
+  let matchedRoutes = 0;
+  let designators = 0;
+  for (const entry of snapshot.entries) {
+    const key = routeKey(entry.carrier, entry.from, entry.to);
+    if (!publishedRoutes.has(key)) {
+      throw new Error(`Carrier-specific snapshot references non-published route ${key}`);
+    }
+    const value = accumulators.get(key);
+    if (value?.confirmed.size || value?.candidates.size) continue;
+    const relationshipId = entry.operator
+      ? `carrier-specific-relationship-${entry.carrier.toLowerCase()}-${entry.operator.icao.toLowerCase()}`
+      : null;
+    if (entry.operator && relationshipId && !sources.has(relationshipId)) {
+      sources.set(relationshipId, {
+        id: relationshipId,
+        url: entry.operator.relationshipUrl,
+        checkedOn: snapshot.checkedOn,
+        note: `${entry.operator.name} affiliate/operator relationship. Used only to explain how a ${entry.carrier} commercial designator can appear on an affiliate-operated route; physical operating identity is not promoted by this flight-number snapshot.`,
+      });
+    }
+    for (const reference of entry.references) {
+      const sourceId = `carrier-specific-${entry.carrier.toLowerCase()}-${entry.from.toLowerCase()}-${entry.to.toLowerCase()}-${reference.flightNumber.toLowerCase()}-${snapshot.checkedOn.replaceAll('-', '')}`;
+      if (!sources.has(sourceId)) {
+        sources.set(sourceId, {
+          id: sourceId,
+          url: reference.url,
+          checkedOn: snapshot.checkedOn,
+          note: reference.note,
+        });
+      }
+      addCandidate(accumulators, key, reference.flightNumber, sourceId);
+      if (relationshipId) addCandidate(accumulators, key, reference.flightNumber, relationshipId);
+      designators++;
+    }
+    matchedRoutes++;
+  }
+  return { matchedRoutes, designators };
+}
+
 function flightInformationSourceId(from: string, to: string): string {
   return `flightinformation-${from.toLowerCase()}-${to.toLowerCase()}-${CHECKED_ON.replaceAll('-', '')}`;
 }
@@ -915,6 +1027,7 @@ async function main(): Promise<void> {
   );
   const mrAirspace = enrichMrAirspace(publishedRoutes, accumulators, sources);
   const adsbIqDirectRoutes = enrichAdsbIqDirectRoutes(publishedRoutes, accumulators, sources);
+  const carrierSpecificReferences = enrichCarrierSpecificReferences(publishedRoutes, accumulators, sources);
 
   const numberRoutes = [...publishedRoutes.entries()].flatMap(([key, route]) => {
     const value = accumulators.get(key);
@@ -986,6 +1099,7 @@ async function main(): Promise<void> {
     flightInformation,
     mrAirspace,
     adsbIqDirectRoutes,
+    carrierSpecificReferences,
     unresolvedByCarrier: Object.fromEntries([...unresolvedByCarrier.entries()].sort((a, b) => b[1] - a[1])),
   }, null, 2));
 }

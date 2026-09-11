@@ -1,0 +1,157 @@
+{
+  "version": 1,
+  "checkedOn": "2026-09-11",
+  "note": "Carrier-specific candidate references captured after the route itself was independently validated current. FlightInformation rows were exact flight-number plus direction pages that returned HTTP 200 during the 2026-09-11 research capture; ATS Fiji rows are from the May 2026 Nadi station movement summary and are additionally corroborated by current September 2026 indexed flight history/schedule pages. All values remain flight-number candidates only.",
+  "entries": [
+    {
+      "carrier": "FJ",
+      "from": "FUN",
+      "to": "NAN",
+      "operator": {
+        "icao": "FJA",
+        "name": "Fiji Link",
+        "relationshipUrl": "https://www.fijiairways.com/media/246988/fiji-airways-terms-and-conditions-of-carriage.pdf"
+      },
+      "references": [
+        {
+          "flightNumber": "FJ288",
+          "url": "https://www.ats.com.fj/getattachment/Flight-Information/2026-MAY-FLIGHT-MOVEMENT-SUMMARY.pdf",
+          "note": "ATS Fiji May 2026 Nadi station movement summary lists FJ288 FUN→NAN; September 2026 indexed flight history also shows the same designator and direction. Candidate only; no future operating-carrier inference."
+        }
+      ]
+    },
+    {
+      "carrier": "FJ",
+      "from": "LBS",
+      "to": "NAN",
+      "operator": {
+        "icao": "FJA",
+        "name": "Fiji Link",
+        "relationshipUrl": "https://www.fijiairways.com/media/246988/fiji-airways-terms-and-conditions-of-carriage.pdf"
+      },
+      "references": [
+        {
+          "flightNumber": "FJ80",
+          "url": "https://www.flightinformation.com/FJ80-LBS-NAN",
+          "note": "Exact FJ80 LBS→NAN flight page returned HTTP 200 with matching flight and route during the 2026-09-11 capture. VRS standing data independently supplied the same route/number seed. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "FJ",
+      "from": "LBS",
+      "to": "SUV",
+      "operator": {
+        "icao": "FJA",
+        "name": "Fiji Link",
+        "relationshipUrl": "https://www.fijiairways.com/media/246988/fiji-airways-terms-and-conditions-of-carriage.pdf"
+      },
+      "references": [
+        { "flightNumber": "FJ31", "url": "https://www.flightinformation.com/FJ31-LBS-SUV", "note": "Exact FJ31 LBS→SUV page returned HTTP 200 with matching flight and route during the 2026-09-11 capture; current 2026 indexed history also corroborates FJ31. Candidate only." },
+        { "flightNumber": "FJ33", "url": "https://www.flightinformation.com/FJ33-LBS-SUV", "note": "Exact FJ33 LBS→SUV page returned HTTP 200 with matching flight and route during the 2026-09-11 capture. Candidate only." },
+        { "flightNumber": "FJ35", "url": "https://www.flightinformation.com/FJ35-LBS-SUV", "note": "Exact FJ35 LBS→SUV page returned HTTP 200 with matching flight and route during the 2026-09-11 capture. Candidate only." }
+      ]
+    },
+    {
+      "carrier": "FJ",
+      "from": "NAN",
+      "to": "FUN",
+      "operator": {
+        "icao": "FJA",
+        "name": "Fiji Link",
+        "relationshipUrl": "https://www.fijiairways.com/media/246988/fiji-airways-terms-and-conditions-of-carriage.pdf"
+      },
+      "references": [
+        {
+          "flightNumber": "FJ289",
+          "url": "https://www.ats.com.fj/getattachment/Flight-Information/2026-MAY-FLIGHT-MOVEMENT-SUMMARY.pdf",
+          "note": "ATS Fiji May 2026 Nadi station movement summary lists FJ289 NAN→FUN; September 2026 indexed schedule/history shows the same designator and direction. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "FJ",
+      "from": "NAN",
+      "to": "SUV",
+      "operator": {
+        "icao": "FJA",
+        "name": "Fiji Link",
+        "relationshipUrl": "https://www.fijiairways.com/media/246988/fiji-airways-terms-and-conditions-of-carriage.pdf"
+      },
+      "references": [
+        { "flightNumber": "FJ3", "url": "https://www.flightinformation.com/FJ3-NAN-SUV", "note": "Exact FJ3 NAN→SUV page returned HTTP 200 with matching flight and route during the 2026-09-11 capture. Candidate only." },
+        { "flightNumber": "FJ7", "url": "https://www.flightinformation.com/FJ7-NAN-SUV", "note": "Exact FJ7 NAN→SUV page returned HTTP 200 with matching flight and route during the 2026-09-11 capture; 2026 Fiji Link aircraft history also corroborates FJ7. Candidate only." },
+        { "flightNumber": "FJ15", "url": "https://www.flightinformation.com/FJ15-NAN-SUV", "note": "Exact FJ15 NAN→SUV page returned HTTP 200 during capture; current 2026 indexed schedule/history corroborates the same route. Candidate only." },
+        { "flightNumber": "FJ21", "url": "https://www.flightinformation.com/FJ21-NAN-SUV", "note": "Exact FJ21 NAN→SUV page returned HTTP 200 during capture; current 2026 indexed history corroborates the same route. Candidate only." },
+        { "flightNumber": "FJ25", "url": "https://www.flightinformation.com/FJ25-NAN-SUV", "note": "Exact FJ25 NAN→SUV page returned HTTP 200 during capture; current 2026 indexed history corroborates the same route. Candidate only." },
+        { "flightNumber": "FJ27", "url": "https://www.flightinformation.com/FJ27-NAN-SUV", "note": "Exact FJ27 NAN→SUV page returned HTTP 200 during capture; current September 2026 indexed history corroborates the same route. Candidate only." }
+      ]
+    },
+    {
+      "carrier": "FJ",
+      "from": "NAN",
+      "to": "TBU",
+      "operator": {
+        "icao": "FJA",
+        "name": "Fiji Link",
+        "relationshipUrl": "https://www.fijiairways.com/media/246988/fiji-airways-terms-and-conditions-of-carriage.pdf"
+      },
+      "references": [
+        {
+          "flightNumber": "FJ211",
+          "url": "https://www.ats.com.fj/getattachment/Flight-Information/2026-MAY-FLIGHT-MOVEMENT-SUMMARY.pdf",
+          "note": "ATS Fiji May 2026 movement summary lists FJ211 NAN→TBU; the exact flight page also returned HTTP 200 during the 2026-09-11 capture. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "FJ",
+      "from": "SUV",
+      "to": "LBS",
+      "operator": {
+        "icao": "FJA",
+        "name": "Fiji Link",
+        "relationshipUrl": "https://www.fijiairways.com/media/246988/fiji-airways-terms-and-conditions-of-carriage.pdf"
+      },
+      "references": [
+        { "flightNumber": "FJ32", "url": "https://www.flightinformation.com/FJ32-SUV-LBS", "note": "Exact FJ32 SUV→LBS page returned HTTP 200 with matching flight and route during the 2026-09-11 capture; 2026 Fiji Link aircraft history also corroborates FJ32. Candidate only." },
+        { "flightNumber": "FJ34", "url": "https://www.flightinformation.com/FJ34-SUV-LBS", "note": "Exact FJ34 SUV→LBS page returned HTTP 200 with matching flight and route during the 2026-09-11 capture. Candidate only." },
+        { "flightNumber": "FJ36", "url": "https://www.flightinformation.com/FJ36-SUV-LBS", "note": "Exact FJ36 SUV→LBS page returned HTTP 200 with matching flight and route during the 2026-09-11 capture. Candidate only." }
+      ]
+    },
+    {
+      "carrier": "IB",
+      "from": "LPA",
+      "to": "MLN",
+      "operator": {
+        "icao": "ANE",
+        "name": "Iberia Regional Air Nostrum",
+        "relationshipUrl": "https://www.iberia.com/cr/en/iberia-regional-air-nostrum/"
+      },
+      "references": [
+        {
+          "flightNumber": "IB2552",
+          "url": "https://www.flightinformation.com/IB2552-LPA-MLN",
+          "note": "Exact IB2552 LPA→MLN page returned HTTP 200 with matching flight and route during the 2026-09-11 capture. VRS Air Nostrum standing data supplied the same route/number seed. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "IB",
+      "from": "MLN",
+      "to": "LPA",
+      "operator": {
+        "icao": "ANE",
+        "name": "Iberia Regional Air Nostrum",
+        "relationshipUrl": "https://www.iberia.com/cr/en/iberia-regional-air-nostrum/"
+      },
+      "references": [
+        {
+          "flightNumber": "IB2553",
+          "url": "https://www.flightinformation.com/IB2553-MLN-LPA",
+          "note": "Exact IB2553 MLN→LPA page returned HTTP 200 during the 2026-09-11 capture; current August 2026 indexed flight history corroborates the same route. Candidate only."
+        }
+      ]
+    }
+  ]
+}

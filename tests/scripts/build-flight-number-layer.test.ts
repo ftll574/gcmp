@@ -1,6 +1,7 @@
 import { expect, test } from 'vitest';
 import {
   parseAdsbIqDirectRouteSnapshot,
+  parseCarrierSpecificSnapshot,
   parseMrAirspaceSnapshot,
 } from '../../scripts/build-flight-number-layer.ts';
 
@@ -62,4 +63,41 @@ test('rejects one-day or malformed direct-route ADSBiq candidates', () => {
     ...validAdsbIqSnapshot,
     entries: [{ ...validAdsbIqSnapshot.entries[0], flightNumbers: ['DL285'] }],
   })).toThrow('Invalid ADSBiq direct-route designator');
+});
+
+const validCarrierSpecificSnapshot = {
+  version: 1,
+  checkedOn: '2026-09-11',
+  note: 'fixture',
+  entries: [{
+    carrier: 'FJ', from: 'NAN', to: 'FUN',
+    operator: {
+      icao: 'FJA',
+      name: 'Fiji Link',
+      relationshipUrl: 'https://www.fijiairways.com/example.pdf',
+    },
+    references: [{
+      flightNumber: 'FJ289',
+      url: 'https://www.ats.com.fj/example.pdf',
+      note: 'fixture evidence',
+    }],
+  }],
+} as const;
+
+test('accepts attributed carrier-specific candidate references', () => {
+  expect(parseCarrierSpecificSnapshot(validCarrierSpecificSnapshot)).toEqual(validCarrierSpecificSnapshot);
+});
+
+test('rejects duplicate routes and cross-carrier designators in carrier-specific references', () => {
+  expect(() => parseCarrierSpecificSnapshot({
+    ...validCarrierSpecificSnapshot,
+    entries: [validCarrierSpecificSnapshot.entries[0], validCarrierSpecificSnapshot.entries[0]],
+  })).toThrow('Duplicate carrier-specific route');
+  expect(() => parseCarrierSpecificSnapshot({
+    ...validCarrierSpecificSnapshot,
+    entries: [{
+      ...validCarrierSpecificSnapshot.entries[0],
+      references: [{ ...validCarrierSpecificSnapshot.entries[0].references[0], flightNumber: 'QF289' }],
+    }],
+  })).toThrow('Invalid carrier-specific designator');
 });
