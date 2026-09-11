@@ -6,6 +6,7 @@ import {
   type ContinentId,
 } from '../lib/schemas/country-continent.ts';
 import type { Airport } from '../lib/types.ts';
+import { parseRuntimeRouteNetworkMeta, type RuntimeRouteNetworkMeta } from '../lib/route-network-runtime.ts';
 
 export interface RouteLibraryData {
   readonly airports: ReadonlyArray<Airport>;
@@ -14,6 +15,9 @@ export interface RouteLibraryData {
   readonly countrySubregions: ReadonlyMap<string, string> | null;
   readonly airportContinentOverrides: ReadonlyMap<string, ContinentId> | null;
   readonly routeNetworkRuntimeUrl: string;
+  /** Public Route Library supplies this build hash for the fast runtime path.
+   * Legacy/standalone callers may omit it and fall back to canonical Zod. */
+  readonly routeNetworkRuntimeMeta?: RuntimeRouteNetworkMeta;
 }
 
 export type RouteLibraryLoadState =
@@ -47,15 +51,17 @@ export function useRouteLibraryData(baseUrlOverride?: string): RouteLibraryLoadS
 
     async function load(): Promise<void> {
       try {
-        const [airportsRaw, allianceRaw, geoRaw] = await Promise.all([
+        const [airportsRaw, allianceRaw, geoRaw, routeNetworkMetaRaw] = await Promise.all([
           fetchJsonStrict(`${baseUrl}/data/airports.json`),
           fetchJsonStrict(`${baseUrl}/data/alliances/current.json`),
           fetchJsonOptional(`${baseUrl}/data/geo/current.json`),
+          fetchJsonStrict(`${baseUrl}/data/route-network/runtime-current.meta.json`),
         ]);
         if (cancelled) return;
 
         const airports = parseAirportCatalog(airportsRaw);
         const allianceCatalog = AllianceCatalogSchema.parse(allianceRaw);
+        const routeNetworkRuntimeMeta = parseRuntimeRouteNetworkMeta(routeNetworkMetaRaw);
         let countryContinents: ReadonlyMap<string, ContinentId> | null = null;
         let countrySubregions: ReadonlyMap<string, string> | null = null;
         let airportContinentOverrides: ReadonlyMap<string, ContinentId> | null = null;
@@ -88,6 +94,7 @@ export function useRouteLibraryData(baseUrlOverride?: string): RouteLibraryLoadS
             countrySubregions,
             airportContinentOverrides,
             routeNetworkRuntimeUrl: `${baseUrl}/data/route-network/runtime-current.json`,
+            routeNetworkRuntimeMeta,
           },
         });
       } catch (error) {

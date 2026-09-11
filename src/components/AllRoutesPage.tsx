@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { buildAirportIndex } from '../lib/airport-index.ts';
-import { parseRouteNetworkCatalog, type RouteNetworkCatalog } from '../lib/schemas/route-network.ts';
+import type { RouteNetworkCatalog } from '../lib/schemas/route-network.ts';
+import { parseHashedRuntimeRouteNetwork } from '../lib/route-network-runtime.ts';
 import type { RouteLibraryEntitySelection } from '../lib/rtw/route-library-entities.ts';
 import type { RouteLibraryData } from '../state/use-route-library-data.ts';
 import { RouteLibraryExplorer } from './RouteLibraryExplorer.tsx';
@@ -70,7 +71,18 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
     void fetch(data.routeNetworkRuntimeUrl, { signal: controller.signal })
       .then(async (response) => {
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        return parseRouteNetworkCatalog(await response.json(), new Set(airports.keys()));
+        const knownAirports = new Set(airports.keys());
+        if (data.routeNetworkRuntimeMeta && globalThis.crypto?.subtle) {
+          return parseHashedRuntimeRouteNetwork(
+            await response.arrayBuffer(),
+            data.routeNetworkRuntimeMeta,
+            knownAirports,
+          );
+        }
+        // Web Crypto requires a secure context in browsers. Keep local/LAN
+        // HTTP deployments functional by falling back to the canonical parser.
+        const { parseRouteNetworkCatalog } = await import('../lib/schemas/route-network.ts');
+        return parseRouteNetworkCatalog(await response.json(), knownAirports);
       })
       .then(setNetwork)
       .catch((reason: unknown) => {
@@ -78,7 +90,7 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
         setError(reason instanceof Error ? reason.message : String(reason));
       });
     return () => controller.abort();
-  }, [data.routeNetworkRuntimeUrl, airports]);
+  }, [data.routeNetworkRuntimeUrl, data.routeNetworkRuntimeMeta, airports]);
 
   useEffect(() => {
     const sync = (): void => {

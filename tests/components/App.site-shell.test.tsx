@@ -17,9 +17,15 @@ beforeEach(() => {
     const path = String(input).split('?')[0] ?? '';
     const file = join(PUBLIC, path);
     if (!path.startsWith('/data/') || !path.endsWith('.json') || !existsSync(file)) {
-      return { ok: false, status: 404, json: async () => undefined };
+      return { ok: false, status: 404, json: async () => undefined, arrayBuffer: async () => new ArrayBuffer(0) };
     }
-    return { ok: true, status: 200, json: async () => JSON.parse(readFileSync(file, 'utf8')) };
+    const bytes = readFileSync(file);
+    return {
+      ok: true,
+      status: 200,
+      json: async () => JSON.parse(bytes.toString('utf8')),
+      arrayBuffer: async () => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength),
+    };
   }));
 });
 
@@ -67,7 +73,7 @@ test('route library is a separate page and keeps the heavy catalog out of the ho
   expect(screen.queryByText('探索全球航網')).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole('link', { name: '瀏覽所有航線' }));
   expect(await screen.findByRole('heading', { name: '探索全球航網' })).toBeInTheDocument();
-  expect(await screen.findByRole('region', { name: '航線地圖' })).toBeInTheDocument();
+  expect(await screen.findByRole('region', { name: '航線地圖' }, { timeout: 5_000 })).toBeInTheDocument();
   expect(document.querySelector('.routes-alliance-tabs')).toBeNull();
   const map = document.querySelector('.entity-map-card');
   expect(map?.querySelector('[aria-label="Alliance filter"], [aria-label="航空聯盟篩選"]')).not.toBeNull();
@@ -90,9 +96,15 @@ test('route library reports a core data failure without loading planner datasets
     }
     const file = join(PUBLIC, path);
     if (!path.startsWith('/data/') || !path.endsWith('.json') || !existsSync(file)) {
-      return { ok: false, status: 404, json: async () => undefined } as Response;
+      return { ok: false, status: 404, json: async () => undefined, arrayBuffer: async () => new ArrayBuffer(0) } as Response;
     }
-    return { ok: true, status: 200, json: async () => JSON.parse(readFileSync(file, 'utf8')) } as Response;
+    const bytes = readFileSync(file);
+    return {
+      ok: true,
+      status: 200,
+      json: async () => JSON.parse(bytes.toString('utf8')),
+      arrayBuffer: async () => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength),
+    } as Response;
   });
 
   render(<SiteApp />);
@@ -100,6 +112,15 @@ test('route library reports a core data failure without loading planner datasets
   const routeRequests = vi.mocked(fetch).mock.calls.map(([input]) => String(input));
   expect(routeRequests.some((url) => url.includes('/programs/'))).toBe(false);
   expect(routeRequests.some((url) => url.includes('/rtw-products/'))).toBe(false);
+});
+
+test('route library falls back to canonical parsing when Web Crypto is unavailable', async () => {
+  window.history.replaceState({}, '', '/?lang=zh-TW&view=routes&entity=airport&id=TPE');
+  vi.stubGlobal('crypto', {});
+
+  render(<SiteApp />);
+  expect(await screen.findByRole('heading', { name: /TPE.*Taoyuan/ }, { timeout: 5_000 })).toBeInTheDocument();
+  expect(await screen.findByRole('combobox', { name: /搜尋機場、城市、航空公司、航線或班號/ }, { timeout: 5_000 })).toBeInTheDocument();
 });
 
 test('advanced route data failure does not take down the core route library', async () => {
@@ -111,9 +132,15 @@ test('advanced route data failure does not take down the core route library', as
     }
     const file = join(PUBLIC, path);
     if (!path.startsWith('/data/') || !path.endsWith('.json') || !existsSync(file)) {
-      return { ok: false, status: 404, json: async () => undefined } as Response;
+      return { ok: false, status: 404, json: async () => undefined, arrayBuffer: async () => new ArrayBuffer(0) } as Response;
     }
-    return { ok: true, status: 200, json: async () => JSON.parse(readFileSync(file, 'utf8')) } as Response;
+    const bytes = readFileSync(file);
+    return {
+      ok: true,
+      status: 200,
+      json: async () => JSON.parse(bytes.toString('utf8')),
+      arrayBuffer: async () => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength),
+    } as Response;
   });
 
   render(<SiteApp />);
