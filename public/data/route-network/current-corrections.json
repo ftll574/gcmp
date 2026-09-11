@@ -9,6 +9,54 @@
       "note": "The SFO-DEL direct page lists Air India service only in the past, so the edge is not current."
     },
     {
+      "id": "dl-bna-las-ended-20260912",
+      "url": "https://www.directflights.com/BNA-LAS",
+      "checkedOn": "2026-09-12",
+      "note": "Current BNA-LAS schedules list Southwest, Frontier and American; Delta is listed as ended in May 2026, so the DL attribution is no longer a current carrier edge."
+    },
+    {
+      "id": "dl-eyw-bna-ended-20260912",
+      "url": "https://www.directflights.com/EYW-BNA",
+      "checkedOn": "2026-09-12",
+      "note": "The current EYW-BNA page has no published nonstop service and lists Delta as ended in May 2026."
+    },
+    {
+      "id": "dl-jfk-sdf-ended-20260912",
+      "url": "https://www.directflights.com/JFK-SDF",
+      "checkedOn": "2026-09-12",
+      "note": "The current JFK-SDF page has no published nonstop service and lists Delta as ended in May 2026."
+    },
+    {
+      "id": "dl-las-bna-ended-20260912",
+      "url": "https://www.directflights.com/LAS-BNA",
+      "checkedOn": "2026-09-12",
+      "note": "Current LAS-BNA schedules list Southwest, Frontier and American; Delta is listed as ended in May 2026, so the DL attribution is no longer a current carrier edge."
+    },
+    {
+      "id": "dl-lax-sdf-ended-20260912",
+      "url": "https://www.directflights.com/LAX-SDF",
+      "checkedOn": "2026-09-12",
+      "note": "The current LAX-SDF page no longer lists Delta as a current operator and records Delta service as ended in May 2026."
+    },
+    {
+      "id": "dl-sdf-jfk-ended-20260912",
+      "url": "https://www.directflights.com/SDF-JFK",
+      "checkedOn": "2026-09-12",
+      "note": "The current SDF-JFK page has no published nonstop service and lists Delta as ended in May 2026."
+    },
+    {
+      "id": "dl-sdf-slc-no-current-20260912",
+      "url": "https://www.directflights.com/SDF-SLC",
+      "checkedOn": "2026-09-12",
+      "note": "The current SDF-SLC page has no published nonstop flights, so the special-event Delta edge must not remain current."
+    },
+    {
+      "id": "dl-slc-sdf-no-current-20260912",
+      "url": "https://www.directflights.com/SLC-SDF",
+      "checkedOn": "2026-09-12",
+      "note": "The current SLC-SDF page has no published nonstop flights, so the special-event Delta edge must not remain current."
+    },
+    {
       "id": "et-add-atl-nondirect-20260909",
       "url": "https://info.flightmapper.net/route/Ethiopian_Airlines_ET_ADD_ATL",
       "checkedOn": "2026-09-09",
@@ -530,6 +578,30 @@
       "url": "https://www.flightsfrom.com/SAW-SJJ",
       "checkedOn": "2026-09-09",
       "note": "Current SAW-SJJ direct flights are published as Pegasus/AJet services (PC/VF designators), not TK; the Turkish Airlines carrier attribution is unresolved."
+    },
+    {
+      "id": "ua-mqt-ord-other-operator-20260912",
+      "url": "https://www.directflights.com/MQT-ORD",
+      "checkedOn": "2026-09-12",
+      "note": "The current MQT-ORD nonstop schedule lists American Airlines as the sole operator, so the UA attribution is unresolved and must not be treated as current United service."
+    },
+    {
+      "id": "ua-ord-mqt-other-operator-20260912",
+      "url": "https://www.directflights.com/ORD-MQT",
+      "checkedOn": "2026-09-12",
+      "note": "The current ORD-MQT nonstop schedule lists American Airlines as the sole operator, so the UA attribution is unresolved and must not be treated as current United service."
+    },
+    {
+      "id": "ua-ord-rst-delayed-20260912",
+      "url": "https://flyrst.com/whats-going-on-with-united-at-rst/",
+      "checkedOn": "2026-09-12",
+      "note": "Rochester International Airport states United ORD-RST service is now delayed until October 30, 2027; it is not a current 2026 nonstop edge."
+    },
+    {
+      "id": "ua-rst-ord-delayed-20260912",
+      "url": "https://flyrst.com/whats-going-on-with-united-at-rst/",
+      "checkedOn": "2026-09-12",
+      "note": "Rochester International Airport states United RST-ORD service is now delayed until October 30, 2027; it is not a current 2026 nonstop edge."
     }
   ],
   "carrierUniverses": [],
@@ -728,6 +800,20 @@
     {
       "carrier": "DL",
       "pair": [
+        "BNA",
+        "LAS"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "dl-bna-las-ended-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "DL",
+      "pair": [
         "BWI",
         "MSY"
       ],
@@ -770,6 +856,19 @@
     {
       "carrier": "DL",
       "pair": [
+        "EYW",
+        "BNA"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "dl-eyw-bna-ended-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "DL",
+      "pair": [
         "HOU",
         "MSP"
       ],
@@ -798,6 +897,33 @@
     {
       "carrier": "DL",
       "pair": [
+        "JFK",
+        "SDF"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "dl-jfk-sdf-ended-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "DL",
+      "pair": [
+        "LAS",
+        "BNA"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "dl-las-bna-ended-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "DL",
+      "pair": [
         "LAX",
         "OAK"
       ],
@@ -812,6 +938,20 @@
     {
       "carrier": "DL",
       "pair": [
+        "LAX",
+        "SDF"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "dl-lax-sdf-ended-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "DL",
+      "pair": [
         "LGW",
         "KEF"
       ],
@@ -822,6 +962,45 @@
       ],
       "effectiveFrom": "2026-09-09",
       "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "DL",
+      "pair": [
+        "SDF",
+        "JFK"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "dl-sdf-jfk-ended-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "DL",
+      "pair": [
+        "SDF",
+        "SLC"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "dl-sdf-slc-no-current-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "DL",
+      "pair": [
+        "SLC",
+        "SDF"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "dl-slc-sdf-no-current-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
     },
     {
       "carrier": "ET",
@@ -1741,6 +1920,60 @@
       ],
       "effectiveFrom": "2026-09-09",
       "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "UA",
+      "pair": [
+        "MQT",
+        "ORD"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "ua-mqt-ord-other-operator-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "UA",
+      "pair": [
+        "ORD",
+        "MQT"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "ua-ord-mqt-other-operator-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "UA",
+      "pair": [
+        "ORD",
+        "RST"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "ua-ord-rst-delayed-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "UA",
+      "pair": [
+        "RST",
+        "ORD"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "ua-rst-ord-delayed-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
     }
   ]
 }
