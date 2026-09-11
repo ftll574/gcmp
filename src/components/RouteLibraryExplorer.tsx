@@ -15,18 +15,19 @@ import {
 } from '../lib/rtw/route-library-entities.ts';
 import { useLocale } from '../i18n/use-locale.ts';
 import type { RouteMapAllianceTheme } from './RouteLibraryMap.tsx';
+import { RouteLibraryMapPreview, type RouteLibraryMapPreviewStat } from './RouteLibraryMapPreview.tsx';
 import './RouteLibraryExplorer.css';
 
 const LazyRouteEntityMap = lazy(() =>
   import('./RouteLibraryMap.tsx').then((module) => ({ default: module.RouteEntityMap })),
 );
 
-function RouteMapLoading({ zh }: { readonly zh: boolean }): React.ReactElement {
-  return (
-    <div className="entity-map-card maplibre-route-map entity-map-loading" role="status">
-      <span>{zh ? '正在載入互動航線地圖…' : 'Loading interactive route map…'}</span>
-    </div>
-  );
+function RouteMapLoading({ zh, routes, stats }: {
+  readonly zh: boolean;
+  readonly routes: ReadonlyArray<RouteLibraryRouteCard>;
+  readonly stats: ReadonlyArray<RouteLibraryMapPreviewStat>;
+}): React.ReactElement {
+  return <RouteLibraryMapPreview zh={zh} routes={routes} stats={stats} />;
 }
 
 interface PlanRouteInput {
@@ -203,6 +204,12 @@ export function RouteLibraryExplorer({
     loadInbound: 'Load inbound statistics',
     loadGlobalSearch: 'Enable full search',
   };
+  const homeStats: ReadonlyArray<RouteLibraryMapPreviewStat> = homeModel ? [
+    { value: homeModel.overview.routeCount, label: copy.routes },
+    { value: homeModel.overview.airportCount, label: copy.airports },
+    { value: homeModel.overview.carrierCount, label: copy.airlines },
+    { value: homeModel.overview.confirmedNumberCount, label: copy.confirmed },
+  ] : [];
 
   let entityContent: React.ReactNode = null;
   if (airportProfile) {
@@ -225,7 +232,7 @@ export function RouteLibraryExplorer({
         <header className="entity-detail-hero map-first-hero">
           <div><span>{copy.airportLabel}</span><h2><code>{airportProfile.airport.iata}</code> · {airportProfile.airport.city}</h2><p>{airportProfile.airport.name}</p></div>
         </header>
-        <section className="entity-section map-primary-section"><Suspense fallback={<RouteMapLoading zh={zh} />}><LazyRouteEntityMap routes={airportProfile.outgoingRoutes} hubs={hubs} selectedAirport={airportProfile.airport} allianceTheme={alliance} controls={mapControls} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={airportStats} /></Suspense></section>
+        <section className="entity-section map-primary-section"><Suspense fallback={<RouteMapLoading zh={zh} routes={airportProfile.outgoingRoutes} stats={airportStats} />}><LazyRouteEntityMap routes={airportProfile.outgoingRoutes} hubs={hubs} selectedAirport={airportProfile.airport} allianceTheme={alliance} controls={mapControls} loadingPreview={<RouteLibraryMapPreview embedded zh={zh} routes={airportProfile.outgoingRoutes} stats={airportStats} />} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={airportStats} /></Suspense></section>
         {!networkComplete && <div className="entity-shard-notice entity-shard-notice--action" role="status"><span>{copy.airportShardNotice}</span>{onRequestFullNetwork && <button type="button" className="entity-inline-button" onClick={onRequestFullNetwork}>{copy.loadInbound}</button>}</div>}
         <details className="entity-secondary-index" open={showRouteIndex} onToggle={(event) => setShowRouteIndex(event.currentTarget.open)}>
           <summary>{copy.destinationIndex} · {airportProfile.destinationCount}</summary>
@@ -239,12 +246,18 @@ export function RouteLibraryExplorer({
       </article>
     );
   } else if (airlineProfile) {
+    const airlineStats = [
+      { value: airlineProfile.routes.length, label: copy.routes },
+      { value: airlineProfile.airportCount, label: copy.airports },
+      { value: airlineProfile.countryCount, label: copy.countries },
+      { value: airlineProfile.operatingRouteCount, label: copy.operating },
+    ];
     entityContent = (
       <article className="entity-detail airline-entity">
         <header className="entity-detail-hero map-first-hero">
           <div><span>{copy.airlineLabel}</span><h2><code>{airlineProfile.carrier}</code> · {airlineProfile.name}</h2><p>{copy.airlineNetwork}</p></div>
         </header>
-        <section className="entity-section map-primary-section"><Suspense fallback={<RouteMapLoading zh={zh} />}><LazyRouteEntityMap routes={airlineProfile.routes} hubs={airlineProfile.topHubs} allianceTheme={alliance} controls={mapControls} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={[{ value: airlineProfile.routes.length, label: copy.routes }, { value: airlineProfile.airportCount, label: copy.airports }, { value: airlineProfile.countryCount, label: copy.countries }, { value: airlineProfile.operatingRouteCount, label: copy.operating }]} /></Suspense></section>
+        <section className="entity-section map-primary-section"><Suspense fallback={<RouteMapLoading zh={zh} routes={airlineProfile.routes} stats={airlineStats} />}><LazyRouteEntityMap routes={airlineProfile.routes} hubs={airlineProfile.topHubs} allianceTheme={alliance} controls={mapControls} loadingPreview={<RouteLibraryMapPreview embedded zh={zh} routes={airlineProfile.routes} stats={airlineStats} />} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={airlineStats} /></Suspense></section>
         {!networkComplete && <div className="entity-shard-notice entity-shard-notice--action" role="status"><span>{copy.airlineShardNotice}</span>{onRequestFullNetwork && <button type="button" className="entity-inline-button" onClick={onRequestFullNetwork}>{copy.loadGlobalSearch}</button>}</div>}
         <details className="entity-secondary-index" open={showRouteIndex} onToggle={(event) => setShowRouteIndex(event.currentTarget.open)}>
           <summary>{copy.routeIndex} · {airlineProfile.routes.length}</summary>
@@ -256,12 +269,17 @@ export function RouteLibraryExplorer({
     const route = routeProfile.route;
     const reverseId = `${route.to.iata}-${route.from.iata}`;
     const reverseExists = buildRouteEntityProfile(entityInput, reverseId) !== null;
+    const routeStats = [
+      { value: `${route.distanceNm.toLocaleString()} nm`, label: copy.distance },
+      { value: route.carriers.length, label: copy.airlines },
+      { value: route.carriers.filter((carrier) => carrier.confirmedNumbers.length > 0).length, label: copy.confirmed },
+    ];
     entityContent = (
       <article className="entity-detail route-entity">
         <header className="entity-detail-hero route-detail-hero map-first-hero">
           <div><span>{copy.routeLabel}</span><h2><code>{route.from.iata}</code><b>→</b><code>{route.to.iata}</code></h2><p>{route.from.city} → {route.to.city}</p></div>
         </header>
-        <section className="entity-section map-primary-section"><Suspense fallback={<RouteMapLoading zh={zh} />}><LazyRouteEntityMap routes={[route]} hubs={[{ airport: route.from, connections: 1 }, { airport: route.to, connections: 1 }]} selectedRouteId={routeId(route)} allianceTheme={alliance} controls={mapControls} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={[{ value: `${route.distanceNm.toLocaleString()} nm`, label: copy.distance }, { value: route.carriers.length, label: copy.airlines }, { value: route.carriers.filter((carrier) => carrier.confirmedNumbers.length > 0).length, label: copy.confirmed }]} /></Suspense></section>
+        <section className="entity-section map-primary-section"><Suspense fallback={<RouteMapLoading zh={zh} routes={[route]} stats={routeStats} />}><LazyRouteEntityMap routes={[route]} hubs={[{ airport: route.from, connections: 1 }, { airport: route.to, connections: 1 }]} selectedRouteId={routeId(route)} allianceTheme={alliance} controls={mapControls} loadingPreview={<RouteLibraryMapPreview embedded zh={zh} routes={[route]} stats={routeStats} />} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={routeStats} /></Suspense></section>
         {!networkComplete && <p className="entity-shard-notice" role="status">{copy.routeShardNotice}</p>}
         <section className="entity-section route-carrier-list"><div className="entity-section-heading"><h3>{copy.routeDetail}</h3>{(reverseExists || !networkComplete) && <button type="button" className="entity-inline-button" onClick={() => choose({ kind: 'route', id: reverseId })}>{copy.reverse}</button>}</div>
           {route.carriers.map((carrier) => (
@@ -286,7 +304,7 @@ export function RouteLibraryExplorer({
 
       {!selection ? (
         <div className="entity-explore-home">
-          <Suspense fallback={<RouteMapLoading zh={zh} />}><LazyRouteEntityMap routes={homeModel!.fingerprint.routes} hubs={homeModel!.fingerprint.hubs} allianceTheme={alliance} fingerprint controls={mapControls} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={[{ value: homeModel!.overview.routeCount, label: copy.routes }, { value: homeModel!.overview.airportCount, label: copy.airports }, { value: homeModel!.overview.carrierCount, label: copy.airlines }, { value: homeModel!.overview.confirmedNumberCount, label: copy.confirmed }]} /></Suspense>
+          <Suspense fallback={<RouteMapLoading zh={zh} routes={homeModel!.fingerprint.routes} stats={homeStats} />}><LazyRouteEntityMap routes={homeModel!.fingerprint.routes} hubs={homeModel!.fingerprint.hubs} allianceTheme={alliance} fingerprint controls={mapControls} loadingPreview={<RouteLibraryMapPreview embedded zh={zh} routes={homeModel!.fingerprint.routes} stats={homeStats} />} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={homeStats} /></Suspense>
         </div>
       ) : entityContent}
     </section>

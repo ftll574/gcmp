@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react';
 import { AttributionControl, Map as MapLibreRuntime, NavigationControl, setWorkerUrl } from 'maplibre-gl';
 import type { ExpressionSpecification, GeoJSONSource, Map as MapLibreMap, MapGeoJSONFeature, MapMouseEvent, Point } from 'maplibre-gl';
 import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
@@ -72,6 +72,7 @@ interface RouteEntityMapProps {
   readonly allianceTheme?: RouteMapAllianceTheme | undefined;
   readonly fingerprint?: boolean | undefined;
   readonly controls?: RouteMapControls | undefined;
+  readonly loadingPreview?: ReactNode | undefined;
 }
 
 type InspectorSelection =
@@ -346,6 +347,7 @@ export function RouteEntityMap({
   allianceTheme = 'all',
   fingerprint = false,
   controls,
+  loadingPreview,
 }: RouteEntityMapProps): React.ReactElement {
   const { locale } = useLocale();
   const cardRef = useRef<HTMLDivElement>(null);
@@ -670,6 +672,7 @@ export function RouteEntityMap({
           : 'A partial network is loaded right now; you can pan and zoom the map, and full search becomes available after loading the full network.')
         : copy.mapHelp}</p>
       <div ref={containerRef} className="entity-map-maplibre" role="region" aria-label={locale === 'zh-TW' ? '航線地圖' : 'Route network map'} aria-describedby={mapHelpId} />
+      {webGlAvailable && !ready && loadingPreview}
       {!webGlAvailable && <div className="entity-map-fallback"><strong>{copy.fallback}</strong><span>{controls?.searchDisabled ? controls.partialFallbackHelp ?? copy.fallbackHelp : copy.fallbackHelp}</span></div>}
       {controls && <div className="entity-map-commandbar">
         <div className="entity-map-alliance-filter" role="group" aria-label={locale === 'zh-TW' ? '航空聯盟篩選' : 'Alliance filter'}>
