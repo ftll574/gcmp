@@ -622,6 +622,18 @@
       "note": "Current SAW-SJJ direct flights are published as Pegasus/AJet services (PC/VF designators), not TK; the Turkish Airlines carrier attribution is unresolved."
     },
     {
+      "id": "ua-iah-tpq-future-20261219",
+      "url": "https://www.flightsfrom.com/IAH-TPQ",
+      "checkedOn": "2026-09-12",
+      "note": "United IAH→TPQ seasonal service resumes 2026-12-19 as UA6335; keep future-published but outside-window before that date."
+    },
+    {
+      "id": "ua-lax-sdf-ended-20260912",
+      "url": "https://www.directflights.com/LAX-SDF",
+      "checkedOn": "2026-09-12",
+      "note": "Current LAX-SDF service is Breeze; United service ended in May 2026."
+    },
+    {
       "id": "ua-mqt-ord-other-operator-20260912",
       "url": "https://www.directflights.com/MQT-ORD",
       "checkedOn": "2026-09-12",
@@ -640,10 +652,46 @@
       "note": "Rochester International Airport states United ORD-RST service is now delayed until October 30, 2027; it is not a current 2026 nonstop edge."
     },
     {
+      "id": "ua-ord-tri-other-operator-20260912",
+      "url": "https://www.directflights.com/ORD-TRI",
+      "checkedOn": "2026-09-12",
+      "note": "Current ORD→TRI nonstop schedule lists American Airlines only, so the UA attribution is unresolved."
+    },
+    {
       "id": "ua-rst-ord-delayed-20260912",
       "url": "https://flyrst.com/whats-going-on-with-united-at-rst/",
       "checkedOn": "2026-09-12",
       "note": "Rochester International Airport states United RST-ORD service is now delayed until October 30, 2027; it is not a current 2026 nonstop edge."
+    },
+    {
+      "id": "ua-sdf-lax-ended-20260912",
+      "url": "https://www.flightconnections.com/flights-from-sdf-to-lax",
+      "checkedOn": "2026-09-12",
+      "note": "Current SDF-LAX service is Breeze; United is not a current nonstop operator."
+    },
+    {
+      "id": "ua-sdf-sfo-ended-20260912",
+      "url": "https://www.flightsfrom.com/SDF-SFO",
+      "checkedOn": "2026-09-12",
+      "note": "FlightsFrom records United SDF→SFO as ended on 2026-05-03; current nonstop service is not United."
+    },
+    {
+      "id": "ua-sfo-sdf-ended-20260912",
+      "url": "https://www.flightsfrom.com/SFO-SDF",
+      "checkedOn": "2026-09-12",
+      "note": "FlightsFrom records United SFO→SDF as ended on 2026-05-02; current nonstop service is not United."
+    },
+    {
+      "id": "ua-tpq-iah-future-20261219",
+      "url": "https://www.flightsfrom.com/TPQ-IAH",
+      "checkedOn": "2026-09-12",
+      "note": "United TPQ→IAH seasonal service resumes 2026-12-19 as UA6336; keep future-published but outside-window before that date."
+    },
+    {
+      "id": "ua-tri-ord-other-operator-20260912",
+      "url": "https://www.directflights.com/TRI-ORD",
+      "checkedOn": "2026-09-12",
+      "note": "Current TRI→ORD nonstop schedule lists American Airlines only, so the UA attribution is unresolved."
     }
   ],
   "carrierUniverses": [],
@@ -2035,6 +2083,34 @@
     {
       "carrier": "UA",
       "pair": [
+        "IAH",
+        "TPQ"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "ua-iah-tpq-future-20261219"
+      ],
+      "effectiveFrom": "2026-12-19"
+    },
+    {
+      "carrier": "UA",
+      "pair": [
+        "LAX",
+        "SDF"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "ua-lax-sdf-ended-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "UA",
+      "pair": [
         "MQT",
         "ORD"
       ],
@@ -2076,6 +2152,20 @@
     {
       "carrier": "UA",
       "pair": [
+        "ORD",
+        "TRI"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "ua-ord-tri-other-operator-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "UA",
+      "pair": [
         "RST",
         "ORD"
       ],
@@ -2083,6 +2173,76 @@
       "status": "suspended",
       "sourceIds": [
         "ua-rst-ord-delayed-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "UA",
+      "pair": [
+        "SDF",
+        "LAX"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "ua-sdf-lax-ended-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "UA",
+      "pair": [
+        "SDF",
+        "SFO"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "ua-sdf-sfo-ended-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "UA",
+      "pair": [
+        "SFO",
+        "SDF"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "ua-sfo-sdf-ended-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "UA",
+      "pair": [
+        "TPQ",
+        "IAH"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "ua-tpq-iah-future-20261219"
+      ],
+      "effectiveFrom": "2026-12-19"
+    },
+    {
+      "carrier": "UA",
+      "pair": [
+        "TRI",
+        "ORD"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "ua-tri-ord-other-operator-20260912"
       ],
       "effectiveFrom": "2026-09-12"
     }

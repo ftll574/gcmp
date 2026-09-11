@@ -858,6 +858,18 @@
     },
     {
       "carrier": "UA",
+      "from": "GUM",
+      "to": "PNI",
+      "references": [
+        {
+          "flightNumber": "UA176",
+          "url": "https://www.flightsfrom.com/GUM-PNI",
+          "note": "Current 2026 United schedule identifies UA176 GUM→PNI. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "UA",
       "from": "IAH",
       "to": "LIM",
       "references": [
@@ -894,6 +906,54 @@
     },
     {
       "carrier": "UA",
+      "from": "IAH",
+      "to": "TPQ",
+      "references": [
+        {
+          "flightNumber": "UA6335",
+          "url": "https://www.flightsfrom.com/IAH-TPQ",
+          "note": "United future schedule identifies UA6335 IAH→TPQ beginning 2026-12-19. Candidate only and valid with route effective window."
+        }
+      ]
+    },
+    {
+      "carrier": "UA",
+      "from": "KSA",
+      "to": "PNI",
+      "references": [
+        {
+          "flightNumber": "UA154",
+          "url": "https://www.flightsfrom.com/KSA-PNI",
+          "note": "Current September 2026 United schedule identifies UA154 KSA→PNI. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "UA",
+      "from": "KWA",
+      "to": "KSA",
+      "references": [
+        {
+          "flightNumber": "UA154",
+          "url": "https://www.flightsfrom.com/KWA-KSA",
+          "note": "Current September 2026 United schedule identifies UA154 KWA→KSA. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "UA",
+      "from": "KWA",
+      "to": "PNI",
+      "references": [
+        {
+          "flightNumber": "UA132",
+          "url": "https://www.flightsfrom.com/KWA-PNI",
+          "note": "Current September 2026 United schedule identifies UA132 KWA→PNI. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "UA",
       "from": "LIM",
       "to": "EWR",
       "references": [
@@ -918,6 +978,23 @@
     },
     {
       "carrier": "UA",
+      "from": "MAJ",
+      "to": "KWA",
+      "references": [
+        {
+          "flightNumber": "UA132",
+          "url": "https://www.flightsfrom.com/MAJ-KWA",
+          "note": "Current September 2026 United schedule identifies UA132 MAJ→KWA. Candidate only."
+        },
+        {
+          "flightNumber": "UA154",
+          "url": "https://www.flightsfrom.com/MAJ-KWA",
+          "note": "Current September 2026 United schedule identifies UA154 MAJ→KWA. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "UA",
       "from": "MZT",
       "to": "IAH",
       "references": [
@@ -930,6 +1007,18 @@
     },
     {
       "carrier": "UA",
+      "from": "PNI",
+      "to": "KWA",
+      "references": [
+        {
+          "flightNumber": "UA133",
+          "url": "https://www.flightsfrom.com/PNI-KWA",
+          "note": "Current September 2026 United schedule identifies UA133 PNI→KWA. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "UA",
       "from": "PXM",
       "to": "IAH",
       "references": [
@@ -937,6 +1026,18 @@
           "flightNumber": "UA6319",
           "url": "https://www.directflights.com/PXM-IAH",
           "note": "Current September-October 2026 schedule identifies UA6319 PXM→IAH. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "UA",
+      "from": "TPQ",
+      "to": "IAH",
+      "references": [
+        {
+          "flightNumber": "UA6336",
+          "url": "https://www.flightsfrom.com/TPQ-IAH",
+          "note": "United future schedule identifies UA6336 TPQ→IAH beginning 2026-12-19. Candidate only and valid with route effective window."
         }
       ]
     }
