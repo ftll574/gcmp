@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "checkedOn": "2026-09-11",
-  "note": "Carrier-specific candidate references captured after the route itself was independently validated current. FlightInformation rows were exact flight-number plus direction pages that returned HTTP 200 during the 2026-09-11 research capture; ATS Fiji rows are from the May 2026 Nadi station movement summary and are additionally corroborated by current September 2026 indexed flight history/schedule pages. All values remain flight-number candidates only.",
+  "checkedOn": "2026-09-12",
+  "note": "Carrier-specific candidate references captured after the route itself was independently validated current. Exact flight-number, airport movement, route-schedule, or airport-board references are retained with their own URLs. All values remain flight-number candidates only; no source here promotes physical operating identity.",
   "entries": [
     {
       "carrier": "FJ",
@@ -47,9 +47,21 @@
         "relationshipUrl": "https://www.fijiairways.com/media/246988/fiji-airways-terms-and-conditions-of-carriage.pdf"
       },
       "references": [
-        { "flightNumber": "FJ31", "url": "https://www.flightinformation.com/FJ31-LBS-SUV", "note": "Exact FJ31 LBS→SUV page returned HTTP 200 with matching flight and route during the 2026-09-11 capture; current 2026 indexed history also corroborates FJ31. Candidate only." },
-        { "flightNumber": "FJ33", "url": "https://www.flightinformation.com/FJ33-LBS-SUV", "note": "Exact FJ33 LBS→SUV page returned HTTP 200 with matching flight and route during the 2026-09-11 capture. Candidate only." },
-        { "flightNumber": "FJ35", "url": "https://www.flightinformation.com/FJ35-LBS-SUV", "note": "Exact FJ35 LBS→SUV page returned HTTP 200 with matching flight and route during the 2026-09-11 capture. Candidate only." }
+        {
+          "flightNumber": "FJ31",
+          "url": "https://www.flightinformation.com/FJ31-LBS-SUV",
+          "note": "Exact FJ31 LBS→SUV page returned HTTP 200 with matching flight and route during the 2026-09-11 capture; current 2026 indexed history also corroborates FJ31. Candidate only."
+        },
+        {
+          "flightNumber": "FJ33",
+          "url": "https://www.flightinformation.com/FJ33-LBS-SUV",
+          "note": "Exact FJ33 LBS→SUV page returned HTTP 200 with matching flight and route during the 2026-09-11 capture. Candidate only."
+        },
+        {
+          "flightNumber": "FJ35",
+          "url": "https://www.flightinformation.com/FJ35-LBS-SUV",
+          "note": "Exact FJ35 LBS→SUV page returned HTTP 200 with matching flight and route during the 2026-09-11 capture. Candidate only."
+        }
       ]
     },
     {
@@ -79,12 +91,36 @@
         "relationshipUrl": "https://www.fijiairways.com/media/246988/fiji-airways-terms-and-conditions-of-carriage.pdf"
       },
       "references": [
-        { "flightNumber": "FJ3", "url": "https://www.flightinformation.com/FJ3-NAN-SUV", "note": "Exact FJ3 NAN→SUV page returned HTTP 200 with matching flight and route during the 2026-09-11 capture. Candidate only." },
-        { "flightNumber": "FJ7", "url": "https://www.flightinformation.com/FJ7-NAN-SUV", "note": "Exact FJ7 NAN→SUV page returned HTTP 200 with matching flight and route during the 2026-09-11 capture; 2026 Fiji Link aircraft history also corroborates FJ7. Candidate only." },
-        { "flightNumber": "FJ15", "url": "https://www.flightinformation.com/FJ15-NAN-SUV", "note": "Exact FJ15 NAN→SUV page returned HTTP 200 during capture; current 2026 indexed schedule/history corroborates the same route. Candidate only." },
-        { "flightNumber": "FJ21", "url": "https://www.flightinformation.com/FJ21-NAN-SUV", "note": "Exact FJ21 NAN→SUV page returned HTTP 200 during capture; current 2026 indexed history corroborates the same route. Candidate only." },
-        { "flightNumber": "FJ25", "url": "https://www.flightinformation.com/FJ25-NAN-SUV", "note": "Exact FJ25 NAN→SUV page returned HTTP 200 during capture; current 2026 indexed history corroborates the same route. Candidate only." },
-        { "flightNumber": "FJ27", "url": "https://www.flightinformation.com/FJ27-NAN-SUV", "note": "Exact FJ27 NAN→SUV page returned HTTP 200 during capture; current September 2026 indexed history corroborates the same route. Candidate only." }
+        {
+          "flightNumber": "FJ3",
+          "url": "https://www.flightinformation.com/FJ3-NAN-SUV",
+          "note": "Exact FJ3 NAN→SUV page returned HTTP 200 with matching flight and route during the 2026-09-11 capture. Candidate only."
+        },
+        {
+          "flightNumber": "FJ7",
+          "url": "https://www.flightinformation.com/FJ7-NAN-SUV",
+          "note": "Exact FJ7 NAN→SUV page returned HTTP 200 with matching flight and route during the 2026-09-11 capture; 2026 Fiji Link aircraft history also corroborates FJ7. Candidate only."
+        },
+        {
+          "flightNumber": "FJ15",
+          "url": "https://www.flightinformation.com/FJ15-NAN-SUV",
+          "note": "Exact FJ15 NAN→SUV page returned HTTP 200 during capture; current 2026 indexed schedule/history corroborates the same route. Candidate only."
+        },
+        {
+          "flightNumber": "FJ21",
+          "url": "https://www.flightinformation.com/FJ21-NAN-SUV",
+          "note": "Exact FJ21 NAN→SUV page returned HTTP 200 during capture; current 2026 indexed history corroborates the same route. Candidate only."
+        },
+        {
+          "flightNumber": "FJ25",
+          "url": "https://www.flightinformation.com/FJ25-NAN-SUV",
+          "note": "Exact FJ25 NAN→SUV page returned HTTP 200 during capture; current 2026 indexed history corroborates the same route. Candidate only."
+        },
+        {
+          "flightNumber": "FJ27",
+          "url": "https://www.flightinformation.com/FJ27-NAN-SUV",
+          "note": "Exact FJ27 NAN→SUV page returned HTTP 200 during capture; current September 2026 indexed history corroborates the same route. Candidate only."
+        }
       ]
     },
     {
@@ -114,9 +150,21 @@
         "relationshipUrl": "https://www.fijiairways.com/media/246988/fiji-airways-terms-and-conditions-of-carriage.pdf"
       },
       "references": [
-        { "flightNumber": "FJ32", "url": "https://www.flightinformation.com/FJ32-SUV-LBS", "note": "Exact FJ32 SUV→LBS page returned HTTP 200 with matching flight and route during the 2026-09-11 capture; 2026 Fiji Link aircraft history also corroborates FJ32. Candidate only." },
-        { "flightNumber": "FJ34", "url": "https://www.flightinformation.com/FJ34-SUV-LBS", "note": "Exact FJ34 SUV→LBS page returned HTTP 200 with matching flight and route during the 2026-09-11 capture. Candidate only." },
-        { "flightNumber": "FJ36", "url": "https://www.flightinformation.com/FJ36-SUV-LBS", "note": "Exact FJ36 SUV→LBS page returned HTTP 200 with matching flight and route during the 2026-09-11 capture. Candidate only." }
+        {
+          "flightNumber": "FJ32",
+          "url": "https://www.flightinformation.com/FJ32-SUV-LBS",
+          "note": "Exact FJ32 SUV→LBS page returned HTTP 200 with matching flight and route during the 2026-09-11 capture; 2026 Fiji Link aircraft history also corroborates FJ32. Candidate only."
+        },
+        {
+          "flightNumber": "FJ34",
+          "url": "https://www.flightinformation.com/FJ34-SUV-LBS",
+          "note": "Exact FJ34 SUV→LBS page returned HTTP 200 with matching flight and route during the 2026-09-11 capture. Candidate only."
+        },
+        {
+          "flightNumber": "FJ36",
+          "url": "https://www.flightinformation.com/FJ36-SUV-LBS",
+          "note": "Exact FJ36 SUV→LBS page returned HTTP 200 with matching flight and route during the 2026-09-11 capture. Candidate only."
+        }
       ]
     },
     {
@@ -150,6 +198,148 @@
           "flightNumber": "IB2553",
           "url": "https://www.flightinformation.com/IB2553-MLN-LPA",
           "note": "Exact IB2553 MLN→LPA page returned HTTP 200 during the 2026-09-11 capture; current August 2026 indexed flight history corroborates the same route. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "MU",
+      "from": "HET",
+      "to": "YNT",
+      "references": [
+        {
+          "flightNumber": "MU6586",
+          "url": "https://www.flight.info/MU6586",
+          "note": "Flight.info current 2026 schedule identifies MU6586 HET→YNT, including September-October 2026 service. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "MU",
+      "from": "JGS",
+      "to": "KMG",
+      "references": [
+        {
+          "flightNumber": "MU9714",
+          "url": "https://www.flightsfrom.com/JGS-KMG",
+          "note": "FlightsFrom current route schedule lists MU9714 JGS→KMG operated by China Eastern. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "MU",
+      "from": "JHG",
+      "to": "KHN",
+      "references": [
+        {
+          "flightNumber": "MU5466",
+          "url": "https://www.flight.info/JHG/departures",
+          "note": "Flight.info current Jinghong departures board lists China Eastern MU5466 JHG→KHN. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "MU",
+      "from": "KHN",
+      "to": "JHG",
+      "references": [
+        {
+          "flightNumber": "MU5465",
+          "url": "https://www.flight.info/MU5465",
+          "note": "Flight.info current September 2026 schedule identifies MU5465 KHN→JHG. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "MU",
+      "from": "KMG",
+      "to": "KTI",
+      "references": [
+        {
+          "flightNumber": "MU9609",
+          "url": "https://www.flight.info/MU9609",
+          "note": "Flight.info current 2026 schedule identifies MU9609 KMG→KTI. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "MU",
+      "from": "KMG",
+      "to": "TCZ",
+      "references": [
+        {
+          "flightNumber": "MU5953",
+          "url": "https://www.flight.info/MU5953",
+          "note": "Flight.info current September-October 2026 schedule identifies MU5953 KMG→TCZ. Candidate only."
+        },
+        {
+          "flightNumber": "MU5993",
+          "url": "https://www.flight.info/MU5993",
+          "note": "Flight.info 2026-2027 schedule identifies MU5993 KMG→TCZ. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "MU",
+      "from": "KTI",
+      "to": "PVG",
+      "references": [
+        {
+          "flightNumber": "MU760",
+          "url": "https://www.flight.info/MU760",
+          "note": "Flight.info current 2026 schedule identifies MU760 KTI→PVG. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "MU",
+      "from": "KTI",
+      "to": "WUH",
+      "references": [
+        {
+          "flightNumber": "MU2580",
+          "url": "https://www.flight.info/MU2580",
+          "note": "Flight.info current September-October 2026 schedule identifies MU2580 KTI→WUH. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "MU",
+      "from": "PVG",
+      "to": "JGS",
+      "references": [
+        {
+          "flightNumber": "MU9714",
+          "url": "https://www.flightsfrom.com/PVG-JGS",
+          "note": "FlightsFrom current route schedule lists MU9714 PVG→JGS operated by China Eastern. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "MU",
+      "from": "YNT",
+      "to": "HET",
+      "references": [
+        {
+          "flightNumber": "MU6585",
+          "url": "https://www.flight.info/MU6585",
+          "note": "Flight.info current 2026 schedule identifies MU6585 YNT→HET. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "MU",
+      "from": "ZAT",
+      "to": "KMG",
+      "references": [
+        {
+          "flightNumber": "MU5926",
+          "url": "https://www.flight.info/MU5926",
+          "note": "Flight.info September 2026 schedule identifies MU5926 ZAT→KMG. Candidate only."
+        },
+        {
+          "flightNumber": "MU5930",
+          "url": "https://www.flight.info/MU5930",
+          "note": "Flight.info current September-October 2026 schedule identifies MU5930 ZAT→KMG. Candidate only."
         }
       ]
     }
