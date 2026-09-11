@@ -4,6 +4,389 @@
   "note": "Carrier-specific candidate references captured after the route itself was independently validated current. Exact flight-number, airport movement, route-schedule, or airport-board references are retained with their own URLs. All values remain flight-number candidates only; no source here promotes physical operating identity.",
   "entries": [
     {
+      "carrier": "ET",
+      "from": "ADD",
+      "to": "BCO",
+      "references": [
+        {
+          "flightNumber": "ET271",
+          "url": "https://www.flight.info/ET271",
+          "note": "Flight.info current 2026 schedule identifies ET271 on the exact ADD→BCO segment. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "ADD",
+      "to": "BGF",
+      "references": [
+        {
+          "flightNumber": "ET959",
+          "url": "https://www.flight.info/ET959",
+          "note": "Flight.info current 2026 schedule identifies ET959 on the exact ADD→BGF segment. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "ADD",
+      "to": "BUQ",
+      "references": [
+        {
+          "flightNumber": "ET897",
+          "url": "https://www.flightsfrom.com/ADD-BUQ",
+          "note": "Current nonstop route page identifies ET897 as Ethiopian ADD→BUQ. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "ADD",
+      "to": "DEM",
+      "references": [
+        {
+          "flightNumber": "ET153",
+          "url": "https://www.flightsfrom.com/ADD-DEM",
+          "note": "Current week schedule lists ET153 ADD→DEM. Candidate only."
+        },
+        {
+          "flightNumber": "ET255",
+          "url": "https://www.flightsfrom.com/ADD-DEM",
+          "note": "Current week schedule lists ET255 ADD→DEM. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "ADD",
+      "to": "GGR",
+      "references": [
+        {
+          "flightNumber": "ET368",
+          "url": "https://www.flight.info/ET368",
+          "note": "Flight.info current 2026 schedule identifies ET368 on the exact ADD→GGR segment. Candidate only."
+        },
+        {
+          "flightNumber": "ET388",
+          "url": "https://www.flight.info/ET388",
+          "note": "Flight.info current 2026 schedule identifies ET388 on the exact ADD→GGR segment. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "ADD",
+      "to": "GIZ",
+      "references": [
+        {
+          "flightNumber": "ET446",
+          "url": "https://www.flight.info/ET446",
+          "note": "Flight.info current 2026 schedule identifies ET446 on the exact ADD→GIZ segment. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "ADD",
+      "to": "HRE",
+      "references": [
+        {
+          "flightNumber": "ET873",
+          "url": "https://www.flight.info/ET873",
+          "note": "Flight.info current 2026 schedule identifies ET873 on the exact ADD→HRE segment. Candidate only."
+        },
+        {
+          "flightNumber": "ET893",
+          "url": "https://www.flight.info/ET893",
+          "note": "Flight.info current 2026 schedule identifies ET893 on the exact ADD→HRE segment. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "ADD",
+      "to": "HUE",
+      "references": [
+        {
+          "flightNumber": "ET278",
+          "url": "https://www.flightsfrom.com/ADD-HUE",
+          "note": "Current week schedule identifies ET278 ADD→HUE. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "ADD",
+      "to": "JUB",
+      "references": [
+        {
+          "flightNumber": "ET352",
+          "url": "https://www.flight.info/ET352",
+          "note": "Flight.info current 2026 schedule identifies ET352 on the exact ADD→JUB segment. Candidate only."
+        },
+        {
+          "flightNumber": "ET354",
+          "url": "https://www.flight.info/ET354",
+          "note": "Flight.info current 2026 schedule identifies ET354 on the exact ADD→JUB segment. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "ADD",
+      "to": "LBV",
+      "references": [
+        {
+          "flightNumber": "ET925",
+          "url": "https://www.flight.info/ET925",
+          "note": "Flight.info current 2026 schedule identifies ET925 on the exact ADD→LBV segment. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "ADD",
+      "to": "LUN",
+      "references": [
+        {
+          "flightNumber": "ET863",
+          "url": "https://www.flight.info/ET863",
+          "note": "Flight.info current 2026 schedule identifies ET863 on the exact ADD→LUN segment. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "ADD",
+      "to": "SHC",
+      "references": [
+        {
+          "flightNumber": "ET184",
+          "url": "https://www.flight.info/ET184",
+          "note": "Flight.info current 2026 schedule identifies ET184 on the exact ADD→SHC segment. Candidate only."
+        },
+        {
+          "flightNumber": "ET284",
+          "url": "https://www.flight.info/ET284",
+          "note": "Flight.info current 2026 schedule identifies ET284 on the exact ADD→SHC segment. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "BCO",
+      "to": "ADD",
+      "references": [
+        {
+          "flightNumber": "ET270",
+          "url": "https://www.flight.info/ET270",
+          "note": "Flight.info current 2026 schedule identifies ET270 on the exact BCO→ADD segment. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "BGF",
+      "to": "ADD",
+      "references": [
+        {
+          "flightNumber": "ET958",
+          "url": "https://www.flight.info/ET958",
+          "note": "Flight.info current 2026 schedule identifies ET958 on the exact BGF→ADD segment. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "BSA",
+      "to": "ADD",
+      "references": [
+        {
+          "flightNumber": "ET388",
+          "url": "https://www.flight.info/ET388",
+          "note": "Flight.info current 2026 schedule identifies ET388 on the exact BSA→ADD segment. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "DEM",
+      "to": "ADD",
+      "references": [
+        {
+          "flightNumber": "ET152",
+          "url": "https://www.flightsfrom.com/DEM-ADD",
+          "note": "Current route page lists ET152 on DEM→ADD. Candidate only."
+        },
+        {
+          "flightNumber": "ET153",
+          "url": "https://www.flightsfrom.com/DEM-ADD",
+          "note": "Current route page lists ET153 on DEM→ADD. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "DLA",
+      "to": "SSG",
+      "references": [
+        {
+          "flightNumber": "ET913",
+          "url": "https://www.flightsfrom.com/DLA-SSG",
+          "note": "Current week schedule identifies ET913 DLA→SSG. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "DSS",
+      "to": "BKO",
+      "references": [
+        {
+          "flightNumber": "ET906",
+          "url": "https://www.flightsfrom.com/DSS-BKO",
+          "note": "Current nonstop route page lists ET906 DSS→BKO. Candidate only."
+        },
+        {
+          "flightNumber": "ET908",
+          "url": "https://www.flightsfrom.com/DSS-BKO",
+          "note": "Current nonstop route page lists ET908 DSS→BKO. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "GGR",
+      "to": "ADD",
+      "references": [
+        {
+          "flightNumber": "ET369",
+          "url": "https://www.flightsfrom.com/GGR-ADD",
+          "note": "Current week schedule identifies ET369 GGR→ADD. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "GIZ",
+      "to": "ADD",
+      "references": [
+        {
+          "flightNumber": "ET447",
+          "url": "https://www.flight.info/ET447",
+          "note": "Flight.info current 2026 schedule identifies ET447 on the exact GIZ→ADD segment. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "HRE",
+      "to": "ADD",
+      "references": [
+        {
+          "flightNumber": "ET872",
+          "url": "https://www.flight.info/ET872",
+          "note": "Current September-October 2026 schedule identifies ET872 HRE→ADD. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "HUE",
+      "to": "ADD",
+      "references": [
+        {
+          "flightNumber": "ET122",
+          "url": "https://www.flight.info/ET122",
+          "note": "Flight.info current 2026 schedule identifies ET122 on the exact HUE→ADD segment. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "JNB",
+      "to": "LLW",
+      "references": [
+        {
+          "flightNumber": "ET25",
+          "url": "https://www.flight.info/ET25",
+          "note": "Flight.info current 2026 schedule identifies ET25 on the exact JNB→LLW segment. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "JUB",
+      "to": "ADD",
+      "references": [
+        {
+          "flightNumber": "ET353",
+          "url": "https://www.flight.info/ET353",
+          "note": "Flight.info current 2026 schedule identifies ET353 on the exact JUB→ADD segment. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "LBV",
+      "to": "NSI",
+      "references": [
+        {
+          "flightNumber": "ET925",
+          "url": "https://www.flight.info/ET925",
+          "note": "Flight.info current 2026 schedule identifies ET925 on the exact LBV→NSI segment. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "LLW",
+      "to": "JNB",
+      "references": [
+        {
+          "flightNumber": "ET24",
+          "url": "https://www.flightsfrom.com/LLW-JNB",
+          "note": "Current nonstop route page identifies ET24 LLW→JNB. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "LUN",
+      "to": "ADD",
+      "references": [
+        {
+          "flightNumber": "ET862",
+          "url": "https://www.flight.info/ET862",
+          "note": "Flight.info current 2026 schedule identifies ET862 on the exact LUN→ADD segment. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "NSI",
+      "to": "LBV",
+      "references": [
+        {
+          "flightNumber": "ET955",
+          "url": "https://www.flightsfrom.com/NSI-LBV",
+          "note": "Current nonstop route page identifies ET955 NSI→LBV. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ET",
+      "from": "SHC",
+      "to": "ADD",
+      "references": [
+        {
+          "flightNumber": "ET285",
+          "url": "https://www.flight.info/ET285",
+          "note": "Flight.info current 2026 schedule identifies ET285 on the exact SHC→ADD segment. Candidate only."
+        }
+      ]
+    },
+    {
       "carrier": "FJ",
       "from": "FUN",
       "to": "NAN",
