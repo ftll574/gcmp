@@ -4,6 +4,100 @@
   "note": "Carrier-specific candidate references captured after the route itself was independently validated current. Exact flight-number, airport movement, route-schedule, or airport-board references are retained with their own URLs. All values remain flight-number candidates only; no source here promotes physical operating identity.",
   "entries": [
     {
+      "carrier": "DL",
+      "from": "PHX",
+      "to": "AUS",
+      "references": [
+        {
+          "flightNumber": "DL3535",
+          "url": "https://www.flightsfrom.com/PHX-AUS",
+          "note": "Current September 2026 Delta weekly schedule lists DL3535 PHX→AUS daily. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "DL",
+      "from": "SEA",
+      "to": "YVR",
+      "references": [
+        {
+          "flightNumber": "DL3748",
+          "url": "https://www.flight.info/DL3748",
+          "note": "Current September-October 2026 schedule identifies DL3748 SEA→YVR. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "DL",
+      "from": "SLC",
+      "to": "RSW",
+      "references": [
+        {
+          "flightNumber": "DL756",
+          "url": "https://www.flightsfrom.com/SLC-RSW",
+          "note": "Upcoming December 2026 nonstop schedule identifies DL756 SLC→RSW. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "DL",
+      "from": "SRQ",
+      "to": "BOS",
+      "references": [
+        {
+          "flightNumber": "DL5848",
+          "url": "https://www.flightsfrom.com/SRQ-BOS",
+          "note": "Upcoming December 2026 Delta service on SRQ→BOS lists DL5848 among route flight numbers. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "DL",
+      "from": "SRQ",
+      "to": "DTW",
+      "references": [
+        {
+          "flightNumber": "DL1469",
+          "url": "https://www.flightsfrom.com/SRQ-DTW",
+          "note": "Upcoming December 2026 nonstop schedule identifies DL1469 SRQ→DTW. Candidate only."
+        },
+        {
+          "flightNumber": "DL2965",
+          "url": "https://www.flightsfrom.com/SRQ-DTW",
+          "note": "Upcoming December 2026 nonstop schedule identifies DL2965 SRQ→DTW. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "DL",
+      "from": "YWG",
+      "to": "MSP",
+      "references": [
+        {
+          "flightNumber": "DL3526",
+          "url": "https://www.flight.info/YWG/departures",
+          "note": "Current Winnipeg departures board lists DL3526 YWG→MSP. Candidate only."
+        },
+        {
+          "flightNumber": "DL4005",
+          "url": "https://www.flight.info/DL4005",
+          "note": "Current September-October 2026 schedule identifies DL4005 YWG→MSP. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "DL",
+      "from": "YYZ",
+      "to": "JFK",
+      "references": [
+        {
+          "flightNumber": "DL5081",
+          "url": "https://www.flight.info/DL5081",
+          "note": "Current September-October 2026 schedule identifies DL5081 YYZ→JFK. Candidate only."
+        }
+      ]
+    },
+    {
       "carrier": "ET",
       "from": "ADD",
       "to": "BCO",

@@ -10,17 +10,17 @@
     "standing-current.json": "66427d01e4fca9d0a0932f2b4af191afd26cbcb46a339c5c4e332d9377b545c6",
     "validated-static-current.json": "10953c6f7975191ce577fbe6406768813684c6de284b2c2508070dd9bdd33712",
     "current-corrections.json": "3d65b72db0f3ee3b2290aa6b180c63375833ba12de8a2256854ea63bc4c605eb",
-    "flight-numbers-current.json": "78799dbd3ac90e43b3c0eeb7d78e5197db1b6f9ff6354b809907b05c09d71a21"
+    "flight-numbers-current.json": "ccb77dfb73cd6306218ec5dca155e86ec7016df640a72aa712768cedda5ded30"
   },
-  "outputSha256": "0976be1f4919455bb6021b554d06dffd211363cc8fa7f91a7ef8e75c93fccdec",
+  "outputSha256": "5b6bdf7cd74a60b3730b5dc7b2c4d0352b3d6090307428cee64e4214b2237b23",
   "routes": 30712,
-  "publishedRoutes": 30072,
+  "publishedRoutes": 30079,
   "carriers": 60,
   "confirmedOperatingRoutes": 17744,
-  "providerListedRoutes": 12328,
+  "providerListedRoutes": 12335,
   "confirmedFlightNumberRoutes": 14977,
-  "candidateFlightNumberRoutes": 24730,
-  "anyFlightNumberRoutes": 30072,
+  "candidateFlightNumberRoutes": 24737,
+  "anyFlightNumberRoutes": 30079,
   "routeCountByCarrier": {
     "A3": 578,
     "AA": 2355,
@@ -40,7 +40,7 @@
     "CI": 258,
     "CM": 217,
     "CX": 269,
-    "DL": 1874,
+    "DL": 1881,
     "ET": 378,
     "FJ": 36,
     "GA": 158,
@@ -164,7 +164,7 @@
     "CI": 94,
     "CM": 97,
     "CX": 80,
-    "DL": 595,
+    "DL": 602,
     "ET": 156,
     "FJ": 21,
     "GA": 64,
@@ -285,8 +285,8 @@
     },
     "P": {
       "routes": 1897,
-      "bytes": 853210,
-      "sha256": "f0ee93faa1ef7b432eed0998b7d556bac28963baaea0f46ecb72f3a99d711e3b"
+      "bytes": 853539,
+      "sha256": "cec5f0d0e253cf3f1dbb4d03fc9d98d201cbd162858fcc04b4f4e2f645723119"
     },
     "Q": {
       "routes": 3,
@@ -300,8 +300,8 @@
     },
     "S": {
       "routes": 2633,
-      "bytes": 1186496,
-      "sha256": "e2cdb8962cb85b4067a1d08882ccb035b7ed709f7930a1b8bc241a314b7ec8ee"
+      "bytes": 1188072,
+      "sha256": "a37c696ea792f60dcc1deef94a20b962136c62864120e2a5e82ec411cec985bf"
     },
     "T": {
       "routes": 1213,
@@ -330,8 +330,8 @@
     },
     "Y": {
       "routes": 905,
-      "bytes": 441120,
-      "sha256": "5d9eafae229e02499e417d8ab41b296b0b92aa47f7154c14d7a51543297add58"
+      "bytes": 442019,
+      "sha256": "dfb97e78c033bfe4a798aa12efc176fdcf495bf32bd4598adcb394a5d13896a0"
     },
     "Z": {
       "routes": 370,
