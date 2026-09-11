@@ -604,6 +604,18 @@
       "note": "Future/current published SSH→KTW nonstop service is Wizz Air, not LOT Polish Airlines."
     },
     {
+      "id": "lx-brs-zrh-other-operator-20260912",
+      "url": "https://www.flightsfrom.com/BRS-ZRH",
+      "checkedOn": "2026-09-12",
+      "note": "Current BRS→ZRH nonstop operators are Edelweiss and easyJet; SWISS last operated this route in 2025."
+    },
+    {
+      "id": "lx-gva-fnc-ended-20260912",
+      "url": "https://www.flightsfrom.com/GVA-FNC",
+      "checkedOn": "2026-09-12",
+      "note": "Current GVA→FNC nonstop service is easyJet; SWISS last operated this route in 2024."
+    },
+    {
       "id": "ou-puy-lhr-past-20260909",
       "url": "https://www.flightsfrom.com/PUY-LHR",
       "checkedOn": "2026-09-09",
@@ -670,6 +682,18 @@
       "note": "No current BTS-BRU direct schedule is published on the checked route page."
     },
     {
+      "id": "tg-bkk-csx-not-current-20260912",
+      "url": "https://www.flightsfrom.com/BKK-CSX",
+      "checkedOn": "2026-09-12",
+      "note": "Current BKK→CSX nonstop operators are Xiamen Airlines and Air Travel; Thai Airways is not a current operator."
+    },
+    {
+      "id": "tg-csx-bkk-not-current-20260912",
+      "url": "https://www.flightsfrom.com/CSX-BKK",
+      "checkedOn": "2026-09-12",
+      "note": "Current CSX→BKK nonstop operators exclude Thai Airways; Thai Airways is not current on this pair."
+    },
+    {
       "id": "tk-dss-nkc-other-operators-20260909",
       "url": "https://www.flightsfrom.com/DSS-NKC",
       "checkedOn": "2026-09-09",
@@ -692,6 +716,12 @@
       "url": "https://www.flightsfrom.com/SAW-SJJ",
       "checkedOn": "2026-09-09",
       "note": "Current SAW-SJJ direct flights are published as Pegasus/AJet services (PC/VF designators), not TK; the Turkish Airlines carrier attribution is unresolved."
+    },
+    {
+      "id": "tp-lis-slz-future-20261026",
+      "url": "https://www.flightsfrom.com/LIS-SLZ",
+      "checkedOn": "2026-09-12",
+      "note": "TAP LIS→SLZ nonstop service begins 2026-10-26 as TP17."
     },
     {
       "id": "ua-iah-tpq-future-20261219",
@@ -1744,6 +1774,34 @@
       "effectiveFrom": "2026-09-12"
     },
     {
+      "carrier": "LX",
+      "pair": [
+        "BRS",
+        "ZRH"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "lx-brs-zrh-other-operator-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "LX",
+      "pair": [
+        "GVA",
+        "FNC"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "lx-gva-fnc-ended-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
       "carrier": "OU",
       "pair": [
         "PUY",
@@ -1896,6 +1954,34 @@
         "sn-bts-bru-no-current-20260909"
       ],
       "effectiveFrom": "2026-09-09"
+    },
+    {
+      "carrier": "TG",
+      "pair": [
+        "BKK",
+        "CSX"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "tg-bkk-csx-not-current-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "TG",
+      "pair": [
+        "CSX",
+        "BKK"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "tg-csx-bkk-not-current-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
     },
     {
       "carrier": "TK",
@@ -2314,6 +2400,20 @@
       ],
       "effectiveFrom": "2026-09-09",
       "carrierIdentity": "provider-listed"
+    },
+    {
+      "carrier": "TP",
+      "pair": [
+        "LIS",
+        "SLZ"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "tp-lis-slz-future-20261026"
+      ],
+      "effectiveFrom": "2026-10-26"
     },
     {
       "carrier": "UA",

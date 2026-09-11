@@ -761,6 +761,18 @@
       ]
     },
     {
+      "carrier": "LX",
+      "from": "GRU",
+      "to": "EZE",
+      "references": [
+        {
+          "flightNumber": "LX92",
+          "url": "https://www.flightsfrom.com/GRU-EZE",
+          "note": "Current SWISS GRU→EZE schedule identifies LX92. Candidate only."
+        }
+      ]
+    },
+    {
       "carrier": "MH",
       "from": "KTI",
       "to": "KUL",
@@ -937,6 +949,74 @@
       ]
     },
     {
+      "carrier": "SA",
+      "from": "HRE",
+      "to": "JNB",
+      "references": [
+        {
+          "flightNumber": "SA25",
+          "url": "https://www.flightsfrom.com/HRE-JNB",
+          "note": "Current SAA HRE→JNB schedule lists SA25. Candidate only."
+        },
+        {
+          "flightNumber": "SA23",
+          "url": "https://www.flightsfrom.com/HRE-JNB",
+          "note": "Current SAA HRE→JNB schedule lists SA23. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "SA",
+      "from": "JNB",
+      "to": "HRE",
+      "references": [
+        {
+          "flightNumber": "SA22",
+          "url": "https://www.flightsfrom.com/JNB-HRE",
+          "note": "Current SAA JNB→HRE schedule lists SA22. Candidate only."
+        },
+        {
+          "flightNumber": "SA24",
+          "url": "https://www.flightsfrom.com/JNB-HRE",
+          "note": "Current SAA JNB→HRE schedule lists SA24. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "SA",
+      "from": "JNB",
+      "to": "LUN",
+      "references": [
+        {
+          "flightNumber": "SA62",
+          "url": "https://www.flightsfrom.com/JNB-LUN",
+          "note": "Current SAA JNB→LUN schedule lists SA62. Candidate only."
+        },
+        {
+          "flightNumber": "SA66",
+          "url": "https://www.flightsfrom.com/JNB-LUN",
+          "note": "Current SAA JNB→LUN schedule lists SA66. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "SA",
+      "from": "LUN",
+      "to": "JNB",
+      "references": [
+        {
+          "flightNumber": "SA67",
+          "url": "https://www.flightsfrom.com/LUN-JNB",
+          "note": "Current SAA LUN→JNB schedule lists SA67. Candidate only."
+        },
+        {
+          "flightNumber": "SA63",
+          "url": "https://www.flightsfrom.com/LUN-JNB",
+          "note": "Current SAA LUN→JNB schedule lists SA63. Candidate only."
+        }
+      ]
+    },
+    {
       "carrier": "SK",
       "from": "BOM",
       "to": "CPH",
@@ -979,6 +1059,71 @@
           "flightNumber": "SQ157",
           "url": "https://www.flightsfrom.com/KTI-SIN",
           "note": "Current Singapore Airlines KTI→SIN schedule lists SQ157. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "TG",
+      "from": "BKK",
+      "to": "KTI",
+      "references": [
+        {
+          "flightNumber": "TG586",
+          "url": "https://www.flightsfrom.com/BKK-KTI",
+          "note": "Current Thai Airways BKK→KTI schedule lists TG586. Candidate only."
+        },
+        {
+          "flightNumber": "TG584",
+          "url": "https://www.flightsfrom.com/BKK-KTI",
+          "note": "Current Thai Airways BKK→KTI schedule lists TG584. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "TG",
+      "from": "KTI",
+      "to": "BKK",
+      "references": [
+        {
+          "flightNumber": "TG585",
+          "url": "https://www.flightsfrom.com/KTI-BKK",
+          "note": "Current Thai Airways KTI→BKK schedule lists TG585. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "TP",
+      "from": "LIS",
+      "to": "SLZ",
+      "references": [
+        {
+          "flightNumber": "TP17",
+          "url": "https://www.flightsfrom.com/LIS-SLZ",
+          "note": "TAP LIS→SLZ future schedule identifies TP17 beginning 2026-10-26. Candidate only with future route window."
+        }
+      ]
+    },
+    {
+      "carrier": "TP",
+      "from": "OPO",
+      "to": "TLV",
+      "references": [
+        {
+          "flightNumber": "TP1607",
+          "url": "https://www.flightsfrom.com/OPO-TLV",
+          "note": "Current TAP OPO→TLV nonstop service identifies TP1607. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "TP",
+      "from": "TLV",
+      "to": "OPO",
+      "references": [
+        {
+          "flightNumber": "TP1608",
+          "url": "https://www.flightsfrom.com/TLV-OPO",
+          "note": "Current TAP TLV→OPO nonstop service identifies TP1608. Candidate only."
         }
       ]
     },

@@ -173,6 +173,31 @@ test('current corrections keep stale or mismatched carrier routes out of the pla
     carrierIdentity: 'provider-listed',
   });
   expect(find('OU', 'TIA', 'ZAG')?.status).toBe('suspended');
+  expect(find('LX', 'GRU', 'EZE')).toMatchObject({
+    status: 'published',
+    flightNumberCandidates: expect.arrayContaining(['LX92']),
+  });
+  expect(find('LX', 'BRS', 'ZRH')).toMatchObject({
+    status: 'identity-unresolved',
+    carrierIdentity: 'provider-listed',
+  });
+  expect(find('TP', 'LIS', 'SLZ')).toMatchObject({
+    status: 'published',
+    effectiveFrom: '2026-10-26',
+    flightNumberCandidates: expect.arrayContaining(['TP17']),
+  });
+  expect(find('SA', 'JNB', 'LUN')).toMatchObject({
+    status: 'published',
+    flightNumberCandidates: expect.arrayContaining(['SA62', 'SA66']),
+  });
+  expect(find('TG', 'BKK', 'KTI')).toMatchObject({
+    status: 'published',
+    flightNumberCandidates: expect.arrayContaining(['TG584', 'TG586']),
+  });
+  expect(find('TG', 'BKK', 'CSX')).toMatchObject({
+    status: 'identity-unresolved',
+    carrierIdentity: 'provider-listed',
+  });
   expect(find('LH', 'FRA', 'BOD')?.status).toBe('suspended');
 });
 
