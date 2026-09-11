@@ -725,6 +725,102 @@
           "note": "Flight.info current September-October 2026 schedule identifies MU5930 ZAT→KMG. Candidate only."
         }
       ]
+    },
+    {
+      "carrier": "UA",
+      "from": "EWR",
+      "to": "LIM",
+      "references": [
+        {
+          "flightNumber": "UA886",
+          "url": "https://www.directflights.com/EWR-LIM",
+          "note": "Current September-October 2026 schedule identifies UA886 EWR→LIM. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "UA",
+      "from": "IAH",
+      "to": "LIM",
+      "references": [
+        {
+          "flightNumber": "UA854",
+          "url": "https://www.directflights.com/IAH-LIM",
+          "note": "Current October 2026 schedule identifies UA854 IAH→LIM. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "UA",
+      "from": "IAH",
+      "to": "MZT",
+      "references": [
+        {
+          "flightNumber": "UA5272",
+          "url": "https://www.directflights.com/IAH-MZT",
+          "note": "Upcoming December 2026 nonstop schedule identifies UA5272 IAH→MZT. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "UA",
+      "from": "IAH",
+      "to": "PXM",
+      "references": [
+        {
+          "flightNumber": "UA6318",
+          "url": "https://www.directflights.com/IAH-PXM",
+          "note": "Current September-October 2026 schedule identifies UA6318 IAH→PXM. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "UA",
+      "from": "LIM",
+      "to": "EWR",
+      "references": [
+        {
+          "flightNumber": "UA887",
+          "url": "https://www.flight.info/UA887",
+          "note": "Current September 2026 schedule identifies UA887 LIM→EWR. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "UA",
+      "from": "LIM",
+      "to": "IAH",
+      "references": [
+        {
+          "flightNumber": "UA855",
+          "url": "https://www.directflights.com/LIM-IAH",
+          "note": "Current September-October 2026 schedule identifies UA855 LIM→IAH. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "UA",
+      "from": "MZT",
+      "to": "IAH",
+      "references": [
+        {
+          "flightNumber": "UA5273",
+          "url": "https://www.directflights.com/MZT-IAH",
+          "note": "Upcoming December 2026 nonstop schedule identifies UA5273 MZT→IAH. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "UA",
+      "from": "PXM",
+      "to": "IAH",
+      "references": [
+        {
+          "flightNumber": "UA6319",
+          "url": "https://www.directflights.com/PXM-IAH",
+          "note": "Current September-October 2026 schedule identifies UA6319 PXM→IAH. Candidate only."
+        }
+      ]
     }
   ]
 }
