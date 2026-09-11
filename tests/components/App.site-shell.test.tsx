@@ -114,13 +114,14 @@ test('route library reports a core data failure without loading planner datasets
   expect(routeRequests.some((url) => url.includes('/rtw-products/'))).toBe(false);
 });
 
-test('route library falls back to canonical parsing when Web Crypto is unavailable', async () => {
+test('route library falls back to canonical shard parsing when Web Crypto is unavailable', async () => {
   window.history.replaceState({}, '', '/?lang=zh-TW&view=routes&entity=airport&id=TPE');
   vi.stubGlobal('crypto', {});
 
   render(<SiteApp />);
   expect(await screen.findByRole('heading', { name: /TPE.*Taoyuan/ }, { timeout: 5_000 })).toBeInTheDocument();
-  expect(await screen.findByRole('combobox', { name: /搜尋機場、城市、航空公司、航線或班號/ }, { timeout: 5_000 })).toBeInTheDocument();
+  expect(await screen.findByRole('combobox', { name: '載入完整航網後可使用完整搜尋' }, { timeout: 5_000 })).toBeDisabled();
+  expect(screen.getByText(/已完整載入此機場的出發航線/)).toBeInTheDocument();
 });
 
 test('advanced route data failure does not take down the core route library', async () => {
@@ -211,23 +212,33 @@ test('route library restores shareable search, alliance, entity and advanced-fil
   expect(screen.getByRole('button', { name: /收起詳細篩選/ })).toHaveAttribute('aria-expanded', 'true');
 });
 
-test('route deep-links keep their context visible while the full network is still loading', async () => {
+test('airport deep-links use an origin shard and load inbound statistics only on demand', async () => {
   window.history.replaceState({}, '', '/?lang=zh-TW&view=routes&entity=airport&id=TPE');
   const originalFetch = vi.mocked(fetch).getMockImplementation();
+  const requests: string[] = [];
   let releaseRuntime!: () => void;
   const runtimeGate = new Promise<void>((resolve) => { releaseRuntime = resolve; });
   vi.mocked(fetch).mockImplementation(async (input: RequestInfo | URL) => {
     const path = String(input).split('?')[0] ?? '';
+    requests.push(path);
     if (path === '/data/route-network/runtime-current.json') await runtimeGate;
     return originalFetch!(input);
   });
 
   render(<SiteApp />);
-  expect(await screen.findByText('TPE · Taoyuan', {}, { timeout: 5_000 })).toBeInTheDocument();
-  expect(screen.getByText('Taiwan Taoyuan International Airport')).toBeInTheDocument();
-  expect(screen.getByText(/正在接上互動地圖與完整航線結果/)).toBeInTheDocument();
-  releaseRuntime();
+  expect(await screen.findByRole('heading', { name: /TPE.*Taoyuan/ }, { timeout: 5_000 })).toBeInTheDocument();
+  expect(screen.getAllByText('Taiwan Taoyuan International Airport').length).toBeGreaterThan(0);
   expect(await screen.findByRole('region', { name: '航線地圖' }, { timeout: 5_000 })).toBeInTheDocument();
+  expect(requests).toContain('/data/route-network/runtime-origins/T.json');
+  expect(requests).not.toContain('/data/route-network/runtime-current.json');
+  expect(screen.getByText(/已完整載入此機場的出發航線/)).toBeInTheDocument();
+  expect(screen.queryByText('抵達方向航線')).not.toBeInTheDocument();
+  expect(screen.getByRole('combobox', { name: '載入完整航網後可使用完整搜尋' })).toBeDisabled();
+
+  fireEvent.click(screen.getByRole('button', { name: '補上抵達統計' }));
+  await waitFor(() => expect(requests).toContain('/data/route-network/runtime-current.json'), { timeout: 5_000 });
+  releaseRuntime();
+  expect(await screen.findByText('抵達方向航線', {}, { timeout: 5_000 })).toBeInTheDocument();
 });
 
 test('airport search works before the full route network finishes loading', async () => {
@@ -287,7 +298,7 @@ test('route deep-links use an origin shard before requesting the full global gra
   expect(requests).toContain('/data/route-network/runtime-origins/T.json');
   expect(requests).not.toContain('/data/route-network/runtime-current.json');
   expect(screen.getByText(/已先載入這條航線/)).toBeInTheDocument();
-  expect(screen.getByRole('combobox', { name: '返回航網後可使用完整搜尋' })).toBeDisabled();
+  expect(screen.getByRole('combobox', { name: '載入完整航網後可使用完整搜尋' })).toBeDisabled();
 
   fireEvent.click(screen.getByRole('button', { name: /返回航網/ }));
   await waitFor(() => expect(requests).toContain('/data/route-network/runtime-current.json'), { timeout: 5_000 });

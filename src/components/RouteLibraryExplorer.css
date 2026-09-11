@@ -41,6 +41,7 @@
 .route-carrier-actions button{min-height:42px;border-radius:var(--radius-button);font-size:12px}
 .entity-map-loading{display:grid;place-items:center;color:var(--secondary-label);font-size:12px;text-align:center}
 .entity-shard-notice{margin:0;padding:10px 12px;border:1px solid var(--separator);border-radius:var(--radius-control);background:color-mix(in srgb,var(--secondary-system-background) 72%,transparent);color:var(--secondary-label);font-size:11px;line-height:1.5}
+.entity-shard-notice--action{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 
 @media(max-width:700px){
   .maplibre-route-map{height:calc(100svh - 150px);min-height:560px;max-height:760px}

@@ -152,7 +152,7 @@ describe('RouteEntityMap MapLibre model', () => {
     />);
     expect((screen.getByRole('combobox', { name: 'Full search loading' }) as HTMLInputElement).disabled).toBe(true);
     expect(screen.getByRole('button', { name: 'Star' }).getAttribute('aria-pressed')).toBe('true');
-    expect(screen.getByText(/Only this route is loaded right now/)).not.toBeNull();
+    expect(screen.getByText(/A partial network is loaded right now/)).not.toBeNull();
   });
 
   test('map search supports keyboard listbox navigation and selection', () => {

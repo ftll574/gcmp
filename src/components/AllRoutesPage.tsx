@@ -215,30 +215,36 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
   const [loadedNetwork, setLoadedNetwork] = useState<LoadedNetwork | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [shardFailureLetter, setShardFailureLetter] = useState<string | null>(null);
+  const [fullNetworkRequested, setFullNetworkRequested] = useState(false);
   const [alliance, setAlliance] = useState<AllianceFilter>(allianceFromLocation);
   const [selection, setSelection] = useState<RouteLibraryEntitySelection | null>(selectionFromLocation);
   const [query, setQuery] = useState(queryFromLocation);
   const [advancedOpen, setAdvancedOpen] = useState(advancedFromLocation);
   const airportIndex = useMemo(() => buildAirportIndex(data.airports), [data.airports]);
   const airports = airportIndex.byIata;
-  const routeOriginLetter = selection?.kind === 'route' ? selection.id.slice(0, 1) : null;
-  const originShardMeta = routeOriginLetter ? data.routeNetworkRuntimeMeta?.originShards[routeOriginLetter] : undefined;
+  const selectionOriginLetter = selection?.kind === 'route'
+    ? selection.id.slice(0, 1)
+    : selection?.kind === 'airport'
+      ? selection.id.slice(0, 1)
+      : null;
+  const originShardMeta = selectionOriginLetter ? data.routeNetworkRuntimeMeta?.originShards[selectionOriginLetter] : undefined;
   const fullNetworkReady = loadedNetwork?.scope === 'full';
   const displayNetwork = loadedNetwork?.scope === 'full'
     ? loadedNetwork.network
     : loadedNetwork?.scope === 'origin-shard'
-      && selection?.kind === 'route'
-      && routeOriginLetter === loadedNetwork.originLetter
+      && (selection?.kind === 'route' || selection?.kind === 'airport')
+      && selectionOriginLetter === loadedNetwork.originLetter
       ? loadedNetwork.network
       : null;
 
   useEffect(() => {
-    if (fullNetworkReady || selection?.kind !== 'route' || !routeOriginLetter || !originShardMeta) return;
-    if (shardFailureLetter === routeOriginLetter) return;
-    if (loadedNetwork?.scope === 'origin-shard' && loadedNetwork.originLetter === routeOriginLetter) return;
+    if (fullNetworkReady || fullNetworkRequested) return;
+    if ((selection?.kind !== 'route' && selection?.kind !== 'airport') || !selectionOriginLetter || !originShardMeta) return;
+    if (shardFailureLetter === selectionOriginLetter) return;
+    if (loadedNetwork?.scope === 'origin-shard' && loadedNetwork.originLetter === selectionOriginLetter) return;
 
     const controller = new AbortController();
-    const shardUrl = `${data.routeNetworkOriginShardBaseUrl}/${routeOriginLetter}.json`;
+    const shardUrl = `${data.routeNetworkOriginShardBaseUrl}/${selectionOriginLetter}.json`;
     void fetch(shardUrl, { signal: controller.signal })
       .then(async (response) => {
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -252,30 +258,32 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
       .then((network) => {
         setLoadedNetwork((current) => current?.scope === 'full'
           ? current
-          : { scope: 'origin-shard', originLetter: routeOriginLetter, network });
+          : { scope: 'origin-shard', originLetter: selectionOriginLetter, network });
       })
       .catch((reason: unknown) => {
         if ((reason as { name?: string }).name === 'AbortError') return;
-        setShardFailureLetter(routeOriginLetter);
+        setShardFailureLetter(selectionOriginLetter);
       });
     return () => controller.abort();
   }, [
     airports,
     data.routeNetworkOriginShardBaseUrl,
     fullNetworkReady,
+    fullNetworkRequested,
     loadedNetwork,
     originShardMeta,
-    routeOriginLetter,
+    selectionOriginLetter,
     selection?.kind,
     shardFailureLetter,
   ]);
 
   const shouldLoadFullNetwork = !fullNetworkReady && (
-    selection?.kind !== 'route'
+    fullNetworkRequested
+    || (selection?.kind !== 'route' && selection?.kind !== 'airport')
     || advancedOpen
     || query.trim() !== ''
     || !originShardMeta
-    || shardFailureLetter === routeOriginLetter
+    || shardFailureLetter === selectionOriginLetter
   );
 
   useEffect(() => {
@@ -403,6 +411,7 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
               onSelect={selectEntity}
               onPlanRoute={onPlanRoute}
               networkComplete={fullNetworkReady}
+              onRequestFullNetwork={() => setFullNetworkRequested(true)}
             />
 
             <section className="routes-advanced-shell">

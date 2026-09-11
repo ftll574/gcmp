@@ -48,6 +48,8 @@ interface RouteMapControls {
   readonly searchPlaceholder: string;
   readonly searchDisabled?: boolean | undefined;
   readonly searchDisabledLabel?: string | undefined;
+  readonly partialMapHelp?: string | undefined;
+  readonly partialFallbackHelp?: string | undefined;
   readonly searchResults: ReadonlyArray<RouteLibrarySearchResult>;
   readonly onSearchResultSelect: (selection: RouteLibraryEntitySelection) => void;
 }
@@ -653,18 +655,20 @@ export function RouteEntityMap({
   const activeRoutes = inspectorRoutes(model, selection);
   const activeRoute = selection?.kind === 'route' ? model.routeById.get(selection.routeId) ?? null : null;
   const fitLabel = controls?.searchDisabled
-    ? (locale === 'zh-TW' ? '顯示整條航線' : 'Fit this route')
+    ? selectedAirport
+      ? (locale === 'zh-TW' ? '顯示完整出發航網' : 'Fit outbound network')
+      : (locale === 'zh-TW' ? '顯示整條航線' : 'Fit this route')
     : copy.fit;
 
   return (
     <div ref={cardRef} className={`entity-map-card maplibre-route-map alliance-${allianceTheme}${fingerprint ? ' fingerprint' : ''}`} data-map-engine="maplibre" data-map-ready={ready ? 'true' : 'false'} data-map-routes={model.routes.features.length} data-map-airports={model.airports.features.length} data-map-alliance={allianceTheme} data-map-mode={fingerprint ? 'fingerprint' : 'detail'}>
       <p id={mapHelpId} className="sr-only">{controls?.searchDisabled
-        ? (locale === 'zh-TW'
-          ? '目前只載入這條航線；可以拖曳與縮放地圖，返回航網後可使用完整搜尋。'
-          : 'Only this route is loaded right now; you can pan and zoom the map, and full search becomes available after returning to the network.')
+        ? controls.partialMapHelp ?? (locale === 'zh-TW'
+          ? '目前只載入部分航網；可以拖曳與縮放地圖，載入完整航網後可使用完整搜尋。'
+          : 'A partial network is loaded right now; you can pan and zoom the map, and full search becomes available after loading the full network.')
         : copy.mapHelp}</p>
       <div ref={containerRef} className="entity-map-maplibre" role="region" aria-label={locale === 'zh-TW' ? '航線地圖' : 'Route network map'} aria-describedby={mapHelpId} />
-      {!webGlAvailable && <div className="entity-map-fallback"><strong>{copy.fallback}</strong><span>{copy.fallbackHelp}</span></div>}
+      {!webGlAvailable && <div className="entity-map-fallback"><strong>{copy.fallback}</strong><span>{controls?.searchDisabled ? controls.partialFallbackHelp ?? copy.fallbackHelp : copy.fallbackHelp}</span></div>}
       {controls && <div className="entity-map-commandbar">
         <div className="entity-map-alliance-filter" role="group" aria-label={locale === 'zh-TW' ? '航空聯盟篩選' : 'Alliance filter'}>
           {(['all', 'star', 'oneworld', 'skyteam'] as const).map((value) => <button
