@@ -1,0 +1,40 @@
+[
+  {
+    "carrier": "MU",
+    "name": "China Eastern",
+    "entryUrls": ["https://www.ceair.com/"]
+  },
+  {
+    "carrier": "TK",
+    "name": "Turkish Airlines",
+    "entryUrls": ["https://www.turkishairlines.com/"]
+  },
+  {
+    "carrier": "AF",
+    "name": "Air France",
+    "groupHint": "air-france-klm",
+    "entryUrls": ["https://www.airfrance.com/"]
+  },
+  {
+    "carrier": "SN",
+    "name": "Brussels Airlines",
+    "groupHint": "lufthansa-group",
+    "entryUrls": ["https://www.brusselsairlines.com/", "https://www.brusselsairlines.com/xx/en/book-a-flight"]
+  },
+  {
+    "carrier": "FJ",
+    "name": "Fiji Airways",
+    "entryUrls": ["https://www.fijiairways.com/"]
+  },
+  {
+    "carrier": "IB",
+    "name": "Iberia",
+    "groupHint": "iag",
+    "entryUrls": ["https://www.iberia.com/"]
+  },
+  {
+    "carrier": "CA",
+    "name": "Air China",
+    "entryUrls": ["https://www.airchina.com.cn/en-US"]
+  }
+]
