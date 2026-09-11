@@ -21,6 +21,30 @@
       "note": "Current KEM→KOK direct route is inactive and Finnair service is no longer current."
     },
     {
+      "id": "az-cta-flr-other-operator-20260912",
+      "url": "https://www.flightsfrom.com/CTA-FLR",
+      "checkedOn": "2026-09-12",
+      "note": "Current CTA→FLR nonstop operators are Vueling and Volotea, not ITA Airways."
+    },
+    {
+      "id": "az-goa-cta-other-operator-20260912",
+      "url": "https://www.flightsfrom.com/GOA-CTA",
+      "checkedOn": "2026-09-12",
+      "note": "Current GOA→CTA nonstop service is Ryanair, not ITA Airways."
+    },
+    {
+      "id": "az-goa-nap-other-operator-20260912",
+      "url": "https://www.flightsfrom.com/GOA-NAP",
+      "checkedOn": "2026-09-12",
+      "note": "Current GOA→NAP nonstop operators are Volotea and Ryanair, not ITA Airways."
+    },
+    {
+      "id": "az-otp-lin-inactive-20260912",
+      "url": "https://www.flightsfrom.com/OTP-LIN",
+      "checkedOn": "2026-09-12",
+      "note": "OTP→LIN is inactive; direct service ended in December 2022."
+    },
+    {
       "id": "br-fra-rix-other-operator-20260912",
       "url": "https://www.flightsfrom.com/FRA-RIX",
       "checkedOn": "2026-09-12",
@@ -616,6 +640,30 @@
       "note": "Current GVA→FNC nonstop service is easyJet; SWISS last operated this route in 2024."
     },
     {
+      "id": "os-ber-ham-not-current-20260912",
+      "url": "https://www.flightsfrom.com/BER",
+      "checkedOn": "2026-09-12",
+      "note": "Austrian does not publish BER→HAM as a current nonstop route; its Berlin nonstop network is limited to Vienna."
+    },
+    {
+      "id": "os-bhx-vie-other-operator-20260912",
+      "url": "https://www.flightsfrom.com/BHX-VIE",
+      "checkedOn": "2026-09-12",
+      "note": "Current BHX→VIE nonstop service is Jet2, not Austrian."
+    },
+    {
+      "id": "os-vie-bhx-other-operator-20260912",
+      "url": "https://www.flightsfrom.com/VIE-BHX",
+      "checkedOn": "2026-09-12",
+      "note": "Current VIE→BHX nonstop service is Jet2, not Austrian."
+    },
+    {
+      "id": "os-vie-lxs-future-20270606",
+      "url": "https://www.flightsfrom.com/VIE-LXS",
+      "checkedOn": "2026-09-12",
+      "note": "Austrian VIE→LXS service begins 2027-06-06 as OS827."
+    },
+    {
       "id": "ou-puy-lhr-past-20260909",
       "url": "https://www.flightsfrom.com/PUY-LHR",
       "checkedOn": "2026-09-09",
@@ -794,6 +842,24 @@
       "url": "https://www.directflights.com/TRI-ORD",
       "checkedOn": "2026-09-12",
       "note": "Current TRI→ORD nonstop schedule lists American Airlines only, so the UA attribution is unresolved."
+    },
+    {
+      "id": "ux-jtr-mad-other-operator-20260912",
+      "url": "https://www.flightsfrom.com/JTR-MAD",
+      "checkedOn": "2026-09-12",
+      "note": "Current JTR→MAD nonstop service is Iberia, not Air Europa."
+    },
+    {
+      "id": "ux-ovd-tfn-other-operator-20260912",
+      "url": "https://www.flightsfrom.com/OVD-TFN",
+      "checkedOn": "2026-09-12",
+      "note": "Current OVD→TFN nonstop operators are Vueling and Binter, not Air Europa."
+    },
+    {
+      "id": "ux-scq-tfn-ended-20260912",
+      "url": "https://www.flightsfrom.com/SCQ-TFN",
+      "checkedOn": "2026-09-12",
+      "note": "Air Europa last operated SCQ→TFN in 2023; current nonstop service is not Air Europa."
     }
   ],
   "carrierUniverses": [],
@@ -999,6 +1065,61 @@
       "status": "suspended",
       "sourceIds": [
         "ay-kem-kok-ended-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "AZ",
+      "pair": [
+        "CTA",
+        "FLR"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "az-cta-flr-other-operator-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "AZ",
+      "pair": [
+        "GOA",
+        "CTA"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "az-goa-cta-other-operator-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "AZ",
+      "pair": [
+        "GOA",
+        "NAP"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "az-goa-nap-other-operator-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "AZ",
+      "pair": [
+        "OTP",
+        "LIN"
+      ],
+      "service": "nonstop",
+      "status": "suspended",
+      "sourceIds": [
+        "az-otp-lin-inactive-20260912"
       ],
       "effectiveFrom": "2026-09-12"
     },
@@ -1802,6 +1923,62 @@
       "effectiveFrom": "2026-09-12"
     },
     {
+      "carrier": "OS",
+      "pair": [
+        "BER",
+        "HAM"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "os-ber-ham-not-current-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "OS",
+      "pair": [
+        "BHX",
+        "VIE"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "os-bhx-vie-other-operator-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "OS",
+      "pair": [
+        "VIE",
+        "BHX"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "os-vie-bhx-other-operator-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "OS",
+      "pair": [
+        "VIE",
+        "LXS"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "os-vie-lxs-future-20270606"
+      ],
+      "effectiveFrom": "2027-06-06"
+    },
+    {
       "carrier": "OU",
       "pair": [
         "PUY",
@@ -2578,6 +2755,48 @@
       "carrierIdentity": "provider-listed",
       "sourceIds": [
         "ua-tri-ord-other-operator-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "UX",
+      "pair": [
+        "JTR",
+        "MAD"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "ux-jtr-mad-other-operator-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "UX",
+      "pair": [
+        "OVD",
+        "TFN"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "ux-ovd-tfn-other-operator-20260912"
+      ],
+      "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "UX",
+      "pair": [
+        "SCQ",
+        "TFN"
+      ],
+      "service": "nonstop",
+      "status": "identity-unresolved",
+      "carrierIdentity": "provider-listed",
+      "sourceIds": [
+        "ux-scq-tfn-ended-20260912"
       ],
       "effectiveFrom": "2026-09-12"
     }

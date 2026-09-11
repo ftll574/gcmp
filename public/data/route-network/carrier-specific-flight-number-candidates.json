@@ -4,6 +4,30 @@
   "note": "Carrier-specific candidate references captured after the route itself was independently validated current. Exact flight-number, airport movement, route-schedule, or airport-board references are retained with their own URLs. All values remain flight-number candidates only; no source here promotes physical operating identity.",
   "entries": [
     {
+      "carrier": "AZ",
+      "from": "CFU",
+      "to": "FCO",
+      "references": [
+        {
+          "flightNumber": "AZ745",
+          "url": "https://www.flightsfrom.com/CFU-FCO",
+          "note": "Current ITA Airways CFU→FCO schedule identifies AZ745. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "AZ",
+      "from": "GOA",
+      "to": "OLB",
+      "references": [
+        {
+          "flightNumber": "AZ1233",
+          "url": "https://www.flightsfrom.com/GOA-OLB",
+          "note": "Current ITA Airways GOA→OLB schedule identifies AZ1233. Candidate only."
+        }
+      ]
+    },
+    {
       "carrier": "DL",
       "from": "PHX",
       "to": "AUS",
@@ -949,6 +973,30 @@
       ]
     },
     {
+      "carrier": "OS",
+      "from": "VIE",
+      "to": "LXS",
+      "references": [
+        {
+          "flightNumber": "OS827",
+          "url": "https://www.flightsfrom.com/VIE-LXS",
+          "note": "Austrian future VIE→LXS schedule identifies OS827 beginning 2027-06-06. Candidate only with future route window."
+        }
+      ]
+    },
+    {
+      "carrier": "OS",
+      "from": "VIE",
+      "to": "OHD",
+      "references": [
+        {
+          "flightNumber": "OS765",
+          "url": "https://www.flightsfrom.com/VIE-OHD",
+          "note": "Current Austrian VIE→OHD schedule identifies OS765. Candidate only."
+        }
+      ]
+    },
+    {
       "carrier": "SA",
       "from": "HRE",
       "to": "JNB",
@@ -1333,6 +1381,102 @@
           "flightNumber": "UL120",
           "url": "https://www.flightsfrom.com/GAN-CMB",
           "note": "Current SriLankan Airlines GAN→CMB schedule identifies UL120. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "UX",
+      "from": "LIM",
+      "to": "MAD",
+      "references": [
+        {
+          "flightNumber": "UX176",
+          "url": "https://www.flightsfrom.com/LIM-MAD",
+          "note": "Current Air Europa LIM→MAD schedule identifies UX176. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "UX",
+      "from": "MAD",
+      "to": "LIM",
+      "references": [
+        {
+          "flightNumber": "UX175",
+          "url": "https://www.flightsfrom.com/MAD-LIM",
+          "note": "Current Air Europa MAD→LIM schedule identifies UX175. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ZH",
+      "from": "BZX",
+      "to": "SZX",
+      "references": [
+        {
+          "flightNumber": "ZH8974",
+          "url": "https://www.flightsfrom.com/BZX-SZX",
+          "note": "Current Shenzhen Airlines BZX→SZX schedule identifies ZH8974. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ZH",
+      "from": "JUH",
+      "to": "SZX",
+      "references": [
+        {
+          "flightNumber": "ZH8940",
+          "url": "https://www.flightsfrom.com/JUH-SZX",
+          "note": "Current Shenzhen Airlines JUH→SZX schedule identifies ZH8940. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ZH",
+      "from": "KTI",
+      "to": "SZX",
+      "references": [
+        {
+          "flightNumber": "ZH156",
+          "url": "https://www.flightsfrom.com/KTI-SZX",
+          "note": "Current Shenzhen Airlines KTI→SZX schedule identifies ZH156. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ZH",
+      "from": "SZX",
+      "to": "BZX",
+      "references": [
+        {
+          "flightNumber": "ZH8973",
+          "url": "https://www.flightsfrom.com/SZX-BZX",
+          "note": "Current Shenzhen Airlines SZX→BZX schedule identifies ZH8973. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ZH",
+      "from": "SZX",
+      "to": "JUH",
+      "references": [
+        {
+          "flightNumber": "ZH8939",
+          "url": "https://www.flightsfrom.com/SZX-JUH",
+          "note": "Current Shenzhen Airlines SZX→JUH schedule identifies ZH8939. Candidate only."
+        }
+      ]
+    },
+    {
+      "carrier": "ZH",
+      "from": "SZX",
+      "to": "KTI",
+      "references": [
+        {
+          "flightNumber": "ZH155",
+          "url": "https://www.flightsfrom.com/SZX-KTI",
+          "note": "Current Shenzhen Airlines SZX→KTI schedule identifies ZH155. Candidate only."
         }
       ]
     }

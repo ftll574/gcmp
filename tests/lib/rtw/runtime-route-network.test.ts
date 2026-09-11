@@ -198,6 +198,31 @@ test('current corrections keep stale or mismatched carrier routes out of the pla
     status: 'identity-unresolved',
     carrierIdentity: 'provider-listed',
   });
+  expect(find('OS', 'VIE', 'OHD')).toMatchObject({
+    status: 'published',
+    flightNumberCandidates: expect.arrayContaining(['OS765']),
+  });
+  expect(find('OS', 'VIE', 'LXS')).toMatchObject({
+    status: 'published',
+    effectiveFrom: '2027-06-06',
+    flightNumberCandidates: expect.arrayContaining(['OS827']),
+  });
+  expect(find('UX', 'LIM', 'MAD')).toMatchObject({
+    status: 'published',
+    flightNumberCandidates: expect.arrayContaining(['UX176']),
+  });
+  expect(find('AZ', 'CFU', 'FCO')).toMatchObject({
+    status: 'published',
+    flightNumberCandidates: expect.arrayContaining(['AZ745']),
+  });
+  expect(find('AZ', 'CTA', 'FLR')).toMatchObject({
+    status: 'identity-unresolved',
+    carrierIdentity: 'provider-listed',
+  });
+  expect(find('ZH', 'SZX', 'KTI')).toMatchObject({
+    status: 'published',
+    flightNumberCandidates: expect.arrayContaining(['ZH155']),
+  });
   expect(find('LH', 'FRA', 'BOD')?.status).toBe('suspended');
 });
 
