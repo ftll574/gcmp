@@ -211,6 +211,43 @@ test('route library restores shareable search, alliance, entity and advanced-fil
   expect(screen.getByRole('button', { name: /收起詳細篩選/ })).toHaveAttribute('aria-expanded', 'true');
 });
 
+test('route deep-links keep their context visible while the full network is still loading', async () => {
+  window.history.replaceState({}, '', '/?lang=zh-TW&view=routes&entity=airport&id=TPE');
+  const originalFetch = vi.mocked(fetch).getMockImplementation();
+  let releaseRuntime!: () => void;
+  const runtimeGate = new Promise<void>((resolve) => { releaseRuntime = resolve; });
+  vi.mocked(fetch).mockImplementation(async (input: RequestInfo | URL) => {
+    const path = String(input).split('?')[0] ?? '';
+    if (path === '/data/route-network/runtime-current.json') await runtimeGate;
+    return originalFetch!(input);
+  });
+
+  render(<SiteApp />);
+  expect(await screen.findByText('TPE · Taoyuan', {}, { timeout: 5_000 })).toBeInTheDocument();
+  expect(screen.getByText('Taiwan Taoyuan International Airport')).toBeInTheDocument();
+  expect(screen.getByText(/正在接上互動地圖與完整航線結果/)).toBeInTheDocument();
+  releaseRuntime();
+  expect(await screen.findByRole('region', { name: '航線地圖' }, { timeout: 5_000 })).toBeInTheDocument();
+});
+
+test('route deep-links show their requested entity before core route data is ready', async () => {
+  window.history.replaceState({}, '', '/?lang=zh-TW&view=routes&entity=route&id=TPE-NRT');
+  const originalFetch = vi.mocked(fetch).getMockImplementation();
+  let releaseAirports!: () => void;
+  const airportGate = new Promise<void>((resolve) => { releaseAirports = resolve; });
+  vi.mocked(fetch).mockImplementation(async (input: RequestInfo | URL) => {
+    const path = String(input).split('?')[0] ?? '';
+    if (path === '/data/airports.json') await airportGate;
+    return originalFetch!(input);
+  });
+
+  render(<SiteApp />);
+  expect(await screen.findByText('TPE → NRT', {}, { timeout: 5_000 })).toBeInTheDocument();
+  expect(screen.getByText(/先建立頁面，航網資料會接著補上/)).toBeInTheDocument();
+  releaseAirports();
+  expect(await screen.findByText('Taoyuan → Narita', {}, { timeout: 5_000 })).toBeInTheDocument();
+});
+
 test('site navigation remains available after entering the planner and returns to public pages', async () => {
   render(<SiteApp />);
   await screen.findByRole('heading', { name: /把世界變成一條/ });
@@ -225,7 +262,7 @@ test('site navigation remains available after entering the planner and returns t
 
   const homeNav = screen.getByRole('navigation', { name: '主要導覽' });
   fireEvent.click(within(homeNav).getByRole('link', { name: '航線資料庫' }));
-  expect(await screen.findByRole('heading', { name: '探索全球航網' })).toBeInTheDocument();
+  await waitFor(() => expect(screen.getByRole('heading', { name: '探索全球航網' })).toBeInTheDocument(), { timeout: 5_000 });
   expect(new URLSearchParams(window.location.search).get('view')).toBe('routes');
 });
 

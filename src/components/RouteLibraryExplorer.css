@@ -49,3 +49,24 @@
   .map-first-hero{padding-top:6px}
   .entity-detail{gap:16px}
 }
+
+/* Progressive Route Library loading lives in this lazy route-only stylesheet
+   so the public homepage does not pay for route skeleton UI. */
+.route-progressive-shell{min-height:calc(100svh - 92px)}
+.route-context-loading{display:grid;gap:14px;margin-bottom:28px}
+.route-context-loading__breadcrumb{min-height:24px}
+.route-context-loading__hero{display:grid;gap:8px;padding:10px 2px 14px;border-bottom:1px solid var(--separator)}
+.route-context-loading__hero>span{color:var(--secondary-label);font-size:12px;font-weight:650}
+.route-context-loading__hero>strong{color:var(--label);font-size:clamp(30px,4.2vw,52px);line-height:1;letter-spacing:-.045em}
+.route-context-loading__hero>small{min-height:18px;color:var(--secondary-label);font-size:13px}
+.route-context-loading__map{position:relative;height:calc(100svh - 250px);min-height:420px;max-height:700px;overflow:hidden;border:1px solid var(--separator);border-radius:var(--radius-card);background:radial-gradient(circle at 58% 42%,color-mix(in srgb,var(--tint) 12%,transparent),transparent 26%),var(--secondary-system-background)}
+.route-context-loading__map::before,.route-context-loading__map::after{content:"";position:absolute;inset:18% 12%;border:1px solid color-mix(in srgb,var(--secondary-label) 18%,transparent);border-radius:50%;transform:rotate(-12deg)}
+.route-context-loading__map::after{inset:32% 24%;transform:rotate(18deg)}
+.route-context-loading__map i{position:absolute;width:10px;height:10px;border-radius:50%;background:color-mix(in srgb,var(--tint) 48%,var(--system-background));box-shadow:0 0 0 7px color-mix(in srgb,var(--tint) 10%,transparent);animation:route-loading-pulse 1.8s ease-in-out infinite}
+.route-context-loading__map i:nth-child(1){left:24%;top:38%}
+.route-context-loading__map i:nth-child(2){left:53%;top:54%;animation-delay:.25s}
+.route-context-loading__map i:nth-child(3){right:19%;top:29%;animation-delay:.5s}
+.route-context-loading>p{margin:0;color:var(--secondary-label);font-size:12px}
+@keyframes route-loading-pulse{0%,100%{opacity:.42;transform:scale(.9)}50%{opacity:1;transform:scale(1.08)}}
+@media(prefers-reduced-motion:reduce){.route-context-loading__map i{animation:none}}
+@media(max-width:560px){.route-context-loading__hero{padding-inline:6px}.route-context-loading__hero>strong{font-size:32px}.route-context-loading__map{height:calc(100svh - 225px);min-height:360px;border-radius:18px}}

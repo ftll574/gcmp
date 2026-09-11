@@ -3,6 +3,7 @@ import { buildAirportIndex } from '../lib/airport-index.ts';
 import type { RouteNetworkCatalog } from '../lib/schemas/route-network.ts';
 import { parseHashedRuntimeRouteNetwork } from '../lib/route-network-runtime.ts';
 import type { RouteLibraryEntitySelection } from '../lib/rtw/route-library-entities.ts';
+import type { Airport } from '../lib/types.ts';
 import type { RouteLibraryData } from '../state/use-route-library-data.ts';
 import { RouteLibraryExplorer } from './RouteLibraryExplorer.tsx';
 import { SiteHeader, type SiteView } from './SiteHeader.tsx';
@@ -18,6 +19,57 @@ interface Props {
   readonly data: RouteLibraryData;
   readonly onNavigate: (view: SiteView) => void;
   readonly onPlanRoute: (route: { from: string; to: string; carrier: string; flightNumber?: string | undefined }) => void;
+}
+
+function RouteNetworkLoading({
+  selection,
+  airports,
+  carrierNames,
+  routeCount,
+  zh,
+}: {
+  readonly selection: RouteLibraryEntitySelection | null;
+  readonly airports: ReadonlyMap<string, Airport>;
+  readonly carrierNames: ReadonlyMap<string, string>;
+  readonly routeCount?: number | undefined;
+  readonly zh: boolean;
+}): React.ReactElement {
+  let label = zh ? '全球航網' : 'Global network';
+  let title = zh ? '正在準備航線資料' : 'Preparing route data';
+  let detail = routeCount
+    ? (zh ? `正在驗證 ${routeCount.toLocaleString()} 條方向航線…` : `Verifying ${routeCount.toLocaleString()} directional routes…`)
+    : (zh ? '正在驗證航線資料…' : 'Verifying route data…');
+
+  if (selection?.kind === 'airport') {
+    const airport = airports.get(selection.id);
+    label = zh ? '機場' : 'Airport';
+    title = airport ? `${airport.iata} · ${airport.city}` : selection.id;
+    detail = airport?.name ?? detail;
+  } else if (selection?.kind === 'airline') {
+    label = zh ? '航空公司' : 'Airline';
+    const name = carrierNames.get(selection.id);
+    title = `${selection.id}${name ? ` · ${name}` : ''}`;
+  } else if (selection?.kind === 'route') {
+    const [fromCode = '', toCode = ''] = selection.id.split('-');
+    const from = airports.get(fromCode);
+    const to = airports.get(toCode);
+    label = zh ? '航線' : 'Route';
+    title = `${fromCode} → ${toCode}`;
+    if (from && to) detail = `${from.city} → ${to.city}`;
+  }
+
+  return (
+    <section className="route-context-loading route-context-loading--network" role="status" aria-live="polite" aria-busy="true">
+      {selection && <div className="entity-breadcrumb route-context-loading__breadcrumb"><span>{label}</span><strong>{selection.id.replace('-', ' → ')}</strong></div>}
+      <div className="route-context-loading__hero">
+        <span>{label}</span>
+        <strong>{title}</strong>
+        <small>{detail}</small>
+      </div>
+      <div className="route-context-loading__map" aria-hidden="true"><i /><i /><i /></div>
+      <p>{zh ? '正在接上互動地圖與完整航線結果…' : 'Connecting the interactive map and complete route results…'}</p>
+    </section>
+  );
 }
 
 function selectionFromLocation(): RouteLibraryEntitySelection | null {
@@ -45,6 +97,7 @@ function advancedFromLocation(): boolean {
 
 export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.ReactElement {
   const { locale } = useLocale();
+  const zh = locale === 'zh-TW';
   const copy = locale === 'zh-TW' ? {
     eyebrow: '航線資料庫', title: '探索全球航網',
     intro: '從機場、城市、航空公司、航線或班號，直接進入目前收錄的航網資料。',
@@ -163,7 +216,13 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
           <p>{copy.intro}</p>
         </section>
 
-        {!network && !error && <div className="routes-loading routes-loading-hero" role="status">{copy.loading}</div>}
+        {!network && !error && <RouteNetworkLoading
+          selection={selection}
+          airports={airports}
+          carrierNames={carrierNames}
+          routeCount={data.routeNetworkRuntimeMeta?.routes}
+          zh={zh}
+        />}
         {error && <div className="routes-error" role="alert"><strong>{copy.error}</strong><span>{error}</span><button type="button" onClick={() => window.location.reload()}>{copy.retry}</button></div>}
         {network && (
           <>
