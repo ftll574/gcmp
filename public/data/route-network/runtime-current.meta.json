@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "builtOn": "2026-09-09",
+  "builtOn": "2026-09-12",
   "inputs": {
     "current.json": "fd57f01b6ea8f1a6b50484f3ca051b313673dc0e3785348f3f706d25f197313c",
     "recent-current.json": "bd76bac687774a97a5a3f045c0afbe90333e6c2c4f06cb0c72b22cdf3051a117",
@@ -9,16 +9,16 @@
     "bts-marketing-current.json": "7b67464fd3bc4ffca57969d9a7e00d13e4090cc36742904beacfbb01ba6e9319",
     "standing-current.json": "66427d01e4fca9d0a0932f2b4af191afd26cbcb46a339c5c4e332d9377b545c6",
     "validated-static-current.json": "10953c6f7975191ce577fbe6406768813684c6de284b2c2508070dd9bdd33712",
-    "current-corrections.json": "a8373c71251bc3387bddf99d62b79c90f234edada65ae90382dbc5a5b3f9a6fc",
+    "current-corrections.json": "e48e56b4cfbc9325a2c00160110e95d7a5e2fe406e4fedc3824d562b0052db03",
     "flight-numbers-current.json": "deaed1fdb0d879155aaa4728586058319596dcf357fa3e86a1e665fcb3b117f5"
   },
-  "outputSha256": "09fdf62883f03b5ba2214daa09f53831158db7f8e06e54817a694ab1b6896298",
+  "outputSha256": "a1b9e04dfc8afb2cdabcbe8188db39b70293152ff7d61d54e411ab0dbd779541",
   "routes": 30712,
   "publishedRoutes": 30121,
   "carriers": 60,
-  "confirmedOperatingRoutes": 17744,
-  "providerListedRoutes": 12377,
-  "confirmedFlightNumberRoutes": 14977,
+  "confirmedOperatingRoutes": 17750,
+  "providerListedRoutes": 12371,
+  "confirmedFlightNumberRoutes": 14983,
   "candidateFlightNumberRoutes": 24779,
   "anyFlightNumberRoutes": 30121,
   "routeCountByCarrier": {
@@ -97,7 +97,7 @@
     "AY": 213,
     "AZ": 169,
     "BA": 313,
-    "BR": 121,
+    "BR": 125,
     "CA": 878,
     "CI": 164,
     "CM": 120,
@@ -108,7 +108,7 @@
     "GA": 94,
     "HA": 3,
     "IB": 103,
-    "JL": 253,
+    "JL": 255,
     "KE": 247,
     "KL": 316,
     "KQ": 75,
@@ -159,7 +159,7 @@
     "AY": 81,
     "AZ": 264,
     "BA": 372,
-    "BR": 58,
+    "BR": 54,
     "CA": 405,
     "CI": 94,
     "CM": 97,
@@ -170,7 +170,7 @@
     "GA": 64,
     "HA": 109,
     "IB": 388,
-    "JL": 75,
+    "JL": 73,
     "KE": 151,
     "KL": 225,
     "KQ": 42,
@@ -210,8 +210,8 @@
   "originShards": {
     "A": {
       "routes": 2263,
-      "bytes": 1030195,
-      "sha256": "27874ea0264ff9d3b29c22482ebb4be4dc1f6e9f72c4dc192fe161cbefa95560"
+      "bytes": 1030500,
+      "sha256": "41c16b05374e4ca689afa06a40aaa4bdbe33951e40b9055cb376303d2ab74f2b"
     },
     "B": {
       "routes": 2082,
@@ -260,13 +260,13 @@
     },
     "K": {
       "routes": 883,
-      "bytes": 390121,
-      "sha256": "e276b3637be34eea633c5d17170c0b30ce6cf57b75164c1ef5bf9b04210a3709"
+      "bytes": 390430,
+      "sha256": "d6945246d3013da38be4a91d09cbdbc6263b9c1ac7a24842b75515183dfb66d5"
     },
     "L": {
       "routes": 1959,
-      "bytes": 919634,
-      "sha256": "c7fa94b07029c01f72b8069b3f17b169a36bc5ae63419bae443c8a39bbc9a7dc"
+      "bytes": 919939,
+      "sha256": "8bfed9d8114d790f7256db8d010f3d4d603e311bbf0d415bd6a2a57585d2a8ee"
     },
     "M": {
       "routes": 2283,
@@ -305,8 +305,8 @@
     },
     "T": {
       "routes": 1213,
-      "bytes": 546795,
-      "sha256": "6bed2a373c3199a122cb3b3540a786ed090d919729a691e0e144f9ec2cfce18d"
+      "bytes": 547393,
+      "sha256": "34444638ea36dd04ac8316176096f457ccdacb51738656afe9b2ff792425ddc4"
     },
     "U": {
       "routes": 136,

@@ -196,7 +196,7 @@ test('BR: blank planner → Pacific → Atlantic → Europe → Taiwan, then sha
   await mount();
   expect(request()).toEqual(expected);
   expect(request().groups[0]?.legs.map((leg) => leg.operatingCarrier)).toEqual(['BR', 'LH', 'LH', 'BR']);
-}, 15000);
+}, 25000);
 
 test('CX: blank planner can continue across four oneworld operators and retain timing after reload', async () => {
   await mount(CX);

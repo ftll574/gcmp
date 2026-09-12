@@ -33,10 +33,10 @@ describe('route library overview model', () => {
     });
     expect(model.routeCount).toBe(30_121);
     expect(model.carrierCount).toBe(60);
-    expect(model.operatingCount).toBe(17_744);
-    expect(model.providerListedCount).toBe(12_377);
-    expect(model.confirmedNumberCount).toBe(14_977);
-    expect(model.candidateOnlyCount).toBe(15_144);
+    expect(model.operatingCount).toBe(17_750);
+    expect(model.providerListedCount).toBe(12_371);
+    expect(model.confirmedNumberCount).toBe(14_983);
+    expect(model.candidateOnlyCount).toBe(15_138);
     expect(model.airportCount).toBeGreaterThan(1_000);
     expect(model.hubs).toHaveLength(model.airportCount);
     expect(model.topCarriers).toHaveLength(10);

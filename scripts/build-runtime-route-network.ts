@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
 import { parseRouteNetworkCatalog, type RouteNetworkCatalog } from '../src/lib/schemas/route-network.ts';
+import { resolveRouteBuildDate } from '../src/lib/rtw/route-build-date.ts';
 import { mergeRouteNetworkCatalogs, mergeRouteNumberEvidence } from '../src/lib/rtw/route-network-merge.ts';
 
 const INPUTS = [
@@ -19,6 +20,7 @@ const NUMBER_INPUT = 'flight-numbers-current.json';
 const CORRECTIONS_INPUT = 'current-corrections.json';
 
 const root = 'public/data/route-network';
+const buildDate = resolveRouteBuildDate(process.argv[2]);
 const airportCodes = new Set<string>(
   (JSON.parse(readFileSync('public/data/airports.json', 'utf8')) as Array<{ iata: string }>).map((row) => row.iata),
 );
@@ -144,7 +146,7 @@ for (const letter of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') {
 
 const meta = {
   version: 1,
-  builtOn: '2026-09-09',
+  builtOn: buildDate,
   inputs: Object.fromEntries([...INPUTS, ...OPTIONAL_INPUTS.filter((file) => rawByFile.has(file)), CORRECTIONS_INPUT, NUMBER_INPUT]
     .map((file) => [file, sha256(rawByFile.get(file)!)])),
   outputSha256: sha256(runtimeText),

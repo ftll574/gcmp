@@ -7,6 +7,7 @@ const ROOT = 'public/data/route-network';
 test('premerged runtime route network is current with every source layer', () => {
   const meta = JSON.parse(readFileSync(`${ROOT}/runtime-current.meta.json`, 'utf8')) as {
     version: number;
+    builtOn: string;
     routes: number;
     publishedRoutes: number;
     carriers: number;
@@ -22,6 +23,7 @@ test('premerged runtime route network is current with every source layer', () =>
   };
 
   expect(meta.version).toBe(1);
+  expect(meta.builtOn).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   expect(meta.confirmedOperatingRoutes + meta.providerListedRoutes).toBe(meta.publishedRoutes);
   expect(meta.confirmedFlightNumberRoutes).toBeGreaterThan(14_000);
   expect(meta.candidateFlightNumberRoutes).toBeGreaterThan(24_000);
@@ -171,6 +173,30 @@ test('current corrections keep stale or mismatched carrier routes out of the pla
   expect(find('BR', 'FRA', 'RIX')).toMatchObject({
     status: 'identity-unresolved',
     carrierIdentity: 'provider-listed',
+  });
+  expect(find('BR', 'TPE', 'AMS')).toMatchObject({
+    status: 'published',
+    carrierIdentity: 'operating',
+    effectiveFrom: '2026-09-12',
+    flightNumbers: ['BR75'],
+    sourceIds: expect.arrayContaining(['eva-europe-summer-20260912']),
+  });
+  expect(find('BR', 'AMS', 'TPE')).toMatchObject({ flightNumbers: ['BR76'] });
+  expect(find('BR', 'TPE', 'LHR')).toMatchObject({ flightNumbers: ['BR67'] });
+  expect(find('BR', 'LHR', 'TPE')).toMatchObject({ flightNumbers: ['BR68'] });
+  expect(find('JL', 'KIX', 'TPE')).toMatchObject({
+    status: 'published',
+    carrierIdentity: 'operating',
+    flightNumbers: ['JL8667'],
+    effectiveFrom: '2026-09-18',
+    effectiveUntil: '2026-10-12',
+  });
+  expect(find('JL', 'TPE', 'KIX')).toMatchObject({
+    status: 'published',
+    carrierIdentity: 'operating',
+    flightNumbers: ['JL8668'],
+    effectiveFrom: '2026-09-18',
+    effectiveUntil: '2026-10-12',
   });
   expect(find('OU', 'TIA', 'ZAG')?.status).toBe('suspended');
   expect(find('LX', 'GRU', 'EZE')).toMatchObject({

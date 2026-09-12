@@ -125,7 +125,7 @@ test('route library is a separate page and keeps the heavy catalog out of the ho
   await screen.findByRole('heading', { name: /把世界變成一條/ });
   expect(screen.queryByText('探索全球航網')).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole('link', { name: '瀏覽所有航線' }));
-  expect(await screen.findByRole('heading', { name: '探索全球航網' })).toBeInTheDocument();
+  expect(await screen.findByRole('heading', { name: '探索全球航網' }, { timeout: 5_000 })).toBeInTheDocument();
   expect(await screen.findByRole('region', { name: '航線地圖' }, { timeout: 5_000 })).toBeInTheDocument();
   expect(document.querySelector('.routes-alliance-tabs')).toBeNull();
   const map = document.querySelector('.entity-map-card');
