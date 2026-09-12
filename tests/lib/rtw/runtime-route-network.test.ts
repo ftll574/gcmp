@@ -174,16 +174,6 @@ test('current corrections keep stale or mismatched carrier routes out of the pla
     status: 'identity-unresolved',
     carrierIdentity: 'provider-listed',
   });
-  expect(find('BR', 'TPE', 'AMS')).toMatchObject({
-    status: 'published',
-    carrierIdentity: 'operating',
-    effectiveFrom: '2026-09-12',
-    flightNumbers: ['BR75'],
-    sourceIds: expect.arrayContaining(['eva-europe-summer-20260912']),
-  });
-  expect(find('BR', 'AMS', 'TPE')).toMatchObject({ flightNumbers: ['BR76'] });
-  expect(find('BR', 'TPE', 'LHR')).toMatchObject({ flightNumbers: ['BR67'] });
-  expect(find('BR', 'LHR', 'TPE')).toMatchObject({ flightNumbers: ['BR68'] });
   expect(find('JL', 'KIX', 'TPE')).toMatchObject({
     status: 'published',
     carrierIdentity: 'operating',
@@ -250,6 +240,52 @@ test('current corrections keep stale or mismatched carrier routes out of the pla
     flightNumberCandidates: expect.arrayContaining(['ZH155']),
   });
   expect(find('LH', 'FRA', 'BOD')?.status).toBe('suspended');
+});
+
+test('EVA Europe through flights preserve Bangkok instead of creating endpoint-skipping nonstop edges', () => {
+  const runtime = parseRouteNetworkCatalog(JSON.parse(readFileSync(`${ROOT}/runtime-current.json`, 'utf8')));
+  const find = (from: string, to: string) => runtime.routes.find(
+    (route) => route.carrier === 'BR' && route.pair[0] === from && route.pair[1] === to,
+  );
+
+  // A route-network edge is one physical nonstop sector. BR75/76 and BR67/68
+  // keep the same flight number across BKK, but that must never collapse two
+  // physical sectors into one TPE-Europe shortcut.
+  expect(find('TPE', 'AMS')?.status).toBe('suspended');
+  expect(find('AMS', 'TPE')?.status).toBe('suspended');
+  expect(find('TPE', 'LHR')?.status).toBe('suspended');
+  expect(find('LHR', 'TPE')?.status).toBe('suspended');
+
+  expect(find('TPE', 'BKK')).toMatchObject({
+    status: 'published',
+    service: 'nonstop',
+    flightNumberCandidates: expect.arrayContaining(['BR75', 'BR67']),
+  });
+  expect(find('BKK', 'TPE')).toMatchObject({
+    status: 'published',
+    service: 'nonstop',
+    flightNumberCandidates: expect.arrayContaining(['BR76', 'BR68']),
+  });
+  expect(find('BKK', 'AMS')).toMatchObject({
+    status: 'published',
+    service: 'nonstop',
+    flightNumberCandidates: expect.arrayContaining(['BR75']),
+  });
+  expect(find('AMS', 'BKK')).toMatchObject({
+    status: 'published',
+    service: 'nonstop',
+    flightNumberCandidates: expect.arrayContaining(['BR76']),
+  });
+  expect(find('BKK', 'LHR')).toMatchObject({
+    status: 'published',
+    service: 'nonstop',
+    flightNumberCandidates: expect.arrayContaining(['BR67']),
+  });
+  expect(find('LHR', 'BKK')).toMatchObject({
+    status: 'published',
+    service: 'nonstop',
+    flightNumberCandidates: expect.arrayContaining(['BR68']),
+  });
 });
 
 test('deep operator audit promotes only exact-current member designators', () => {

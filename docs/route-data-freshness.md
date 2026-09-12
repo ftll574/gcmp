@@ -41,30 +41,32 @@ Before the evidence repair, every referenced route source in the active runtime 
 | Metric | Before | After |
 | --- | ---: | ---: |
 | represented carriers | 60 | 60 |
-| active directional routes | 30,109 | 30,107 |
-| current evidence | 17,740 | 17,744 |
+| active directional routes | 30,109 | 30,103 |
+| current evidence | 17,740 | 17,740 |
 | stale evidence | 0 | 0 |
 | unknown evidence | 12,369 | 12,363 |
 | duplicate active directional rows | 0 | 0 |
-| Taiwan active directional routes | 414 | 412 |
-| Taiwan current evidence | 332 | 336 |
+| Taiwan active directional routes | 414 | 408 |
+| Taiwan current evidence | 332 | 332 |
 | Taiwan unknown evidence | 82 | 76 |
-| oneworld showcase-hub current / unknown | 1,731 / 950 | 1,733 / 948 |
+| oneworld showcase-hub current / unknown | 1,731 / 950 | 1,731 / 948 |
 | Star showcase-hub current / unknown | 2,462 / 1,069 | 2,462 / 1,069 |
 | SkyTeam showcase-hub current / unknown | 1,838 / 869 | 1,838 / 869 |
 | global coverage | unknown | unknown |
 
-The two-route drop is intentional: JAL KIX↔TPE seasonal services were previously inside the 2026-09-12 active set but JAL's official operating plan says the first listed operation is 2026-09-18. They remain published with a bounded 2026-09-18 through 2026-10-12 envelope and exact operating dates retained in the source note.
+The six-route drop is intentional. Two are JAL KIX↔TPE seasonal services that do not begin until 2026-09-18. The other four are the incorrect EVA TPE↔AMS/LHR endpoint-skipping edges described below; the same-number through flights operate via Bangkok and therefore cannot be represented as one nonstop route edge.
 
 ## Evidence-backed repairs
 
-### EVA Air BR — TPE↔AMS and TPE↔LHR
+### EVA Air BR — Europe through flights via BKK
 
 Source: EVA Air, `2026 Euro Summer`, published 2026-07-14 and checked 2026-09-12:
 
 `https://www.evaair.com/zh-tw/plan-and-book/special-offers/promotions/flight/26EURSUM.html`
 
-The official timetable explicitly lists BR75 TPE→AMS, BR76 AMS→TPE, BR67 TPE→LHR, and BR68 LHR→TPE. These four directional rows are therefore promoted from provider-listed to operating evidence, with `effectiveFrom: 2026-09-12` marking the evidence correction boundary.
+The promotional table presents BR75/BR76 as TPE↔AMS and BR67/BR68 as TPE↔LHR origin/destination through services. That must not be interpreted as physical nonstop service. EVA's official flight-status/timetable evidence shows Bangkok (BKK) is the intermediate operating stop: BR75 and BR67 operate TPE→BKK before continuing to Europe, while the reverse services operate Europe→BKK→TPE.
+
+GCMP's route-network edge represents one physical nonstop sector. The four endpoint-skipping TPE↔AMS/LHR edges are therefore explicitly suspended rather than published. Existing physical nonstop rows already cover TPE↔BKK and BKK↔AMS/LHR, so no duplicate route rows are added. This preserves the Bangkok sector for segment counting, distance calculation, and map geometry.
 
 ### Japan Airlines JL — KIX↔TPE seasonal window
 

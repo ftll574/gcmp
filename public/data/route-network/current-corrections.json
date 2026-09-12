@@ -55,7 +55,7 @@
       "url": "https://www.evaair.com/zh-tw/plan-and-book/special-offers/promotions/flight/26EURSUM.html",
       "checkedOn": "2026-09-12",
       "publishedOn": "2026-07-14",
-      "note": "EVA Air's official 2026 Europe summer timetable lists BR75/BR76 on TPE-AMS and BR67/BR68 on TPE-LHR as EVA-operated services."
+      "note": "EVA Air's official 2026 Europe material markets BR75/BR76 as TPE-AMS and BR67/BR68 as TPE-LHR through services, but official flight-status/timetable evidence shows Bangkok (BKK) is an intermediate operating stop. These through flights must not create endpoint-skipping TPE-Europe nonstop planner edges."
     },
     {
       "id": "jal-east-asia-s26-20260912",
@@ -1157,14 +1157,7 @@
         "TPE"
       ],
       "service": "nonstop",
-      "status": "published",
-      "carrierIdentity": "operating",
-      "flightNumbers": [
-        "BR76"
-      ],
-      "flightNumberSourceIds": [
-        "eva-europe-summer-20260912"
-      ],
+      "status": "suspended",
       "sourceIds": [
         "eva-europe-summer-20260912"
       ],
@@ -1177,14 +1170,7 @@
         "TPE"
       ],
       "service": "nonstop",
-      "status": "published",
-      "carrierIdentity": "operating",
-      "flightNumbers": [
-        "BR68"
-      ],
-      "flightNumberSourceIds": [
-        "eva-europe-summer-20260912"
-      ],
+      "status": "suspended",
       "sourceIds": [
         "eva-europe-summer-20260912"
       ],
@@ -1197,14 +1183,7 @@
         "AMS"
       ],
       "service": "nonstop",
-      "status": "published",
-      "carrierIdentity": "operating",
-      "flightNumbers": [
-        "BR75"
-      ],
-      "flightNumberSourceIds": [
-        "eva-europe-summer-20260912"
-      ],
+      "status": "suspended",
       "sourceIds": [
         "eva-europe-summer-20260912"
       ],
@@ -1217,14 +1196,7 @@
         "LHR"
       ],
       "service": "nonstop",
-      "status": "published",
-      "carrierIdentity": "operating",
-      "flightNumbers": [
-        "BR67"
-      ],
-      "flightNumberSourceIds": [
-        "eva-europe-summer-20260912"
-      ],
+      "status": "suspended",
       "sourceIds": [
         "eva-europe-summer-20260912"
       ],
