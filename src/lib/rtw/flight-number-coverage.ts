@@ -1,4 +1,4 @@
-import type { RouteNetworkCatalog, RouteNetworkEntry } from '../schemas/route-network.ts';
+import type { RouteNetworkCatalog, RouteNetworkEntry, RouteNetworkSource } from '../schemas/route-network.ts';
 import { isCalendarDate } from '../calendar-date.ts';
 import { ROUTE_FRESHNESS_BENCHMARKS } from './route-freshness.ts';
 
@@ -46,8 +46,16 @@ export interface FlightNumberCoverageLedgerRow {
   readonly sourceIds: ReadonlyArray<string>;
   readonly flightNumberSourceIds: ReadonlyArray<string>;
   readonly flightNumberCandidateSourceIds: ReadonlyArray<string>;
+  readonly flightNumberEvidence: ReadonlyArray<FlightNumberEvidenceSource>;
+  readonly flightNumberCandidateEvidence: ReadonlyArray<FlightNumberEvidenceSource>;
   readonly effectiveFrom?: string;
   readonly effectiveUntil?: string;
+}
+
+export interface FlightNumberEvidenceSource {
+  readonly id: string;
+  readonly url: string;
+  readonly checkedOn: string;
 }
 
 export interface FlightNumberCoverageReport {
@@ -109,6 +117,17 @@ function summarize(rows: ReadonlyArray<FlightNumberCoverageLedgerRow>): FlightNu
   };
 }
 
+function evidenceFor(
+  sourceIds: ReadonlyArray<string>,
+  sourceById: ReadonlyMap<string, RouteNetworkSource>,
+): FlightNumberEvidenceSource[] {
+  return sourceIds.map((id) => {
+    const source = sourceById.get(id);
+    if (!source) throw new Error(`Missing route-network source metadata: ${id}`);
+    return { id: source.id, url: source.url, checkedOn: source.checkedOn };
+  });
+}
+
 const HUB_ALLIANCE_BY_BENCHMARK = new Map<string, AllianceId>([
   ['oneworld-showcase-hubs', 'oneworld'],
   ['star-showcase-hubs', 'star'],
@@ -126,6 +145,7 @@ export function summarizeFlightNumberCoverage(
   const memberships = activeMemberships(alliances, asOf);
   const allianceByCarrier = new Map(memberships.map((row) => [row.airline, row.alliance] as const));
   const taiwanAirports = new Set(airports.filter((airport) => airport.country === 'TW').map((airport) => airport.iata));
+  const sourceById = new Map(network.sources.map((source) => [source.id, source] as const));
 
   const ledger = network.routes
     .filter((route) => isActiveOn(route, asOf) && allianceByCarrier.has(route.carrier))
@@ -141,6 +161,8 @@ export function summarizeFlightNumberCoverage(
       sourceIds: route.sourceIds,
       flightNumberSourceIds: route.flightNumberSourceIds ?? [],
       flightNumberCandidateSourceIds: route.flightNumberCandidateSourceIds ?? [],
+      flightNumberEvidence: evidenceFor(route.flightNumberSourceIds ?? [], sourceById),
+      flightNumberCandidateEvidence: evidenceFor(route.flightNumberCandidateSourceIds ?? [], sourceById),
       ...(route.effectiveFrom ? { effectiveFrom: route.effectiveFrom } : {}),
       ...(route.effectiveUntil ? { effectiveUntil: route.effectiveUntil } : {}),
     }))
