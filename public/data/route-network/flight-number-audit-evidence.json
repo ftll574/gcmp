@@ -1,0 +1,39 @@
+{
+  "version": "2026.3",
+  "coverage": "curated-not-complete",
+  "sources": [
+    {
+      "id": "ci-amsterdam-summer-20260912",
+      "url": "https://2026ste.china-airlines.com/",
+      "checkedOn": "2026-09-12",
+      "note": "China Airlines' official 2026 summer timetable lists CI073 Taipei (TPE) to Amsterdam (AMS) through 2026-10-23 and CI074 Amsterdam (AMS) to Taipei (TPE) through 2026-10-24, with explicit September operating windows."
+    }
+  ],
+  "carrierUniverses": [],
+  "routes": [
+    {
+      "carrier": "CI",
+      "pair": ["TPE", "AMS"],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "operating",
+      "flightNumbers": ["CI73"],
+      "flightNumberSourceIds": ["ci-amsterdam-summer-20260912"],
+      "sourceIds": ["ci-amsterdam-summer-20260912"],
+      "effectiveFrom": "2026-09-01",
+      "effectiveUntil": "2026-10-23"
+    },
+    {
+      "carrier": "CI",
+      "pair": ["AMS", "TPE"],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "operating",
+      "flightNumbers": ["CI74"],
+      "flightNumberSourceIds": ["ci-amsterdam-summer-20260912"],
+      "sourceIds": ["ci-amsterdam-summer-20260912"],
+      "effectiveFrom": "2026-09-02",
+      "effectiveUntil": "2026-10-24"
+    }
+  ]
+}

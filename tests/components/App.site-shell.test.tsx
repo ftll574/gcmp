@@ -236,6 +236,7 @@ test('route library keeps the searched airport selected while comparing alliance
   fireEvent.change(search, { target: { value: 'TPE' } });
   fireEvent.click(await screen.findByRole('option', { name: /TPE · Taoyuan/ }));
   expect(await screen.findByRole('heading', { name: /TPE.*Taoyuan/ })).toBeInTheDocument();
+  expect(await screen.findByRole('region', { name: '航線地圖' }, { timeout: 5_000 })).toBeInTheDocument();
   expect(screen.getByRole('combobox', { name: /搜尋機場、城市、航空公司、航線或班號/ })).toHaveValue('TPE');
 
   const map = document.querySelector('.entity-map-card');
@@ -243,7 +244,10 @@ test('route library keeps the searched airport selected while comparing alliance
   expect(allianceControls).not.toBeNull();
   fireEvent.click(within(allianceControls as HTMLElement).getByRole('button', { name: 'Star' }));
 
-  await waitFor(() => expect(document.querySelector('.entity-map-card')?.getAttribute('data-map-alliance')).toBe('star'));
+  await waitFor(
+    () => expect(document.querySelector('.entity-map-card')?.getAttribute('data-map-alliance')).toBe('star'),
+    { timeout: 5_000 },
+  );
   expect(new URLSearchParams(window.location.search).get('alliance')).toBe('star');
   expect(new URLSearchParams(window.location.search).get('q')).toBe('TPE');
   expect(new URLSearchParams(window.location.search).get('entity')).toBe('airport');

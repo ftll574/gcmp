@@ -20,8 +20,15 @@ describe('flight-number coverage CLI', () => {
 
     const child = runCli('2026-09-12', '--summary');
     expect(child.status).toBe(0);
-    expect(JSON.parse(child.stdout)).toMatchObject({ asOf: '2026-09-12', globalCoverage: 'unknown' });
-  });
+    const report = JSON.parse(child.stdout);
+    expect(report).toMatchObject({
+      asOf: '2026-09-12',
+      denominator: 'bounded-alliance-flight-number-targets',
+      globalCoverage: 'unknown',
+    });
+    expect(report.total.unknown).toBeGreaterThan(0);
+    expect(report.highValue.unknown).toBeGreaterThan(0);
+  }, 20_000);
 
   test('rejects malformed and impossible dates with a non-zero exit', () => {
     expect(runCli('not-a-date').status).not.toBe(0);

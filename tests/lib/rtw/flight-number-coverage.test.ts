@@ -6,6 +6,17 @@ import { summarizeFlightNumberCoverage } from '../../../src/lib/rtw/flight-numbe
 import { AllianceCatalogSchema } from '../../../src/lib/schemas/alliance.ts';
 import { parseRouteNetworkCatalog } from '../../../src/lib/schemas/route-network.ts';
 
+const productionEvidenceRecords = [
+  {
+    carrier: 'CI', pair: ['TPE', 'AMS'] as const, flightNumber: 'CI73',
+    sourceId: 'ci-amsterdam-summer-20260912', effectiveFrom: '2026-09-01', effectiveUntil: '2026-10-23',
+  },
+  {
+    carrier: 'CI', pair: ['AMS', 'TPE'] as const, flightNumber: 'CI74',
+    sourceId: 'ci-amsterdam-summer-20260912', effectiveFrom: '2026-09-02', effectiveUntil: '2026-10-24',
+  },
+];
+
 const syntheticNetwork = parseRouteNetworkCatalog({
   version: '2026.3',
   coverage: 'curated-not-complete',
@@ -25,8 +36,11 @@ const syntheticNetwork = parseRouteNetworkCatalog({
       carrier: 'AA', pair: ['HKG', 'NRT'], service: 'nonstop', status: 'published', carrierIdentity: 'provider-listed',
       flightNumberCandidates: ['AA2'], flightNumberCandidateSourceIds: ['candidate-source'], sourceIds: ['route-source'],
     },
-    { carrier: 'AA', pair: ['HKG', 'LAX'], service: 'nonstop', status: 'published', sourceIds: ['route-source'] },
-    { carrier: 'AA', pair: ['HKG', 'SFO'], service: 'nonstop', status: 'suspended', sourceIds: ['route-source'] },
+    {
+      carrier: 'AA', pair: ['HKG', 'LAX'], service: 'nonstop', status: 'published', sourceIds: ['route-source'],
+      flightNumbers: ['AA3'], flightNumberSourceIds: ['confirmed-source'],
+    },
+    { carrier: 'AA', pair: ['HKG', 'SFO'], service: 'nonstop', status: 'published', sourceIds: ['route-source'] },
     { carrier: 'BA', pair: ['LHR', 'JFK'], service: 'nonstop', status: 'published', sourceIds: ['route-source'] },
     { carrier: 'JL', pair: ['NRT', 'JFK'], service: 'nonstop', status: 'published', sourceIds: ['route-source'] },
     { carrier: 'CX', pair: ['HKG', 'JFK'], service: 'nonstop', status: 'published', sourceIds: ['route-source'] },
@@ -48,6 +62,17 @@ const syntheticAirports = [
   { iata: 'JFK', country: 'US' },
 ];
 
+const syntheticEvidenceRecords = [
+  {
+    carrier: 'AA', pair: ['TPE', 'HKG'] as const, flightNumber: 'AA1', sourceId: 'confirmed-source',
+    effectiveFrom: '2026-09-01', effectiveUntil: '2026-09-12',
+  },
+  {
+    carrier: 'AA', pair: ['HKG', 'LAX'] as const, flightNumber: 'AA3', sourceId: 'confirmed-source',
+    effectiveFrom: '2026-09-01', effectiveUntil: '2026-09-10',
+  },
+];
+
 describe('flight-number coverage audit', () => {
   test('classifies every active published alliance route without claiming a global denominator', () => {
     const report = summarizeFlightNumberCoverage(
@@ -55,13 +80,14 @@ describe('flight-number coverage audit', () => {
       AllianceCatalogSchema.parse(allianceRaw),
       airportRaw,
       '2026-09-12',
+      { evidenceRecords: productionEvidenceRecords },
     );
 
     expect(report.globalCoverage).toBe('unknown');
     expect(report.allianceMemberCount).toBe(60);
     expect(report.carriers).toHaveLength(60);
     expect(report.ledger).toHaveLength(report.total.trackedDirectionalRoutes);
-    expect(report.total.confirmed + report.total.candidateOnly + report.total.missing)
+    expect(report.total.confirmed + report.total.candidateOnly + report.total.unknown)
       .toBe(report.total.trackedDirectionalRoutes);
     expect(report.total.operating + report.total.providerListed).toBe(report.total.trackedDirectionalRoutes);
     expect(report.taiwan.trackedDirectionalRoutes).toBeGreaterThan(0);
@@ -74,6 +100,7 @@ describe('flight-number coverage audit', () => {
       AllianceCatalogSchema.parse(allianceRaw),
       airportRaw,
       '2026-09-12',
+      { evidenceRecords: productionEvidenceRecords },
     );
     const find = (from: string, to: string) => report.ledger.find(
       (row) => row.carrier === 'CI' && row.from === from && row.to === to,
@@ -87,9 +114,12 @@ describe('flight-number coverage audit', () => {
       effectiveFrom: '2026-09-01',
       effectiveUntil: '2026-10-23',
       flightNumberEvidence: [{
+        flightNumber: 'CI73',
         id: 'ci-amsterdam-summer-20260912',
         url: 'https://2026ste.china-airlines.com/',
         checkedOn: '2026-09-12',
+        effectiveFrom: '2026-09-01',
+        effectiveUntil: '2026-10-23',
       }],
     });
     expect(find('AMS', 'TPE')).toMatchObject({
@@ -100,9 +130,12 @@ describe('flight-number coverage audit', () => {
       effectiveFrom: '2026-09-02',
       effectiveUntil: '2026-10-24',
       flightNumberEvidence: [{
+        flightNumber: 'CI74',
         id: 'ci-amsterdam-summer-20260912',
         url: 'https://2026ste.china-airlines.com/',
         checkedOn: '2026-09-12',
+        effectiveFrom: '2026-09-02',
+        effectiveUntil: '2026-10-24',
       }],
     });
   });
@@ -129,34 +162,102 @@ describe('flight-number coverage audit', () => {
   });
 
   test('classifies all number and identity states and derives Taiwan and bounded-hub slices from synthetic rows', () => {
-    const report = summarizeFlightNumberCoverage(syntheticNetwork, syntheticAlliances, syntheticAirports, '2026-09-12');
+    const report = summarizeFlightNumberCoverage(
+      syntheticNetwork, syntheticAlliances, syntheticAirports, '2026-09-12',
+      { evidenceRecords: syntheticEvidenceRecords },
+    );
 
     expect(report.total).toMatchObject({
-      trackedDirectionalRoutes: 3,
+      trackedDirectionalRoutes: 4,
       confirmed: 1,
-      candidateOnly: 1,
-      missing: 1,
-      operating: 2,
+      candidateOnly: 2,
+      unknown: 1,
+      operating: 3,
       providerListed: 1,
-      operatingCandidateOnly: 0,
+      operatingCandidateOnly: 1,
       providerListedCandidateOnly: 1,
     });
     expect(report.taiwan).toMatchObject({ trackedDirectionalRoutes: 1, confirmed: 1 });
-    expect(report.boundedHubs.find((row) => row.alliance === 'oneworld')?.coverage.trackedDirectionalRoutes).toBe(3);
+    expect(report.boundedHubs.find((row) => row.alliance === 'oneworld')?.coverage.trackedDirectionalRoutes).toBe(4);
   });
 
   test('resolves only flight-number source IDs into standalone evidence metadata', () => {
-    const report = summarizeFlightNumberCoverage(syntheticNetwork, syntheticAlliances, syntheticAirports, '2026-09-12');
+    const report = summarizeFlightNumberCoverage(
+      syntheticNetwork, syntheticAlliances, syntheticAirports, '2026-09-12',
+      { evidenceRecords: syntheticEvidenceRecords },
+    );
     const confirmed = report.ledger.find((row) => row.from === 'TPE' && row.to === 'HKG');
     const candidate = report.ledger.find((row) => row.from === 'HKG' && row.to === 'NRT');
 
     expect(confirmed?.sourceIds).toEqual(['route-source']);
     expect(confirmed?.flightNumberEvidence).toEqual([
-      { id: 'confirmed-source', url: 'https://example.com/confirmed', checkedOn: '2026-09-02' },
+      {
+        flightNumber: 'AA1', id: 'confirmed-source', url: 'https://example.com/confirmed', checkedOn: '2026-09-02',
+        effectiveFrom: '2026-09-01', effectiveUntil: '2026-09-12',
+      },
     ]);
     expect(confirmed?.flightNumberEvidence.some((source) => source.id === 'route-source')).toBe(false);
+    expect(candidate?.flightNumberCandidateSourceIds).toEqual(['candidate-source']);
     expect(candidate?.flightNumberCandidateEvidence).toEqual([
       { id: 'candidate-source', url: 'https://example.com/candidate', checkedOn: '2026-09-03' },
     ]);
+  });
+
+  test('does not borrow a route window to keep expired flight-number evidence confirmed', () => {
+    const report = summarizeFlightNumberCoverage(
+      syntheticNetwork, syntheticAlliances, syntheticAirports, '2026-09-12',
+      { evidenceRecords: syntheticEvidenceRecords },
+    );
+    const expired = report.ledger.find((row) => row.from === 'HKG' && row.to === 'LAX');
+
+    expect(expired).toMatchObject({ numberStatus: 'candidate-only', flightNumbers: [] });
+    expect(expired?.flightNumberCandidates).toContain('AA3');
+    expect(expired?.flightNumberEvidence).toEqual([]);
+  });
+
+  test('keeps bounded targets that are absent from the runtime as explicit unknown rows', () => {
+    const runtimeWithoutUnknown = parseRouteNetworkCatalog({
+      ...syntheticNetwork,
+      routes: syntheticNetwork.routes.filter((route) => !(route.carrier === 'AA' && route.pair[0] === 'HKG' && route.pair[1] === 'SFO')),
+    });
+    const report = summarizeFlightNumberCoverage(
+      runtimeWithoutUnknown, syntheticAlliances, syntheticAirports, '2026-09-12',
+      { targetNetwork: syntheticNetwork, evidenceRecords: syntheticEvidenceRecords },
+    );
+    const absent = report.ledger.find((row) => row.from === 'HKG' && row.to === 'SFO');
+
+    expect(absent).toMatchObject({ numberStatus: 'unknown', runtimePresent: false, flightNumbers: [], flightNumberCandidates: [] });
+    expect(report.total.unknown).toBe(1);
+  });
+
+  test('rejects impossible or inverted independent flight-number evidence windows', () => {
+    expect(() => summarizeFlightNumberCoverage(
+      syntheticNetwork, syntheticAlliances, syntheticAirports, '2026-09-12',
+      { evidenceRecords: [{ ...syntheticEvidenceRecords[0]!, effectiveUntil: '2026-02-30' }] },
+    )).toThrow(/Invalid flight-number evidence window/);
+    expect(() => summarizeFlightNumberCoverage(
+      syntheticNetwork, syntheticAlliances, syntheticAirports, '2026-09-12',
+      { evidenceRecords: [{ ...syntheticEvidenceRecords[0]!, effectiveFrom: '2026-09-13', effectiveUntil: '2026-09-12' }] },
+    )).toThrow(/Invalid flight-number evidence window/);
+  });
+
+  test('real historical ADSB numbers and unaccepted CX identities are not confirmed on 2026-09-12', () => {
+    const report = summarizeFlightNumberCoverage(
+      parseRouteNetworkCatalog(networkRaw), AllianceCatalogSchema.parse(allianceRaw), airportRaw, '2026-09-12',
+      { evidenceRecords: productionEvidenceRecords },
+    );
+    const find = (carrier: string, from: string, to: string) => report.ledger.find(
+      (row) => row.carrier === carrier && row.from === from && row.to === to,
+    );
+    const ciLax = find('CI', 'TPE', 'LAX');
+    const cxOutbound = find('CX', 'TPE', 'HKG');
+    const cxInbound = find('CX', 'HKG', 'TPE');
+
+    expect(ciLax).toMatchObject({ numberStatus: 'candidate-only', flightNumbers: [] });
+    expect(ciLax?.flightNumberCandidates).toContain('CI5116');
+    expect(cxOutbound).toMatchObject({ numberStatus: 'candidate-only', flightNumbers: [] });
+    expect(cxOutbound?.flightNumberCandidates).toEqual(expect.arrayContaining(['CX2015', 'CX407']));
+    expect(cxInbound).toMatchObject({ numberStatus: 'candidate-only', flightNumbers: [] });
+    expect(cxInbound?.flightNumberCandidates).toEqual(expect.arrayContaining(['CX2026', 'CX400']));
   });
 });
