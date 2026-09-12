@@ -13,5 +13,11 @@ describe('route runtime build date', () => {
   it('rejects malformed and impossible dates', () => {
     expect(() => resolveRouteBuildDate('2026/09/12')).toThrow(/YYYY-MM-DD/);
     expect(() => resolveRouteBuildDate('2026-13-40')).toThrow(/YYYY-MM-DD/);
+    expect(() => resolveRouteBuildDate('2026-02-30')).toThrow(/YYYY-MM-DD/);
+    expect(() => resolveRouteBuildDate('2026-09-31')).toThrow(/YYYY-MM-DD/);
+  });
+
+  it('accepts a real leap day', () => {
+    expect(resolveRouteBuildDate('2028-02-29')).toBe('2028-02-29');
   });
 });

@@ -1,5 +1,6 @@
 import type { Airport } from '../types.ts';
 import type { RouteNetworkCatalog, RouteNetworkEntry } from '../schemas/route-network.ts';
+import { isCalendarDate } from '../calendar-date.ts';
 
 export type RouteFreshnessState = 'current' | 'stale' | 'unknown';
 
@@ -60,10 +61,6 @@ export interface RouteFreshnessReport {
   }>;
 }
 
-function validDate(value: string): boolean {
-  return /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(`${value}T00:00:00Z`));
-}
-
 function ageDays(checkedOn: string, asOf: string): number {
   return Math.floor((Date.parse(`${asOf}T00:00:00Z`) - Date.parse(`${checkedOn}T00:00:00Z`)) / 86_400_000);
 }
@@ -99,7 +96,7 @@ export function classifyRouteFreshness(
   asOf: string,
   freshnessWindowDays = 30,
 ): RouteFreshnessState {
-  if (!validDate(asOf)) throw new Error('asOf must be a real YYYY-MM-DD date');
+  if (!isCalendarDate(asOf)) throw new Error('asOf must be a real YYYY-MM-DD date');
   if (!Number.isInteger(freshnessWindowDays) || freshnessWindowDays < 1) {
     throw new Error('freshnessWindowDays must be a positive integer');
   }
@@ -120,7 +117,7 @@ export function summarizeRouteFreshness(
   freshnessWindowDays = 30,
   benchmarks: ReadonlyArray<RouteFreshnessBenchmark> = ROUTE_FRESHNESS_BENCHMARKS,
 ): RouteFreshnessReport {
-  if (!validDate(asOf)) throw new Error('asOf must be a real YYYY-MM-DD date');
+  if (!isCalendarDate(asOf)) throw new Error('asOf must be a real YYYY-MM-DD date');
   if (!Number.isInteger(freshnessWindowDays) || freshnessWindowDays < 1) {
     throw new Error('freshnessWindowDays must be a positive integer');
   }

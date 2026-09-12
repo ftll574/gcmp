@@ -41,7 +41,14 @@ describe('route freshness audit', () => {
 
   it('rejects invalid dates and invalid freshness windows', () => {
     expect(() => classifyRouteFreshness(network.routes[0], new Map(), 'not-a-date')).toThrow(/asOf/);
+    expect(() => classifyRouteFreshness(network.routes[0], new Map(), '2026-02-30')).toThrow(/asOf/);
+    expect(() => summarizeRouteFreshness(network, airports, '2026-09-31')).toThrow(/asOf/);
     expect(() => classifyRouteFreshness(network.routes[0], new Map(), '2026-09-12', 0)).toThrow(/freshnessWindowDays/);
+  });
+
+  it('accepts a real leap day as asOf', () => {
+    expect(classifyRouteFreshness(network.routes[0], new Map([['fresh', '2028-02-29']]), '2028-02-29')).toBe('current');
+    expect(summarizeRouteFreshness(network, airports, '2028-02-29').asOf).toBe('2028-02-29');
   });
 
   it('summarizes active routes, Taiwan coverage, hub benchmark, and non-active flags without claiming global coverage', () => {
