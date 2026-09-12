@@ -9,17 +9,17 @@
     "bts-marketing-current.json": "7b67464fd3bc4ffca57969d9a7e00d13e4090cc36742904beacfbb01ba6e9319",
     "standing-current.json": "66427d01e4fca9d0a0932f2b4af191afd26cbcb46a339c5c4e332d9377b545c6",
     "validated-static-current.json": "10953c6f7975191ce577fbe6406768813684c6de284b2c2508070dd9bdd33712",
-    "current-corrections.json": "e18f14212c3f02c4d446010b7c854181967d205d9a5e35f728a6a2d5e104573c",
+    "current-corrections.json": "cab7f66d999ff836c8a30a501639bed8c09d85d2a9a438a2c8437bbabf1bf470",
     "flight-numbers-current.json": "deaed1fdb0d879155aaa4728586058319596dcf357fa3e86a1e665fcb3b117f5"
   },
-  "outputSha256": "04bc2615fec075dbd228298793ec5fd82dc1e2b726c26c63567e1c280e89de4e",
+  "outputSha256": "8909402fb46aa63304e3e33e4cf881ef4682b232b113318d185207de315bb6e2",
   "routes": 30712,
   "publishedRoutes": 30117,
   "carriers": 60,
   "confirmedOperatingRoutes": 17746,
   "providerListedRoutes": 12371,
-  "confirmedFlightNumberRoutes": 14979,
-  "candidateFlightNumberRoutes": 24775,
+  "confirmedFlightNumberRoutes": 14981,
+  "candidateFlightNumberRoutes": 24774,
   "anyFlightNumberRoutes": 30117,
   "routeCountByCarrier": {
     "A3": 578,
@@ -210,8 +210,8 @@
   "originShards": {
     "A": {
       "routes": 2263,
-      "bytes": 1030567,
-      "sha256": "676668c94bbc7df35e79620053ee88f245b78acd04a38739163d04efa4cb5686"
+      "bytes": 1030937,
+      "sha256": "653d4e993b981b481dfa2df8370e60d231a0ebbbc5965738b6077bf1b5c1addf"
     },
     "B": {
       "routes": 2082,
@@ -305,8 +305,8 @@
     },
     "T": {
       "routes": 1213,
-      "bytes": 547350,
-      "sha256": "b6eb5dd7d8c233d5251f7992905a8550f39191e5c5291e43c86fffe8c8b03b4d"
+      "bytes": 547619,
+      "sha256": "569e4db751ee9390006480851197da8aba6529ca8d77835414cace5751242239"
     },
     "U": {
       "routes": 136,

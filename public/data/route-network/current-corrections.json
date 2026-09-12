@@ -58,6 +58,12 @@
       "note": "EVA Air's official 2026 Europe material markets BR75/BR76 as TPE-AMS and BR67/BR68 as TPE-LHR through services, but official flight-status/timetable evidence shows Bangkok (BKK) is an intermediate operating stop. These through flights must not create endpoint-skipping TPE-Europe nonstop planner edges."
     },
     {
+      "id": "ci-amsterdam-summer-20260912",
+      "url": "https://2026ste.china-airlines.com/",
+      "checkedOn": "2026-09-12",
+      "note": "China Airlines' official 2026 summer timetable lists CI073 Taipei (TPE) to Amsterdam (AMS) through 2026-10-23 and CI074 Amsterdam (AMS) to Taipei (TPE) through 2026-10-24, with explicit September operating windows."
+    },
+    {
       "id": "jal-east-asia-s26-20260912",
       "url": "https://www.jal.co.jp/jp/en/info/2026/inter/east-asia/",
       "checkedOn": "2026-09-12",
@@ -1201,6 +1207,48 @@
         "eva-europe-summer-20260912"
       ],
       "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "CI",
+      "pair": [
+        "AMS",
+        "TPE"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "operating",
+      "flightNumbers": [
+        "CI74"
+      ],
+      "flightNumberSourceIds": [
+        "ci-amsterdam-summer-20260912"
+      ],
+      "sourceIds": [
+        "ci-amsterdam-summer-20260912"
+      ],
+      "effectiveFrom": "2026-09-02",
+      "effectiveUntil": "2026-10-24"
+    },
+    {
+      "carrier": "CI",
+      "pair": [
+        "TPE",
+        "AMS"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "operating",
+      "flightNumbers": [
+        "CI73"
+      ],
+      "flightNumberSourceIds": [
+        "ci-amsterdam-summer-20260912"
+      ],
+      "sourceIds": [
+        "ci-amsterdam-summer-20260912"
+      ],
+      "effectiveFrom": "2026-09-01",
+      "effectiveUntil": "2026-10-23"
     },
     {
       "carrier": "JL",

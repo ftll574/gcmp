@@ -35,8 +35,8 @@ describe('route library overview model', () => {
     expect(model.carrierCount).toBe(60);
     expect(model.operatingCount).toBe(17_746);
     expect(model.providerListedCount).toBe(12_371);
-    expect(model.confirmedNumberCount).toBe(14_979);
-    expect(model.candidateOnlyCount).toBe(15_138);
+    expect(model.confirmedNumberCount).toBe(14_981);
+    expect(model.candidateOnlyCount).toBe(15_136);
     expect(model.airportCount).toBeGreaterThan(1_000);
     expect(model.hubs).toHaveLength(model.airportCount);
     expect(model.topCarriers).toHaveLength(10);
