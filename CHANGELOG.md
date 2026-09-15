@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file. Format foll
 
 ## [Unreleased]
 
+### Data licensing / monthly release pipeline (2026-09-15)
+
+- **Data license split:** code stays MIT (`LICENSE`); data under `public/data/` is now ODbL 1.0 (`DATA_LICENSE`) with per-source provenance and obligations in `THIRD_PARTY_NOTICES.md`. The route-network layer already aggregates ODbL sources (MrAirspace, ADSBiq), so ODbL §4.4 share-alike is the only compatible path for the derived database.
+- **Provenance metadata:** `public/data/airlines.meta.json` / `airports.meta.json` carry source/license/attribution beside the plain-array files (the arrays keep their bare shape — the calibration suite parses them as top-level arrays). Sources are marked `unattributed (pending confirmation)` until the repo owner confirms the collection origin. `runtime-current.meta.json` now carries `source` / `license` / `licenseNote` / `mergeStrategy`, and `builtOn` is deterministic (newest input mtime) instead of a hard-coded date.
+- **Monthly release pipeline:** `.github/workflows/monthly-data-release.yml` (cron `30 4 1 * *` + manual dispatch) rebuilds the route network, packages `public/data` + license notices via `scripts/package-data.sh`, emits and self-verifies a SHA256 manifest, and publishes a `data-YYYY-MM` GitHub release.
+- **Route-network generation:** `scripts/ingest-mrairspace.ts` (GitHub latest-release fetch → quarterly parquet → ODbL candidate file) plus `scripts/build-runtime-generated.ts` (candidates → `runtime-generated-YYYY-MM.json` overlay, `mergeStrategy: "curated + generated"`, curated wins). CI verifies committed overlays via `scripts/verify-runtime-generated.ts` and the new `src/lib/schemas/route-network-generated.ts` schema.
+- **README:** hard-coded test badge replaced by the CI badge; License section now reads "Code: MIT · Data: ODbL 1.0"; Current Limits notes the route-network is now being expanded by the MrAirspace/ADSBiq generation pipeline. Data version tracked separately in `public/data/VERSION` (`2026-09`).
+
 - TDX live activation review: preserve successful HTTP report separately from data-quality acceptance. Normalize documented CodeShare AirlineID + numeric FlightNumber, compare zero-padded identifiers, and scope alias suppression to the active ordered route/date. Accept documented nullable clocks without inventing times. Diagnostic v2 adds whitelisted source-shape examples and per-carrier counts without extra upstream calls; prior report is preserved when the user reruns. Added 25 synthetic regressions; live post-fix acceptance pending. See `docs/tdx-live-review-2026-09-05.md`.
 
 ### Official timetable dates / TDX (2026-09-05)
