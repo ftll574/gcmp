@@ -1,0 +1,58 @@
+name: monthly-data-release
+
+on:
+  schedule:
+    - cron: '30 4 1 * *'        # 每月 1 日 04:30 UTC(避開整點高峰)
+  workflow_dispatch: {}          # 手動補跑
+
+permissions:
+  contents: write                # release 需要
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install
+        run: npm ci
+
+      - name: 拉取 MrAirspace 最新 release
+        run: npx tsx scripts/ingest-mrairspace.ts
+
+      - name: 重建 runtime route-network
+        run: npx tsx scripts/build-runtime-route-network.ts
+
+      - name: 重建班表(harvest 腳本按需)
+        run: |
+          npx tsx scripts/harvest-jx-schedules.mjs || echo "harvest skipped (no API key?)"
+
+      - name: 打包資料
+        run: |
+          mkdir -p dist
+          ./scripts/package-data.sh dist/data-$(date +%Y-%m).zip
+
+      - name: 產生 SHA256 checksum manifest
+        working-directory: dist
+        run: |
+          find . -type f -exec sha256sum {} \; | sed 's|^\\./||' | sort > SHA256SUMS
+          cat SHA256SUMS
+
+      - name: 驗證 checksum
+        working-directory: dist
+        run: sha256sum -c SHA256SUMS || exit 1
+
+      - name: 建立/更新 release 並上傳
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: data-$(date +%Y-%m)
+          generate_release_notes: true
+          files: |
+            dist/*.zip
+            dist/SHA256SUMS
+          fail_on_unmatched_files: true
