@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "builtOn": "2026-09-15",
+  "mergeStrategy": "curated + generated",
+  "source": "generated from MrAirspace + ADSBiq ODbL candidate layers",
+  "license": "ODbL-1.0",
+  "evidenceSources": [
+    "https://github.com/MrAirspace/aircraft-flight-schedules",
+    "https://github.com/Sky-Power-Services/adsbiq-data"
+  ],
+  "routes": 41,
+  "confidence": {
+    "high": 0,
+    "medium": 0,
+    "candidate": 41
+  }
+}

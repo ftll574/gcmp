@@ -52,6 +52,15 @@ jobs:
             "
           done
 
+      - name: Validate generated route-network overlay (if present)
+        run: |
+          if ls public/data/route-network/runtime-generated-*.json >/dev/null 2>&1; then
+            npx tsx scripts/verify-runtime-generated.ts
+            echo "Generated route-network overlay verified"
+          else
+            echo "No generated overlay committed — skipping (pipeline produces it)"
+          fi
+
       - name: Calibration test (if active)
         run: |
           if ls tests/calibration/*.test.ts >/dev/null 2>&1; then

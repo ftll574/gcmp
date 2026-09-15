@@ -1,0 +1,630 @@
+{
+  "version": 1,
+  "generatedAt": "2026-09-15",
+  "source": "generated from MrAirspace + ADSBiq ODbL candidate layers",
+  "license": "ODbL-1.0",
+  "mergeStrategy": "curated + generated",
+  "evidenceSources": [
+    "https://github.com/MrAirspace/aircraft-flight-schedules",
+    "https://github.com/Sky-Power-Services/adsbiq-data"
+  ],
+  "routes": [
+    {
+      "airline_iata": "AZ",
+      "origin": "OLB",
+      "destination": "GOA",
+      "confidence": "candidate",
+      "observationCount": 4,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "AZ1232"
+      ]
+    },
+    {
+      "airline_iata": "BR",
+      "origin": "TPE",
+      "destination": "HND",
+      "confidence": "candidate",
+      "observationCount": 2,
+      "evidenceSources": [
+        "https://github.com/MrAirspace/aircraft-flight-schedules"
+      ],
+      "firstSeenQuarter": "2026-Q2",
+      "lastSeenQuarter": "2026-Q2",
+      "flightNumbers": [
+        "BR8"
+      ]
+    },
+    {
+      "airline_iata": "BR",
+      "origin": "TPE",
+      "destination": "SFO",
+      "confidence": "candidate",
+      "observationCount": 2,
+      "evidenceSources": [
+        "https://github.com/MrAirspace/aircraft-flight-schedules"
+      ],
+      "firstSeenQuarter": "2026-Q2",
+      "lastSeenQuarter": "2026-Q2",
+      "flightNumbers": [
+        "BR18"
+      ]
+    },
+    {
+      "airline_iata": "ET",
+      "origin": "BUQ",
+      "destination": "ADD",
+      "confidence": "candidate",
+      "observationCount": 4,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "ET829"
+      ]
+    },
+    {
+      "airline_iata": "GA",
+      "origin": "CGK",
+      "destination": "SRG",
+      "confidence": "candidate",
+      "observationCount": 3,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "GA232"
+      ]
+    },
+    {
+      "airline_iata": "GA",
+      "origin": "SRG",
+      "destination": "CGK",
+      "confidence": "candidate",
+      "observationCount": 8,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "GA231",
+        "GA235",
+        "GA237"
+      ]
+    },
+    {
+      "airline_iata": "JL",
+      "origin": "DLC",
+      "destination": "HND",
+      "confidence": "candidate",
+      "observationCount": 14,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "JL24"
+      ]
+    },
+    {
+      "airline_iata": "JL",
+      "origin": "HND",
+      "destination": "DLC",
+      "confidence": "candidate",
+      "observationCount": 31,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "JL23"
+      ]
+    },
+    {
+      "airline_iata": "KQ",
+      "origin": "NBO",
+      "destination": "VFA",
+      "confidence": "candidate",
+      "observationCount": 3,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "KQ792"
+      ]
+    },
+    {
+      "airline_iata": "KQ",
+      "origin": "VFA",
+      "destination": "CPT",
+      "confidence": "candidate",
+      "observationCount": 5,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "KQ792"
+      ]
+    },
+    {
+      "airline_iata": "LH",
+      "origin": "FRA",
+      "destination": "NBJ",
+      "confidence": "candidate",
+      "observationCount": 4,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "LH560"
+      ]
+    },
+    {
+      "airline_iata": "LH",
+      "origin": "MUC",
+      "destination": "TIV",
+      "confidence": "candidate",
+      "observationCount": 3,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "LH2636"
+      ]
+    },
+    {
+      "airline_iata": "LH",
+      "origin": "NBJ",
+      "destination": "FRA",
+      "confidence": "candidate",
+      "observationCount": 12,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "LH561"
+      ]
+    },
+    {
+      "airline_iata": "MS",
+      "origin": "DME",
+      "destination": "HRG",
+      "confidence": "candidate",
+      "observationCount": 8,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "MS728"
+      ]
+    },
+    {
+      "airline_iata": "OS",
+      "origin": "OHD",
+      "destination": "VIE",
+      "confidence": "candidate",
+      "observationCount": 2,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "OS766N"
+      ]
+    },
+    {
+      "airline_iata": "OS",
+      "origin": "PDL",
+      "destination": "VIE",
+      "confidence": "candidate",
+      "observationCount": 7,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "OS498"
+      ]
+    },
+    {
+      "airline_iata": "OS",
+      "origin": "VIE",
+      "destination": "PDL",
+      "confidence": "candidate",
+      "observationCount": 8,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "OS497"
+      ]
+    },
+    {
+      "airline_iata": "OZ",
+      "origin": "ICN",
+      "destination": "UKB",
+      "confidence": "candidate",
+      "observationCount": 4,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "OZ1163"
+      ]
+    },
+    {
+      "airline_iata": "QF",
+      "origin": "AKL",
+      "destination": "APW",
+      "confidence": "candidate",
+      "observationCount": 15,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "QF145"
+      ]
+    },
+    {
+      "airline_iata": "QF",
+      "origin": "AKL",
+      "destination": "OOL",
+      "confidence": "candidate",
+      "observationCount": 5,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "QF210"
+      ]
+    },
+    {
+      "airline_iata": "QF",
+      "origin": "APW",
+      "destination": "AKL",
+      "confidence": "candidate",
+      "observationCount": 3,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "QF144"
+      ]
+    },
+    {
+      "airline_iata": "QF",
+      "origin": "BNE",
+      "destination": "ROR",
+      "confidence": "candidate",
+      "observationCount": 4,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "QF165"
+      ]
+    },
+    {
+      "airline_iata": "QR",
+      "origin": "DOH",
+      "destination": "HAS",
+      "confidence": "candidate",
+      "observationCount": 4,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "QR1228"
+      ]
+    },
+    {
+      "airline_iata": "SV",
+      "origin": "CCJ",
+      "destination": "RUH",
+      "confidence": "candidate",
+      "observationCount": 16,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "SV713"
+      ]
+    },
+    {
+      "airline_iata": "SV",
+      "origin": "DMM",
+      "destination": "LHR",
+      "confidence": "candidate",
+      "observationCount": 9,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "SV117"
+      ]
+    },
+    {
+      "airline_iata": "SV",
+      "origin": "LHR",
+      "destination": "DMM",
+      "confidence": "candidate",
+      "observationCount": 16,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "SV118"
+      ]
+    },
+    {
+      "airline_iata": "SV",
+      "origin": "MED",
+      "destination": "KUL",
+      "confidence": "candidate",
+      "observationCount": 11,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "SV834"
+      ]
+    },
+    {
+      "airline_iata": "SV",
+      "origin": "RUH",
+      "destination": "CCJ",
+      "confidence": "candidate",
+      "observationCount": 21,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "SV712"
+      ]
+    },
+    {
+      "airline_iata": "SV",
+      "origin": "RUH",
+      "destination": "ISB",
+      "confidence": "candidate",
+      "observationCount": 11,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "SV724"
+      ]
+    },
+    {
+      "airline_iata": "SV",
+      "origin": "ZRH",
+      "destination": "JED",
+      "confidence": "candidate",
+      "observationCount": 15,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "SV232"
+      ]
+    },
+    {
+      "airline_iata": "TK",
+      "origin": "CKY",
+      "destination": "IST",
+      "confidence": "candidate",
+      "observationCount": 6,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "TK575"
+      ]
+    },
+    {
+      "airline_iata": "TK",
+      "origin": "OUA",
+      "destination": "CKY",
+      "confidence": "candidate",
+      "observationCount": 7,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "TK537"
+      ]
+    },
+    {
+      "airline_iata": "TP",
+      "origin": "SFO",
+      "destination": "TER",
+      "confidence": "candidate",
+      "observationCount": 58,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "TP240"
+      ]
+    },
+    {
+      "airline_iata": "UA",
+      "origin": "EWR",
+      "destination": "BON",
+      "confidence": "candidate",
+      "observationCount": 14,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "UA781"
+      ]
+    },
+    {
+      "airline_iata": "UA",
+      "origin": "EWR",
+      "destination": "ICN",
+      "confidence": "candidate",
+      "observationCount": 26,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "UA285"
+      ]
+    },
+    {
+      "airline_iata": "UA",
+      "origin": "IAH",
+      "destination": "BON",
+      "confidence": "candidate",
+      "observationCount": 9,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "UA256"
+      ]
+    },
+    {
+      "airline_iata": "UA",
+      "origin": "ICN",
+      "destination": "EWR",
+      "confidence": "candidate",
+      "observationCount": 27,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "UA286"
+      ]
+    },
+    {
+      "airline_iata": "UA",
+      "origin": "NRT",
+      "destination": "ROR",
+      "confidence": "candidate",
+      "observationCount": 6,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "UA143"
+      ]
+    },
+    {
+      "airline_iata": "UA",
+      "origin": "ROR",
+      "destination": "NRT",
+      "confidence": "candidate",
+      "observationCount": 8,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "UA142"
+      ]
+    },
+    {
+      "airline_iata": "UA",
+      "origin": "SFO",
+      "destination": "YUL",
+      "confidence": "candidate",
+      "observationCount": 521,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "UA2681"
+      ]
+    },
+    {
+      "airline_iata": "WY",
+      "origin": "DXB",
+      "destination": "SLL",
+      "confidence": "candidate",
+      "observationCount": 2,
+      "evidenceSources": [
+        "https://github.com/Sky-Power-Services/adsbiq-data"
+      ],
+      "firstSeenQuarter": "2026-Q3",
+      "lastSeenQuarter": "2026-Q3",
+      "flightNumbers": [
+        "WY618"
+      ]
+    }
+  ]
+}

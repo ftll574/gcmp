@@ -1,6 +1,10 @@
 {
   "version": 1,
-  "builtOn": "2026-09-09",
+  "builtOn": "2026-09-15",
+  "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+  "license": "ODbL-1.0",
+  "licenseNote": "Derived database of ODbL-licensed ADS-B route sources; share-alike applies.",
+  "mergeStrategy": "curated + generated",
   "inputs": {
     "current.json": "fd57f01b6ea8f1a6b50484f3ca051b313673dc0e3785348f3f706d25f197313c",
     "recent-current.json": "bd76bac687774a97a5a3f045c0afbe90333e6c2c4f06cb0c72b22cdf3051a117",

@@ -46,3 +46,4 @@ design/
 # Local research scratch files
 .tmp-*.html
 .tmp-clean-index/
+.tmp/
