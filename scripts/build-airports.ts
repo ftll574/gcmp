@@ -166,7 +166,26 @@ async function main(): Promise<void> {
   }
   mkdirSync(dirname(OUTPUT), { recursive: true });
   writeFileSync(OUTPUT, JSON.stringify(out));
+  // Provenance metadata sits beside the plain-array file (see
+  // src/lib/schemas/data-file-meta.ts for why the array itself keeps its
+  // bare shape). Emit it on every build so regeneration never drops the
+  // attribution. Source stays pending until the repo owner confirms the
+  // collection origin.
+  const metaOutput = resolve(dirname(OUTPUT), 'airports.meta.json');
+  writeFileSync(
+    metaOutput,
+    `${JSON.stringify(
+      {
+        source: 'unattributed (pending confirmation)',
+        license: 'pending-confirmation',
+        attribution: null,
+      },
+      null,
+      2,
+    )}\n`,
+  );
   console.log(`Wrote ${out.length} airports (${currentPassengerIata.size} current passenger airports covered) → ${OUTPUT}`);
+  console.log(`Wrote provenance → ${metaOutput}`);
 }
 
 main().catch((err) => {

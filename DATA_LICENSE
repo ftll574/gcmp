@@ -1,0 +1,31 @@
+DATA — Open Database License (ODbL) 1.0
+=======================================
+
+The data files under public/data/ (and any derived dataset published
+from this repository) are licensed under the Open Database License
+(ODbL) v1.0, unless a specific file carries its own source/license
+annotation that overrides this default.
+
+The ODbL is a share-alike license. If you publicly use a database
+derived from this data, you must:
+
+  1. Keep this notice (or a link to this file) with the derived
+     database (ODbL §4.2/§4.3);
+  2. Release the derived database under the ODbL or a compatible
+     license (ODbL §4.4);
+  3. Make the complete derived database or the change set available
+     in machine-readable form, free of charge (ODbL §4.6).
+
+Full license text: https://opendatacommons.org/licenses/odbl/1-0/
+
+Per-source provenance and license obligations are listed in
+THIRD_PARTY_NOTICES.md in this repository. When a file under
+public/data/ carries its own "source"/"license" fields, those
+fields take precedence for that file.
+
+This data license covers the database and its compilation. It does
+not cover: (a) trademarks or logos of airlines/airports/governments;
+(b) personal data (passenger or otherwise); (c) code under the MIT
+License.
+
+Not legal advice. Contact a lawyer before commercial redistribution.

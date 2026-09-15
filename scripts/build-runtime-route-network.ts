@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, statSync, unlinkSync, writeFileSync } from 'node:fs';
 import { parseRouteNetworkCatalog, type RouteNetworkCatalog } from '../src/lib/schemas/route-network.ts';
 import { mergeRouteNetworkCatalogs, mergeRouteNumberEvidence } from '../src/lib/rtw/route-network-merge.ts';
 
@@ -142,9 +142,28 @@ for (const letter of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') {
   originShards[letter] = { routes: routes.length, bytes: normalizedBytes(text), sha256: sha256(text) };
 }
 
+// Deterministic build date: the newest input file's mtime (UTC date only),
+// never "today". Re-running the build against unchanged inputs therefore
+// produces byte-identical output, which keeps generated artifacts diffable.
+const builtOn = new Date(
+  Math.max(
+    ...[...INPUTS, ...OPTIONAL_INPUTS, CORRECTIONS_INPUT, NUMBER_INPUT]
+      .map((file) => `${root}/${file}`)
+      .filter((path) => existsSync(path))
+      .map((path) => statSync(path).mtimeMs),
+  ),
+).toISOString().slice(0, 10);
+
 const meta = {
   version: 1,
-  builtOn: '2026-09-09',
+  builtOn,
+  // Data-license provenance. The route-network layers aggregate ODbL
+  // sources (MrAirspace, ADSBiq) whose share-alike terms govern the
+  // derived database; see DATA_LICENSE and THIRD_PARTY_NOTICES.md.
+  source: 'curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)',
+  license: 'ODbL-1.0',
+  licenseNote: 'Derived database of ODbL-licensed ADS-B route sources; share-alike applies.',
+  mergeStrategy: 'curated + generated',
   inputs: Object.fromEntries([...INPUTS, ...OPTIONAL_INPUTS.filter((file) => rawByFile.has(file)), CORRECTIONS_INPUT, NUMBER_INPUT]
     .map((file) => [file, sha256(rawByFile.get(file)!)])),
   outputSha256: sha256(runtimeText),

@@ -46,7 +46,7 @@ The static app now expands 37 reviewed ANA seasonal service records into explici
 
 Taiwan-first round-the-world award route planner. Build an itinerary, mark stopovers and surface sectors, validate it against RTW and multi-carrier mileage-redemption award rules, and share the URL.
 
-![Status: RTW pivot](https://img.shields.io/badge/status-RTW%20pivot-blue) ![License: MIT](https://img.shields.io/badge/license-MIT-green) ![Tests: 861 passing](https://img.shields.io/badge/tests-861%20passing-green)
+![Status: RTW pivot](https://img.shields.io/badge/status-RTW%20pivot-blue) ![License: MIT](https://img.shields.io/badge/license-MIT-green) ![CI](https://github.com/ftll574/gcmp/actions/workflows/ci.yml/badge.svg) [![License: ODbL (data)](https://img.shields.io/badge/data-ODbL%201.0-blue)](DATA_LICENSE)
 
 ### 2026-09-05 repair round
 
@@ -180,7 +180,7 @@ Current local baseline:
 ## Current Limits
 
 - **Live award availability is not checked.** The app validates structural rule eligibility only; seat inventory is out of scope.
-- **Route-network coverage is partial and distinct from timetables.** 42 sourced directional records cover selected CX/AY/BA/AA/LH/UA connections. Existing BR schedules supply the Taiwan departure/return legs. The real-App tests build BR and CX examples from an empty planner, but no complete global network or browser-level visual QA is claimed. Publication dates remain visible even when an old source is checked again.
+- **Route-network coverage is partial and distinct from timetables.** 42 sourced directional records cover selected CX/AY/BA/AA/LH/UA connections. Existing BR schedules supply the Taiwan departure/return legs. The real-App tests build BR and CX examples from an empty planner, but no complete global network or browser-level visual QA is claimed. Publication dates remain visible even when an old source is checked again. The route-network is now being expanded by an automated MrAirspace/ADSBiq generation pipeline (ODbL-licensed; see `scripts/ingest-mrairspace.ts`, `scripts/build-runtime-generated.ts`); generated overlays live beside the curated `runtime-current.json` and curated rows win on conflict.
 - **Award pricing is product-specific.** EVA has fixed RTW prices; Cathay has distance bands with recheck confidence; Qantas oneworld has all ten bands/four cabins from the official new-booking table effective 2025-08-05 (verified 2026-09-05), including 365,800 Qantas Points for top-band business. The original pre-Aug-2025 partial table is frozen in `tests/fixtures/qantas-pre-2025-08-05.json`; current planning does not reconstruct old-ticket pricing from departure dates or share URLs. ANA remains a partial archived chart. CI's 66-cell zone-pair reference chart is wired to per-leg station-zone quotes, not a true RTW total. The two cash RTW fares are excluded from the planner. See `docs/takeover-repairs-2026-09-05.md` for source/era handling; not all charts have been freshly verified.
 - **Cathay fourth-era chart drift is resolved at cell level; two gaps stay honestly open.** The FT 2184572 Jan-2025 data point (230,000 miles @ 19,442 self-stated flown miles) that matched no frozen-era band cell is now explained: it is Zone 10 (18,001–20,000 mi) Business under the revised fourth-era grid — pinned by two independent data points (Prince of Travel 2025-07-16; Suitesmile full-grid transcription 2026-05-02) with a third browser-render cross-check (§A9). Zone edges are byte-identical to rv=2018.Q3; only prices moved. Remaining gaps: the official flights.cathaypacific.com chart page is unresolvable from this network (DNS failure), so the grid rests on community sources rather than the airline's own page; and the exact effective date inside the bracket (2023-02-26, 2025-01-25] stays unpinned.
 - **Total cost with taxes/fees is not estimated.** The former display-only fee-schedule cards were cut under `docs/convergence-contract.md` §5 — they carried chart-drift obligations without feeding any total.
@@ -193,4 +193,4 @@ Current local baseline:
 
 ## License
 
-MIT
+Code: MIT · Data: ODbL 1.0 (see [DATA_LICENSE](DATA_LICENSE) / [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md))
