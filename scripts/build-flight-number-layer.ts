@@ -697,16 +697,43 @@ export function parseAdsbIqDirectRouteSnapshot(raw: unknown): AdsbIqDirectRouteS
   return snapshot as AdsbIqDirectRouteSnapshot;
 }
 
+/**
+ * Bounded flown-observation promotion gate (POC, 2026-09-16): a pure ADS-B
+ * direct-route observation may be promoted to a confirmed route-level flight
+ * number only when ALL of these hold:
+ *   (a) the route is BR (EVA) with a TPE endpoint (Taiwan-first scope),
+ *   (b) the route already carries independent operating-carrier evidence
+ *       (`carrierIdentity !== 'provider-listed'`), matching the standing-row
+ *       promotion gate at parseStandingRows.
+ * The ≥2-distinct-UTC-dates requirement is enforced by the snapshot parser
+ * (`parseAdsbIqDirectRouteSnapshot`), so it is not re-checked here.
+ * This proves a recently observed route/designator identity only — never a
+ * weekday, departure time, future date, or award seat (flight-number
+ * coverage contract).
+ */
+export function canPromoteFlownObservation(
+  carrier: string,
+  from: string,
+  to: string,
+  route: RouteNetworkEntry,
+): boolean {
+  return carrier === 'BR'
+    && (from === 'TPE' || to === 'TPE')
+    && route.carrierIdentity !== 'provider-listed';
+}
+
 function enrichAdsbIqDirectRoutes(
   publishedRoutes: ReadonlyMap<string, RouteNetworkEntry>,
   accumulators: Map<string, FlightAccumulator>,
   sources: Map<string, RouteNetworkSource>,
-): { matchedRoutes: number } {
+): { matchedRoutes: number; confirmedRoutes: number } {
   const snapshot = parseAdsbIqDirectRouteSnapshot(
     JSON.parse(readFileSync(ADSBIQ_DIRECT_ROUTE_SNAPSHOT, 'utf8')),
   );
   const sourceId = `adsbiq-direct-route-${snapshot.window.from.replaceAll('-', '')}-${snapshot.window.to.replaceAll('-', '')}`;
+  const confirmedSourceId = `adsbiq-direct-route-confirmed-${snapshot.window.from.replaceAll('-', '')}-${snapshot.window.to.replaceAll('-', '')}`;
   let matchedRoutes = 0;
+  let confirmedRoutes = 0;
   for (const entry of snapshot.entries) {
     const key = routeKey(entry.carrier, entry.from, entry.to);
     if (!publishedRoutes.has(key)) throw new Error(`ADSBiq direct-route snapshot references non-published route ${key}`);
@@ -722,8 +749,21 @@ function enrichAdsbIqDirectRoutes(
     }
     for (const number of entry.flightNumbers) addCandidate(accumulators, key, number, sourceId);
     matchedRoutes++;
+    const route = publishedRoutes.get(key)!;
+    if (canPromoteFlownObservation(entry.carrier, entry.from, entry.to, route)) {
+      if (!sources.has(confirmedSourceId)) {
+        sources.set(confirmedSourceId, {
+          id: confirmedSourceId,
+          url: snapshot.source,
+          checkedOn: snapshot.window.to,
+          note: `ADSBiq ODbL-1.0 daily ADS-B direct-route observations (${snapshot.window.from}..${snapshot.window.to}) promoted to route-level confirmed flight numbers under the bounded flown-observation gate (2026-09-16): BR (EVA) routes with a TPE endpoint that already carry independent operating-carrier evidence, observed on at least two distinct UTC dates. Confirms a recently observed route/designator identity only; no weekday, time, future date or award-seat claim.`,
+        });
+      }
+      for (const number of entry.flightNumbers) addConfirmed(accumulators, key, number, confirmedSourceId);
+      confirmedRoutes++;
+    }
   }
-  return { matchedRoutes };
+  return { matchedRoutes, confirmedRoutes };
 }
 
 export function parseCarrierSpecificSnapshot(raw: unknown): CarrierSpecificSnapshot {

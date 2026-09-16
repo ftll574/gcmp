@@ -1,5 +1,6 @@
 import { expect, test } from 'vitest';
 import {
+  canPromoteFlownObservation,
   parseAdsbIqDirectRouteSnapshot,
   parseCarrierSpecificSnapshot,
   parseMrAirspaceSnapshot,
@@ -100,4 +101,28 @@ test('rejects duplicate routes and cross-carrier designators in carrier-specific
       references: [{ ...validCarrierSpecificSnapshot.entries[0].references[0], flightNumber: 'QF289' }],
     }],
   })).toThrow('Invalid carrier-specific designator');
+});
+
+// Bounded flown-observation promotion gate (POC 2026-09-16).
+function brEntry(carrierIdentity: 'operating' | 'provider-listed'): { carrierIdentity: 'operating' | 'provider-listed' } {
+  return { carrierIdentity };
+}
+
+test('promotes a BR TPE-endpoint route with operating evidence', () => {
+  expect(canPromoteFlownObservation('BR', 'TPE', 'HKG', brEntry('operating') as never)).toBe(true);
+  expect(canPromoteFlownObservation('BR', 'SFO', 'TPE', brEntry('operating') as never)).toBe(true);
+});
+
+test('refuses a provider-listed BR TPE route (no independent operator evidence)', () => {
+  expect(canPromoteFlownObservation('BR', 'TPE', 'HKG', brEntry('provider-listed') as never)).toBe(false);
+});
+
+test('refuses non-BR and non-TPE routes', () => {
+  expect(canPromoteFlownObservation('CX', 'TPE', 'HKG', brEntry('operating') as never)).toBe(false);
+  expect(canPromoteFlownObservation('BR', 'ICN', 'HKG', brEntry('operating') as never)).toBe(false);
+  expect(canPromoteFlownObservation('BR', 'ICN', 'TPE', brEntry('provider-listed') as never)).toBe(false);
+});
+
+test('promotes BR TPE->NRT (TPE endpoint qualifies)', () => {
+  expect(canPromoteFlownObservation('BR', 'TPE', 'NRT', brEntry('operating') as never)).toBe(true);
 });

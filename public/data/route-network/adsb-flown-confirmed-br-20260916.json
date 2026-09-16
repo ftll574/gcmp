@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "generatedOn": "2026-09-16",
+  "purpose": "Bounded flown-observation registry for BR (EVA) TPE-endpoint routes — input to the schedule-vs-operated drift report and the ADS-B flown-observation promotion gate (build-flight-number-layer.ts enrichAdsbIqDirectRoutes).",
+  "scope": "BR (EVA) routes with a TPE endpoint, Taiwan-first. No weekday/time/future-date/award-seat claim is made by any observation here.",
+  "operatorEvidenceBaseline": {
+    "note": "Independent operating-carrier evidence baseline (docs/tdx-bounded-operator-acceptance-2026-09-06.md + docs/schedule-catalog-operator-evidence-2026-09-06.md). These identities are the selectable BR operating flights; the flown-observation layer only corroborates them post-departure.",
+    "tpeToHkg": ["BR809", "BR851", "BR857", "BR867", "BR869", "BR871", "BR891"],
+    "hkgToTpe": ["BR810", "BR852", "BR858", "BR868", "BR870", "BR872", "BR892"],
+    "tpeToSfo": ["BR8", "BR18"],
+    "evidenceCheckedAt": "2026-09-05T17:43:00.000Z",
+    "reviewDue": "2026-10-05T17:43:00.000Z"
+  },
+  "adsbObservationSources": [
+    {
+      "id": "adsbiq-recent-route-flight-number-candidates",
+      "file": "public/data/route-network/adsbiq-recent-route-flight-number-candidates.json",
+      "window": { "from": "2026-07-01", "to": "2026-09-09" },
+      "license": "ODbL-1.0",
+      "brTpeEntries": 0,
+      "note": "Current ADS-B direct-route observation snapshot contains NO BR TPE-endpoint entries (verified 2026-09-16). The observation window's BR TPE coverage is therefore absent, not confirmed-absent."
+    },
+    {
+      "id": "flight-numbers-adsbiq-recent-20260908",
+      "file": "checked-in flight-numbers-current.json source layer",
+      "window": { "from": "2026-08-01", "to": "2026-09-06" },
+      "license": "ODbL-1.0",
+      "note": "VRS standing-data callsigns joined to recent exact ADSBiq callsign observations. Promoted to confirmed only when the route already has independent operating-carrier evidence (parseStandingRows gate)."
+    }
+  ],
+  "officialScheduleBaseline": {
+    "file": "public/data/official-schedules.json",
+    "brServices": [
+      { "flightNumber": "BR67", "from": "TPE", "to": "BKK", "departureTime": "08:15", "arrivalTime": "11:20", "date": "2026-09-08" },
+      { "flightNumber": "BR211", "from": "TPE", "to": "BKK", "departureTime": "08:20", "arrivalTime": "11:10", "date": "2026-09-08" },
+      { "flightNumber": "BR205", "from": "TPE", "to": "BKK", "departureTime": "20:45", "arrivalTime": "23:30", "date": "2026-09-08" },
+      { "flightNumber": "BR61", "from": "TPE", "to": "BKK", "departureTime": "22:40", "arrivalTime": "01:20", "arrivalDayOffset": 1, "date": "2026-09-08" },
+      { "flightNumber": "BR75", "from": "TPE", "to": "BKK", "departureTime": "07:50", "arrivalTime": "10:50", "date": "2026-09-08" },
+      { "flightNumber": "BR198", "from": "TPE", "to": "NRT", "departureTime": "08:50", "arrivalTime": "12:55", "date": "2026-11-02" },
+      { "flightNumber": "BR202", "from": "BKK", "to": "TPE", "departureTime": "14:40", "arrivalTime": "19:15", "date": "2026-11-18" }
+    ],
+    "note": "No TPE-HKG / HKG-TPE / TPE-SFO BR services are present in official-schedules.json; those operator identities live in the TDX-bounded operator-evidence whitelist (server/operator-evidence.ts), not this schedule file."
+  },
+  "flownObservations": {
+    "note": "Flown observations of the operator-evidence baseline identities (BR16) are NOT yet available in the checked-in ADS-B snapshot (2026-07-01..09-09). The drift report below must therefore mark these as 'no observation' rather than asserting schedule-vs-operated agreement or drift.",
+    "entries": []
+  }
+}

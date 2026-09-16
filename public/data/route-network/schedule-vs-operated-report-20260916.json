@@ -1,0 +1,94 @@
+{
+  "version": 1,
+  "generatedOn": "2026-09-16",
+  "purpose": "P2 operational validation — schedule-vs-operated drift benchmark for BR TPE-endpoint services.",
+  "scope": "BR (EVA) services in public/data/official-schedules.json. Quality benchmark only; not a schedule source.",
+  "summary": {
+    "services": 7,
+    "observed": 0,
+    "partialObservation": 0,
+    "noObservation": 7,
+    "meanDepartureDriftMinutes": null,
+    "meanArrivalDriftMinutes": null
+  },
+  "trustNote": "Missing observations are reported as no-observation, never as \"no flight\" or \"on time\". Drift is only computed for exact route+flightNumber+date matches.",
+  "rows": [
+    {
+      "flightNumber": "BR67",
+      "from": "TPE",
+      "to": "BKK",
+      "scheduledDeparture": "08:15",
+      "scheduledArrival": "11:20",
+      "departureDriftMinutes": null,
+      "arrivalDriftMinutes": null,
+      "status": "no-observation",
+      "observationNote": "No flown observation in checked-in ADS-B snapshot (2026-07-01..09-09)."
+    },
+    {
+      "flightNumber": "BR211",
+      "from": "TPE",
+      "to": "BKK",
+      "scheduledDeparture": "08:20",
+      "scheduledArrival": "11:10",
+      "departureDriftMinutes": null,
+      "arrivalDriftMinutes": null,
+      "status": "no-observation",
+      "observationNote": "No flown observation in checked-in ADS-B snapshot (2026-07-01..09-09)."
+    },
+    {
+      "flightNumber": "BR205",
+      "from": "TPE",
+      "to": "BKK",
+      "scheduledDeparture": "20:45",
+      "scheduledArrival": "23:30",
+      "departureDriftMinutes": null,
+      "arrivalDriftMinutes": null,
+      "status": "no-observation",
+      "observationNote": "No flown observation in checked-in ADS-B snapshot (2026-07-01..09-09)."
+    },
+    {
+      "flightNumber": "BR61",
+      "from": "TPE",
+      "to": "BKK",
+      "scheduledDeparture": "22:40",
+      "scheduledArrival": "01:20",
+      "departureDriftMinutes": null,
+      "arrivalDriftMinutes": null,
+      "status": "no-observation",
+      "observationNote": "No flown observation in checked-in ADS-B snapshot (2026-07-01..09-09)."
+    },
+    {
+      "flightNumber": "BR75",
+      "from": "TPE",
+      "to": "BKK",
+      "scheduledDeparture": "07:50",
+      "scheduledArrival": "10:50",
+      "departureDriftMinutes": null,
+      "arrivalDriftMinutes": null,
+      "status": "no-observation",
+      "observationNote": "No flown observation in checked-in ADS-B snapshot (2026-07-01..09-09)."
+    },
+    {
+      "flightNumber": "BR198",
+      "from": "TPE",
+      "to": "NRT",
+      "scheduledDeparture": "08:50",
+      "scheduledArrival": "12:55",
+      "departureDriftMinutes": null,
+      "arrivalDriftMinutes": null,
+      "status": "no-observation",
+      "observationNote": "No flown observation in checked-in ADS-B snapshot (2026-07-01..09-09)."
+    },
+    {
+      "flightNumber": "BR202",
+      "from": "BKK",
+      "to": "TPE",
+      "scheduledDeparture": "14:40",
+      "scheduledArrival": "19:15",
+      "departureDriftMinutes": null,
+      "arrivalDriftMinutes": null,
+      "status": "no-observation",
+      "observationNote": "No flown observation in checked-in ADS-B snapshot (2026-07-01..09-09)."
+    }
+  ]
+}
