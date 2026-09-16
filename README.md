@@ -172,7 +172,7 @@ npm run build
 
 Current local baseline:
 
-- 861 Vitest tests in 61 files (incl. 24 calibration cases plus bounded operator-evidence, schedule-catalog operator evidence, unverified-operator, offline-replay, real-capture/date-selection, browser-replay, AeroDataBox free-calibration and exact-date cross-validation regressions)
+- 1185 Vitest tests in 106 files (incl. 24 calibration cases plus bounded operator-evidence, schedule-catalog operator evidence, unverified-operator, offline-replay, real-capture/date-selection, browser-replay, AeroDataBox free-calibration and exact-date cross-validation regressions)
 - strict TypeScript
 - ESLint engine purity rule for `src/lib/calc/**`
 - production build via Vite
@@ -194,3 +194,11 @@ Current local baseline:
 ## License
 
 Code: MIT · Data: ODbL 1.0 (see [DATA_LICENSE](DATA_LICENSE) / [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md))
+
+## Data manifest
+
+Every file under `public/data/` is cataloged in [`public/data/DATA_MANIFEST.json`](public/data/DATA_MANIFEST.json) — a machine-readable list of 206 datasets recording each file's kind (`input` / `derived` / `shard` / `meta`), producing script, source, license, and exact bytes + sha256 so the data layer is auditable and CI can detect drift.
+
+- Regenerate after any data-tree change: `npm run data:build-manifest`
+- Verify against the tree (also run in CI): `npm run data:verify-manifest`
+- Schema: `src/lib/schemas/data-manifest.ts`; per-file license annotations live in `*.meta.json` beside the data (see `DATA_LICENSE` / `THIRD_PARTY_NOTICES.md`).
