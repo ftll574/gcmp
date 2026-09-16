@@ -8,6 +8,7 @@ export default defineConfig({
     environment: 'jsdom',
     globals: false,
     include: ['tests/**/*.test.{ts,tsx}'],
+    setupFiles: ['tests/setup.ts'],
     // Iron Rule calibration suite (tests/calibration/flyertalk-routings.test.ts)
     // runs in the default run — CI gates /ship on any calibration failure.
     coverage: {
