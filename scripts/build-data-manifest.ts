@@ -150,8 +150,15 @@ function describe(path: string): { source: string; license: DataLicense } {
   if (path.endsWith('.meta.json') || path === 'VERSION' || path === 'DATA_MANIFEST.json') {
     return { source: 'project metadata', license: 'ODbL-1.0' };
   }
-  // airlines.json / airports.json — attribution pending repo owner confirmation
-  return { source: 'unattributed (pending confirmation)', license: 'pending-confirmation' };
+  // airports.json — OurAirports-derived (see scripts/build-airports.ts), public domain
+  if (path === 'airports.json') {
+    return {
+      source: 'OurAirports airport dataset (see scripts/build-airports.ts)',
+      license: 'Public-Domain',
+    };
+  }
+  // airlines.json — curated project data, origin pending owner confirmation
+  return { source: 'curated project data (see THIRD_PARTY_NOTICES.md)', license: 'pending-confirmation' };
 }
 
 /** Every file under public/data/, relative paths, sorted. */

@@ -1,5 +1,5 @@
 {
-  "source": "unattributed (pending confirmation)",
-  "license": "pending-confirmation",
-  "attribution": null
+  "source": "OurAirports airport dataset (https://ourairports.com/data, https://davidmegginson.github.io/ourairports-data/airports.csv) + air-routes.com current passenger-airport sitemap as an inclusion list; see scripts/build-airports.ts",
+  "license": "Public-Domain",
+  "attribution": "Airport data by OurAirports (https://ourairports.com), public domain"
 }

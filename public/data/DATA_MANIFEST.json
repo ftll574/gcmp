@@ -1,6 +1,6 @@
 {
   "version": "2026.3",
-  "generatedAt": "2026-09-16",
+  "generatedAt": "2026-09-20",
   "datasets": [
     {
       "id": "VERSION",
@@ -22,7 +22,7 @@
       "kind": "input",
       "producer": null,
       "inputs": [],
-      "source": "unattributed (pending confirmation)",
+      "source": "curated project data (see THIRD_PARTY_NOTICES.md)",
       "license": "pending-confirmation",
       "attribution": null,
       "schema": null,
@@ -40,8 +40,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 114,
-      "sha256": "ceccba623c112fc1",
+      "bytes": 153,
+      "sha256": "b00a2a0096bebeb2",
       "notes": ""
     },
     {
@@ -50,8 +50,8 @@
       "kind": "input",
       "producer": "scripts/build-airports.ts",
       "inputs": [],
-      "source": "unattributed (pending confirmation)",
-      "license": "pending-confirmation",
+      "source": "OurAirports airport dataset (see scripts/build-airports.ts)",
+      "license": "Public-Domain",
       "attribution": null,
       "schema": null,
       "bytes": 673786,
@@ -68,8 +68,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 114,
-      "sha256": "ceccba623c112fc1",
+      "bytes": 362,
+      "sha256": "cd472318aedbc82c",
       "notes": ""
     },
     {
@@ -1302,6 +1302,20 @@
       "schema": null,
       "bytes": 160,
       "sha256": "78c9a84704b6cf80",
+      "notes": ""
+    },
+    {
+      "id": "route-network.adsb-flown-confirmed-br-20260916",
+      "path": "route-network/adsb-flown-confirmed-br-20260916.json",
+      "kind": "derived",
+      "producer": null,
+      "inputs": [],
+      "source": "curated route-network input snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "pending-confirmation",
+      "attribution": null,
+      "schema": null,
+      "bytes": 3675,
+      "sha256": "3771480e10291507",
       "notes": ""
     },
     {
@@ -2949,6 +2963,20 @@
       "schema": null,
       "bytes": 181503,
       "sha256": "67519a95759a06f0",
+      "notes": ""
+    },
+    {
+      "id": "route-network.schedule-vs-operated-report-20260916",
+      "path": "route-network/schedule-vs-operated-report-20260916.json",
+      "kind": "derived",
+      "producer": null,
+      "inputs": [],
+      "source": "curated route-network input snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "pending-confirmation",
+      "attribution": null,
+      "schema": null,
+      "bytes": 3177,
+      "sha256": "034b1c5c78dee986",
       "notes": ""
     },
     {

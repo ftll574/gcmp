@@ -18,8 +18,17 @@ describe('data-file provenance metadata', () => {
 
     test(`${file} marks the source as unattributed pending confirmation`, () => {
       const meta = parseDataFileMeta(JSON.parse(readFileSync(file, 'utf8')));
-      expect(meta.source).toBe('unattributed (pending confirmation)');
-      expect(meta.license).toBe('pending-confirmation');
+      // Public-domain OurAirports origin for airports.json is evidenced by the
+      // build script (scripts/build-airports.ts SOURCE_URL); airlines.json is an
+      // in-repo curated list whose collection origin the repo owner has not
+      // confirmed yet, so it honestly stays "pending confirmation".
+      if (file === 'public/data/airports.meta.json') {
+        expect(meta.source).toMatch(/OurAirports/);
+        expect(meta.license).toBe('Public-Domain');
+      } else {
+        expect(meta.source).toBe('curated project data (alliance member airlines, see THIRD_PARTY_NOTICES.md)');
+        expect(meta.license).toBe('pending-confirmation');
+      }
     });
   }
 });

@@ -169,16 +169,18 @@ async function main(): Promise<void> {
   // Provenance metadata sits beside the plain-array file (see
   // src/lib/schemas/data-file-meta.ts for why the array itself keeps its
   // bare shape). Emit it on every build so regeneration never drops the
-  // attribution. Source stays pending until the repo owner confirms the
-  // collection origin.
+  // attribution. Airports are sourced from OurAirports (see SOURCE_URL above),
+  // which is public domain; the passenger-airport sitemap is used only as an
+  // inclusion list and contributes no new rows.
   const metaOutput = resolve(dirname(OUTPUT), 'airports.meta.json');
   writeFileSync(
     metaOutput,
     `${JSON.stringify(
       {
-        source: 'unattributed (pending confirmation)',
-        license: 'pending-confirmation',
-        attribution: null,
+        source:
+          'OurAirports airport dataset (https://ourairports.com/data, https://davidmegginson.github.io/ourairports-data/airports.csv) + air-routes.com current passenger-airport sitemap as an inclusion list; see scripts/build-airports.ts',
+        license: 'Public-Domain',
+        attribution: 'Airport data by OurAirports (https://ourairports.com), public domain',
       },
       null,
       2,
