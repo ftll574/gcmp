@@ -37,6 +37,7 @@
     "routes:verify-generated": "tsx scripts/verify-runtime-generated.ts",
     "data:build-manifest": "tsx scripts/build-data-manifest.ts",
     "data:verify-manifest": "tsx scripts/verify-data-manifest.ts",
+    "data:verify-airlines": "tsx scripts/verify-airlines-provenance.ts",
     "predev": "tsx scripts/build-runtime-route-network.ts && tsx scripts/build-route-library-carrier-shards.ts && tsx scripts/build-landing-showcases.ts",
     "dev": "tsx scripts/dev.ts",
     "schedules:serve": "tsx scripts/serve-schedules.ts",

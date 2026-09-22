@@ -157,8 +157,12 @@ function describe(path: string): { source: string; license: DataLicense } {
       license: 'Public-Domain',
     };
   }
-  // airlines.json — curated project data, origin pending owner confirmation
-  return { source: 'curated project data (see THIRD_PARTY_NOTICES.md)', license: 'pending-confirmation' };
+  // airlines.json — OpenFlights airlines.dat snapshot, cross-verified by
+  // scripts/verify-airlines-provenance.ts (45/45 code pairs), ODbL-1.0.
+  return {
+    source: 'OpenFlights airlines.dat (see scripts/verify-airlines-provenance.ts), curated alliance-member subset',
+    license: 'ODbL-1.0',
+  };
 }
 
 /** Every file under public/data/, relative paths, sorted. */

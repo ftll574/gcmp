@@ -1,12 +1,13 @@
 # Third-Party Notices & Data Provenance
 
-更新時間:2026-09-15 · 用途:記錄 public/data/ 每個資料來源的授權與義務。
+更新時間:2026-09-20 · 用途:記錄 public/data/ 每個資料來源的授權與義務。
 單一檔案內有自帶 source/license 欄位者,以該欄位為準。
 
 ## 資料來源清單
 
 | 來源 | 用途 | 授權 | 義務 |
 |---|---|---|---|
+| OpenFlights (github.com/jpatokal/openflights, data/airlines.dat) | airlines.json 聯盟成員表碼位(45/45 交叉驗證,見 scripts/verify-airlines-provenance.ts) | ODbL 1.0 (data/LICENSE) | notice(4.3)+ share-alike(4.4)+ 機器可讀提供衍生庫(4.6) |
 | OurAirports (ourairports.com/data) | 機場/跑道/導航台基礎資料 | Public Domain (Unlicense) | 無強制 attribution(禮貌性即可) |
 | MrAirspace aircraft-flight-schedules (github.com/MrAirspace/aircraft-flight-schedules) | 航線/航班號候選 overlay | ODbL 1.0 | notice(4.3)+ share-alike(4.4)+ 機器可讀提供衍生庫(4.6) |
 | ADSBiq (github.com/Sky-Power-Services/adsbiq-data) | 航線/航班號候選 overlay | ODbL 1.0 | 同上 |

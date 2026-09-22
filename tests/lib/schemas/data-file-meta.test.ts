@@ -16,18 +16,18 @@ describe('data-file provenance metadata', () => {
       expect(meta.attribution === null || typeof meta.attribution === 'string').toBe(true);
     });
 
-    test(`${file} marks the source as unattributed pending confirmation`, () => {
+    test(`${file} marks the source as verified with a license`, () => {
       const meta = parseDataFileMeta(JSON.parse(readFileSync(file, 'utf8')));
       // Public-domain OurAirports origin for airports.json is evidenced by the
-      // build script (scripts/build-airports.ts SOURCE_URL); airlines.json is an
-      // in-repo curated list whose collection origin the repo owner has not
-      // confirmed yet, so it honestly stays "pending confirmation".
+      // build script (scripts/build-airports.ts SOURCE_URL); airlines.json is
+      // cross-verified against the OpenFlights airlines.dat snapshot by
+      // scripts/verify-airlines-provenance.ts (45/45 code pairs), ODbL-1.0.
       if (file === 'public/data/airports.meta.json') {
         expect(meta.source).toMatch(/OurAirports/);
         expect(meta.license).toBe('Public-Domain');
       } else {
-        expect(meta.source).toBe('curated project data (alliance member airlines, see THIRD_PARTY_NOTICES.md)');
-        expect(meta.license).toBe('pending-confirmation');
+        expect(meta.source).toMatch(/OpenFlights/);
+        expect(meta.license).toBe('ODbL-1.0');
       }
     });
   }

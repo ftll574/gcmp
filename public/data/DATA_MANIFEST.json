@@ -22,8 +22,8 @@
       "kind": "input",
       "producer": null,
       "inputs": [],
-      "source": "curated project data (see THIRD_PARTY_NOTICES.md)",
-      "license": "pending-confirmation",
+      "source": "OpenFlights airlines.dat (see scripts/verify-airlines-provenance.ts), curated alliance-member subset",
+      "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
       "bytes": 3458,
@@ -40,8 +40,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 153,
-      "sha256": "b00a2a0096bebeb2",
+      "bytes": 442,
+      "sha256": "e291fe59df180ef0",
       "notes": ""
     },
     {

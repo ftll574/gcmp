@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file. Format foll
 ### Airport provenance resolution (2026-09-20)
 
 - **airports.json source confirmed:** `scripts/build-airports.ts` pins `SOURCE_URL` to the OurAirports CSV, so `airports.meta.json` now records source = OurAirports + air-routes.com passenger-airport sitemap (inclusion list only), license = `Public-Domain`. `build-airports.ts` regenerates this metadata on every build; `scripts/build-data-manifest.ts` and the `data-file-meta` tests were synced so regeneration never reverts the attribution.
-- **airlines.json stays honest:** the 45-row alliance-member list is in-repo curated data with no confirmable external origin; it remains `pending-confirmation` rather than claiming a source. `THIRD_PARTY_NOTICES.md` already listed both sources.
+- **airlines.json source confirmed:** cross-verified 45/45 IATA+ICAO code pairs against the OpenFlights `airlines.dat` snapshot (ODbL 1.0, `data/LICENSE`) via the new `scripts/verify-airlines-provenance.ts` (CI-checkable, `npm run data:verify-airlines`). `airlines.meta.json` now records source = OpenFlights airlines.dat (curated alliance-member subset), license = `ODbL-1.0`, with ODbL attribution. `scripts/build-data-manifest.ts`, the `data-file-meta` tests and `THIRD_PARTY_NOTICES.md` were synced so regeneration never reverts the attribution and the notices list no longer has a dangling reference for `airlines.json`.
 
 ### Data manifest + license annotations (2026-09-16)
 

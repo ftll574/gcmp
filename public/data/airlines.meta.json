@@ -1,5 +1,5 @@
 {
-  "source": "curated project data (alliance member airlines, see THIRD_PARTY_NOTICES.md)",
-  "license": "pending-confirmation",
-  "attribution": null
+  "source": "OpenFlights airlines.dat snapshot (https://openflights.org/data.html, https://raw.githubusercontent.com/jpatokal/openflights/master/data/airlines.dat), 45/45 IATA+ICAO code pairs cross-verified by scripts/verify-airlines-provenance.ts; rows curated to the active alliance-member subset (see THIRD_PARTY_NOTICES.md)",
+  "license": "ODbL-1.0",
+  "attribution": "Airline data by OpenFlights (https://openflights.org), ODbL 1.0"
 }

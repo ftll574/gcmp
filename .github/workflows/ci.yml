@@ -41,6 +41,9 @@ jobs:
       - name: Validate DATA_MANIFEST (data-layer catalog + sha256 drift)
         run: npx tsx scripts/verify-data-manifest.ts
 
+      - name: Validate airline provenance (OpenFlights cross-check)
+        run: npx tsx scripts/verify-airlines-provenance.ts
+
       - name: Build
         run: npm run build
 
