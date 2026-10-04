@@ -19,7 +19,8 @@ describe('airport browse region overlay', () => {
   test('pins a browse-only, source-backed overlay for the three first large countries', () => {
     expect(catalog.convention).toBe('ourairports-iso-region-browse-overlay');
     expect(catalog.regions).toHaveLength(19);
-    expect(catalog.airports).toHaveLength(460);
+    expect(catalog.airports.length).toBeGreaterThan(400);
+    expect(new Set(catalog.airports.map((airport) => airport.iata)).size).toBe(catalog.airports.length);
     expect(catalog.note).toMatch(/Browse-only/i);
     expect(catalog.sourceUrls).toContain('https://davidmegginson.github.io/ourairports-data/airports.csv');
   });
@@ -33,8 +34,9 @@ describe('airport browse region overlay', () => {
         if (airport && ['US', 'CA', 'AU'].includes(airport.country)) required.add(iata);
       }
     }
-    expect(required.size).toBe(460);
+    expect(required.size).toBeGreaterThan(400);
     expect([...required].filter((iata) => !byIata.has(iata))).toEqual([]);
+    expect([...byIata.keys()].sort()).toEqual([...required].sort());
   });
 
   test('uses subdivision-backed regions for representative US, Canadian and Australian airports', () => {

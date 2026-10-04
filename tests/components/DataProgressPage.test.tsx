@@ -99,9 +99,40 @@ it('keeps SkyTeam existing enrichment and future evidence separate from qualifie
  const progress={state:'enriched',sourceDate:'2026-10-02',sourceCapturedAt:'2026-10-02T14:27:35.466746Z',sourceLastModified:'Fri, 02 Oct 2026 08:04:48 GMT',registrations:560,currentIntervalRegistrations:32,directions:[{key:'AF:CDG-GIG',registrations:95}],future:[{key:'DL:GIG-JFK',registrations:8,from:'2026-11-13',until:'2027-03-27'}],heldRecords:1,newCurrentDirections:0,newSelectable:0,publicPackage:'notice-review'};
  vi.stubGlobal('fetch',vi.fn().mockResolvedValue(new Response(JSON.stringify({...good,reviews:{siros:{state:'missing'},sirosSkyteam:progress}}))));render(<DataProgressPage onNavigate={vi.fn()}/>);expect(await screen.findByText('SIROS SkyTeam 既有方向計畫證據')).toBeInTheDocument();expect(screen.getByText(/補入 560 筆/)).toHaveTextContent('新增 current 方向 0');expect(screen.getByText(/DL:GIG-JFK/)).toHaveTextContent('不可選航班');expect(screen.getByRole('link',{name:'AF:CDG-GIG'})).toHaveAttribute('href','/?view=routes&entity=route&id=CDG-GIG#/r/preserved');expect(screen.getByText(/版本未指定；此批/)).toBeInTheDocument();expect(screen.getByText('2,916')).toBeInTheDocument();
 });
-it('discloses Avinor passenger scope without nonstop, first-stage or operator promotion',async()=>{
- const {readFileSync}=await import('node:fs');const review=JSON.parse(readFileSync('docs/coverage-ledger/avinor-osl-semantics-20261003/review.json','utf8'));
- vi.stubGlobal('fetch',vi.fn().mockResolvedValue(new Response(JSON.stringify({...good,reviews:{siros:{state:'missing'},avinorSemantics:review}}))));render(<DataProgressPage onNavigate={vi.fn()}/>);expect(await screen.findByText('OSL Avinor 客運與停靠語義核驗')).toBeInTheDocument();expect(screen.getByText(/已補強 159 筆/)).toHaveTextContent('新增 current 航線 0');expect(screen.getByText(/J 排定客運與 C 包機客運/)).toBeInTheDocument();expect(screen.getByText(/WF141/)).toHaveTextContent('SOG, SDN');expect(screen.getByText(/WF163/)).toHaveTextContent('第一航段端點未知');expect(screen.getByText(/比較 97 個/)).toHaveTextContent('58 個未匹配');expect(screen.getByText(/此輪來源請求 0/)).toBeInTheDocument();expect(screen.getByRole('list',{name:'Avinor OSL 未匹配方向'}).children).toHaveLength(58);expect(screen.getByText('2,916')).toBeInTheDocument();
+it('discloses Avinor passenger scope without nonstop, first-stage or operator promotion', async () => {
+  const airportCode = (value: number): string => {
+    let n = value;
+    let code = '';
+    for (let i = 0; i < 3; i += 1) { code = String.fromCharCode(65 + (n % 26)) + code; n = Math.floor(n / 26); }
+    return code;
+  };
+  // Small public-safe synthetic fixture: 39 matched + 58 unmatched directions.
+  const review = {
+    state: 'reviewed', sourceDate: '2026-10-03', sourceCapturedAt: '2026-10-03T12:00:00Z', sourceLastUpdate: '2026-10-03T11:00:00Z',
+    sourceWindow: { from: '2026-10-03T00:00:00Z', until: '2026-10-03T23:59:00Z' },
+    documentation: { url: 'https://example.com/fixture/avinor-fields.pdf', path: 'fixture/avinor-fields.pdf', sha256: 'a'.repeat(64), retrievedAt: '2026-10-03T12:00:00Z' },
+    rawRecords: 160, acceptedReferences: 159, semanticEnrichedReferences: 159, documentedDefaultPassengerScope: true,
+    regularVsCharterPerRow: 'unknown', cargoPerRow: 'not-independently-verified', operatingCompany: 'unknown', viaCompleteness: 'not-guaranteed', nextStageEndpoint: 'not-established', clock: 'UTC-scheduled-reference',
+    directions: Array.from({ length: 97 }, (_, index) => ({ key: `WF:OSL-${airportCode(index)}`, records: 1, existingPublished: index < 39, fullMemberAtSourceDate: false, rowIds: [index] })),
+    unmatchedDirections: 58, unmatchedRecords: 58, matchedDirections: 39, matchedRecords: 102, unmatchedMemberDirections: 32,
+    ambiguousEndpoints: [
+      { id: 'fixture-1', flightId: 'WF141', peerAirport: 'SOG', viaAirports: ['SDN'], qualification: 'multi-stop', sourceListedPair: null, firstStagePair: null },
+      { id: 'fixture-2', flightId: 'WF163', peerAirport: 'TOS', viaAirports: ['BOO'], qualification: 'circular', sourceListedPair: null, firstStagePair: null },
+    ],
+    held: [{ row: 160, id: 'fixture-held', reason: 'Carrier identity is unresolved.' }], codeshareAliases: 0,
+    currentAdditions: 0, newSelectable: 0, sourceRequests: 0, minimumRefreshSeconds: 180,
+  } as const;
+  vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(JSON.stringify({ ...good, reviews: { siros: { state: 'missing' }, avinorSemantics: review } }))));
+  render(<DataProgressPage onNavigate={vi.fn()} />);
+  expect(await screen.findByText('OSL Avinor 客運與停靠語義核驗')).toBeInTheDocument();
+  expect(screen.getByText(/已補強 159 筆/)).toHaveTextContent('新增 current 航線 0');
+  expect(screen.getByText(/J 排定客運與 C 包機客運/)).toBeInTheDocument();
+  expect(screen.getByText(/WF141/)).toHaveTextContent('SOG，via SDN');
+  expect(screen.getByText(/WF163/)).toHaveTextContent('第一航段端點未知');
+  expect(screen.getByText(/比較 97 個/)).toHaveTextContent('58 個未匹配');
+  expect(screen.getByText(/此輪來源請求 0/)).toBeInTheDocument();
+  expect(screen.getByRole('list', { name: 'Avinor OSL 未匹配方向' }).children).toHaveLength(58);
+  expect(screen.getByText('2,916')).toBeInTheDocument();
 });
 
 it('reports the three-carrier bulk SIROS source separately from current services and qualified counts',async()=>{

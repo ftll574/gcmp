@@ -31,12 +31,15 @@ describe('route library overview model', () => {
       countryContinents,
       airportContinentOverrides: airportOverrides,
     });
-    expect(model.routeCount).toBe(30_121);
+    const represented = network.routes.filter((route) => route.status === 'published' && memberCodes.has(route.carrier));
+    expect(model.routeCount).toBe(represented.length);
     expect(model.carrierCount).toBe(60);
-    expect(model.operatingCount).toBe(17_744);
-    expect(model.providerListedCount).toBe(12_377);
-    expect(model.confirmedNumberCount).toBe(14_977);
-    expect(model.candidateOnlyCount).toBe(15_144);
+    expect(model.operatingCount).toBe(represented.filter((route) => route.carrierIdentity === 'operating').length);
+    expect(model.providerListedCount).toBe(represented.filter((route) => route.carrierIdentity === 'provider-listed').length);
+    expect(model.unknownIdentityCount).toBe(represented.filter((route) => !route.carrierIdentity).length);
+    expect(model.confirmedNumberCount).toBe(represented.filter((route) => (route.flightNumbers?.length ?? 0) > 0).length);
+    expect(model.candidateOnlyCount).toBe(represented.filter((route) => !route.flightNumbers?.length && (route.flightNumberCandidates?.length ?? 0) > 0).length);
+    expect(model.operatingCount + model.providerListedCount + model.unknownIdentityCount).toBe(model.routeCount);
     expect(model.airportCount).toBeGreaterThan(1_000);
     expect(model.hubs).toHaveLength(model.airportCount);
     expect(model.topCarriers).toHaveLength(10);

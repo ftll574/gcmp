@@ -9,7 +9,7 @@ function network(routes: Partial<RouteNetworkEntry>[] = [{}]) {
   return RouteNetworkCatalogSchema.parse({
     version: '2026.3', coverage: 'curated-not-complete',
     sources: [{ id: 'fixture', url: 'https://example.com/route', checkedOn: '2026-09-05', publishedOn: '2025-01-01', note: 'Test fixture only.' }],
-    routes: routes.map((item) => ({ carrier: 'CX', pair: ['TPE', 'HKG'], service: 'nonstop', status: 'published', sourceIds: ['fixture'], ...item })),
+    routes: routes.map((item) => ({ carrier: 'CX', pair: ['TPE', 'HKG'], service: 'nonstop', status: 'published', carrierIdentity: 'operating', sourceIds: ['fixture'], ...item })),
   });
 }
 function schedule(overrides: Partial<ScheduleEntry> = {}): ScheduleEntry {
@@ -224,4 +224,14 @@ describe('next-leg discovery', () => {
     expect([...result.keys()]).toEqual(['SFO']);
     expect(result.get('SFO')?.map((destination) => destination.iata)).toEqual(['HKG']);
   });
+});
+
+
+test('missing operating identity cannot make route numbers selectable', () => {
+  const unknown = buildNextLegIndex({ ...base, network: network([{
+    carrierIdentity: undefined, flightNumbers: ['CX473'], flightNumberSourceIds: ['fixture'],
+  }]) }).get('TPE')?.[0]?.options[0];
+  expect(unknown?.identityStatus).toBe('unknown');
+  expect(unknown?.flightNumbers).toEqual([]);
+  expect(unknown?.candidateFlightNumbers).toEqual(['CX473']);
 });

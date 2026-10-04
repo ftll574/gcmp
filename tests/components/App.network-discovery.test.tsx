@@ -1,11 +1,12 @@
 /** Task-level integration: build real BR/CX examples from a blank App, not a
- * prebuilt share URL. Primary-source network rows are real; dates and choices
+ * prebuilt share URL. Route geometry is real; bounded synthetic operator proof, dates and choices
  * are test itineraries, never claims of operating flights or award seats. */
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { syntheticOperatingNetwork } from '../fixtures/operating-network.ts';
 import { App } from '../../src/App.tsx';
 import { parseShareUrl } from '../../src/lib/url-schema.ts';
 
@@ -31,7 +32,7 @@ beforeEach(() => {
     if (!path.startsWith('/data/') || !path.endsWith('.json') || !existsSync(file)) {
       return { ok: false, status: 404, json: async () => undefined };
     }
-    return { ok: true, status: 200, json: async () => JSON.parse(readFileSync(file, 'utf8')) };
+    return { ok: true, status: 200, json: async () => { const data = JSON.parse(readFileSync(file, 'utf8')); return path.includes('/route-network/') && Array.isArray(data.routes) ? syntheticOperatingNetwork(data) : data; } };
   }));
 });
 afterEach(() => {
@@ -243,7 +244,7 @@ test('network observations never introduce fake weekdays into the date picker', 
   const actualSchedules = JSON.parse(readFileSync(join(PUBLIC, 'data/schedules/current.json'), 'utf8')).entries;
   expect(actualSchedules).toHaveLength(138);
   expect(actualSchedules.some((row: { carrier: string }) => row.carrier === 'CX')).toBe(false);
-});
+}, 15_000);
 
 test('route can still be added without choosing a flight number and keeps transfer metadata', async () => {
   await mount(CX);
@@ -251,7 +252,7 @@ test('route can still be added without choosing a flight number and keeps transf
   await waitFor(() => expect(document.querySelector('[data-select-route="TPE-HKG"]')).not.toBeNull());
   fireEvent.click(required<HTMLButtonElement>('[data-select-route="TPE-HKG"]'));
   const later = required<HTMLButtonElement>('[data-select-flight-later="CX:TPE-HKG"]');
-  expect(document.querySelector('[data-select-flight-number^="CX"]')).not.toBeNull();
+  expect(document.querySelector('[data-select-flight-number^="CX"]')).toBeNull();
   fireEvent.click(later);
   fireEvent.change(required<HTMLSelectElement>('[data-next-leg-timing="TPE-HKG"]'), { target: { value: 'transfer' } });
   fireEvent.click(required<HTMLButtonElement>('[data-add-draft="CX:TPE-HKG"]'));

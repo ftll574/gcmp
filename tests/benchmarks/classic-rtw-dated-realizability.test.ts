@@ -99,14 +99,14 @@ describe('classic RTW dated realizability — EVA official example, November 202
     ]);
   });
 
-  test('all eight exact carrier/pairs are confirmed-operating in the current GCMP route graph', () => {
+  test('all eight example carrier/pairs remain discoverable without promoting route identity', () => {
     for (const flight of benchmark.flights) {
       const route = routes.routes.find((candidate) => candidate.status === 'published'
         && candidate.carrier === flight.carrier
         && candidate.pair[0] === flight.from
         && candidate.pair[1] === flight.to);
       expect(route, `${flight.carrier}${flight.flightNumber} ${flight.from}-${flight.to}`).toBeDefined();
-      expect(route?.carrierIdentity ?? 'operating').toBe('operating');
+      expect(route?.carrierIdentity).toBe('provider-listed');
     }
   });
 

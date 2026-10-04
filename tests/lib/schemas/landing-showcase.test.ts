@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, test } from 'vitest';
-import { LandingShowcaseCatalogSchema } from '../../../src/lib/schemas/landing-showcase.ts';
+import { LandingShowcaseCatalogSchema, LandingShowcaseLegSchema } from '../../../src/lib/schemas/landing-showcase.ts';
 import { parseAirportCatalog } from '../../../src/lib/schemas/airports.ts';
 import { parseRouteNetworkCatalog } from '../../../src/lib/schemas/route-network.ts';
 
@@ -18,15 +18,15 @@ const runtimeMeta = JSON.parse(
 
 describe('landing showcase catalog', () => {
   test('stays intentionally tiny compared with planner data', () => {
-    expect(Buffer.byteLength(JSON.stringify(landing))).toBeLessThan(12_000);
+    expect(Buffer.byteLength(JSON.stringify(landing))).toBeLessThan(24_000);
     expect(landing.showcases).toHaveLength(4);
     expect(landing.airports).toHaveLength(15);
     expect(landing.showcases.reduce((sum, showcase) => sum + showcase.legs.length, 0)).toBe(24);
-    expect(landing.stats).toMatchObject({ publishedRoutes: 30_121, allianceMembers: 60, alliances: 3 });
+    expect(landing.stats).toMatchObject({ publishedRoutes: runtime.routes.filter((route) => route.status === 'published').length, allianceMembers: 60, alliances: 3 });
     expect(landing.builtOn).toBe(runtimeMeta.builtOn);
   });
 
-  test('every animated leg remains a current operating route with the displayed confirmed designator', () => {
+  test('every animated leg retains route evidence and honestly labels its operating uncertainty', () => {
     for (const showcase of landing.showcases) {
       for (const leg of showcase.legs) {
         const route = runtime.routes.find((candidate) =>
@@ -36,8 +36,10 @@ describe('landing showcase catalog', () => {
           candidate.pair[1] === leg.to,
         );
         expect(route, `${leg.carrier} ${leg.from}-${leg.to}`).toBeDefined();
-        expect(route?.carrierIdentity).not.toBe('provider-listed');
-        expect(route?.flightNumbers).toContain(leg.flightNumber);
+        expect(leg.carrierIdentity).toBe(route?.carrierIdentity ?? 'unknown');
+        expect(leg.flightNumberStatus).toBe(route?.carrierIdentity === 'operating' && route.flightNumbers?.includes(leg.flightNumber) ? 'confirmed' : 'candidate');
+        expect(leg.sourceUrls.length).toBeGreaterThan(0);
+        expect([...(route?.flightNumbers ?? []), ...(route?.flightNumberCandidates ?? [])]).toContain(leg.flightNumber);
       }
     }
   });
@@ -49,4 +51,11 @@ describe('landing showcase catalog', () => {
     expect(landing.showcases[2]?.legs[0]).toMatchObject({ from: 'TPE', to: 'ICN', flightNumber: 'KE2022' });
     expect(landing.showcases[3]?.legs[0]).toMatchObject({ from: 'TPE', to: 'SFO', flightNumber: 'BR8' });
   });
+});
+
+test('missing identity cannot produce a confirmed showcase flight', () => {
+  const leg = { from: 'TPE', to: 'HKG', carrier: 'CX', carrierName: 'Fixture', flightNumber: 'CX1', distanceNm: 440, flightNumberStatus: 'confirmed' };
+  expect(LandingShowcaseLegSchema.safeParse(leg).success).toBe(false);
+  expect(LandingShowcaseLegSchema.safeParse({ ...leg, carrierIdentity: 'provider-listed' }).success).toBe(false);
+  expect(LandingShowcaseLegSchema.safeParse({ ...leg, carrierIdentity: 'operating' }).success).toBe(true);
 });

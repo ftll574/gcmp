@@ -24,7 +24,9 @@ describe('data-file provenance metadata', () => {
       // scripts/verify-airlines-provenance.ts (45/45 code pairs), ODbL-1.0.
       if (file === 'public/data/airports.meta.json') {
         expect(meta.source).toMatch(/OurAirports/);
-        expect(meta.license).toBe('Public-Domain');
+        expect(meta.source).toMatch(/Taiwan CAA official civil-airport identifiers/);
+        expect(meta.license).toBe('OurAirports Public-Domain; Taiwan CAA factual aerodrome reference data with official source attribution');
+        expect(meta.attribution).toMatch(/Taiwan Civil Aviation Administration/);
       } else {
         expect(meta.source).toMatch(/OpenFlights/);
         expect(meta.license).toBe('ODbL-1.0');

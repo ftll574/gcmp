@@ -43,7 +43,7 @@ test('EVA and China Airlines airport-set benchmarks expose missing production co
   expect(eva?.missingListedAirports).not.toContain('BKK');
   expect(eva?.missingListedAirports.length).toBeGreaterThan(0);
   expect(ci?.listedAirportSetComplete).toBe(true);
-  expect(ci?.missingListedAirports).toContain('BKK');
+  expect(ci?.missingListedAirports).not.toContain('BKK');
   expect(ci?.missingListedAirports.length).toBeGreaterThan(0);
 });
 

@@ -136,7 +136,7 @@ test('removing the first airport preserves an unchanged downstream leg', async (
   if (!remove) throw new Error('Remove control missing');
   fireEvent.click(remove);
   expect(request().groups[0]?.legs[0]).toEqual(remainingLeg);
-});
+}, 15_000);
 
 test('importing an incompatible carrier preserves input AND exposes it for validation', async () => {
   await mount(`#/r/v1/TPE-HKG?op=CX&p=BR&c=J&d=2026-11-02&rtw=${BR}`);

@@ -133,7 +133,7 @@ test('static confirmed routes remain available when live discovery is unavailabl
     coverage: 'curated-not-complete',
     sources: [{ id: 'eva-confirmed', url: 'https://www.evaair.com/', checkedOn: '2026-09-08', note: 'Confirmed EVA route evidence.' }],
     carrierUniverses: [],
-    routes: [{ carrier: 'BR', pair: ['TPE', 'BKK'], service: 'nonstop', status: 'published', sourceIds: ['eva-confirmed'] }],
+    routes: [{ carrier: 'BR', pair: ['TPE', 'BKK'], service: 'nonstop', status: 'published', carrierIdentity: 'operating', sourceIds: ['eva-confirmed'] }],
   });
   render(<DestinationsPanel
     airports={airports}

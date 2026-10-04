@@ -54,9 +54,9 @@ test('blank planner → query dates → choose flight → save/reload retains op
   fireEvent.click(control('[data-select-route="TPE-HKG"]'));
   // This fixture has no cataloged CX flight number before the live query.
   // Select the first-class airline-only draft, then resolve a real designator.
-  await waitFor(() => expect(document.querySelector('[data-select-flight-later="CX:TPE-HKG"]')).not.toBeNull());
-  fireEvent.click(document.querySelector<HTMLButtonElement>('[data-select-flight-later="CX:TPE-HKG"]')!);
-  fireEvent.click(document.querySelector<HTMLButtonElement>('[data-open-flight-dates="TPE-HKG"]')!);
+  await waitFor(() => expect(document.querySelector('[data-verify-live-carrier="CX:TPE-HKG"]')).not.toBeNull());
+  expect(document.querySelector('[data-select-flight-later="CX:TPE-HKG"]')).toBeNull();
+  fireEvent.click(document.querySelector<HTMLButtonElement>('[data-verify-live-carrier="CX:TPE-HKG"]')!);
   fireEvent.click(screen.getByRole('button', { name: 'Query this month' }));
   fireEvent.click(await screen.findByRole('button', { name: 'Use this flight and date' }));
   expect(leg()).toMatchObject({ from: 'TPE', to: 'HKG', operatingCarrier: 'CX', departsOn: '2026-09-07', flightNumber: '473' });

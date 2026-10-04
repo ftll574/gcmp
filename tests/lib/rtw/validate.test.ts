@@ -486,7 +486,9 @@ describe('validateRtwRoute', () => {
       { from: 'NRT', to: 'HND', surface: true, stopover: false },
       { from: 'HND', to: 'SIN', operatingCarrier: 'CX', stopover: false },
       { from: 'SIN', to: 'NRT', operatingCarrier: 'CX', stopover: false },
-      { from: 'NRT', to: 'TPE', operatingCarrier: 'CX', stopover: false },
+      // Use the independently operated JL local sector; CX's exceptional
+      // local-sale/product gate is tested separately.
+      { from: 'NRT', to: 'TPE', operatingCarrier: 'JL', stopover: false },
     ];
 
     const result = validate('qantas-oneworld-classic-flight-reward', legs);

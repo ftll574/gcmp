@@ -107,11 +107,13 @@ test('SkyTeam exposes the cataloged CI plan with its RTW limitation instead of i
   const ci = document.querySelector<HTMLButtonElement>('[data-product-id="china-airlines-skyteam-partner-award"]');
   expect(ci).toBeInTheDocument();
   expect(ci).toHaveTextContent(/not a true RTW candidate/i);
-  expect(screen.getByText('0/18 members currently have route data')).toBeInTheDocument();
+  const represented = new Set(network.routes.filter((route) => route.status === 'published').map((route) => route.carrier));
+  const coveredMembers = alliances.memberships.filter((member) => member.alliance === 'skyteam' && member.status === 'member' && represented.has(member.airline)).length;
+  expect(screen.getByText(`${coveredMembers}/18 members currently have route data`)).toBeInTheDocument();
   const details = document.querySelector<HTMLDetailsElement>('.rtw-gate-routes')!;
   details.open = true;
   fireEvent(details, new Event('toggle'));
-  await waitFor(() => expect(document.querySelector('.route-browser-empty')).toBeInTheDocument());
+  await waitFor(() => expect(document.querySelector('.route-browser-continent')).toBeInTheDocument(), { timeout: 3_000 });
 });
 
 test('Star route browser exposes current cataloged EVA flight numbers only after drilling into the route', async () => {

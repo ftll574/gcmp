@@ -147,7 +147,7 @@ describe('DestinationsPanel · nonblocking next-leg workflow', () => {
     const network = RouteNetworkCatalogSchema.parse({
       version: '2026.3', coverage: 'curated-not-complete',
       sources: [{ id: 'fixture', url: 'https://example.com/route', checkedOn: '2026-09-05', note: 'Fixture.' }],
-      routes: [{ carrier: 'CX', pair: ['TPE', 'LHR'], service: 'nonstop', status: 'published', sourceIds: ['fixture'] }],
+      routes: [{ carrier: 'CX', pair: ['TPE', 'LHR'], service: 'nonstop', status: 'published', carrierIdentity: 'operating', sourceIds: ['fixture'] }],
     });
     render(<DestinationsPanel {...baseProps} schedules={[]} network={network} pendingIata="TPE" />);
     selectPair('TPE', 'LHR');
@@ -162,7 +162,7 @@ describe('DestinationsPanel · nonblocking next-leg workflow', () => {
       version: '2026.3', coverage: 'curated-not-complete',
       sources: [{ id: 'fixture', url: 'https://example.com/route', checkedOn: '2026-09-05', note: 'Recent flight identity.' }],
       routes: [{
-        carrier: 'CX', pair: ['TPE', 'LHR'], service: 'nonstop', status: 'published', sourceIds: ['fixture'],
+        carrier: 'CX', pair: ['TPE', 'LHR'], service: 'nonstop', status: 'published', carrierIdentity: 'operating', sourceIds: ['fixture'],
         flightNumbers: ['CX250'], flightNumberSourceIds: ['fixture'],
       }],
     });
@@ -177,7 +177,7 @@ describe('DestinationsPanel · nonblocking next-leg workflow', () => {
       version: '2026.3', coverage: 'curated-not-complete',
       sources: [{ id: 'fixture', url: 'https://example.com/route', checkedOn: '2026-09-05', note: 'Standing flight identity.' }],
       routes: [{
-        carrier: 'CX', pair: ['TPE', 'LHR'], service: 'nonstop', status: 'published', sourceIds: ['fixture'],
+        carrier: 'CX', pair: ['TPE', 'LHR'], service: 'nonstop', status: 'published', carrierIdentity: 'operating', sourceIds: ['fixture'],
         flightNumberCandidates: ['CX251'], flightNumberCandidateSourceIds: ['fixture'],
       }],
     });
@@ -193,7 +193,7 @@ describe('DestinationsPanel · nonblocking next-leg workflow', () => {
     const network = RouteNetworkCatalogSchema.parse({
       version: '2026.3', coverage: 'curated-not-complete',
       sources: [{ id: 'fixture', url: 'https://example.com/route', checkedOn: '2026-09-05', note: 'Fixture.' }],
-      routes: [{ carrier: 'CX', pair: ['TPE', 'LHR'], service: 'nonstop', status: 'published', sourceIds: ['fixture'] }],
+      routes: [{ carrier: 'CX', pair: ['TPE', 'LHR'], service: 'nonstop', status: 'published', carrierIdentity: 'operating', sourceIds: ['fixture'] }],
     });
     render(<DestinationsPanel {...baseProps} onAddPair={onAddPair} schedules={[]} network={network} pendingIata="TPE" />);
     selectPair('TPE', 'LHR');
@@ -285,4 +285,20 @@ describe('DestinationsPanel · nonblocking next-leg workflow', () => {
     selectPair('TPE', 'SEA');
     expect(flight('BR024')).toBeEnabled();
   });
+});
+
+test('unknown route identity exposes verification, never an operating-carrier draft', () => {
+  const onAddPair = vi.fn();
+  const network = RouteNetworkCatalogSchema.parse({
+    version: '2026.3', coverage: 'curated-not-complete',
+    sources: [{ id: 'fixture', url: 'https://example.com/route', checkedOn: '2026-09-30', note: 'Synthetic unknown-identity fixture.' }],
+    routes: [{ carrier: 'CX', pair: ['TPE', 'LHR'], service: 'nonstop', status: 'published', sourceIds: ['fixture'], flightNumbers: ['CX250'], flightNumberSourceIds: ['fixture'] }],
+  });
+  render(<DestinationsPanel {...baseProps} onAddPair={onAddPair} schedules={[]} network={network} pendingIata="TPE" />);
+  selectPair('TPE', 'LHR');
+  expect(document.querySelector('[data-select-flight-number="CX250:TPE-LHR"]')).toBeNull();
+  expect(document.querySelector('[data-select-flight-later="CX:TPE-LHR"]')).toBeNull();
+  expect(document.querySelector('[data-candidate-flight-number="CX250:TPE-LHR"]')).toBeInTheDocument();
+  expect(document.querySelector('[data-verify-live-carrier="CX:TPE-LHR"]')).toBeInTheDocument();
+  expect(onAddPair).not.toHaveBeenCalled();
 });

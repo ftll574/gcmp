@@ -97,14 +97,14 @@ const cases: ReadonlyArray<ClassicCase> = [
   },
 ];
 
-function coverage(leg: Leg): 'surface' | 'operating' | 'provider-listed' | 'missing' {
+function coverage(leg: Leg): 'surface' | 'operating' | 'provider-listed' | 'unknown' | 'missing' {
   if (leg.surface === true) return 'surface';
   const row = routes.routes.find((route) => route.status === 'published'
     && route.carrier === leg.operatingCarrier
     && route.pair[0] === leg.from
     && route.pair[1] === leg.to);
   if (!row) return 'missing';
-  return row.carrierIdentity === 'provider-listed' ? 'provider-listed' : 'operating';
+  return row.carrierIdentity ?? 'unknown';
 }
 
 describe('classic RTW itinerary benchmarks', () => {
@@ -139,7 +139,7 @@ describe('classic RTW itinerary benchmarks', () => {
         expect(result.summary.direction).toBe('eastbound');
         expect(result.summary.oceansCrossed).toEqual(['atlantic', 'pacific']);
         expect(benchmark.legs.map(coverage).filter((state) => state !== 'surface')).toEqual(
-          Array(8).fill('operating'),
+          Array(8).fill('provider-listed'),
         );
       }
 
@@ -153,14 +153,15 @@ describe('classic RTW itinerary benchmarks', () => {
         const providerListed = benchmark.legs
           .filter((leg) => coverage(leg) === 'provider-listed')
           .map((leg) => `${leg.from}-${leg.to}`);
-        expect(providerListed).toEqual(['LAX-PDX', 'PDX-LAX']);
+        expect(providerListed).toEqual(benchmark.legs.filter((leg) => leg.surface !== true && `${leg.from}-${leg.to}` !== 'KIX-BKK').map((leg) => `${leg.from}-${leg.to}`));
+        expect(coverage(benchmark.legs.find((leg) => leg.from === 'KIX' && leg.to === 'BKK')!)).toBe('operating');
       }
 
       if (benchmark.id === 'cathay-issued-2017-multicarrier') {
         expect(result.summary.flightSegments).toBe(5);
         expect(result.summary.surfaceSectors).toBe(1);
         expect(benchmark.legs.map(coverage).filter((state) => state !== 'surface')).toEqual(
-          Array(5).fill('operating'),
+          ['provider-listed', 'operating', 'provider-listed', 'provider-listed', 'provider-listed'],
         );
       }
 

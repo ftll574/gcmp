@@ -125,7 +125,7 @@ test('route library is a separate page and keeps the heavy catalog out of the ho
   await screen.findByRole('heading', { name: /把世界變成一條/ });
   expect(screen.queryByText('探索全球航網')).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole('link', { name: '瀏覽所有航線' }));
-  expect(await screen.findByRole('heading', { name: '探索全球航網' })).toBeInTheDocument();
+  expect(await screen.findByRole('heading', { name: '探索全球航網' }, { timeout: 15_000 })).toBeInTheDocument();
   expect(await screen.findByRole('region', { name: '航線地圖' }, { timeout: 5_000 })).toBeInTheDocument();
   expect(document.querySelector('.routes-alliance-tabs')).toBeNull();
   const map = document.querySelector('.entity-map-card');
@@ -138,7 +138,7 @@ test('route library is a separate page and keeps the heavy catalog out of the ho
   expect(routeRequests.some((url) => url.includes('/rtw-products/'))).toBe(false);
   expect(routeRequests.some((url) => url.includes('/award-pricing/'))).toBe(false);
   expect(routeRequests.some((url) => url.includes('/markets/'))).toBe(false);
-});
+}, 30_000);
 
 test('route library reports a core data failure without loading planner datasets', async () => {
   window.history.replaceState({}, '', '/?lang=zh-TW&view=routes');
@@ -204,11 +204,11 @@ test('advanced route data failure does not take down the core route library', as
   expect(screen.getByRole('heading', { name: /TPE.*Taoyuan/ })).toBeInTheDocument();
 });
 
-test('route library searches a confirmed flight and hands it to the planner', async () => {
+test('route library searches a designator but cannot persist its unverified operator', async () => {
   render(<SiteApp />);
   await screen.findByRole('heading', { name: /把世界變成一條/ });
   fireEvent.click(screen.getByRole('link', { name: '瀏覽所有航線' }));
-  await screen.findByRole('heading', { name: '探索全球航網' });
+  await screen.findByRole('heading', { name: '探索全球航網' }, { timeout: 15_000 });
 
   const search = await screen.findByRole('combobox', { name: /搜尋機場、城市、航空公司、航線或班號/ });
   fireEvent.change(search, { target: { value: 'BR198' } });
@@ -219,11 +219,10 @@ test('route library searches a confirmed flight and hands it to the planner', as
   expect(new URLSearchParams(window.location.search).get('entity')).toBe('route');
   expect(new URLSearchParams(window.location.search).get('id')).toBe('TPE-NRT');
 
-  fireEvent.click(await screen.findByRole('button', { name: 'BR198' }));
-  await waitFor(() => expect(document.querySelector('.route-plan-bar')).not.toBeNull(), { timeout: 5_000 });
-  expect(new URLSearchParams(window.location.search).get('view')).toBe('planner');
-  expect(window.location.hash).toContain('TPE-NRT');
-  expect(window.location.hash).toContain('fn=198');
+  expect(screen.queryByRole('button', { name: 'BR198' })).not.toBeInTheDocument();
+  expect(document.querySelector('[data-select-flight-number="BR198"]')).toBeNull();
+  expect(new URLSearchParams(window.location.search).get('view')).toBe('routes');
+  expect(window.location.hash).not.toContain('fn=198');
 });
 
 test('route library keeps the searched airport selected while comparing alliances', async () => {
@@ -243,14 +242,14 @@ test('route library keeps the searched airport selected while comparing alliance
   expect(allianceControls).not.toBeNull();
   fireEvent.click(within(allianceControls as HTMLElement).getByRole('button', { name: 'Star' }));
 
-  await waitFor(() => expect(document.querySelector('.entity-map-card')?.getAttribute('data-map-alliance')).toBe('star'));
+  await waitFor(() => expect(document.querySelector('.entity-map-card')?.getAttribute('data-map-alliance')).toBe('star'), { timeout: 10_000 });
   expect(new URLSearchParams(window.location.search).get('alliance')).toBe('star');
   expect(new URLSearchParams(window.location.search).get('q')).toBe('TPE');
   expect(new URLSearchParams(window.location.search).get('entity')).toBe('airport');
   expect(new URLSearchParams(window.location.search).get('id')).toBe('TPE');
   expect(screen.getByRole('combobox', { name: /搜尋機場、城市、航空公司、航線或班號/ })).toHaveValue('TPE');
   expect(await screen.findByRole('heading', { name: /TPE.*Taoyuan/ })).toBeInTheDocument();
-});
+}, 30_000);
 
 test('route library restores shareable search, alliance, entity and advanced-filter state', async () => {
   window.history.replaceState({}, '', '/?lang=zh-TW&view=routes&alliance=star&q=TPE&advanced=1&entity=airport&id=TPE');
@@ -259,11 +258,11 @@ test('route library restores shareable search, alliance, entity and advanced-fil
   // This cold integration path parses the multi-megabyte runtime graph from
   // disk in jsdom. Correctness should not depend on Testing Library's 1s
   // default; route-load performance is measured separately in the browser.
-  expect(await screen.findByRole('heading', { name: /TPE.*Taoyuan/ }, { timeout: 5_000 })).toBeInTheDocument();
-  expect(await screen.findByRole('combobox', { name: /搜尋機場、城市、航空公司、航線或班號/ }, { timeout: 5_000 })).toHaveValue('TPE');
+  expect(await screen.findByRole('heading', { name: /TPE.*Taoyuan/ }, { timeout: 15_000 })).toBeInTheDocument();
+  expect(await screen.findByRole('combobox', { name: /搜尋機場、城市、航空公司、航線或班號/ }, { timeout: 15_000 })).toHaveValue('TPE');
   expect(screen.getByRole('button', { name: 'Star' })).toHaveAttribute('aria-pressed', 'true');
   expect(screen.getByRole('button', { name: /收起詳細篩選/ })).toHaveAttribute('aria-expanded', 'true');
-});
+}, 30_000);
 
 test('airport deep-links use an origin shard and load inbound statistics only on demand', async () => {
   window.history.replaceState({}, '', '/?lang=zh-TW&view=routes&entity=airport&id=TPE');

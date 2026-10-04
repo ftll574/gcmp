@@ -33,18 +33,19 @@ const airportContinentOverrides = new Map(geo.airportOverrides.map((row) => [row
 const product = products.products.find((candidate) => candidate.id === template.productId)!;
 
 describe('classic RTW seasonal search — product-level acceptance', () => {
-  test.each(['2026-11-02', '2026-12-05', '2027-02-20'])('%s produces an operating, rule-valid RTW itinerary', (start) => {
+  test.each(['2026-11-02', '2026-12-05', '2027-02-20'])('%s produces a rule-valid template with separately unverified route identities', (start) => {
     const result = findSeasonalItinerary(template, start);
     expect(result.ok).toBe(true);
     if (!result.ok) return;
 
     for (const flight of result.flights) {
       const route = routes.routes.find((candidate) => candidate.status === 'published'
-        && (candidate.carrierIdentity ?? 'operating') === 'operating'
         && candidate.carrier === flight.carrier
         && candidate.pair[0] === flight.from
         && candidate.pair[1] === flight.to);
       expect(route, `${flight.carrier}${flight.flightNumber} ${flight.from}-${flight.to}`).toBeDefined();
+      expect(route?.carrierIdentity).toBe('provider-listed');
+      expect(flight.sourceIds.length).toBeGreaterThan(0);
     }
 
     const legs: Leg[] = seasonalItineraryLegs(result);

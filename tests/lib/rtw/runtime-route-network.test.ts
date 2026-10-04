@@ -12,6 +12,7 @@ test('premerged runtime route network is current with every source layer', () =>
     carriers: number;
     confirmedOperatingRoutes: number;
     providerListedRoutes: number;
+    unknownIdentityRoutes: number;
     confirmedFlightNumberRoutes: number;
     candidateFlightNumberRoutes: number;
     anyFlightNumberRoutes: number;
@@ -22,10 +23,15 @@ test('premerged runtime route network is current with every source layer', () =>
   };
 
   expect(meta.version).toBe(1);
-  expect(meta.confirmedOperatingRoutes + meta.providerListedRoutes).toBe(meta.publishedRoutes);
-  expect(meta.confirmedFlightNumberRoutes).toBeGreaterThan(14_000);
-  expect(meta.candidateFlightNumberRoutes).toBeGreaterThan(24_000);
-  expect(meta.anyFlightNumberRoutes).toBe(meta.publishedRoutes);
+  expect(meta.confirmedOperatingRoutes + meta.providerListedRoutes + meta.unknownIdentityRoutes).toBe(meta.publishedRoutes);
+  const runtime = JSON.parse(readFileSync(`${ROOT}/runtime-current.json`, 'utf8')).routes as Array<{ status: string; carrierIdentity?: string; flightNumbers?: string[]; flightNumberCandidates?: string[] }>;
+  const published = runtime.filter((route) => route.status === 'published');
+  expect(meta.confirmedOperatingRoutes).toBe(published.filter((route) => route.carrierIdentity === 'operating').length);
+  expect(meta.providerListedRoutes).toBe(published.filter((route) => route.carrierIdentity === 'provider-listed').length);
+  expect(meta.unknownIdentityRoutes).toBe(published.filter((route) => !route.carrierIdentity || route.carrierIdentity === 'unknown').length);
+  expect(meta.confirmedFlightNumberRoutes).toBe(published.filter((route) => (route.flightNumbers?.length ?? 0) > 0).length);
+  expect(meta.candidateFlightNumberRoutes).toBe(published.filter((route) => (route.flightNumberCandidates?.length ?? 0) > 0).length);
+  expect(meta.anyFlightNumberRoutes).toBe(published.filter((route) => (route.flightNumbers?.length ?? 0) + (route.flightNumberCandidates?.length ?? 0) > 0).length);
   expect(Object.keys(meta.routeCountByCarrier)).toHaveLength(meta.carriers);
   expect(Object.values(meta.routeCountByCarrier).reduce((sum, count) => sum + count, 0)).toBe(meta.publishedRoutes);
   expect(Object.values(meta.confirmedOperatingCountByCarrier).reduce((sum, count) => sum + count, 0)).toBe(meta.confirmedOperatingRoutes);
@@ -44,7 +50,7 @@ test('premerged runtime route network is current with every source layer', () =>
     for (const route of shard.routes) {
       if ((route.flightNumbers?.length ?? 0) > 0) expect(route.flightNumberSourceIds?.length).toBeGreaterThan(0);
       if ((route.flightNumberCandidates?.length ?? 0) > 0) expect(route.flightNumberCandidateSourceIds?.length).toBeGreaterThan(0);
-      if (route.status === 'published') {
+      if (route.status === 'published' && route.carrierIdentity !== 'operating' && route.routeEvidence !== 'official-directed') {
         expect((route.flightNumbers?.length ?? 0) + (route.flightNumberCandidates?.length ?? 0)).toBeGreaterThan(0);
       }
     }
@@ -151,7 +157,9 @@ test('current corrections keep stale or mismatched carrier routes out of the pla
   });
   expect(find('SQ', 'KTI', 'SIN')).toMatchObject({
     status: 'published',
-    flightNumberCandidates: expect.arrayContaining(['SQ153']),
+    carrierIdentity: 'operating',
+    flightNumbers: expect.arrayContaining(['SQ153']),
+    flightNumberSourceIds: expect.arrayContaining(['sq-current-october-promo-own-operating-v15']),
   });
   expect(find('UL', 'GAN', 'CMB')).toMatchObject({
     status: 'published',
@@ -234,19 +242,19 @@ test('deep operator audit promotes only exact-current member designators', () =>
 
   expect(find('AC', 'CTG', 'YUL')).toMatchObject({
     status: 'published',
-    flightNumbers: expect.arrayContaining(['AC1893']),
+    flightNumberCandidates: expect.arrayContaining(['AC1893']),
   });
   expect(find('LH', 'BRU', 'FRA')).toMatchObject({
     status: 'published',
-    flightNumbers: expect.arrayContaining(['LH1005', 'LH1017']),
+    flightNumberCandidates: expect.arrayContaining(['LH1005', 'LH1017']),
   });
   expect(find('DL', 'AKL', 'LAX')).toMatchObject({
     status: 'published',
-    flightNumbers: expect.arrayContaining(['DL64']),
+    flightNumberCandidates: expect.arrayContaining(['DL64']),
   });
   expect(find('TK', 'IST', 'TBZ')).toMatchObject({
     status: 'published',
-    flightNumbers: expect.arrayContaining(['TK882']),
+    flightNumberCandidates: expect.arrayContaining(['TK882']),
   });
   expect(find('AC', 'YZF', 'YYZ')).toMatchObject({
     status: 'published',
@@ -260,13 +268,16 @@ test('deep operator audit promotes only exact-current member designators', () =>
   expect(find('DL', 'BOS', 'PUJ')?.flightNumbers).toBeUndefined();
 });
 
-test('every current plannable runtime route exposes a confirmed or candidate flight designator', () => {
+test('published routes without a designator require reviewed operating or official directional-route proof', () => {
   const runtime = JSON.parse(readFileSync(`${ROOT}/runtime-current.json`, 'utf8')) as {
     routes: Array<{
       carrier: string;
       pair: [string, string];
       status: 'published' | 'suspended' | 'identity-unresolved';
       flightNumbers?: string[];
+      carrierIdentity?: string;
+      routeEvidence?: string;
+      sourceIds: string[];
       flightNumberCandidates?: string[];
     }>;
   };
@@ -297,5 +308,10 @@ test('every current plannable runtime route exposes a confirmed or candidate fli
   );
 
   expect(published.length).toBeGreaterThan(29_000);
-  expect(missing).toEqual([]);
+  expect(missing.length).toBeGreaterThan(0);
+  for (const route of missing) {
+    expect(route.carrierIdentity === 'operating' || route.carrierIdentity === 'provider-listed' && route.routeEvidence === 'official-directed').toBe(true);
+    expect(route.sourceIds.length).toBeGreaterThan(0);
+  }
+  expect(missing).toEqual(expect.arrayContaining([expect.objectContaining({ carrier: 'WY', pair: ['SLL', 'DXB'] })]));
 });

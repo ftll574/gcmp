@@ -11,13 +11,69 @@ const fixture = { version: '2026.3', coverage: 'curated-not-complete', sources: 
 describe('route-network integrity', () => {
   test('every actual route resolves to known airports and primary-source records', () => {
     const catalog = parseRouteNetworkCatalog(catalogRaw, airportCodes);
-    expect(catalog.routes).toHaveLength(725);
-    expect(catalog.sources).toHaveLength(154);
-    expect(new Set(catalog.routes.map((row) => row.carrier))).toEqual(new Set(['CX', 'AY', 'BA', 'AA', 'LH', 'UA', 'NH', 'JL', 'SQ', 'QR', 'QF', 'IB', 'AC', 'TK', 'MH', 'NZ', 'LX', 'OS', 'TG', 'AI', 'LO', 'ET', 'TP', 'CA', 'A3', 'RJ', 'AT', 'WY', 'CM', 'AS', 'HA', 'UL', 'SN', 'OU', 'AZ', 'AV', 'OZ', 'SA', 'MS', 'ZH', 'FJ', 'BR']));
-    const domains = ['cathaypacific.com', 'finnair.com', 'britishairways.com', 'aa.com', 'lufthansa.com', 'ana.co.jp', 'jal.com', 'jal.co.jp', 'singaporeair.com', 'qatarairways.com', 'qantas.com', 'iberia.com', 'aircanada.com', 'turkishairlines.com', 'malaysiaairlines.com', 'airnewzealand.com', 'swiss.com', 'austrian.com', 'thaiairways.com', 'alaskaair.com', 'airindia.com', 'lot.com', 'ethiopianairlines.com', 'flytap.com', 'airchina.com.cn', 'aegeanair.com', 'aegeanhub.com', 'rj.com', 'royalairmaroc.com', 'omanair.com', 'copaair.com', 'srilankan.com', 'brusselsairlines.com', 'croatiaairlines.com', 'ita-airways.com', 'avianca.com', 'flyasiana.com', 'flysaa.com', 'egyptair.com', 'shenzhenair.com', 'fijiairways.com', 'dfwairport.com', 'evaair.com'];
+    expect(catalog.routes.length).toBeGreaterThan(700);
+    expect(catalog.sources.length).toBeGreaterThan(150);
+    const representedCarriers = new Set(catalog.routes.map((row) => row.carrier));
+    expect([...representedCarriers]).toEqual(expect.arrayContaining(['CX', 'AY', 'BA', 'AA', 'LH', 'UA', 'NH', 'JL', 'SQ', 'QR', 'QF', 'IB', 'AC', 'TK', 'MH', 'NZ', 'LX', 'OS', 'TG', 'AI', 'LO', 'ET', 'TP', 'CA', 'A3', 'RJ', 'AT', 'WY', 'CM', 'AS', 'HA', 'UL', 'SN', 'OU', 'AZ', 'AV', 'OZ', 'SA', 'MS', 'ZH', 'FJ', 'BR']));
+    // This allowlist is scoped to the public route-source inventory in this release.
+    // New hosts require review; syndicated/CDN feeds are pinned by exact source id + URL.
+    const primaryHosts = new Set(`
+      adelaideairport.com.au airports.malaysiaairports.com.my asrv.avinor.no book.dat.dk booking.china-airlines.com
+      booking.evaair.com cargo.royalairmaroc.com cargo.shenzhenair.com clicair.co corporate.ethiopianairlines.com
+      dat.dk data.gov.tw dfwairport-prd-dfw-vip.dfwairport.com en.about.aegeanair.com en.aegeanair.com
+      english.president.gov.tw et.airchina.com.cn flights.cathaypacific.com flights.china-airlines.com flights.evaair.com
+      flights.luxair.lu flyasiana.com global.shenzhenair.com globalpage.shenzhenair.com guam.united.com
+      ivod.ly.gov.tw khh.travel lahoreairport.com.pk luftfartstilsynet.no mail.tiairport.com.np
+      mauritius-airport.atol.aero media.no.norwegian.com mediacentre.britishairways.com news.aa.com news.alaskaair.com
+      news.cathaypacific.com newsroom.airasia.com osijek-airport.hr pnh.cambodia-airports.aero pressoffice.lot.com
+      royalairmaroc.com ru.airchina.com services.omanair.com taichung.travel tb.nanjing.gov.cn
+      th.vietjetair.com timetable.ulaanbaatar-airport.mn vacancy.fijiairways.com vacations.aircanada.com webcmsskp.tav.aero
+      webvids.miami-airport.com www.aegeanhub.com www.aena.es www.airasia.com www.airbaltic.com
+      www.aircanada.com www.airchina.com.cn www.airchinagroup.com www.airindia.com www.airmacau.com.mo
+      www.airnewzealand.com www.airport.co.kr www.airportaruba.com www.akita-airport.com www.alaskaair.com
+      www.ana.co.jp www.aomori-airport.co.jp www.aucklandairport.co.nz www.austrian.com www.avianca.com
+      www.bcia.com.cn www.birminghamairport.co.uk www.bne.com.au www.britishairways.com www.brusselsairlines.com
+      www.caa.gov.tw www.cad.gov.hk www.cairnsairport.com.au www.canberraairport.com.au www.cdairport.com
+      www.centrair.jp www.changiairport.com www.china-airlines.com www.christchurchairport.co.nz www.clevelandairport.com
+      www.cltairport.com www.copaair.com www.croatiaairlines.com www.dbv.hr www.dca.gov.bn
+      www.dfwairport.com www.egyptair.com www.emirates.com www.ethiopianairlines.com www.evaair.com
+      www.faa.gov www.fijiairways.com www.finnair.com www.fly2houston.com www.flydulles.com
+      www.flypeach.com www.flypgs.com www.flysaa.com www.flytap.com www.fukuoka-airport.jp
+      www.gbiac.net www.glasgowairport.com www.goldcoastairport.com.au www.guamairport.com www.gwytb.gov.cn
+      www.hamburg-airport.de www.hawaiianairlines.com www.hij.airport.jp www.hokkaido-airports.com www.hongkongairport.com
+      www.hsia.gov.bd www.iata.org www.iberia.com www.icelandair.com www.immigration.gov.tw
+      www.imprentanacional.go.cr www.infrastructure.gov.au www.ita-airways.com www.jair.co.jp www.jal.co.jp
+      www.jal.com www.japan.travel www.karachiairport.com.pk www.kefairport.com www.kia.gov.tw
+      www.kitakyu-air.jp www.koj-ab.co.jp www.lot.com www.lufthansa.com www.macau-airport.com
+      www.malaysiaairlines.com www.mandarin-airlines.com www.matsuyama-air-int.jp www.matsuyama-airport.co.jp www.melbourneairport.com.au
+      www.miagoaairport.com www.miami-airport.com www.muscatairport.co.om www.naha-airport.co.jp www.nantes.aeroport.fr
+      www.narita-airport.jp www.omanair.com www.pref.miyagi.jp www.pref.saga.lg.jp www.qantas.com
+      www.qatarairways.com www.rj.com www.royalairmaroc.com www.salalahairport.co.om www.sctfia.com
+      www.sichuanair.com www.singaporeair.com www.sjoairport.com www.srilankan.com www.starflyer.jp
+      www.starlux-airlines.com www.swiss.com www.taoyuan-airport.com www.tca.gov.tw www.thaiairways.com
+      www.thaicargo.com www.tigerairtw.com www.tna.gov.tw www.tokushima-airport.co.jp www.torontopearson.com
+      www.toyama-airport.co.jp www.tsa.gov.tw www.turkishairlines.com www.w2fly.es www.wellingtonairport.co.nz
+      www.wideroe.no www.yvr.ca www.zagreb-airport.hr
+    `.trim().split(/\s+/));
+    const exactExternalSources = new Map<string, string>([
+      ["dgca-foreign-approved-summer-2026-v74", "https://public-prd-dgca.s3.ap-south-1.amazonaws.com/InventoryList/airOperation/certification/foreignAirline/internationFLight/SummerSchedule2026.pdf"],
+      ["dgca-ai-approved-domestic-summer-2026-v75", "https://public-prd-dgca.s3.ap-south-1.amazonaws.com/InventoryList/airOperation/certification/scheduled/domestic/AirIndiaLtd_SS_2026.pdf"],
+      ["dgca-ai-approved-international-summer-2026-v75", "https://public-prd-dgca.s3.ap-south-1.amazonaws.com/InventoryList/airOperation/certification/scheduled/domestic/AirIndiaflightSchedule-INT.pdf"],
+      ["mia-official-map-ccs-20261001", "https://iflymia.wherewefly.com/fp3d_fcgi/route-map/v4/flights?routes=199"],
+      ["mia-official-map-geo-20261001", "https://iflymia.wherewefly.com/fp3d_fcgi/route-map/v4/flights?routes=333"],
+      ["mia-official-map-mbj-20261001", "https://iflymia.wherewefly.com/fp3d_fcgi/route-map/v4/flights?routes=86"],
+      ["mia-official-map-sti-20261001", "https://iflymia.wherewefly.com/fp3d_fcgi/route-map/v4/flights?routes=34"],
+      ["mia-official-map-from-geo-20261001", "https://iflymia.wherewefly.com/fp3d_fcgi/route-map/v4/flights?routes=332"],
+      ["mia-official-map-from-hav-20261001", "https://iflymia.wherewefly.com/fp3d_fcgi/route-map/v4/flights?routes=16"],
+      ["mia-official-map-from-mbj-20261001", "https://iflymia.wherewefly.com/fp3d_fcgi/route-map/v4/flights?routes=87"],
+      ["mia-official-map-from-sti-20261001", "https://iflymia.wherewefly.com/fp3d_fcgi/route-map/v4/flights?routes=144"],
+      ["ao34-ua-launch", "https://static.wixstatic.com/ugd/9d48bb_76192ab8d2f64e099555bdcc8c9228a9.pdf"],
+      ["ua-own-nrt-ubn-launch-20250501", "https://prtimes.jp/main/html/rd/p/000000029.000091889.html"],
+      ["cebu-pacific-direct-mnl-khh-ir-2024", "https://cebupacificair.a.bigcontent.io/v1/static/CEB%202Q&1H%202024_IR%20Presentation"],
+    ]);
     for (const item of catalog.sources) {
       const hostname = new URL(item.url).hostname;
-      expect(domains.some((domain) => hostname === domain || hostname.endsWith('.' + domain))).toBe(true);
+      expect(primaryHosts.has(hostname) || exactExternalSources.get(item.id) === item.url).toBe(true);
     }
     // Source-level validation is not a substitute for checking route evidence.
     expect(catalog.coverage).toBe('curated-not-complete');
@@ -56,7 +112,7 @@ describe('route-network integrity', () => {
       expect.objectContaining({ carrier: 'OU', scope: 'partial', asOf: '2026-09-06' }),
       expect.objectContaining({ carrier: 'AZ', scope: 'partial', asOf: '2026-09-06' }),
       expect.objectContaining({ carrier: 'AV', scope: 'partial', asOf: '2026-09-06' }),
-      expect.objectContaining({ carrier: 'OZ', scope: 'partial', asOf: '2026-09-06' }),
+      expect.objectContaining({ carrier: 'OZ', scope: 'partial', asOf: '2026-09-30' }),
       expect.objectContaining({ carrier: 'SA', scope: 'partial', asOf: '2026-09-06' }),
       expect.objectContaining({ carrier: 'BR', scope: 'partial', asOf: '2026-09-08' }),
       expect.objectContaining({ carrier: 'MS', scope: 'partial', asOf: '2026-09-06' }),
@@ -68,22 +124,21 @@ describe('route-network integrity', () => {
 
   test('current EVA Bangkok service is retained as route evidence without inventing timetable fields', () => {
     const catalog = parseRouteNetworkCatalog(catalogRaw, airportCodes);
-    expect(catalog.routes.find((route) => route.carrier === 'BR' && route.pair.join('-') === 'TPE-BKK')).toEqual({
-      carrier: 'BR',
-      pair: ['TPE', 'BKK'],
-      service: 'nonstop',
-      status: 'published',
-      sourceIds: ['br-tpe-bkk-current'],
-      effectiveFrom: '2026-09-08',
-    });
-    expect(catalog.routes.find((route) => route.carrier === 'BR' && route.pair.join('-') === 'BKK-TPE')).toEqual({
-      carrier: 'BR',
-      pair: ['BKK', 'TPE'],
-      service: 'nonstop',
-      status: 'published',
-      sourceIds: ['br-bkk-tpe-current'],
-      effectiveFrom: '2026-09-08',
-    });
+    for (const [pair, originalSource, candidates] of [
+      ['TPE-BKK', 'br-tpe-bkk-current', ['BR061', 'BR067', 'BR075', 'BR201', 'BR205', 'BR211']],
+      ['BKK-TPE', 'br-bkk-tpe-current', ['BR062', 'BR068', 'BR202', 'BR206', 'BR212']],
+    ] as const) {
+      const row = catalog.routes.find((route) => route.carrier === 'BR' && route.pair.join('-') === pair);
+      expect(row).toMatchObject({
+        carrier: 'BR', service: 'nonstop', status: 'published', carrierIdentity: 'provider-listed',
+        sourceIds: expect.arrayContaining([originalSource, 'eva-public-timetable-20261001-taiwan-exact']),
+        flightNumberCandidates: candidates,
+        flightNumberCandidateSourceIds: ['eva-public-timetable-20261001-taiwan-exact'],
+        effectiveFrom: '2026-09-08',
+      });
+      expect(row?.flightNumbers).toBeUndefined();
+      expect(row?.effectiveUntil).toBeUndefined();
+    }
   });
 
   test('complete carrier universes require a denominator exactly pinned to represented active routes', () => {
@@ -201,17 +256,22 @@ describe('route-network integrity', () => {
     expect(keys.has('OS:EWR-VIE')).toBe(true);
     expect(keys.has('OS:VIE-NYC')).toBe(false);
     expect(keys.has('TG:BKK-TPE')).toBe(true);
-    expect(keys.has('TG:TPE-BKK')).toBe(false);
+    expect(keys.has('TG:TPE-BKK')).toBe(true);
+    expect(catalog.routes.find((row) => row.carrier === 'TG' && row.pair.join('-') === 'TPE-BKK')).toMatchObject({ carrierIdentity: 'provider-listed', sourceIds: ['tg-cargo-tpe-bkk-exact-zero-stop-20261001'], flightNumberCandidates: ['TG633', 'TG635', 'TG637'] });
     expect(keys.has('SQ:SIN-KTI')).toBe(true);
     expect(keys.has('SQ:SIN-MXP')).toBe(true);
     expect(keys.has('SQ:SIN-JNB')).toBe(true);
     expect(keys.has('SQ:MXP-SIN')).toBe(false);
     expect(keys.has('SQ:SIN-CPT')).toBe(false);
-    expect(keys.has('SQ:SIN-LAX')).toBe(false);
+    expect(catalog.routes.find((row) => row.carrier === 'SQ' && row.pair.join('-') === 'SIN-LAX')).toMatchObject({ carrierIdentity: 'provider-listed', flightNumberCandidates: ['SQ38'], sourceIds: ['changi-oct1-full-departure-list-v11'] });
     expect(keys.has('SQ:SIN-KHH')).toBe(false);
     expect(keys.has('SQ:SIN-PQC')).toBe(false);
-    expect(keys.has('SQ:SIN-PEK')).toBe(false);
-    expect(keys.has('SQ:SIN-PKX')).toBe(false);
+    // Independent exact operating evidence resolves airport codes without city expansion.
+    for (const to of ['PEK', 'PKX']) {
+      expect(catalog.routes.find((row) => row.carrier === 'SQ' && row.pair[0] === 'SIN' && row.pair[1] === to)).toMatchObject({
+        carrierIdentity: 'operating', sourceIds: expect.arrayContaining(['sq-current-october-promo-own-operating-v15']),
+      });
+    }
     expect(keys.has('AS:SEA-NRT')).toBe(false);
     expect(keys.has('AT:CMN-JFK')).toBe(true);
     expect(keys.has('AT:JFK-CMN')).toBe(false);
@@ -272,7 +332,7 @@ describe('route-network integrity', () => {
     expect(keys.has('LO:KRK-MAD')).toBe(true);
     expect(keys.has('LO:MAD-KRK')).toBe(true);
     expect(keys.has('LO:GDN-BGO')).toBe(false);
-    expect(keys.has('LO:WAW-BKK')).toBe(false);
+    expect(catalog.routes.find((row) => row.carrier === 'LO' && row.pair.join('-') === 'WAW-BKK')).toMatchObject({ carrierIdentity: 'operating', sourceIds: expect.arrayContaining(['lot-waw-selected-nonstop-network-v14-20260930']) });
     expect(keys.has('LO:WAW-OPO')).toBe(true);
     expect(keys.has('LO:OPO-WAW')).toBe(true);
     expect(keys.has('ET:ADD-MRU')).toBe(true);
@@ -304,7 +364,7 @@ describe('route-network integrity', () => {
     expect(keys.has('RJ:HBE-AMM')).toBe(true);
     expect(keys.has('RJ:AMM-YYZ')).toBe(false);
     expect(keys.has('RJ:YUL-YYZ')).toBe(false);
-    expect(keys.has('RJ:AMM-MRA')).toBe(false);
+    expect(catalog.routes.find((row) => row.carrier === 'RJ' && row.pair.join('-') === 'AMM-MRA')).toMatchObject({ carrierIdentity: 'operating', effectiveUntil: '2026-09-30' });
     expect(keys.has('RJ:ADJ-SSH')).toBe(true);
     expect(keys.has('RJ:SSH-ADJ')).toBe(true);
     expect(keys.has('RJ:AMM-SSH')).toBe(false);

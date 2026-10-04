@@ -42,7 +42,7 @@ describe('entity-first route library model', () => {
 
     const route = buildRouteEntityProfile(input, 'TPE-NRT');
     expect(route?.route.carriers.map((carrier) => carrier.carrier)).toEqual(expect.arrayContaining(['BR', 'CI', 'CX', 'JL']));
-    expect(route?.route.carriers.find((carrier) => carrier.carrier === 'BR')?.confirmedNumbers).toContain('BR198');
+    expect(route?.route.carriers.find((carrier) => carrier.carrier === 'BR')?.candidateNumbers).toContain('BR198');
   });
 
   test('keeps route source attribution attached to the correct carrier', () => {

@@ -3,7 +3,7 @@ import allianceRaw from '../../../public/data/alliances/current.json' with { typ
 import runtimeMetaRaw from '../../../public/data/route-network/runtime-current.meta.json' with { type: 'json' };
 import { AllianceCatalogSchema } from '../../../src/lib/schemas/alliance.ts';
 
-test('all 60 active three-alliance members retain discovery and confirmed-operating route evidence', () => {
+test('all 60 active three-alliance members retain route discovery without overstating operating proof', () => {
   const catalog = AllianceCatalogSchema.parse(allianceRaw);
   const current = catalog.memberships.filter((membership) => membership.status === 'member');
   const counts = new Map<string, number>();
@@ -17,7 +17,11 @@ test('all 60 active three-alliance members retain discovery and confirmed-operat
   ]);
   expect(current).toHaveLength(60);
   for (const membership of current) {
-    expect(runtimeMetaRaw.routeCountByCarrier[membership.airline] ?? 0).toBeGreaterThan(0);
-    expect(runtimeMetaRaw.confirmedOperatingCountByCarrier[membership.airline] ?? 0).toBeGreaterThan(0);
+    const routeCount = runtimeMetaRaw.routeCountByCarrier[membership.airline] ?? 0;
+    const confirmedOperatingCount = runtimeMetaRaw.confirmedOperatingCountByCarrier[membership.airline] ?? 0;
+    expect(routeCount).toBeGreaterThan(0);
+    expect(confirmedOperatingCount).toBeGreaterThanOrEqual(0);
+    expect(confirmedOperatingCount).toBeLessThanOrEqual(routeCount);
   }
+  expect(Object.values(runtimeMetaRaw.confirmedOperatingCountByCarrier).some((count) => count > 0)).toBe(true);
 });

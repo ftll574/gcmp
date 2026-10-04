@@ -71,10 +71,10 @@ test('lower flight-number evidence survives while higher route semantics still w
   expect(mergeRouteNetworkCatalogs(curated, numberLayer).routes).toEqual([
     expect.objectContaining({
       carrierIdentity: 'operating',
-      flightNumbers: ['AA100', 'AA102'],
-      flightNumberCandidates: ['AA101'],
+      flightNumbers: ['AA102'],
+      flightNumberCandidates: ['AA100', 'AA101'],
       sourceIds: ['curated'],
-      flightNumberSourceIds: ['numbers', 'curated'],
+      flightNumberSourceIds: ['curated'],
       flightNumberCandidateSourceIds: ['numbers', 'curated'],
     }),
   ]);
