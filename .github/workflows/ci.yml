@@ -38,6 +38,9 @@ jobs:
       - name: Test
         run: npm test -- --reporter=default
 
+      - name: Generate manifest-listed data artifacts
+        run: npm run prebuild
+
       - name: Validate DATA_MANIFEST (data-layer catalog + sha256 drift)
         run: npx tsx scripts/verify-data-manifest.ts
 
