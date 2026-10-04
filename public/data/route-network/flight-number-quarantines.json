@@ -1,0 +1,243 @@
+{
+  "version": 1,
+  "sources": [
+    {
+      "id": "oz-flight-number-airport-quarantine-20260930",
+      "url": "https://flyasiana.com/C/KR/KO/customer/notice/detail?dispCt=all&id=CM202309150001942944&page=1&searchOption=0",
+      "checkedOn": "2026-09-30",
+      "note": "Official current table places OZ1163 ICN-Kobe (UKB), Sep1 2026-Mar27 2027, separately from ICN-KIX flights. Quarantine contradictory provider number on ICN-KIX in the current artifact; raw provenance and possible historical use retained. No direction, date recurrence or operation inferred."
+    },
+    {
+      "id": "qf-official-freighter-exact-leg-quarantine-20261002",
+      "url": "https://freight.qantas.com/en-us/network/flight-schedule",
+      "checkedOn": "2026-10-02",
+      "note": "Official dedicated B747-400F freighters, summer effective 29 March 2026. Exact direction/designator only; cutoff 2 October is review scope, not service end. Winter table remains future; company identity and through endpoints not inferred."
+    }
+  ],
+  "entries": [
+    {
+      "carrier": "OZ",
+      "pair": [
+        "ICN",
+        "KIX"
+      ],
+      "flightNumber": "OZ1163",
+      "effectiveFrom": "2026-09-01",
+      "effectiveUntil": "2027-03-27",
+      "sourceIds": [
+        "oz-flight-number-airport-quarantine-20260930"
+      ],
+      "reason": "Current official exact-airport mapping contradicts provider KIX assignment; no historical non-use claim."
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "AKL",
+        "SYD"
+      ],
+      "flightNumber": "QF7552",
+      "effectiveFrom": "2026-03-29",
+      "effectiveUntil": "2026-10-02",
+      "sourceIds": [
+        "qf-official-freighter-exact-leg-quarantine-20261002"
+      ],
+      "reason": "Exact directed leg and designator listed in official dedicated B747-400F summer freighter table. Review cutoff is not a claimed service end; quarantine current passenger artifact only."
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "ANC",
+        "JFK"
+      ],
+      "flightNumber": "QF7581",
+      "effectiveFrom": "2026-03-29",
+      "effectiveUntil": "2026-10-02",
+      "sourceIds": [
+        "qf-official-freighter-exact-leg-quarantine-20261002"
+      ],
+      "reason": "Exact directed leg and designator listed in official dedicated B747-400F summer freighter table. Review cutoff is not a claimed service end; quarantine current passenger artifact only."
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "ANC",
+        "ORD"
+      ],
+      "flightNumber": "QF7521",
+      "effectiveFrom": "2026-03-29",
+      "effectiveUntil": "2026-10-02",
+      "sourceIds": [
+        "qf-official-freighter-exact-leg-quarantine-20261002"
+      ],
+      "reason": "Exact directed leg and designator listed in official dedicated B747-400F summer freighter table. Review cutoff is not a claimed service end; quarantine current passenger artifact only."
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "ANC",
+        "ORD"
+      ],
+      "flightNumber": "QF7583",
+      "effectiveFrom": "2026-03-29",
+      "effectiveUntil": "2026-10-02",
+      "sourceIds": [
+        "qf-official-freighter-exact-leg-quarantine-20261002"
+      ],
+      "reason": "Exact directed leg and designator listed in official dedicated B747-400F summer freighter table. Review cutoff is not a claimed service end; quarantine current passenger artifact only."
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "BKK",
+        "PVG"
+      ],
+      "flightNumber": "QF7581",
+      "effectiveFrom": "2026-03-29",
+      "effectiveUntil": "2026-10-02",
+      "sourceIds": [
+        "qf-official-freighter-exact-leg-quarantine-20261002"
+      ],
+      "reason": "Exact directed leg and designator listed in official dedicated B747-400F summer freighter table. Review cutoff is not a claimed service end; quarantine current passenger artifact only."
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "BKK",
+        "PVG"
+      ],
+      "flightNumber": "QF7583",
+      "effectiveFrom": "2026-03-29",
+      "effectiveUntil": "2026-10-02",
+      "sourceIds": [
+        "qf-official-freighter-exact-leg-quarantine-20261002"
+      ],
+      "reason": "Exact directed leg and designator listed in official dedicated B747-400F summer freighter table. Review cutoff is not a claimed service end; quarantine current passenger artifact only."
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "CKG",
+        "PVG"
+      ],
+      "flightNumber": "QF7521",
+      "effectiveFrom": "2026-03-29",
+      "effectiveUntil": "2026-10-02",
+      "sourceIds": [
+        "qf-official-freighter-exact-leg-quarantine-20261002"
+      ],
+      "reason": "Exact directed leg and designator listed in official dedicated B747-400F summer freighter table. Review cutoff is not a claimed service end; quarantine current passenger artifact only."
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "HNL",
+        "SYD"
+      ],
+      "flightNumber": "QF7550",
+      "effectiveFrom": "2026-03-29",
+      "effectiveUntil": "2026-10-02",
+      "sourceIds": [
+        "qf-official-freighter-exact-leg-quarantine-20261002"
+      ],
+      "reason": "Exact directed leg and designator listed in official dedicated B747-400F summer freighter table. Review cutoff is not a claimed service end; quarantine current passenger artifact only."
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "JFK",
+        "ORD"
+      ],
+      "flightNumber": "QF7550",
+      "effectiveFrom": "2026-03-29",
+      "effectiveUntil": "2026-10-02",
+      "sourceIds": [
+        "qf-official-freighter-exact-leg-quarantine-20261002"
+      ],
+      "reason": "Exact directed leg and designator listed in official dedicated B747-400F summer freighter table. Review cutoff is not a claimed service end; quarantine current passenger artifact only."
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "LAX",
+        "HNL"
+      ],
+      "flightNumber": "QF7552",
+      "effectiveFrom": "2026-03-29",
+      "effectiveUntil": "2026-10-02",
+      "sourceIds": [
+        "qf-official-freighter-exact-leg-quarantine-20261002"
+      ],
+      "reason": "Exact directed leg and designator listed in official dedicated B747-400F summer freighter table. Review cutoff is not a claimed service end; quarantine current passenger artifact only."
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "MEL",
+        "SYD"
+      ],
+      "flightNumber": "QF7554",
+      "effectiveFrom": "2026-03-29",
+      "effectiveUntil": "2026-10-02",
+      "sourceIds": [
+        "qf-official-freighter-exact-leg-quarantine-20261002"
+      ],
+      "reason": "Exact directed leg and designator listed in official dedicated B747-400F summer freighter table. Review cutoff is not a claimed service end; quarantine current passenger artifact only."
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "ORD",
+        "LAX"
+      ],
+      "flightNumber": "QF7552",
+      "effectiveFrom": "2026-03-29",
+      "effectiveUntil": "2026-10-02",
+      "sourceIds": [
+        "qf-official-freighter-exact-leg-quarantine-20261002"
+      ],
+      "reason": "Exact directed leg and designator listed in official dedicated B747-400F summer freighter table. Review cutoff is not a claimed service end; quarantine current passenger artifact only."
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "SYD",
+        "BKK"
+      ],
+      "flightNumber": "QF7581",
+      "effectiveFrom": "2026-03-29",
+      "effectiveUntil": "2026-10-02",
+      "sourceIds": [
+        "qf-official-freighter-exact-leg-quarantine-20261002"
+      ],
+      "reason": "Exact directed leg and designator listed in official dedicated B747-400F summer freighter table. Review cutoff is not a claimed service end; quarantine current passenger artifact only."
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "SYD",
+        "BKK"
+      ],
+      "flightNumber": "QF7583",
+      "effectiveFrom": "2026-03-29",
+      "effectiveUntil": "2026-10-02",
+      "sourceIds": [
+        "qf-official-freighter-exact-leg-quarantine-20261002"
+      ],
+      "reason": "Exact directed leg and designator listed in official dedicated B747-400F summer freighter table. Review cutoff is not a claimed service end; quarantine current passenger artifact only."
+    },
+    {
+      "carrier": "QF",
+      "pair": [
+        "SYD",
+        "CKG"
+      ],
+      "flightNumber": "QF7521",
+      "effectiveFrom": "2026-03-29",
+      "effectiveUntil": "2026-10-02",
+      "sourceIds": [
+        "qf-official-freighter-exact-leg-quarantine-20261002"
+      ],
+      "reason": "Exact directed leg and designator listed in official dedicated B747-400F summer freighter table. Review cutoff is not a claimed service end; quarantine current passenger artifact only."
+    }
+  ]
+}

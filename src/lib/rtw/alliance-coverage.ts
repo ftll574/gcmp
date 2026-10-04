@@ -1,3 +1,5 @@
+import {routeWithinExplicitServiceWindow} from './route-date-semantics.ts';
+import { airportIdentityPairKey } from '../airport-identity.ts';
 import type { AllianceCatalog } from '../schemas/alliance.ts';
 import type { ScheduleCatalog } from '../schemas/flight-schedules.ts';
 import type { OfficialScheduleCatalog } from '../schemas/published-schedules.ts';
@@ -12,6 +14,7 @@ export interface CarrierCoverageSummary {
   knownDirectionalRoutes: number;
   confirmedOperatingDirectionalRoutes: number;
   providerListedOnlyDirectionalRoutes: number;
+  unknownIdentityDirectionalRoutes: number;
   knownDirectionalRoutesWithScheduleEvidence: number;
   knownRouteScheduleCoveragePercent: number;
 }
@@ -32,6 +35,7 @@ export interface AllianceCoverageSummary {
   knownDirectionalRoutes: number;
   confirmedOperatingDirectionalRoutes: number;
   providerListedOnlyDirectionalRoutes: number;
+  unknownIdentityDirectionalRoutes: number;
   knownDirectionalRoutesWithScheduleEvidence: number;
   knownRouteScheduleCoveragePercent: number;
   carriersWithoutRouteEvidence: ReadonlyArray<string>;
@@ -43,7 +47,7 @@ export interface AllianceRouteEvidence {
   from: string;
   to: string;
   hasScheduleEvidence: boolean;
-  identityStatus: 'confirmed-operating' | 'provider-listed';
+  identityStatus: 'confirmed-operating' | 'provider-listed' | 'unknown';
 }
 
 function activeOn(date: string, from?: string, until?: string | null): boolean {
@@ -55,7 +59,7 @@ function percent(numerator: number, denominator: number): number {
 }
 
 function routeKey(carrier: string, from: string, to: string): string {
-  return `${carrier}:${from}-${to}`;
+  return `${carrier}:${airportIdentityPairKey(from, to)}`;
 }
 
 function carrierFromRouteKey(key: string): string {
@@ -92,18 +96,19 @@ export function collectAllianceRouteEvidence(
       hasScheduleEvidence: hasScheduleEvidence || current?.hasScheduleEvidence === true,
       identityStatus: identityStatus === 'confirmed-operating' || current?.identityStatus === 'confirmed-operating'
         ? 'confirmed-operating'
-        : 'provider-listed',
+        : identityStatus === 'provider-listed' || current?.identityStatus === 'provider-listed' ? 'provider-listed' : 'unknown',
     });
   };
 
+  const routeSources=new Map(routeNetwork.sources.map(source=>[source.id,source]));
   for (const route of routeNetwork.routes) {
-    if (route.status !== 'published' || !activeOn(asOf, route.effectiveFrom, route.effectiveUntil)) continue;
+    if (route.status !== 'published' || !routeWithinExplicitServiceWindow(route,asOf,routeSources)) continue;
     add(
       route.carrier,
       route.pair[0],
       route.pair[1],
       false,
-      route.carrierIdentity === 'provider-listed' ? 'provider-listed' : 'confirmed-operating',
+      route.carrierIdentity === 'operating' ? 'confirmed-operating' : route.carrierIdentity === 'provider-listed' ? 'provider-listed' : 'unknown',
     );
   }
   for (const entry of scheduleCatalog.entries) {
@@ -199,6 +204,7 @@ export function summarizeAllianceCoverage(
       knownDirectionalRoutes,
       confirmedOperatingDirectionalRoutes,
       providerListedOnlyDirectionalRoutes,
+      unknownIdentityDirectionalRoutes: knownDirectionalRoutes - confirmedOperatingDirectionalRoutes - providerListedOnlyDirectionalRoutes,
       knownDirectionalRoutesWithScheduleEvidence,
       knownRouteScheduleCoveragePercent: percent(knownDirectionalRoutesWithScheduleEvidence, knownDirectionalRoutes),
     };
@@ -223,6 +229,7 @@ export function summarizeAllianceCoverage(
     knownDirectionalRoutes: knownRoutes.size,
     confirmedOperatingDirectionalRoutes: confirmedOperatingRoutes.size,
     providerListedOnlyDirectionalRoutes: providerListedOnlyRoutes.size,
+    unknownIdentityDirectionalRoutes: knownRoutes.size - confirmedOperatingRoutes.size - providerListedOnlyRoutes.size,
     knownDirectionalRoutesWithScheduleEvidence: scheduled.size,
     knownRouteScheduleCoveragePercent: percent(scheduled.size, knownRoutes.size),
     carriersWithoutRouteEvidence: members.filter((carrier) => !routeCarriers.has(carrier)).sort(),

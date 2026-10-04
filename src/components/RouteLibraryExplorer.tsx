@@ -1,3 +1,10 @@
+import {CaliPrimaryReferences} from './CaliPrimaryReferences.tsx';
+import {OfficialRouteReferences} from './OfficialRouteReferences.tsx';
+import { useCaaPublishedTimetables } from '../lib/use-caa-published-timetables.ts';
+import { CaaPublishedTimetableEvidence } from './CaaPublishedTimetableEvidence.tsx';
+import { useEvidenceClock } from '../lib/use-evidence-clock.ts';
+import { sourceReviewState, sourceReviewStatusLabel } from '../lib/rtw/route-date-semantics.ts';
+import { airportIdentityLabel } from '../lib/airport-identity.ts';
 import { lazy, Suspense, useMemo, useState } from 'react';
 import type { ContinentId } from '../lib/schemas/country-continent.ts';
 import type { RouteNetworkCatalog } from '../lib/schemas/route-network.ts';
@@ -16,6 +23,7 @@ import {
 import { useLocale } from '../i18n/use-locale.ts';
 import type { RouteMapAllianceTheme } from './RouteLibraryMap.tsx';
 import { RouteLibraryMapPreview, type RouteLibraryMapPreviewStat } from './RouteLibraryMapPreview.tsx';
+import { RegisteredPlansEvidence } from './RegisteredPlansEvidence.tsx';
 import './RouteLibraryExplorer.css';
 
 const LazyRouteEntityMap = lazy(() =>
@@ -93,6 +101,9 @@ export function RouteLibraryExplorer({
   onRequestFullNetwork,
 }: Props): React.ReactElement {
   const { locale, t } = useLocale();
+  const evidenceNow = useEvidenceClock();
+  const caaPair = selection?.kind === 'route' && selection.id.split('-').some(code => airports.get(code)?.country === 'TW') ? selection.id : null;
+  const caaReferences = useCaaPublishedTimetables(caaPair);
   const zh = locale === 'zh-TW';
   const [searchOpen, setSearchOpen] = useState(false);
   const [showRouteIndex, setShowRouteIndex] = useState(false);
@@ -174,7 +185,7 @@ export function RouteLibraryExplorer({
     outbound: '直飛目的地', countries: '國家／地區', inbound: '抵達方向航線',
     destinations: '目的地', routeMap: '航線地圖', airportNetwork: '機場航網',
     airlineNetwork: '航空公司航網', hubs: '主要樞紐', operating: '營運者確認航線', routeIndex: '航線列表', destinationIndex: '目的地列表',
-    routeDetail: '航線詳情', distance: '大圓距離', operatingCarrier: '已確認營運者', provider: '供應商列示',
+    routeDetail: '航線詳情', distance: '大圓距離', operatingCarrier: '已確認營運者', provider: '供應商列示', unknownIdentity: '營運身份未知',
     confirmedNumbers: '已確認班號', candidateNumbers: '候選班號', source: '資料來源', noNumber: '尚未確認班號',
     planCarrier: '用這家航空公司加入 Planner', planFlight: '用這個班號加入 Planner', reverse: '查看反方向',
     back: '返回航網', noEntity: '目前沒有符合條件的航線。',
@@ -193,7 +204,7 @@ export function RouteLibraryExplorer({
     outbound: 'nonstop destinations', countries: 'countries/regions', inbound: 'inbound directional routes',
     destinations: 'Destinations', routeMap: 'Route map', airportNetwork: 'Airport network',
     airlineNetwork: 'Airline network', hubs: 'Primary hubs', operating: 'operator-confirmed routes', routeIndex: 'Route list', destinationIndex: 'Destination list',
-    routeDetail: 'Route detail', distance: 'great-circle distance', operatingCarrier: 'Operating carrier confirmed', provider: 'Provider-listed',
+    routeDetail: 'Route detail', distance: 'great-circle distance', operatingCarrier: 'Operating carrier confirmed', provider: 'Provider-listed', unknownIdentity: 'Operating identity unknown',
     confirmedNumbers: 'Confirmed flight numbers', candidateNumbers: 'Candidate flight numbers', source: 'Sources', noNumber: 'No confirmed flight number yet',
     planCarrier: 'Use this airline in Planner', planFlight: 'Use this flight in Planner', reverse: 'View reverse route',
     back: 'Back to network', noEntity: 'No current route matches this selection.',
@@ -284,11 +295,14 @@ export function RouteLibraryExplorer({
         <section className="entity-section route-carrier-list"><div className="entity-section-heading"><h3>{copy.routeDetail}</h3>{(reverseExists || !networkComplete) && <button type="button" className="entity-inline-button" onClick={() => choose({ kind: 'route', id: reverseId })}>{copy.reverse}</button>}</div>
           {route.carriers.map((carrier) => (
             <article className="route-carrier-card" key={carrier.carrier}>
-              <header><div><code>{carrier.carrier}</code><strong>{carrier.name}</strong></div><span className={carrier.identity}>{carrier.identity === 'operating' ? copy.operatingCarrier : copy.provider}</span></header>
+              <header><div><code>{carrier.carrier}</code><strong>{carrier.name}</strong></div><span className={carrier.identity}>{carrier.identity === 'operating' ? copy.operatingCarrier : carrier.identity === 'provider-listed' ? copy.provider : copy.unknownIdentity}</span></header>
               <div className="route-carrier-numbers"><span>{copy.confirmedNumbers}</span>{carrier.confirmedNumbers.length > 0 ? <div>{carrier.confirmedNumbers.map((number) => <button type="button" key={number} disabled={carrier.identity !== 'operating'} onClick={() => onPlanRoute({ from: route.from.iata, to: route.to.iata, carrier: carrier.carrier, flightNumber: number.slice(carrier.carrier.length) })}>{number}</button>)}</div> : <small>{copy.noNumber}</small>}</div>
               {carrier.candidateNumbers.length > 0 && <div className="route-carrier-candidates"><span>{copy.candidateNumbers}</span><div>{carrier.candidateNumbers.slice(0, 14).map((number) => <code key={number}>{number}</code>)}</div></div>}
               <div className="route-carrier-actions"><button type="button" disabled={carrier.identity !== 'operating'} onClick={() => onPlanRoute({ from: route.from.iata, to: route.to.iata, carrier: carrier.carrier })}>{copy.planCarrier}</button></div>
-              <details><summary>{copy.source} · {carrier.sources.length}</summary><ul>{carrier.sources.map((source) => <li key={source.id}><a href={source.url} target="_blank" rel="noreferrer">{source.note}</a><span>{source.checkedOn}</span></li>)}</ul></details>
+              {carrier.sourcePairs.some(([from, to]) => from !== route.from.iata || to !== route.to.iata) && <p>{zh ? '原始來源代碼' : 'Original source codes'}: {carrier.sourcePairs.map(pair => pair.join(' → ')).join(', ')} · {[route.from.iata, route.to.iata].map(airportIdentityLabel).filter(Boolean).join(' · ')}</p>}
+              <RegisteredPlansEvidence plans={carrier.registeredPlans} sources={carrier.sources} zh={zh} />
+
+              <details><summary>{copy.source} · {carrier.sources.length}</summary><ul>{carrier.sources.map((source) => <li key={source.id}><a href={source.url} target="_blank" rel="noreferrer">{source.note}</a><span>{source.checkedOn}</span>{source.routeReviewWindow && <span>{zh ? '來源覆核窗（程式設定）' : 'Source review window (generated policy)'}: {source.routeReviewWindow.from} → {source.routeReviewWindow.until} · {sourceReviewStatusLabel(sourceReviewState(source.routeReviewWindow, evidenceNow), zh)} · {zh ? '這不是實際服務期間' : 'This is not service validity'}</span>}</li>)}</ul></details>
             </article>
           ))}
         </section>
@@ -307,6 +321,14 @@ export function RouteLibraryExplorer({
           <Suspense fallback={<RouteMapLoading zh={zh} routes={homeModel!.fingerprint.routes} stats={homeStats} />}><LazyRouteEntityMap routes={homeModel!.fingerprint.routes} hubs={homeModel!.fingerprint.hubs} allianceTheme={alliance} fingerprint controls={mapControls} loadingPreview={<RouteLibraryMapPreview embedded zh={zh} routes={homeModel!.fingerprint.routes} stats={homeStats} />} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={homeStats} /></Suspense>
         </div>
       ) : entityContent}
+      {selection?.kind==='route' && <OfficialRouteReferences pair={selection.id} zh={zh}/>}
+      {selection?.kind==='route' && <CaliPrimaryReferences pair={selection.id} zh={zh}/>}
+      {caaReferences.shard && <section className="entity-section caa-route-references" data-caa-pair={caaReferences.shard.pair.join('-')}>
+        <h3>{zh ? '此方向的 CAA 發布時刻參考' : 'CAA published timetable references for this direction'} · {caaReferences.shard.pair.join(' → ')}</h3>
+        <p>{zh ? '這是獨立唯讀參考，包含非聯盟會員列示；不會增加聯盟航線、可用航空公司或選班選項。' : 'This independent read-only reference includes non-member listings. It adds no alliance route, eligible carrier or flight-selection option.'}</p>
+        {[...new Set(caaReferences.shard.records.map(row => row.listedAirlineCode))].sort().map(carrier => <article className="caa-reference-carrier" data-caa-carrier={carrier} key={`${caaReferences.shard!.pair.join('-')}-${carrier}`}><h4>{carrier}</h4><CaaPublishedTimetableEvidence shard={caaReferences.shard!} carrier={carrier} from={caaReferences.shard!.pair[0]} to={caaReferences.shard!.pair[1]} zh={zh} /></article>)}
+      </section>}
+      {caaReferences.status === 'failed' && <p>{zh ? 'CAA 時刻表參考暫無法讀取；請核對來源。' : 'CAA timetable references are unavailable; check the source.'}</p>}
     </section>
   );
 }

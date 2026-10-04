@@ -1,3 +1,4 @@
+import { sameAirport } from '../airport-identity.ts';
 /**
  * UI-facing schedule lookups over the flight-schedule catalog
  * (docs/decisions/flight-schedule-model.md S4/S5).
@@ -142,7 +143,7 @@ export function operatingDaysForDate(
   let active: ScheduleLike | undefined;
   for (const entry of schedules) {
     if (entry.carrier !== carrier) continue;
-    if (entry.pair[0] !== fromIata || entry.pair[1] !== toIata) continue;
+    if (!sameAirport(entry.pair[0], fromIata) || !sameAirport(entry.pair[1], toIata)) continue;
     if (isScheduleActiveOn(entry, iso)) {
       active = entry;
       break;

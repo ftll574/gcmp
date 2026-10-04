@@ -94,3 +94,15 @@
 @media(prefers-reduced-motion:reduce){.route-context-loading__map i{animation:none}}
 @media(max-width:700px){.route-loading-search{grid-template-columns:1fr;gap:7px}.route-loading-search__results{left:0;top:69px;width:100%}.route-loading-search>small{font-size:10px}}
 @media(max-width:560px){.route-context-loading__hero{padding-inline:6px}.route-context-loading__hero>strong{font-size:32px}.route-context-loading__map{height:calc(100svh - 225px);min-height:360px;border-radius:18px}}
+.registered-plans-evidence>p{color:var(--secondary-label,#65736a);font-size:12px;line-height:1.65}
+.registered-plans-evidence li{display:block;padding:10px 0;border-bottom:1px solid var(--separator,#e0e5e1);overflow-wrap:anywhere}
+.registered-plans-evidence li p{margin:0 0 6px;line-height:1.6}
+
+.caa-published-timetable-evidence{font-size:12px;line-height:1.65;overflow-wrap:anywhere}
+.caa-published-timetable-evidence>p{color:var(--secondary-label,#65736a)}
+.caa-published-timetable-evidence label{display:block;margin:8px 0}
+.caa-published-timetable-evidence input[type="date"]{max-width:100%;margin-left:6px}
+.caa-published-timetable-evidence li{display:block;padding:10px 0;border-bottom:1px solid var(--separator,#e0e5e1)}
+.caa-published-timetable-evidence li p{margin:0 0 6px}
+
+.caa-reference-carrier{padding:16px;border:1px solid var(--separator,#e0e5e1);border-radius:12px;margin:12px 0;min-width:0}

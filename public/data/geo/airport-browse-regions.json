@@ -1,7 +1,7 @@
 {
   "version": "2026.1",
   "convention": "ourairports-iso-region-browse-overlay",
-  "checkedOn": "2026-09-09",
+  "checkedOn": "2026-10-03",
   "sourceUrls": [
     "https://davidmegginson.github.io/ourairports-data/airports.csv"
   ],
@@ -1874,6 +1874,12 @@
       "region": "australia-western-australia"
     },
     {
+      "iata": "PDT",
+      "country": "US",
+      "subdivision": "US-OR",
+      "region": "us-west"
+    },
+    {
       "iata": "PDX",
       "country": "US",
       "subdivision": "US-OR",
@@ -2511,6 +2517,12 @@
     },
     {
       "iata": "YCD",
+      "country": "CA",
+      "subdivision": "CA-BC",
+      "region": "canada-pacific"
+    },
+    {
+      "iata": "YCG",
       "country": "CA",
       "subdivision": "CA-BC",
       "region": "canada-pacific"

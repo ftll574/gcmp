@@ -1,3 +1,4 @@
+import { sameAirport } from './lib/airport-identity.ts';
 /**
  * gcmp — Taiwan-first RTW award route planner
  *
@@ -23,6 +24,7 @@ import { LegChain } from './components/LegChain.tsx';
 import { MapErrorBoundary } from './components/MapErrorBoundary.tsx';
 import { MobileBanner } from './components/MobileBanner.tsx';
 import { LandingPage } from './components/LandingPage.tsx';
+import { DataProgressPage } from './components/DataProgressPage.tsx';
 import { SiteHeader, type SiteView } from './components/SiteHeader.tsx';
 import { RtwLegTable } from './components/RtwLegTable.tsx';
 import { RtwPlanGate } from './components/RtwPlanGate.tsx';
@@ -91,7 +93,7 @@ type InspectorPanel = 'rules' | 'tools' | 'saved';
 type ResizeHandle = 'editor';
 
 export interface AppProps {
-  readonly siteView?: Exclude<SiteView, 'home'>;
+  readonly siteView?: Exclude<SiteView, 'home' | 'progress'>;
   readonly onNavigateSite?: (view: SiteView) => void;
 }
 
@@ -106,14 +108,14 @@ export function App({ siteView: controlledSiteView, onNavigateSite: controlledNa
 function StandaloneApp(): React.ReactElement {
   const [siteView, setSiteView] = useState<SiteView>(() => {
     const explicit = new URLSearchParams(window.location.search).get('view');
-    if (explicit === 'home' || explicit === 'planner' || explicit === 'routes') return explicit;
+    if (explicit === 'home' || explicit === 'planner' || explicit === 'routes' || explicit === 'progress') return explicit;
     return window.location.hash.startsWith('#/r/') ? 'planner' : 'home';
   });
 
   useEffect(() => {
     const syncFromLocation = (): void => {
       const explicit = new URLSearchParams(window.location.search).get('view');
-      if (explicit === 'home' || explicit === 'planner' || explicit === 'routes') {
+      if (explicit === 'home' || explicit === 'planner' || explicit === 'routes' || explicit === 'progress') {
         setSiteView(explicit);
         return;
       }
@@ -139,11 +141,13 @@ function StandaloneApp(): React.ReactElement {
     return <LandingPage onNavigate={navigateSite} />;
   }
 
+  if (siteView === 'progress') return <DataProgressPage onNavigate={navigateSite} />;
+
   return <LoadedSiteApp siteView={siteView} onNavigateSite={navigateSite} />;
 }
 
 interface LoadedSiteAppProps {
-  readonly siteView: Exclude<SiteView, 'home'>;
+  readonly siteView: Exclude<SiteView, 'home' | 'progress'>;
   readonly onNavigateSite: (view: SiteView) => void;
 }
 
@@ -410,7 +414,7 @@ function Ready({
         guideToNextLeg();
         return;
       }
-      if (pendingAirport.iata === a.iata) {
+      if (sameAirport(pendingAirport.iata, a.iata)) {
         // Same airport twice would be a zero-distance leg; ignore.
         return;
       }
@@ -430,7 +434,7 @@ function Ready({
     // Has legs: append to the end as usual.
     updateActiveGroup((group) => {
       const from = group.legs.at(-1)?.to;
-      if (!from || from === a.iata) return group;
+      if (!from || sameAirport(from, a.iata)) return group;
       return { legs: [...group.legs, {
         from, to: a.iata,
         operatingCarrier: defaultCarrier(group.legs, selectedRtwProduct, data, preferredEligibleCarrier),
@@ -501,7 +505,7 @@ function Ready({
   }): void {
     // Validate attachment here as well as disabling incompatible UI chips.
     const chainEnd = activeGroup.legs.at(-1)?.to ?? pendingAirport?.iata;
-    if (from === to || (chainEnd !== undefined && chainEnd !== from)) return;
+    if (sameAirport(from, to) || (chainEnd !== undefined && !sameAirport(chainEnd, from))) return;
     if (!airportIndex.lookup(from) || !airportIndex.lookup(to)) return;
     if (!isCarrierEligibleForProduct(carrier, selectedRtwProduct, data.allianceCatalog)) return;
     if (selection?.departsOn !== undefined && !isCalendarDate(selection.departsOn)) return;
@@ -525,7 +529,7 @@ function Ready({
 
   function addSurfacePair(from: Iata, to: Iata, stopover?: boolean): void {
     const chainEnd = activeGroup.legs.at(-1)?.to ?? pendingAirport?.iata;
-    if (from === to || (chainEnd !== undefined && chainEnd !== from)) return;
+    if (sameAirport(from, to) || (chainEnd !== undefined && !sameAirport(chainEnd, from))) return;
     if (!airportIndex.lookup(from) || !airportIndex.lookup(to)) return;
     const newLeg: SurfaceLeg = {
       from,
@@ -943,6 +947,7 @@ function Ready({
                 runtimeNetworkShardBaseUrl={data.routeNetworkOriginShardBaseUrl}
                 networkGaps={data.networkGaps}
                 carriers={explorerCarriers}
+                productId={selectedRtwProductId}
                 chainEnd={activeChainAirports.at(-1)?.iata}
                 pendingIata={pendingAirport?.iata}
                 lookupAirport={airportIndex.lookup}

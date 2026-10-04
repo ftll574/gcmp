@@ -1,4 +1,6 @@
-import { RouteNetworkCatalogSchema, type CarrierRouteUniverse, type RouteNetworkCatalog } from '../schemas/route-network.ts';
+import {routeSourceReviewWindow} from './route-date-semantics.ts';
+import { z } from 'zod';
+import { RouteNetworkSourceSchema, RouteNetworkCatalogSchema, type CarrierRouteUniverse, type RouteNetworkCatalog } from '../schemas/route-network.ts';
 
 function sourceKey(source: RouteNetworkCatalog['sources'][number]): string {
   return JSON.stringify(source);
@@ -33,28 +35,62 @@ function mergeRouteNumbers(
   lower: RouteNetworkCatalog['routes'][number],
   higher: RouteNetworkCatalog['routes'][number],
 ): RouteNetworkCatalog['routes'][number] {
-  const confirmed = [...new Set([...(lower.flightNumbers ?? []), ...(higher.flightNumbers ?? [])])].sort();
+  // Route/operator proof cannot promote unrelated provider or number-only designators.
+  const lowerUnverified = higher.carrierIdentity === 'operating' && lower.carrierIdentity !== 'operating';
+  const confirmed = [...new Set([...(lowerUnverified ? [] : lower.flightNumbers ?? []), ...(higher.flightNumbers ?? [])])].sort();
   const confirmedSet = new Set(confirmed);
   const candidates = [...new Set([
+    ...(lowerUnverified ? lower.flightNumbers ?? [] : []),
     ...(lower.flightNumberCandidates ?? []),
     ...(higher.flightNumberCandidates ?? []),
   ])].filter((number) => !confirmedSet.has(number)).sort();
+  // Replace both tiers completely: spreading higher would retain a candidate
+  // list even when deduplication moved its last designator into confirmed.
+  const route = { ...higher };
+  delete route.flightNumbers;
+  delete route.flightNumberSourceIds;
+  delete route.flightNumberCandidates;
+  delete route.flightNumberCandidateSourceIds;
   return {
-    ...higher,
+    ...route,
     ...(confirmed.length > 0 ? { flightNumbers: confirmed } : {}),
     ...(confirmed.length > 0 ? {
       flightNumberSourceIds: [...new Set([
-        ...(lower.flightNumberSourceIds ?? []),
+        ...(lowerUnverified ? [] : lower.flightNumberSourceIds ?? []),
         ...(higher.flightNumberSourceIds ?? []),
       ])],
     } : {}),
     ...(candidates.length > 0 ? { flightNumberCandidates: candidates } : {}),
     ...(candidates.length > 0 ? {
       flightNumberCandidateSourceIds: [...new Set([
+        ...(lowerUnverified ? lower.flightNumberSourceIds ?? [] : []),
         ...(lower.flightNumberCandidateSourceIds ?? []),
         ...(higher.flightNumberCandidateSourceIds ?? []),
       ])],
     } : {}),
+  };
+}
+
+/** Reapply the operating-evidence gate to cached observational number layers.
+ * Official number evidence with different semantics is left intact. Aggregated
+ * mixed-source tiers cannot be separated safely without per-number provenance. */
+export function enforceObservedNumberOperatingGate(network: RouteNetworkCatalog): RouteNetworkCatalog {
+  const gated = (id: string) => id === 'flight-numbers-adsbiq-recent-20260908'
+    || (id.startsWith('flightsfrom-') && network.sources.some(source => source.id === id
+      && /already.*operating-carrier evidence/i.test(source.note ?? '')));
+  return {
+    ...network,
+    routes: network.routes.map(route => {
+      const sourceIds = route.flightNumberSourceIds ?? [];
+      if (route.carrierIdentity === 'operating' || !route.flightNumbers?.length
+        || !sourceIds.length || !sourceIds.every(gated)) return route;
+      const { flightNumbers, flightNumberSourceIds, ...rest } = route;
+      return {
+        ...rest,
+        flightNumberCandidates: [...new Set([...(rest.flightNumberCandidates ?? []), ...flightNumbers])].sort(),
+        flightNumberCandidateSourceIds: [...new Set([...(rest.flightNumberCandidateSourceIds ?? []), ...(flightNumberSourceIds ?? [])])],
+      };
+    }),
   };
 }
 
@@ -91,11 +127,11 @@ export function mergeRouteNumberEvidence(
         }
       : merged);
   }
-  return RouteNetworkCatalogSchema.parse({
+  return RouteNetworkCatalogSchema.parse(enforceObservedNumberOperatingGate({
     ...network,
     sources: [...sources.values()],
     routes: [...routes.values()],
-  });
+  }));
 }
 
 /**
@@ -133,7 +169,16 @@ export function mergeRouteNetworkCatalogs(
   for (const route of curated.routes) {
     const key = `${route.carrier}:${route.pair[0]}-${route.pair[1]}`;
     const lower = routes.get(key);
-    routes.set(key, lower ? mergeRouteNumbers(lower, route) : route);
+    // Missing identity cannot erase a known provider-only limitation. Never
+    // inherit operating proof from a lower-priority observation, and keep
+    // number-only overlays independent from this route identity decision.
+    const inheritedListing = (!route.carrierIdentity || route.carrierIdentity === 'unknown')
+      && lower?.carrierIdentity === 'provider-listed';
+    routes.set(key, lower ? {
+      ...mergeRouteNumbers(lower, route),
+      carrierIdentity: inheritedListing ? 'provider-listed' : route.carrierIdentity ?? 'unknown',
+      sourceIds: inheritedListing ? [...new Set([...route.sourceIds, ...lower.sourceIds])] : route.sourceIds,
+    } : route);
   }
 
   const universes = new Map<string, CarrierRouteUniverse>();
@@ -152,4 +197,54 @@ export function mergeRouteNetworkCatalogs(
       || a.pair[0].localeCompare(b.pair[0])
       || a.pair[1].localeCompare(b.pair[1])),
   });
+}
+
+
+const RouteNumberQuarantinesSchema = z.object({
+  version: z.literal(1),
+  sources: z.array(RouteNetworkSourceSchema),
+  entries: z.array(z.object({
+    carrier: z.string().regex(/^[A-Z0-9]{2,3}$/),
+    pair: z.tuple([z.string().regex(/^[A-Z]{3}$/), z.string().regex(/^[A-Z]{3}$/)]),
+    flightNumber: z.string().regex(/^[A-Z0-9]{2,3}\d{1,4}[A-Z]?$/),
+    effectiveFrom: z.iso.date(), effectiveUntil: z.iso.date(),
+    sourceIds: z.array(z.string()).min(1), reason: z.string().min(1),
+  }).strict()),
+}).strict();
+
+/** Current artifact quarantine after every number overlay. Preserve raw layers
+ * and dated historical rows that do not overlap the official conflict window. */
+export function applyRouteNumberQuarantines(network: RouteNetworkCatalog, input: unknown): RouteNetworkCatalog {
+  const rules = RouteNumberQuarantinesSchema.parse(input);
+  const sources = new Map(network.sources.map(source => [source.id, source]));
+  for (const source of rules.sources) {
+    const existing = sources.get(source.id);
+    if (existing && sourceKey(existing) !== sourceKey(source)) throw new Error(`Conflicting quarantine source ${source.id}`);
+    sources.set(source.id, source);
+  }
+  for (const rule of rules.entries) {
+    if (rule.effectiveFrom > rule.effectiveUntil || !rule.flightNumber.startsWith(rule.carrier)
+      || rule.sourceIds.some(id => !sources.has(id))) throw new Error('Invalid flight-number quarantine evidence');
+  }
+  const routes = network.routes.map(route => {
+    const generatedReview=routeSourceReviewWindow(route,sources);
+    const matches = rules.entries.filter(rule => rule.carrier === route.carrier
+      && rule.pair[0] === route.pair[0] && rule.pair[1] === route.pair[1]
+      && (generatedReview?'0000-01-01':route.effectiveFrom ?? '0000-01-01') <= rule.effectiveUntil
+      && (generatedReview?'9999-12-31':route.effectiveUntil ?? '9999-12-31') >= rule.effectiveFrom);
+    if (!matches.length) return route;
+    const blocked = new Set(matches.map(rule => rule.flightNumber));
+    const confirmed = (route.flightNumbers ?? []).filter(number => !blocked.has(number));
+    const candidates = (route.flightNumberCandidates ?? []).filter(number => !blocked.has(number));
+    const clean = { ...route };
+    delete clean.flightNumbers; delete clean.flightNumberSourceIds;
+    delete clean.flightNumberCandidates; delete clean.flightNumberCandidateSourceIds;
+    return {
+      ...clean,
+      ...(confirmed.length ? { flightNumbers: confirmed, flightNumberSourceIds: route.flightNumberSourceIds } : {}),
+      ...(candidates.length ? { flightNumberCandidates: candidates, flightNumberCandidateSourceIds: route.flightNumberCandidateSourceIds } : {}),
+      sourceIds: [...new Set([...route.sourceIds, ...matches.flatMap(rule => rule.sourceIds)])],
+    };
+  });
+  return RouteNetworkCatalogSchema.parse({ ...network, sources: [...sources.values()], routes });
 }

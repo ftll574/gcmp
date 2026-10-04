@@ -179,6 +179,8 @@
   },
   "rtw": {
     "discovery": {
+      "sourceReviewWindow": "Source review window (generated policy)",
+      "notServiceValidity": "This is not service validity",
       "allCarriers": "All eligible airlines",
       "from": "Current endpoint",
       "search": "Find a destination",
@@ -224,6 +226,7 @@
       "evidenceAndSchedule": "Sources & schedule reference",
       "advanced": "Schedule reference & coverage note",
       "count": "{destinations} sourced next airports · {options} airline options",
+      "productScope": "Only airlines allowed by this ticket product are shown. Missing routes do not mean there are no direct flights. Candidate routes need operating-carrier and date verification.",
       "otherOrigins": "Browse other departure airports",
       "noOrigin": "No sourced onward routes are recorded from {origin} for this product yet. You can still add airports manually; this does not mean no flights exist.",
       "noMatch": "No sourced nonstop from {origin} matches this search. Clear the search or continue manually.",

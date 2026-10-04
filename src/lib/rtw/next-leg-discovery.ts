@@ -1,3 +1,6 @@
+import {routeSourceReviewWindow,routeWithinExplicitServiceWindow,sourceReviewState,type SourceReviewWindow,type SourceReviewState} from './route-date-semantics.ts';
+import { isKnownAirport, sameAirport, airportCodeOn, airportIdentityPairKey } from '../airport-identity.ts';
+import { canUsePassengerRoute } from './passenger-route-use.ts';
 import type { ScheduleEntry } from '../schemas/flight-schedules.ts';
 import type { LiveRouteWeeklySchedule } from '../schemas/live-routes.ts';
 import type { NetworkGapEntry } from '../schemas/network-gaps.ts';
@@ -32,6 +35,7 @@ export interface NextLegOption {
   readonly flightNumberSources: ReadonlyArray<PublicationSource>;
   readonly routeFlightNumberSources: ReadonlyArray<RouteNetworkSource>;
   readonly candidateFlightNumberSources: ReadonlyArray<RouteNetworkSource>;
+  readonly sourceReview?: SourceReviewWindow & {readonly state:SourceReviewState};
   readonly routeWindow: { readonly from?: string | undefined; readonly until?: string | undefined } | null;
   /** Fresh current-week listing from the additive live route provider. It may
    * include marketing/codeshare service, so it is display/research evidence
@@ -42,7 +46,7 @@ export interface NextLegOption {
   /** Undefined / confirmed-operating is backed by the existing operating-carrier
    * evidence pipeline. provider-listed means a live route source listed this
    * airline on the route, but dated evidence has not yet confirmed operation. */
-  readonly identityStatus?: 'confirmed-operating' | 'provider-listed';
+  readonly identityStatus?: 'confirmed-operating' | 'provider-listed' | 'unknown';
 }
 
 export interface NextLegDestination {
@@ -80,6 +84,7 @@ interface DiscoveryInputs {
   readonly schedules: ReadonlyArray<ScheduleEntry>;
   readonly eligibleCarriers: ReadonlySet<string>;
   readonly referenceDate: string;
+  readonly productId?: string | undefined;
   /** Optional UI optimization: when supplied, materialize only this origin's
    * outgoing buckets. Omitted callers retain the full multi-origin index. */
   readonly origin?: string;
@@ -89,15 +94,15 @@ interface DiscoveryInputs {
   readonly knownAirports?: ReadonlySet<string>;
 }
 
-function inWindow(entry: RouteNetworkEntry, date: string): boolean {
-  return (!entry.effectiveFrom || date >= entry.effectiveFrom) && (!entry.effectiveUntil || date <= entry.effectiveUntil);
+function inWindow(entry: RouteNetworkEntry,date:string,sources:ReadonlyMap<string,RouteNetworkSource>):boolean {
+  return routeWithinExplicitServiceWindow(entry,date,sources);
 }
 
 function hasNetworkGap(gaps: ReadonlyArray<NetworkGapEntry>, carrier: string, from: string, to: string, date: string): boolean {
   const month = date.slice(0, 7);
   return gaps.some((gap) => {
     if (gap.carrier !== carrier) return false;
-    if (!((gap.pair[0] === from && gap.pair[1] === to) || (gap.pair[0] === to && gap.pair[1] === from))) return false;
+    if (!((sameAirport(gap.pair[0], from) && sameAirport(gap.pair[1], to)) || (sameAirport(gap.pair[0], to) && sameAirport(gap.pair[1], from)))) return false;
     const since = gap.since.length === 4 ? `${gap.since}-01` : gap.since;
     const until = gap.until === null ? null : gap.until.length === 4 ? `${gap.until}-01` : gap.until;
     return month >= since && (until === null || month <= until);
@@ -114,6 +119,7 @@ function hasNetworkGap(gaps: ReadonlyArray<NetworkGapEntry>, carrier: string, fr
 export function buildNextLegIndex({
   network,
   schedules,
+  productId,
   eligibleCarriers,
   referenceDate,
   origin,
@@ -134,10 +140,13 @@ export function buildNextLegIndex({
   const buckets = new Map<string, Bucket>();
   const sources = new Map(network?.sources.map((source) => [source.id, source]) ?? []);
   function bucket(carrier: string, from: string, to: string): Bucket | null {
-    if (origin && from !== origin) return null;
-    if (!eligibleCarriers.has(carrier) || from === to) return null;
-    if (knownAirports && (!knownAirports.has(from) || !knownAirports.has(to))) return null;
-    const key = `${carrier}:${from}-${to}`;
+    if (origin && !sameAirport(from, origin)) return null;
+    from = origin ?? airportCodeOn(from, referenceDate);
+    to = airportCodeOn(to, referenceDate);
+    if (!eligibleCarriers.has(carrier) || sameAirport(from, to)) return null;
+    if (!canUsePassengerRoute(carrier, from, to, referenceDate, productId)) return null;
+    if (knownAirports && (!isKnownAirport(from, knownAirports) || !isKnownAirport(to, knownAirports))) return null;
+    const key = `${carrier}:${airportIdentityPairKey(from, to)}`;
     let result = buckets.get(key);
     if (!result) {
       result = { carrier, from, to, schedules: [], officialServices: [], flightNumberReferences: [] };
@@ -147,7 +156,7 @@ export function buildNextLegIndex({
   }
   for (const route of network?.routes ?? []) {
     const item = bucket(route.carrier, route.pair[0], route.pair[1]);
-    if (item) item.route = route;
+    if (item && (!item.route || route.status !== 'published')) item.route = route;
   }
   for (const schedule of schedules) bucket(schedule.carrier, schedule.pair[0], schedule.pair[1])?.schedules.push(schedule);
   for (const service of officialSchedules?.services ?? []) {
@@ -161,7 +170,7 @@ export function buildNextLegIndex({
   for (const item of buckets.values()) {
     if (hasNetworkGap(networkGaps ?? [], item.carrier, item.from, item.to, referenceDate)) continue;
     if (item.route?.status === 'identity-unresolved') continue;
-    if (item.route?.status === 'suspended' && inWindow(item.route, referenceDate)) continue;
+    if (item.route?.status === 'suspended' && inWindow(item.route, referenceDate,sources)) continue;
     // An explicit suspension takes precedence over an undated observation.
     if (item.schedules.some((row) => row.status === 'suspended' && isScheduleActiveOn({ ...row, status: 'operating' }, referenceDate))) continue;
     const positiveSchedules = item.schedules.filter((row) => row.status !== 'suspended');
@@ -198,7 +207,7 @@ export function buildNextLegIndex({
       activeReferences.length === 0
     ) continue;
     const days = operatingDaysForDate(positiveSchedules, item.carrier, item.from, item.to, referenceDate);
-    const routeOutside = item.route?.status === 'published' && !inWindow(item.route, referenceDate);
+    const routeOutside = item.route?.status === 'published' && !inWindow(item.route, referenceDate,sources);
     const scheduleStatus: NextLegScheduleStatus = officialRunsToday
       ? 'covered'
       : days !== null
@@ -214,7 +223,7 @@ export function buildNextLegIndex({
     const departureByDesignator = new Map(activeOfficialServices.flatMap((row) =>
       row.departureTime ? [[`${row.carrier}${row.flightNumber}`, row.departureTime] as const] : [],
     ));
-    const providerListedOnly = item.route?.carrierIdentity === 'provider-listed'
+    const unverifiedIdentity = item.route !== undefined && item.route.carrierIdentity !== 'operating'
       && positiveSchedules.length === 0
       && activeOfficialServices.length === 0
       && activeReferences.length === 0;
@@ -222,7 +231,7 @@ export function buildNextLegIndex({
       .flatMap((id) => { const source = sources.get(id); return source ? [source] : []; });
     const candidateFlightNumberSources = (item.route?.flightNumberCandidateSourceIds ?? [])
       .flatMap((id) => { const source = sources.get(id); return source ? [source] : []; });
-    const routeConfirmedNumbers = providerListedOnly ? [] : item.route?.flightNumbers ?? [];
+    const routeConfirmedNumbers = unverifiedIdentity ? [] : item.route?.flightNumbers ?? [];
     const confirmedNumbers = [...new Set([
       ...routeConfirmedNumbers,
       ...positiveSchedules.flatMap((row) => row.flightNumbers ?? []),
@@ -232,8 +241,9 @@ export function buildNextLegIndex({
     const confirmedNumberSet = new Set(confirmedNumbers);
     const candidateFlightNumbers = [...new Set([
       ...(item.route?.flightNumberCandidates ?? []),
-      ...(providerListedOnly ? item.route?.flightNumbers ?? [] : []),
+      ...(unverifiedIdentity ? item.route?.flightNumbers ?? [] : []),
     ])].filter((number) => !confirmedNumberSet.has(number)).sort();
+    const reviewWindow=item.route?routeSourceReviewWindow(item.route,sources):null;
     options.push({
       carrier: item.carrier, from: item.from, to: item.to, scheduleStatus,
       flightNumbers: confirmedNumbers
@@ -249,8 +259,9 @@ export function buildNextLegIndex({
       networkSources, schedules: positiveSchedules, flightNumberSources,
       routeFlightNumberSources,
       candidateFlightNumberSources,
-      routeWindow: item.route ? { from: item.route.effectiveFrom, until: item.route.effectiveUntil } : null,
-      ...(providerListedOnly ? { identityStatus: 'provider-listed' as const } : {}),
+      ...(reviewWindow?{sourceReview:{...reviewWindow,state:sourceReviewState(reviewWindow,evidenceNow)}}:{}),
+      routeWindow: item.route && !reviewWindow ? { from: item.route.effectiveFrom, until: item.route.effectiveUntil } : null,
+      ...(unverifiedIdentity ? { identityStatus: item.route?.carrierIdentity === 'provider-listed' ? 'provider-listed' as const : 'unknown' as const } : {}),
     });
     destinations.set(item.to, options);
   }

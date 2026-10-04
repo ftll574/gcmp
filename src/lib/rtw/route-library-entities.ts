@@ -1,3 +1,4 @@
+import { sameAirport, airportIdentityPairKey } from '../airport-identity.ts';
 import { distanceNm } from '../calc/haversine.ts';
 import type { ContinentId } from '../schemas/country-continent.ts';
 import type { RouteNetworkCatalog, RouteNetworkEntry, RouteNetworkSource } from '../schemas/route-network.ts';
@@ -11,10 +12,12 @@ export type RouteLibraryEntitySelection =
 export interface RouteLibraryCarrierRoute {
   readonly carrier: string;
   readonly name: string;
-  readonly identity: 'operating' | 'provider-listed';
+  readonly identity: 'operating' | 'provider-listed' | 'unknown';
   readonly confirmedNumbers: ReadonlyArray<string>;
   readonly candidateNumbers: ReadonlyArray<string>;
   readonly sources: ReadonlyArray<RouteNetworkSource>;
+  readonly sourcePairs: ReadonlyArray<readonly [string, string]>;
+  readonly registeredPlans: NonNullable<RouteNetworkEntry['registeredPlans']>;
 }
 
 export interface RouteLibraryRouteCard {
@@ -80,18 +83,23 @@ function carriersForPair(
   sourceById: ReadonlyMap<string, RouteNetworkSource>,
   carrierNames: ReadonlyMap<string, string>,
 ): ReadonlyArray<RouteLibraryCarrierRoute> {
-  return rows.map((row) => {
+  const groups = new Map<string, RouteNetworkEntry[]>();
+  for (const row of rows) groups.set(row.carrier, [...(groups.get(row.carrier) ?? []), row]);
+  return [...groups.values()].map((group) => {
+    const row = group.find(row => row.carrierIdentity === 'operating') ?? group.find(row => row.carrierIdentity === 'provider-listed') ?? group[0]!;
     const sourceIds = new Set([
-      ...row.sourceIds,
-      ...(row.flightNumberSourceIds ?? []),
-      ...(row.flightNumberCandidateSourceIds ?? []),
+      ...group.flatMap(row => row.sourceIds),
+      ...group.flatMap(row => row.flightNumberSourceIds ?? []),
+      ...group.flatMap(row => row.flightNumberCandidateSourceIds ?? []),
     ]);
     return {
       carrier: row.carrier,
       name: carrierNames.get(row.carrier) ?? row.carrier,
-      identity: row.carrierIdentity ?? 'operating',
-      confirmedNumbers: row.flightNumbers ?? [],
-      candidateNumbers: row.flightNumberCandidates ?? [],
+      identity: row.carrierIdentity ?? 'unknown',
+      confirmedNumbers: [...new Set(group.flatMap(row => row.flightNumbers ?? []))],
+      candidateNumbers: [...new Set(group.flatMap(row => row.flightNumberCandidates ?? []))],
+      sourcePairs: group.map(row => row.pair),
+      registeredPlans: group.flatMap(row => row.registeredPlans ?? []),
       sources: [...sourceIds].map((id) => sourceById.get(id)).filter((source): source is RouteNetworkSource => source !== undefined),
     };
   }).sort((a, b) => {
@@ -104,7 +112,7 @@ function buildPairCards(input: BuildRouteLibraryEntityInput, rows: ReadonlyArray
   const sourceById = new Map(input.network.sources.map((source) => [source.id, source] as const));
   const grouped = new Map<string, RouteNetworkEntry[]>();
   for (const row of rows) {
-    const key = `${row.pair[0]}-${row.pair[1]}`;
+    const key = airportIdentityPairKey(row.pair[0], row.pair[1]);
     const bucket = grouped.get(key) ?? [];
     bucket.push(row);
     grouped.set(key, bucket);
@@ -136,7 +144,7 @@ export function buildRouteLibraryFingerprint(
   const rows = publishedRows(input);
   const directedPairs = new Map<string, RouteNetworkEntry[]>();
   for (const row of rows) {
-    const key = `${row.pair[0]}-${row.pair[1]}`;
+    const key = airportIdentityPairKey(row.pair[0], row.pair[1]);
     const bucket = directedPairs.get(key) ?? [];
     bucket.push(row);
     directedPairs.set(key, bucket);
@@ -219,9 +227,9 @@ export function buildAirportEntityProfile(input: BuildRouteLibraryEntityInput, i
   const airport = input.airports.get(iata.toUpperCase());
   if (!airport) return null;
   const rows = publishedRows(input);
-  const outgoingRows = rows.filter((row) => row.pair[0] === airport.iata);
-  const incomingRouteCount = new Set(rows.filter((row) => row.pair[1] === airport.iata).map((row) => row.pair.join('-'))).size;
-  const outgoingRoutes = [...buildPairCards(input, outgoingRows)].sort((a, b) =>
+  const outgoingRows = rows.filter((row) => sameAirport(row.pair[0], airport.iata));
+  const incomingRouteCount = new Set(rows.filter((row) => sameAirport(row.pair[1], airport.iata)).map((row) => airportIdentityPairKey(row.pair[0], row.pair[1]))).size;
+  const outgoingRoutes = buildPairCards(input, outgoingRows).map(route => ({ ...route, from: airport })).sort((a, b) =>
     b.carriers.length - a.carriers.length || a.to.city.localeCompare(b.to.city));
   const airlines = new Set(outgoingRows.map((row) => row.carrier));
   const countries = new Set(outgoingRoutes.map((route) => route.to.country));
@@ -267,7 +275,7 @@ export function buildAirlineEntityProfile(input: BuildRouteLibraryEntityInput, c
     airportCount: airportsUsed.size,
     countryCount: countries.size,
     confirmedRouteCount: rows.filter((row) => (row.flightNumbers?.length ?? 0) > 0).length,
-    operatingRouteCount: rows.filter((row) => (row.carrierIdentity ?? 'operating') === 'operating').length,
+    operatingRouteCount: rows.filter((row) => (row.carrierIdentity ?? 'unknown') === 'operating').length,
     topHubs,
   };
 }
@@ -277,9 +285,9 @@ export function buildRouteEntityProfile(input: BuildRouteLibraryEntityInput, id:
   if (!match) return null;
   const from = match[1]!.toUpperCase();
   const to = match[2]!.toUpperCase();
-  const rows = publishedRows(input).filter((row) => row.pair[0] === from && row.pair[1] === to);
+  const rows = publishedRows(input).filter((row) => sameAirport(row.pair[0], from) && sameAirport(row.pair[1], to));
   const route = buildPairCards(input, rows)[0];
-  return route ? { route } : null;
+  return route ? { route: { ...route, from: input.airports.get(from) ?? route.from, to: input.airports.get(to) ?? route.to } } : null;
 }
 
 export function routeLibraryEntityContinent(

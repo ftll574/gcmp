@@ -16,6 +16,13 @@ export const LandingShowcaseLegSchema = z.object({
   carrierName: z.string().min(1),
   flightNumber: z.string().regex(/^[A-Z0-9]{2,3}\d{1,4}[A-Z]?$/),
   distanceNm: z.number().int().positive(),
+  carrierIdentity: z.enum(['operating', 'provider-listed', 'unknown']).default('unknown'),
+  flightNumberStatus: z.enum(['confirmed', 'candidate']).default('candidate'),
+  sourceUrls: z.array(z.string().url()).default([]),
+}).superRefine((leg, ctx) => {
+  if (leg.flightNumberStatus === 'confirmed' && leg.carrierIdentity !== 'operating') {
+    ctx.addIssue({ code: 'custom', path: ['flightNumberStatus'], message: 'Confirmed showcase designator requires explicit operating identity' });
+  }
 });
 
 export const LandingShowcaseSchema = z.object({

@@ -1,3 +1,5 @@
+import { airportCodeOn, airportIdentityKey, isKnownAirport, sameAirport } from '../airport-identity.ts';
+import { canUsePassengerRoute } from './passenger-route-use.ts';
 import type { LiveRouteResponse } from '../schemas/live-routes.ts';
 import type { RouteNetworkSource } from '../schemas/route-network.ts';
 import type { NextLegDestination, NextLegOption } from './next-leg-discovery.ts';
@@ -16,16 +18,22 @@ export function mergeLiveNextLegDestinations(
   live: LiveRouteResponse | null,
   eligibleCarriers: ReadonlySet<string>,
   knownAirports: ReadonlySet<string>,
+  context?: { referenceDate: string; productId?: string | undefined },
 ): ReadonlyArray<NextLegDestination> {
-  if (!live) return current;
+  const safeCurrent = current.map(destination => ({ ...destination, options: destination.options.filter(option => !sameAirport(option.from, option.to) && canUsePassengerRoute(option.carrier, option.from, option.to, context?.referenceDate ?? live?.checkedAt.slice(0, 10) ?? new Date().toISOString().slice(0, 10), context?.productId)) })).filter(destination => destination.options.length > 0);
+  if (!live) return safeCurrent;
   const destinations = new Map<string, NextLegOption[]>(
-    current.map((destination) => [destination.iata, [...destination.options]]),
+    safeCurrent.map((destination) => [destination.iata, [...destination.options]]),
   );
+  const destinationCodes = new Map(safeCurrent.map(destination => [airportIdentityKey(destination.iata), destination.iata]));
   for (const route of live.routes) {
-    if (route.from !== live.origin || !knownAirports.has(route.to)) continue;
-    const options = destinations.get(route.to) ?? [];
+    if (!sameAirport(route.from, live.origin) || sameAirport(route.from, route.to) || !isKnownAirport(route.to, knownAirports)) continue;
+    const physicalKey = airportIdentityKey(route.to);
+    const destinationCode = destinationCodes.get(physicalKey) ?? airportCodeOn(route.to, context?.referenceDate);
+    const options = destinations.get(destinationCode) ?? [];
     for (const listed of route.carriers) {
       if (!eligibleCarriers.has(listed.code)) continue;
+      if (!canUsePassengerRoute(listed.code, route.from, route.to, context?.referenceDate ?? live.checkedAt.slice(0, 10), context?.productId)) continue;
       const liveSignal = {
         liveWeeklySchedule: listed.weeklySchedule,
         liveSeasonalityLabel: route.seasonalityLabel,
@@ -39,7 +47,7 @@ export function mergeLiveNextLegDestinations(
       const option: NextLegOption = {
         carrier: listed.code,
         from: route.from,
-        to: route.to,
+        to: destinationCode,
         flightNumbers: [],
         candidateFlightNumbers: [],
         scheduleStatus: 'unknown',
@@ -54,7 +62,10 @@ export function mergeLiveNextLegDestinations(
       };
       options.push(option);
     }
-    if (options.length > 0) destinations.set(route.to, options.sort((a, b) => a.carrier.localeCompare(b.carrier)));
+    if (options.length > 0) {
+      destinationCodes.set(physicalKey, destinationCode);
+      destinations.set(destinationCode, options.sort((a, b) => a.carrier.localeCompare(b.carrier)));
+    }
   }
   return [...destinations.entries()]
     .sort(([a], [b]) => a.localeCompare(b))

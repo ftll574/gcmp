@@ -179,6 +179,8 @@
   },
   "rtw": {
     "discovery": {
+      "sourceReviewWindow": "來源覆核窗（程式設定）",
+      "notServiceValidity": "這不是實際服務期間",
       "allCarriers": "所有符合方案的航空",
       "from": "目前端點",
       "search": "搜尋下一站",
@@ -224,6 +226,7 @@
       "evidenceAndSchedule": "來源與班表參考",
       "advanced": "班表參考日期與資料說明",
       "count": "目前有 {destinations} 個可接續航點 · {options} 個航司選項",
+      "productScope": "僅顯示本票種允許的航空公司。未列出不代表沒有直飛航班；候選航線仍需查證實際營運者與日期。",
       "otherOrigins": "瀏覽其他出發機場",
       "noOrigin": "目前尚未收錄此方案從 {origin} 出發的接續航線。仍可手動加入機場，不代表沒有航班。",
       "noMatch": "已收錄的 {origin} 直飛航線沒有符合這次搜尋的結果。可清除搜尋或繼續手動規劃。",

@@ -1,16 +1,15 @@
+import {routeWithinExplicitServiceWindow} from './route-date-semantics.ts';
 import type { ScheduleCatalog } from '../schemas/flight-schedules.ts';
 import type { OfficialScheduleCatalog } from '../schemas/published-schedules.ts';
-import type { RouteNetworkCatalog, RouteNetworkEntry } from '../schemas/route-network.ts';
+import type { RouteNetworkCatalog, RouteNetworkEntry, RouteNetworkSource } from '../schemas/route-network.ts';
 import { isScheduleActiveOn } from './schedule-days.ts';
 
 function routeKey(carrier: string, from: string, to: string): string {
   return `${carrier}:${from}-${to}`;
 }
 
-function routeIsActive(route: RouteNetworkEntry, asOf: string): boolean {
-  return route.status === 'published'
-    && (!route.effectiveFrom || route.effectiveFrom <= asOf)
-    && (!route.effectiveUntil || route.effectiveUntil >= asOf);
+function routeIsActive(route:RouteNetworkEntry,asOf:string,sources:ReadonlyMap<string,RouteNetworkSource>):boolean {
+ return route.status==='published' && routeWithinExplicitServiceWindow(route,asOf,sources);
 }
 
 function percent(numerator: number, denominator: number): number {
@@ -26,6 +25,7 @@ export interface FlightDataCarrierQuality {
   readonly activePublishedRoutes: number;
   readonly confirmedOperatingRoutes: number;
   readonly providerListedOnlyRoutes: number;
+  readonly unknownIdentityRoutes: number;
   readonly confirmedFlightNumberRoutes: number;
   readonly candidateOnlyFlightNumberRoutes: number;
   readonly activeDatedScheduleRoutes: number;
@@ -39,6 +39,7 @@ export interface FlightDataQualityReport {
     readonly activePublishedRoutes: number;
     readonly confirmedOperatingRoutes: number;
     readonly providerListedOnlyRoutes: number;
+    readonly unknownIdentityRoutes: number;
     readonly confirmedFlightNumberRoutes: number;
     readonly confirmedOperatingFlightNumberRoutes: number;
     readonly candidateOnlyFlightNumberRoutes: number;
@@ -78,7 +79,8 @@ export function summarizeFlightDataQuality(
     throw new Error('asOf must be a real YYYY-MM-DD date');
   }
 
-  const routes = network.routes.filter((route) => routeIsActive(route, asOf));
+  const routeSources=new Map(network.sources.map(source=>[source.id,source]));
+  const routes = network.routes.filter((route) => routeIsActive(route, asOf,routeSources));
   const routeKeys = new Set(routes.map((route) => routeKey(route.carrier, route.pair[0], route.pair[1])));
   const catalogDatedKeys = new Set<string>();
   const activeScheduleKeys = new Set<string>();
@@ -125,8 +127,9 @@ export function summarizeFlightDataQuality(
     return {
       carrier,
       activePublishedRoutes: rows.length,
-      confirmedOperatingRoutes: rows.filter((route) => route.carrierIdentity !== 'provider-listed').length,
+      confirmedOperatingRoutes: rows.filter((route) => route.carrierIdentity === 'operating').length,
       providerListedOnlyRoutes: rows.filter((route) => route.carrierIdentity === 'provider-listed').length,
+      unknownIdentityRoutes: rows.filter((route) => !route.carrierIdentity || route.carrierIdentity === 'unknown').length,
       confirmedFlightNumberRoutes: rows.filter((route) => (route.flightNumbers?.length ?? 0) > 0).length,
       candidateOnlyFlightNumberRoutes: rows.filter((route) => !(route.flightNumbers?.length) && (route.flightNumberCandidates?.length ?? 0) > 0).length,
       activeDatedScheduleRoutes: dated,
@@ -142,10 +145,11 @@ export function summarizeFlightDataQuality(
     denominator: 'active-published-runtime-routes',
     routeEvidence: {
       activePublishedRoutes,
-      confirmedOperatingRoutes: routes.filter((route) => route.carrierIdentity !== 'provider-listed').length,
+      confirmedOperatingRoutes: routes.filter((route) => route.carrierIdentity === 'operating').length,
       providerListedOnlyRoutes: routes.filter((route) => route.carrierIdentity === 'provider-listed').length,
+      unknownIdentityRoutes: routes.filter((route) => !route.carrierIdentity || route.carrierIdentity === 'unknown').length,
       confirmedFlightNumberRoutes: routes.filter((route) => (route.flightNumbers?.length ?? 0) > 0).length,
-      confirmedOperatingFlightNumberRoutes: routes.filter((route) => route.carrierIdentity !== 'provider-listed' && (route.flightNumbers?.length ?? 0) > 0).length,
+      confirmedOperatingFlightNumberRoutes: routes.filter((route) => route.carrierIdentity === 'operating' && (route.flightNumbers?.length ?? 0) > 0).length,
       candidateOnlyFlightNumberRoutes: routes.filter((route) => !(route.flightNumbers?.length) && (route.flightNumberCandidates?.length ?? 0) > 0).length,
     },
     datedEvidence: {

@@ -1,0 +1,1321 @@
+{
+  "version": 1,
+  "generatedAt": "2026-10-04T05:53:22.497Z",
+  "routeEvidenceStatus": {
+    "state": "verified",
+    "asOf": "2026-10-03",
+    "validatedAtUTC": "2026-10-04T05:36:16Z",
+    "testFiles": 161,
+    "testSuites": 306,
+    "testsPassed": 1694,
+    "testsFailed": 0,
+    "airports": 5353,
+    "runtimeRoutes": 31652,
+    "runtimePublishedRoutes": 31062,
+    "runtimeSHA256": "94cfdb6ffe3ede154875be6b8e742b3191fed508496f331252b628e2e80235ef",
+    "brazil": {
+      "previousBatchDirections": 51,
+      "recentBatchDirections": 127,
+      "internationalBatchDirections": 18,
+      "genericCarrierBatchDirections": 8,
+      "validatedDirections": 204,
+      "boardRows": 578,
+      "exactBoardRows": 506,
+      "heldBoardRows": 59,
+      "ambiguousBoardRows": 6,
+      "unmatchedBoardRows": 7,
+      "evidenceTier": "provider-listed-directed",
+      "actualOperatingCarrierConfirmed": false,
+      "flightNumbersAdded": false,
+      "roundTheWorldEligibilityEstablished": false
+    },
+    "argentina": {
+      "source": "Argentina Yverá Conectividad Aérea",
+      "state": "research-ready",
+      "tier": "historical-aggregate",
+      "latestDataMonth": "2026-07",
+      "rows": 1078289,
+      "rawCarrierPairs": 688,
+      "icaoAirportPairs": 426,
+      "localFixtureState": "access-needed",
+      "runtimeImports": 0,
+      "currentServiceEstablished": false
+    },
+    "historicalReferencePilots": [
+      {
+        "source": "Eurostat",
+        "tier": "historical-reference-pilot",
+        "runtimeImports": 0
+      },
+      {
+        "source": "Chile",
+        "tier": "historical-reference-pilot",
+        "runtimeImports": 0
+      },
+      {
+        "source": "Thailand",
+        "tier": "historical-reference-pilot",
+        "runtimeImports": 0
+      }
+    ],
+    "accessPending": [
+      {
+        "source": "Korea",
+        "state": "access-needed",
+        "lastObservedHttpStatus": null
+      },
+      {
+        "source": "Hong Kong",
+        "state": "pending-verification",
+        "lastObservedHttpStatus": 403
+      },
+      {
+        "source": "Australia",
+        "state": "pending-verification",
+        "lastObservedHttpStatus": 502
+      }
+    ],
+    "nextSourceGap": {
+      "priority": 1,
+      "sourceFamily": "Brazil ANAC SIROS cached registered-stage data",
+      "state": "carrier-mapping-needed",
+      "nextStep": "Extend primary carrier-identity mapping over the already cached snapshot, then rerun current/future/historical classification against the current runtime. Require separate current route evidence before any import.",
+      "networkSearchNeeded": false
+    }
+  },
+  "state": "verified",
+  "reviews": {
+    "airportMetadataCollection": {
+      "state": "reviewed",
+      "sourceDate": "2026-10-03",
+      "sourceSHA256": "ff5143921ef72d767402c299a5d868f79166c5c589267aca13dce957c41bd2a2",
+      "sourceCandidates": 8798,
+      "flaggedYesCandidates": 4008,
+      "appCatalogBefore": 5101,
+      "appCatalogAfter": 5353,
+      "flaggedYesMappedAfter": 4008,
+      "remainingFlaggedYesCandidates": 0,
+      "admittedMetadataRows": 252,
+      "heldFlaggedYesOutsideAirportTypeScope": 124,
+      "heldSeaplaneBases": 71,
+      "heldHeliports": 53,
+      "runtimeSHA256": "94cfdb6ffe3ede154875be6b8e742b3191fed508496f331252b628e2e80235ef",
+      "runtimeRoutes": 31652,
+      "runtimePublishedRoutes": 31062,
+      "newRouteDirections": 0,
+      "currentServiceEstablished": false
+    },
+    "siros": {
+      "state": "review",
+      "sourceDate": "2026-10-02",
+      "researchedRows": 136,
+      "directionKeys": 20,
+      "futureMissing": 4,
+      "existingProofCandidates": 16,
+      "coreRows": 8,
+      "plannedDirections": [
+        {
+          "key": "AA:DFW-GIG",
+          "effectiveFrom": "2026-12-18",
+          "effectiveUntil": "2027-03-01"
+        },
+        {
+          "key": "AA:GIG-DFW",
+          "effectiveFrom": "2026-12-19",
+          "effectiveUntil": "2027-03-02"
+        },
+        {
+          "key": "AA:GIG-JFK",
+          "effectiveFrom": "2026-10-26",
+          "effectiveUntil": "2027-03-27"
+        },
+        {
+          "key": "AA:JFK-GIG",
+          "effectiveFrom": "2026-10-25",
+          "effectiveUntil": "2027-03-27"
+        }
+      ],
+      "newSelectable": 0,
+      "publicPackage": "notice-review"
+    },
+    "sirosSkyteam": {
+      "state": "enriched",
+      "sourceDate": "2026-10-02",
+      "sourceCapturedAt": "2026-10-02T14:27:35.466746Z",
+      "sourceLastModified": "Fri, 02 Oct 2026 08:04:48 GMT",
+      "registrations": 560,
+      "currentIntervalRegistrations": 32,
+      "directions": [
+        {
+          "key": "AF:BEL-CAY",
+          "registrations": 5
+        },
+        {
+          "key": "AF:CAY-BEL",
+          "registrations": 5
+        },
+        {
+          "key": "AF:CAY-FOR",
+          "registrations": 6
+        },
+        {
+          "key": "AF:CDG-FOR",
+          "registrations": 26
+        },
+        {
+          "key": "AF:CDG-GIG",
+          "registrations": 95
+        },
+        {
+          "key": "AF:CDG-GRU",
+          "registrations": 41
+        },
+        {
+          "key": "AF:CDG-SSA",
+          "registrations": 13
+        },
+        {
+          "key": "AF:FOR-CAY",
+          "registrations": 6
+        },
+        {
+          "key": "AF:FOR-CDG",
+          "registrations": 26
+        },
+        {
+          "key": "AF:GIG-CDG",
+          "registrations": 96
+        },
+        {
+          "key": "AF:GRU-CDG",
+          "registrations": 49
+        },
+        {
+          "key": "AF:SSA-CDG",
+          "registrations": 15
+        },
+        {
+          "key": "AM:GRU-MEX",
+          "registrations": 62
+        },
+        {
+          "key": "AM:MEX-GRU",
+          "registrations": 20
+        },
+        {
+          "key": "DL:ATL-GIG",
+          "registrations": 6
+        },
+        {
+          "key": "DL:ATL-GRU",
+          "registrations": 13
+        },
+        {
+          "key": "DL:GIG-ATL",
+          "registrations": 9
+        },
+        {
+          "key": "DL:GRU-ATL",
+          "registrations": 17
+        },
+        {
+          "key": "DL:GRU-JFK",
+          "registrations": 8
+        },
+        {
+          "key": "DL:JFK-GRU",
+          "registrations": 10
+        },
+        {
+          "key": "KL:AMS-GIG",
+          "registrations": 1
+        },
+        {
+          "key": "KL:AMS-GRU",
+          "registrations": 18
+        },
+        {
+          "key": "KL:GIG-AMS",
+          "registrations": 1
+        },
+        {
+          "key": "KL:GRU-AMS",
+          "registrations": 12
+        }
+      ],
+      "future": [
+        {
+          "key": "DL:GIG-JFK",
+          "registrations": 8,
+          "from": "2026-11-13",
+          "until": "2027-03-27"
+        },
+        {
+          "key": "DL:JFK-GIG",
+          "registrations": 5,
+          "from": "2026-11-12",
+          "until": "2027-03-27"
+        }
+      ],
+      "heldRecords": 1,
+      "newCurrentDirections": 0,
+      "newSelectable": 0,
+      "publicPackage": "notice-review"
+    },
+    "sirosBrazilBulk": {
+      "state": "stale",
+      "reviewRuntimeSHA256": "02d9abc817db4073a088376eaed39e72d9a5ccdea07157f13bf808d455f90c1e",
+      "currentRuntimeSHA256": "94cfdb6ffe3ede154875be6b8e742b3191fed508496f331252b628e2e80235ef"
+    },
+    "palSummerInventory": {
+      "state": "reviewed",
+      "sourceDate": "2026-09-08",
+      "serviceWindow": {
+        "from": "2026-03-29",
+        "until": "2026-10-24"
+      },
+      "factsSHA256": "7b5e1a75eb8b694689cce532f4d4cbd054bfd9a65f52931f64a7a31c759a3e09",
+      "sourceRows": 82,
+      "normalizedDirections": 82,
+      "distinctOrderedAirportDirections": 82,
+      "uniqueAirports": 29,
+      "bidirectionalPairs": 41,
+      "marketingCarrier": "PR",
+      "operatorIdentity": "unresolved-per-flight",
+      "stopFieldsPresent": false,
+      "exactRuntimeKeys": 0,
+      "exactPublishedKeys": 0,
+      "exactNonPublishedKeys": 0,
+      "exactMissingKeys": 82,
+      "publishedPhysicalDirectionCoverage": 4,
+      "noPublishedPhysicalDirectionCoverage": 78,
+      "heldNoTopologyProof": 82,
+      "admittedRoutes": 0
+    },
+    "avinorSemantics": {
+      "state": "reviewed",
+      "sourceDate": "2026-10-02",
+      "sourceCapturedAt": "2026-10-02T07:29:50.622396Z",
+      "sourceLastUpdate": "2026-10-02T07:29:40.379928Z",
+      "sourceWindow": {
+        "from": "2026-10-02T05:45:00Z",
+        "until": "2026-10-02T14:00:00Z"
+      },
+      "documentation": {
+        "url": "https://partner.avinor.no/en/services/flight-data/",
+        "path": "docs/source-use-audit-20261001/avinor-osl-pilot/terms.html",
+        "sha256": "fd1116c4eb6e714e43a8c537556fe24148a781e75cae997c3dfaf0149f1c3084",
+        "retrievedAt": "2026-10-02T07:29:50.626525+00:00"
+      },
+      "rawRecords": 160,
+      "acceptedReferences": 159,
+      "semanticEnrichedReferences": 159,
+      "documentedDefaultPassengerScope": true,
+      "regularVsCharterPerRow": "unknown",
+      "cargoPerRow": "not-independently-verified",
+      "operatingCompany": "unknown",
+      "viaCompleteness": "not-guaranteed",
+      "nextStageEndpoint": "not-established",
+      "clock": "UTC-scheduled-reference",
+      "directions": [
+        {
+          "key": "A3:OSL-ATH",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            76
+          ]
+        },
+        {
+          "key": "AF:OSL-CDG",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            94
+          ]
+        },
+        {
+          "key": "AY:OSL-HEL",
+          "records": 2,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            17,
+            95
+          ]
+        },
+        {
+          "key": "BA:OSL-LHR",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            78
+          ]
+        },
+        {
+          "key": "BT:OSL-RIX",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            5
+          ]
+        },
+        {
+          "key": "D8:OSL-CPH",
+          "records": 3,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            38,
+            90,
+            158
+          ]
+        },
+        {
+          "key": "D8:OSL-LPA",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            21
+          ]
+        },
+        {
+          "key": "D8:OSL-PMI",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            92
+          ]
+        },
+        {
+          "key": "D8:OSL-RIX",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            101
+          ]
+        },
+        {
+          "key": "D8:OSL-TLL",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            37
+          ]
+        },
+        {
+          "key": "DX:OSL-FRO",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            26
+          ]
+        },
+        {
+          "key": "DX:OSL-OLA",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            128
+          ]
+        },
+        {
+          "key": "DX:OSL-RRS",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            43
+          ]
+        },
+        {
+          "key": "DX:OSL-SRP",
+          "records": 2,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            14,
+            134
+          ]
+        },
+        {
+          "key": "DY:OSL-AES",
+          "records": 3,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            28,
+            100,
+            142
+          ]
+        },
+        {
+          "key": "DY:OSL-ALF",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            45
+          ]
+        },
+        {
+          "key": "DY:OSL-AMS",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            71
+          ]
+        },
+        {
+          "key": "DY:OSL-ARN",
+          "records": 2,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            77,
+            136
+          ]
+        },
+        {
+          "key": "DY:OSL-BCN",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            39
+          ]
+        },
+        {
+          "key": "DY:OSL-BDU",
+          "records": 2,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            40,
+            146
+          ]
+        },
+        {
+          "key": "DY:OSL-BER",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            83
+          ]
+        },
+        {
+          "key": "DY:OSL-BGO",
+          "records": 5,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            32,
+            58,
+            107,
+            129,
+            153
+          ]
+        },
+        {
+          "key": "DY:OSL-BLL",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            132
+          ]
+        },
+        {
+          "key": "DY:OSL-BOO",
+          "records": 3,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            15,
+            96,
+            149
+          ]
+        },
+        {
+          "key": "DY:OSL-BUD",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            52
+          ]
+        },
+        {
+          "key": "DY:OSL-CDG",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            23
+          ]
+        },
+        {
+          "key": "DY:OSL-CPH",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            114
+          ]
+        },
+        {
+          "key": "DY:OSL-EDI",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            84
+          ]
+        },
+        {
+          "key": "DY:OSL-EVE",
+          "records": 3,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            30,
+            105,
+            157
+          ]
+        },
+        {
+          "key": "DY:OSL-GDN",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            72
+          ]
+        },
+        {
+          "key": "DY:OSL-HAM",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            102
+          ]
+        },
+        {
+          "key": "DY:OSL-HAU",
+          "records": 2,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            27,
+            112
+          ]
+        },
+        {
+          "key": "DY:OSL-HEL",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            62
+          ]
+        },
+        {
+          "key": "DY:OSL-KKN",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            9
+          ]
+        },
+        {
+          "key": "DY:OSL-KRK",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            48
+          ]
+        },
+        {
+          "key": "DY:OSL-KRS",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            8
+          ]
+        },
+        {
+          "key": "DY:OSL-LGW",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            98
+          ]
+        },
+        {
+          "key": "DY:OSL-LKL",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            63
+          ]
+        },
+        {
+          "key": "DY:OSL-LYR",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            53
+          ]
+        },
+        {
+          "key": "DY:OSL-MOL",
+          "records": 2,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            12,
+            131
+          ]
+        },
+        {
+          "key": "DY:OSL-MUC",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            68
+          ]
+        },
+        {
+          "key": "DY:OSL-MXP",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            69
+          ]
+        },
+        {
+          "key": "DY:OSL-OPO",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            155
+          ]
+        },
+        {
+          "key": "DY:OSL-OTP",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            87
+          ]
+        },
+        {
+          "key": "DY:OSL-SVG",
+          "records": 5,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            2,
+            31,
+            57,
+            106,
+            139
+          ]
+        },
+        {
+          "key": "DY:OSL-TOS",
+          "records": 4,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            11,
+            55,
+            93,
+            135
+          ]
+        },
+        {
+          "key": "DY:OSL-TRD",
+          "records": 7,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            3,
+            42,
+            59,
+            91,
+            108,
+            124,
+            151
+          ]
+        },
+        {
+          "key": "DY:OSL-WAW",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            47
+          ]
+        },
+        {
+          "key": "EK:OSL-DXB",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            125
+          ]
+        },
+        {
+          "key": "FI:OSL-KEF",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            115
+          ]
+        },
+        {
+          "key": "FR:OSL-VNO",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            150
+          ]
+        },
+        {
+          "key": "IB:OSL-MAD",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            137
+          ]
+        },
+        {
+          "key": "KL:OSL-AMS",
+          "records": 3,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            44,
+            82,
+            121
+          ]
+        },
+        {
+          "key": "LG:OSL-LUX",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            60
+          ]
+        },
+        {
+          "key": "LH:OSL-FRA",
+          "records": 2,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            50,
+            99
+          ]
+        },
+        {
+          "key": "LH:OSL-MUC",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            79
+          ]
+        },
+        {
+          "key": "LO:OSL-WAW",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            61
+          ]
+        },
+        {
+          "key": "LX:OSL-ZRH",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            120
+          ]
+        },
+        {
+          "key": "OS:OSL-VIE",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            159
+          ]
+        },
+        {
+          "key": "PC:OSL-SAW",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            130
+          ]
+        },
+        {
+          "key": "QR:OSL-DOH",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            29
+          ]
+        },
+        {
+          "key": "RK:OSL-STN",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            54
+          ]
+        },
+        {
+          "key": "SK:OSL-AES",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            122
+          ]
+        },
+        {
+          "key": "SK:OSL-ALC",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            127
+          ]
+        },
+        {
+          "key": "SK:OSL-ALF",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            85
+          ]
+        },
+        {
+          "key": "SK:OSL-ARN",
+          "records": 4,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            13,
+            46,
+            117,
+            144
+          ]
+        },
+        {
+          "key": "SK:OSL-BGO",
+          "records": 4,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            18,
+            74,
+            110,
+            152
+          ]
+        },
+        {
+          "key": "SK:OSL-BOO",
+          "records": 3,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            19,
+            97,
+            154
+          ]
+        },
+        {
+          "key": "SK:OSL-BRU",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            25
+          ]
+        },
+        {
+          "key": "SK:OSL-CDG",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            20
+          ]
+        },
+        {
+          "key": "SK:OSL-CPH",
+          "records": 6,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            36,
+            51,
+            70,
+            111,
+            140,
+            160
+          ]
+        },
+        {
+          "key": "SK:OSL-DUB",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            41
+          ]
+        },
+        {
+          "key": "SK:OSL-DUS",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            73
+          ]
+        },
+        {
+          "key": "SK:OSL-EVE",
+          "records": 2,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            22,
+            138
+          ]
+        },
+        {
+          "key": "SK:OSL-HAU",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            123
+          ]
+        },
+        {
+          "key": "SK:OSL-JFK",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            109
+          ]
+        },
+        {
+          "key": "SK:OSL-KKN",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            34
+          ]
+        },
+        {
+          "key": "SK:OSL-KRS",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            133
+          ]
+        },
+        {
+          "key": "SK:OSL-KSU",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            126
+          ]
+        },
+        {
+          "key": "SK:OSL-LHR",
+          "records": 3,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            4,
+            104,
+            141
+          ]
+        },
+        {
+          "key": "SK:OSL-LYR",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            35
+          ]
+        },
+        {
+          "key": "SK:OSL-MAN",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            66
+          ]
+        },
+        {
+          "key": "SK:OSL-MXP",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            10
+          ]
+        },
+        {
+          "key": "SK:OSL-SVG",
+          "records": 4,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            24,
+            75,
+            116,
+            143
+          ]
+        },
+        {
+          "key": "SK:OSL-TOS",
+          "records": 2,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            16,
+            81
+          ]
+        },
+        {
+          "key": "SK:OSL-TRD",
+          "records": 4,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            33,
+            80,
+            103,
+            147
+          ]
+        },
+        {
+          "key": "SK:OSL-ZRH",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            56
+          ]
+        },
+        {
+          "key": "TG:OSL-BKK",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            113
+          ]
+        },
+        {
+          "key": "TK:OSL-IST",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": true,
+          "rowIds": [
+            67
+          ]
+        },
+        {
+          "key": "W6:OSL-GDN",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            89
+          ]
+        },
+        {
+          "key": "W6:OSL-KRK",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            156
+          ]
+        },
+        {
+          "key": "W6:OSL-SZZ",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            6
+          ]
+        },
+        {
+          "key": "WF:OSL-BNN",
+          "records": 1,
+          "existingPublished": false,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            118
+          ]
+        },
+        {
+          "key": "WF:OSL-FDE",
+          "records": 2,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            88,
+            148
+          ]
+        },
+        {
+          "key": "WF:OSL-HOV",
+          "records": 3,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            1,
+            86,
+            145
+          ]
+        },
+        {
+          "key": "WF:OSL-SDN",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            64
+          ]
+        },
+        {
+          "key": "WF:OSL-SOG",
+          "records": 1,
+          "existingPublished": true,
+          "fullMemberAtSourceDate": false,
+          "rowIds": [
+            119
+          ]
+        }
+      ],
+      "unmatchedDirections": 44,
+      "unmatchedRecords": 73,
+      "matchedDirections": 53,
+      "matchedRecords": 84,
+      "unmatchedMemberDirections": 0,
+      "ambiguousEndpoints": [
+        {
+          "id": "1423498756",
+          "flightId": "WF141",
+          "peerAirport": "OSL",
+          "viaAirports": [
+            "SOG",
+            "SDN"
+          ],
+          "qualification": "circular",
+          "sourceListedPair": null,
+          "firstStagePair": null
+        },
+        {
+          "id": "867482172",
+          "flightId": "WF163",
+          "peerAirport": "BGO",
+          "viaAirports": [
+            "HOV"
+          ],
+          "qualification": "multi-stop",
+          "sourceListedPair": null,
+          "firstStagePair": null
+        }
+      ],
+      "held": [
+        {
+          "row": 49,
+          "id": "489153568",
+          "reason": "unknown-airline/flight"
+        }
+      ],
+      "codeshareAliases": 24,
+      "currentAdditions": 0,
+      "newSelectable": 0,
+      "sourceRequests": 0,
+      "minimumRefreshSeconds": 180
+    }
+  },
+  "legacy": {
+    "total": 31652,
+    "published": 31062
+  },
+  "qualified": {
+    "airports": 8798,
+    "routes": 0,
+    "services": 0,
+    "board": 2586,
+    "historical": 755,
+    "endpoints": 2916,
+    "avinor": {
+      "references": 159,
+      "rawFlights": 160,
+      "held": 1,
+      "capturedAt": "2026-10-02T07:29:50.622396Z",
+      "from": "2026-10-02T05:45:00Z",
+      "until": "2026-10-02T14:00:00Z",
+      "confirmedNonstopDirections": 0
+    },
+    "sourceDate": "2026-10-01"
+  }
+}

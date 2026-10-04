@@ -1,0 +1,836 @@
+{
+  "version": 1,
+  "sources": [
+    {
+      "id": "ubn-arrivals-ea-v60",
+      "url": "https://timetable.ulaanbaatar-airport.mn/seasonalflight?d=arr&l=en",
+      "checkedOn": "2026-09-30",
+      "note": "Explicit from and Arrival time columns; site title Departure is inconsistent but column direction clear; do not infer reverse."
+    },
+    {
+      "id": "nrt-departures-ea-v60",
+      "url": "https://www.narita-airport.jp/en/flight/dep-search/",
+      "checkedOn": "2026-09-30",
+      "note": "All-time daily source; UA0007 primaryUNITED, explicitdestinationUBN, separateNH6462codeshare; JapanlocalOctober1."
+    },
+    {
+      "id": "ao29-gcm-official",
+      "url": "https://www.caymanairports.com/grand-cayman-departures",
+      "checkedOn": "2026-10-01",
+      "note": "Official airport departure page explicitly embeds FlightView customerComponent CaymanAirports VIEW_DEPARTURE."
+    },
+    {
+      "id": "ao29-gcm-fids",
+      "url": "https://tracker.flightview.com/FVAccess3/tools/fids/fidsDefault.asp?accCustId=CaymanAirports&fidsId=20001&fidsInit=departures",
+      "checkedOn": "2026-10-01",
+      "note": "Public data iframe path explicitly exposed by official embedded client; dated Sep30-Oct1 rows provide exact departure/arrival IATA and carrier, British Airways BA252 GCM-NAS Landed. Page title erroneously Northwest Florida; customer config and exact GCM row metadata establish actual scope."
+    },
+    {
+      "id": "ao24-slta",
+      "url": "https://stlucia.org/en_uk/plan-your-saint-lucia-trip/getting-to-saint-lucia-air-cruise/",
+      "checkedOn": "2026-10-01",
+      "note": "Official SLTA origin table labelled weekly flights until December2026: BA Guyana/Tobago/Grenada origins Aug/Sep/Oct service, November/December No flights. Identifies Hewanorra UVF; no daily last-flight date."
+    },
+    {
+      "id": "ao24-geo",
+      "url": "https://mediacentre.britishairways.com/news/28032023/british-airways-touches-down-in-aruba-and-guyana-with-two-inaugural-flights-to-the-caribbean",
+      "checkedOn": "2026-10-01",
+      "publishedOn": "2023-03-28",
+      "note": "Historical BA issuer identifies Cheddi Jagan GEO and BA-operated flight, used airport/operator mapping only, not current schedule."
+    },
+    {
+      "id": "ao24-winter",
+      "url": "https://stlucia.org/en/press/british-airways-expands-direct-service-to-saint-lucia/",
+      "checkedOn": "2026-10-01",
+      "publishedOn": "2026-03-18",
+      "note": "Daily standalone LGW-UVF begins October25 2026; summer tagged services return seasonally. Does not name exact final date of individual Caribbean sectors."
+    },
+    {
+      "id": "ao23-cayman",
+      "url": "https://trade.visitcaymanislands.com/en-us/getting-to-the-cayman-islands",
+      "checkedOn": "2026-10-01",
+      "note": "Official government tourism access guide explicitly BA operates through service via Nassau, aircraft continues Nassau to Grand Cayman; identifies GCM and references2026/27 sector schedule. Guide not day-specific timetable."
+    },
+    {
+      "id": "ao23-nas",
+      "url": "https://www.britishairways.com/content/flights/caribbean/bahamas",
+      "checkedOn": "2026-10-01",
+      "note": "BA page title NAS and Nassau airport narrative establish exact destination mapping."
+    },
+    {
+      "id": "ao24-tab",
+      "url": "https://www.britishairways.com/content/flights/caribbean/tobago",
+      "checkedOn": "2026-10-01",
+      "note": "Explicit ANR Robinson TAB airport mapping. FAQ outdated Antigua stop conflicts with SLTA2026 Tobago-origin UVF table; not used to accept ANU-TAB."
+    },
+    {
+      "id": "ao19-0",
+      "url": "https://www.britishairways.com/content/flights/guyana",
+      "checkedOn": "2026-09-30",
+      "note": "Current Guyana route page: London Gatwick to Guyana with short stop St Lucia; Cheddi Jagan destination named"
+    },
+    {
+      "id": "ao19-1",
+      "url": "https://www.britishairways.com/content/flights/caribbean/st-lucia",
+      "checkedOn": "2026-09-30",
+      "note": "BA St Lucia page explicitly Hewanorra UVF identity"
+    },
+    {
+      "id": "ao19-2",
+      "url": "https://mediacentre.britishairways.com/pressrelease/details/15036",
+      "checkedOn": "2026-09-30",
+      "note": "BA issuer search-index excerpt: inaugural Guyana flight via St Lucia operated by BA captain; detail open failed"
+    },
+    {
+      "id": "ao19-3",
+      "url": "https://mediacentre.britishairways.com/news/16032026/british-airways-announces-major-winter-2026-expansion",
+      "checkedOn": "2026-09-30",
+      "note": "BA issuer search-index excerpt: St Lucia standalone from25Oct2026; future restructuring, not dated current schedule"
+    },
+    {
+      "id": "aena-mad-network-v72",
+      "url": "https://www.aena.es/en/adolfo-suarez-madrid-barajas/airlines-and-destinations/airport-destinations.html",
+      "checkedOn": "2026-10-01",
+      "note": "Complete airport destination/airline table, exact ordered IATA. Publication dates/effective dates unknown, current schedule notice not live-date proof. Provider brand not assumed actual operator."
+    },
+    {
+      "id": "ao21-arrival",
+      "url": "https://www.sjoairport.com/llegadas/",
+      "checkedOn": "2026-10-01",
+      "note": "Official indexed airport board: CM392 Guatemala City(GUA)→SJO dated2026-09-29 08:08 A tiempo. Separately proves reverse direction; recent observation, not indefinite timetable."
+    },
+    {
+      "id": "ao21-network",
+      "url": "https://www.sjoairport.com/connectivity/?lang=en",
+      "checkedOn": "2026-10-01",
+      "note": "Airport explicitly labels Non-Stop destinations and lists Copa Panama/Managua/Guatemala. Undated publication; language versions differ elsewhere."
+    },
+    {
+      "id": "ao21-operator",
+      "url": "https://www.imprentanacional.go.cr/gaceta/?date=13%2F11%2F2024",
+      "checkedOn": "2026-10-01",
+      "publishedOn": "2024-11-13",
+      "note": "Official indexed gazette identifies Compania Panamena de Aviacion SA(Copa), resolution106-2024 renewing exploitation certificate for PTY-SJO-Guatemala and vice versa, fifth freedom. Historical legal operator corroboration, not current dated service; full page403."
+    },
+    {
+      "id": "ao21-departure",
+      "url": "https://www.sjoairport.com/salidas/",
+      "checkedOn": "2026-10-01",
+      "note": "Primary airport board: CM391 SJO→GUA dated2026-09-30 19:55 A tiempo. Local Costa Rica date remains September30 at retrieval; UTC is October1. Other through flights with mismatched country labels excluded."
+    },
+    {
+      "id": "ao21-manual",
+      "url": "https://www.copaair.com/assets/eng-official-manual-copa-connect-web-sprk-v1.3-jan-22-2026.pdf",
+      "checkedOn": "2026-10-01",
+      "note": "Official indexed CopaConnect manual page53 explicitly CM391 SJO-GUA direct nonstop, historical January2025 booking example only; full PDF exceeds tool10MiB limit."
+    },
+    {
+      "id": "anac-siros-registered-sectors-20260930",
+      "url": "https://siros.anac.gov.br/siros/registros/voos/voos.zip",
+      "checkedOn": "2026-10-01",
+      "publishedOn": "2026-09-30",
+      "note": "Registered named operator passenger stages; explicit Oct1 UTC events, not executed observations. Domestic geographic segments of international service; standalone sale rights unknown."
+    },
+    {
+      "id": "anac-airport-crosswalk-20261001",
+      "url": "https://siros.anac.gov.br/siros/registros/aerodromo/aerodromos.csv",
+      "checkedOn": "2026-10-01",
+      "note": "Exact SBMO MCZ and SBSG NAT mapping"
+    },
+    {
+      "id": "anac-operator-crosswalk-20261001",
+      "url": "https://siros.anac.gov.br/siros/registros/cia/cias.csv",
+      "checkedOn": "2026-10-01",
+      "note": "TAP operating ICAO to TP IATA; registered legal TAP operator, not codeshare"
+    },
+    {
+      "id": "copa-local-sale-gua-sjo-20261001",
+      "url": "https://www.copaair.com/es/vuelos-desde-guatemala-a-san-jose-cr",
+      "checkedOn": "2026-10-01",
+      "note": "Own local GUA/SJO O&D offers Nov3-11 2026; fare page alone does not prove nonstop flight or RTW eligibility."
+    },
+    {
+      "id": "copa-local-sale-sjo-gua-20261001",
+      "url": "https://www.copaair.com/es-cr/vuelos-desde-san-jose-cr-a-guatemala",
+      "checkedOn": "2026-10-01",
+      "note": "Own SJO/GUA local O&D offers Nov4-9 2026; not standalone proof of nonstop flight/date or RTW eligibility."
+    },
+    {
+      "id": "nrt-via-tpe-tr866-20261001",
+      "url": "https://www.narita-airport.jp/en/flight/arr-search/20261001-TR0866/",
+      "checkedOn": "2026-10-01",
+      "note": "Official Narita own-facility dated detail TR0866, depArr A, explicit viaAirport TPE and primary TR separated from codeShare. Independent CAA TPE D primary TR866 confirms local airport stage. Original SIN/HKG end-to-end is via TPE and never imported nonstop. Route-only listed evidence; no recurring dates, legal local passenger-sale or named RTW proof."
+    },
+    {
+      "id": "nrt-via-tpe-tr874-20261001",
+      "url": "https://www.narita-airport.jp/en/flight/arr-search/20261001-TR0874/",
+      "checkedOn": "2026-10-01",
+      "note": "Official Narita own-facility dated detail TR0874, depArr A, explicit viaAirport TPE and primary TR separated from codeShare. Independent CAA TPE D primary TR874 confirms local airport stage. Original SIN/HKG end-to-end is via TPE and never imported nonstop. Route-only listed evidence; no recurring dates, legal local passenger-sale or named RTW proof."
+    },
+    {
+      "id": "nrt-via-tpe-tr867-20261001",
+      "url": "https://www.narita-airport.jp/en/flight/dep-search/20261001-TR0867/",
+      "checkedOn": "2026-10-01",
+      "note": "Official Narita own-facility dated detail TR0867, depArr D, explicit viaAirport TPE and primary TR separated from codeShare. Independent CAA TPE A primary TR867 confirms local airport stage. Original SIN/HKG end-to-end is via TPE and never imported nonstop. Route-only listed evidence; no recurring dates, legal local passenger-sale or named RTW proof."
+    },
+    {
+      "id": "nrt-via-tpe-tr875-20261001",
+      "url": "https://www.narita-airport.jp/en/flight/dep-search/20261001-TR0875/",
+      "checkedOn": "2026-10-01",
+      "note": "Official Narita own-facility dated detail TR0875, depArr D, explicit viaAirport TPE and primary TR separated from codeShare. Independent CAA TPE A primary TR875 confirms local airport stage. Original SIN/HKG end-to-end is via TPE and never imported nonstop. Route-only listed evidence; no recurring dates, legal local passenger-sale or named RTW proof."
+    },
+    {
+      "id": "nrt-via-tpe-cx450-20261001",
+      "url": "https://www.narita-airport.jp/en/flight/arr-search/20261001-CX0450/",
+      "checkedOn": "2026-10-01",
+      "note": "Official Narita own-facility dated detail CX0450, depArr A, explicit viaAirport TPE and primary CX separated from codeShare. Independent CAA TPE D primary CX450 confirms local airport stage. Original SIN/HKG end-to-end is via TPE and never imported nonstop. Route-only listed evidence; no recurring dates, legal local passenger-sale or named RTW proof."
+    },
+    {
+      "id": "nrt-via-tpe-cx451-20261001",
+      "url": "https://www.narita-airport.jp/en/flight/dep-search/20261001-CX0451/",
+      "checkedOn": "2026-10-01",
+      "note": "Official Narita own-facility dated detail CX0451, depArr D, explicit viaAirport TPE and primary CX separated from codeShare. Independent CAA TPE A primary CX451 confirms local airport stage. Original SIN/HKG end-to-end is via TPE and never imported nonstop. Route-only listed evidence; no recurring dates, legal local passenger-sale or named RTW proof."
+    },
+    {
+      "id": "caa-local-exact-sectors-20261001",
+      "url": "https://www.caa.gov.tw/ImmediateFlight.aspx?a=270&lang=1",
+      "checkedOn": "2026-09-30",
+      "note": "Original public CAA localOctober1 selected airport/direction primary records only. Exact official airport dictionary resolves named individual facility. Previously blanket fifth-freedom/home-country withheld items are separated into physical listed route evidence and unverified local-sale/named-product use. No operator, recurrent dates, formal flight confirmation or ticketability is inferred."
+    },
+    {
+      "id": "caa-local-exact-airport-dictionary-20261001",
+      "url": "https://www.kia.gov.tw/data/airport2.json",
+      "checkedOn": "2026-09-30",
+      "note": "Saved official airport-name/exactIATA dictionary; unique complete place-label matches only. No city expansion or reverse inference."
+    }
+  ],
+  "entries": [
+    {
+      "carrier": "UA",
+      "pair": [
+        "NRT",
+        "UBN"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "ubn-arrivals-ea-v60",
+        "nrt-departures-ea-v60"
+      ],
+      "products": [],
+      "note": "Physical route evidence is separate from standalone local passenger-sale rights and named RTW product applicability. Unknown means not verified, not legally prohibited. No ticketability assertion."
+    },
+    {
+      "carrier": "BA",
+      "pair": [
+        "GCM",
+        "NAS"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "ao29-gcm-official",
+        "ao29-gcm-fids"
+      ],
+      "products": [],
+      "note": "Physical route evidence is separate from standalone local passenger-sale rights and named RTW product applicability. Unknown means not verified, not legally prohibited. No ticketability assertion."
+    },
+    {
+      "carrier": "BA",
+      "pair": [
+        "GEO",
+        "UVF"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "ao24-slta",
+        "ao24-geo",
+        "ao24-winter"
+      ],
+      "products": [],
+      "note": "Physical route evidence is separate from standalone local passenger-sale rights and named RTW product applicability. Unknown means not verified, not legally prohibited. No ticketability assertion."
+    },
+    {
+      "carrier": "BA",
+      "pair": [
+        "NAS",
+        "GCM"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "ao23-cayman",
+        "ao23-nas"
+      ],
+      "products": [],
+      "note": "Physical route evidence is separate from standalone local passenger-sale rights and named RTW product applicability. Unknown means not verified, not legally prohibited. No ticketability assertion."
+    },
+    {
+      "carrier": "BA",
+      "pair": [
+        "TAB",
+        "UVF"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "ao24-slta",
+        "ao24-tab",
+        "ao24-winter"
+      ],
+      "products": [],
+      "note": "Physical route evidence is separate from standalone local passenger-sale rights and named RTW product applicability. Unknown means not verified, not legally prohibited. No ticketability assertion."
+    },
+    {
+      "carrier": "BA",
+      "pair": [
+        "UVF",
+        "GEO"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "ao19-0",
+        "ao19-1",
+        "ao19-2",
+        "ao19-3"
+      ],
+      "products": [],
+      "note": "Physical route evidence is separate from standalone local passenger-sale rights and named RTW product applicability. Unknown means not verified, not legally prohibited. No ticketability assertion."
+    },
+    {
+      "carrier": "CA",
+      "pair": [
+        "MAD",
+        "HAV"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "aena-mad-network-v72"
+      ],
+      "products": [],
+      "note": "Physical route evidence is separate from standalone local passenger-sale rights and named RTW product applicability. Unknown means not verified, not legally prohibited. No ticketability assertion."
+    },
+    {
+      "carrier": "CM",
+      "pair": [
+        "GUA",
+        "SJO"
+      ],
+      "localPassengerSale": "permitted",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "ao21-arrival",
+        "ao21-network",
+        "ao21-operator",
+        "copa-local-sale-gua-sjo-20261001"
+      ],
+      "products": [],
+      "note": "Parent independently reviewed passenger/cargo resolution106-2024 (not separate cargo-only proceedings), approved2July2024,15year permission through2July2039. Own local O&D offers corroborate local sales; saved CM391/392 establish nonstop sector separately. Direct HTTP403 to integrator; parent primary-source attestation retained. Specific Star RTW product terms unavailable; not ticketable or independently selectable in this RTW planner.",
+      "rightsFrom": "2024-07-02",
+      "rightsUntil": "2039-07-02"
+    },
+    {
+      "carrier": "CM",
+      "pair": [
+        "SJO",
+        "GUA"
+      ],
+      "localPassengerSale": "permitted",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "ao21-departure",
+        "ao21-network",
+        "ao21-operator",
+        "ao21-manual",
+        "copa-local-sale-sjo-gua-20261001"
+      ],
+      "products": [],
+      "note": "Parent independently reviewed passenger/cargo resolution106-2024 (not separate cargo-only proceedings), approved2July2024,15year permission through2July2039. Own local O&D offers corroborate local sales; saved CM391/392 establish nonstop sector separately. Direct HTTP403 to integrator; parent primary-source attestation retained. Specific Star RTW product terms unavailable; not ticketable or independently selectable in this RTW planner.",
+      "rightsFrom": "2024-07-02",
+      "rightsUntil": "2039-07-02"
+    },
+    {
+      "carrier": "TP",
+      "pair": [
+        "MCZ",
+        "NAT"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "anac-siros-registered-sectors-20260930",
+        "anac-airport-crosswalk-20261001",
+        "anac-operator-crosswalk-20261001"
+      ],
+      "products": [],
+      "note": "Physical route evidence is separate from standalone local passenger-sale rights and named RTW product applicability. Unknown means not verified, not legally prohibited. No ticketability assertion."
+    },
+    {
+      "carrier": "TP",
+      "pair": [
+        "NAT",
+        "MCZ"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "anac-siros-registered-sectors-20260930",
+        "anac-airport-crosswalk-20261001",
+        "anac-operator-crosswalk-20261001"
+      ],
+      "products": [],
+      "note": "Physical route evidence is separate from standalone local passenger-sale rights and named RTW product applicability. Unknown means not verified, not legally prohibited. No ticketability assertion."
+    },
+    {
+      "carrier": "UA",
+      "pair": [
+        "UBN",
+        "NRT"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "ubn-arrivals-ea-v60",
+        "nrt-departures-ea-v60"
+      ],
+      "products": [],
+      "note": "Existing runtime return direction; local-sale and named-product use remain unverified. This policy creates no route or reverse inference."
+    },
+    {
+      "carrier": "TR",
+      "pair": [
+        "TPE",
+        "NRT"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "nrt-via-tpe-tr866-20261001",
+        "nrt-via-tpe-tr874-20261001"
+      ],
+      "products": [],
+      "note": "Physical local stage is independently identified in official Narita via-TPE flight detail and CAA primary row. Local passenger-sale right and specific RTW product use remain unverified, not legally prohibited. Primary/company or marketing numbers do not bypass this gate. Scoot is not added to any target alliance."
+    },
+    {
+      "carrier": "TR",
+      "pair": [
+        "NRT",
+        "TPE"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "nrt-via-tpe-tr867-20261001",
+        "nrt-via-tpe-tr875-20261001"
+      ],
+      "products": [],
+      "note": "Physical local stage is independently identified in official Narita via-TPE flight detail and CAA primary row. Local passenger-sale right and specific RTW product use remain unverified, not legally prohibited. Primary/company or marketing numbers do not bypass this gate. Scoot is not added to any target alliance."
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "TPE",
+        "NRT"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "nrt-via-tpe-cx450-20261001"
+      ],
+      "products": [],
+      "note": "Physical local stage is independently identified in official Narita via-TPE flight detail and CAA primary row. Local passenger-sale right and specific RTW product use remain unverified, not legally prohibited. Primary/company or marketing numbers do not bypass this gate. Scoot is not added to any target alliance."
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "NRT",
+        "TPE"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "nrt-via-tpe-cx451-20261001"
+      ],
+      "products": [],
+      "note": "Physical local stage is independently identified in official Narita via-TPE flight detail and CAA primary row. Local passenger-sale right and specific RTW product use remain unverified, not legally prohibited. Primary/company or marketing numbers do not bypass this gate. Scoot is not added to any target alliance."
+    },
+    {
+      "carrier": "VZ",
+      "pair": [
+        "TPE",
+        "KIX"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "caa-local-exact-sectors-20261001",
+        "caa-local-exact-airport-dictionary-20261001"
+      ],
+      "products": [],
+      "note": "CAA listed physical local airport sector only. Foreign-carrier local passenger-sale rights and named RTW product use remain unverified, not legally prohibited. Route/currentness/operator proof cannot bypass this gate; non-target airline alliance filters retained."
+    },
+    {
+      "carrier": "SL",
+      "pair": [
+        "TPE",
+        "KIX"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "caa-local-exact-sectors-20261001",
+        "caa-local-exact-airport-dictionary-20261001"
+      ],
+      "products": [],
+      "note": "CAA listed physical local airport sector only. Foreign-carrier local passenger-sale rights and named RTW product use remain unverified, not legally prohibited. Route/currentness/operator proof cannot bypass this gate; non-target airline alliance filters retained."
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "TPE",
+        "KIX"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "caa-local-exact-sectors-20261001",
+        "caa-local-exact-airport-dictionary-20261001"
+      ],
+      "products": [],
+      "note": "CAA listed physical local airport sector only. Foreign-carrier local passenger-sale rights and named RTW product use remain unverified, not legally prohibited. Route/currentness/operator proof cannot bypass this gate; non-target airline alliance filters retained."
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "TPE",
+        "NGO"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "caa-local-exact-sectors-20261001",
+        "caa-local-exact-airport-dictionary-20261001"
+      ],
+      "products": [],
+      "note": "CAA listed physical local airport sector only. Foreign-carrier local passenger-sale rights and named RTW product use remain unverified, not legally prohibited. Route/currentness/operator proof cannot bypass this gate; non-target airline alliance filters retained."
+    },
+    {
+      "carrier": "AK",
+      "pair": [
+        "TPE",
+        "FUK"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "caa-local-exact-sectors-20261001",
+        "caa-local-exact-airport-dictionary-20261001"
+      ],
+      "products": [],
+      "note": "CAA listed physical local airport sector only. Foreign-carrier local passenger-sale rights and named RTW product use remain unverified, not legally prohibited. Route/currentness/operator proof cannot bypass this gate; non-target airline alliance filters retained."
+    },
+    {
+      "carrier": "TR",
+      "pair": [
+        "TPE",
+        "CTS"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "caa-local-exact-sectors-20261001",
+        "caa-local-exact-airport-dictionary-20261001"
+      ],
+      "products": [],
+      "note": "CAA listed physical local airport sector only. Foreign-carrier local passenger-sale rights and named RTW product use remain unverified, not legally prohibited. Route/currentness/operator proof cannot bypass this gate; non-target airline alliance filters retained."
+    },
+    {
+      "carrier": "FD",
+      "pair": [
+        "TPE",
+        "OKA"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "caa-local-exact-sectors-20261001",
+        "caa-local-exact-airport-dictionary-20261001"
+      ],
+      "products": [],
+      "note": "CAA listed physical local airport sector only. Foreign-carrier local passenger-sale rights and named RTW product use remain unverified, not legally prohibited. Route/currentness/operator proof cannot bypass this gate; non-target airline alliance filters retained."
+    },
+    {
+      "carrier": "VZ",
+      "pair": [
+        "TPE",
+        "OKA"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "caa-local-exact-sectors-20261001",
+        "caa-local-exact-airport-dictionary-20261001"
+      ],
+      "products": [],
+      "note": "CAA listed physical local airport sector only. Foreign-carrier local passenger-sale rights and named RTW product use remain unverified, not legally prohibited. Route/currentness/operator proof cannot bypass this gate; non-target airline alliance filters retained."
+    },
+    {
+      "carrier": "D7",
+      "pair": [
+        "TPE",
+        "KIX"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "caa-local-exact-sectors-20261001",
+        "caa-local-exact-airport-dictionary-20261001"
+      ],
+      "products": [],
+      "note": "CAA listed physical local airport sector only. Foreign-carrier local passenger-sale rights and named RTW product use remain unverified, not legally prohibited. Route/currentness/operator proof cannot bypass this gate; non-target airline alliance filters retained."
+    },
+    {
+      "carrier": "KL",
+      "pair": [
+        "TPE",
+        "MNL"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "caa-local-exact-sectors-20261001",
+        "caa-local-exact-airport-dictionary-20261001"
+      ],
+      "products": [],
+      "note": "CAA listed physical local airport sector only. Foreign-carrier local passenger-sale rights and named RTW product use remain unverified, not legally prohibited. Route/currentness/operator proof cannot bypass this gate; non-target airline alliance filters retained."
+    },
+    {
+      "carrier": "TR",
+      "pair": [
+        "TPE",
+        "ICN"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "caa-local-exact-sectors-20261001",
+        "caa-local-exact-airport-dictionary-20261001"
+      ],
+      "products": [],
+      "note": "CAA listed physical local airport sector only. Foreign-carrier local passenger-sale rights and named RTW product use remain unverified, not legally prohibited. Route/currentness/operator proof cannot bypass this gate; non-target airline alliance filters retained."
+    },
+    {
+      "carrier": "VZ",
+      "pair": [
+        "KIX",
+        "TPE"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "caa-local-exact-sectors-20261001",
+        "caa-local-exact-airport-dictionary-20261001"
+      ],
+      "products": [],
+      "note": "CAA listed physical local airport sector only. Foreign-carrier local passenger-sale rights and named RTW product use remain unverified, not legally prohibited. Route/currentness/operator proof cannot bypass this gate; non-target airline alliance filters retained."
+    },
+    {
+      "carrier": "SL",
+      "pair": [
+        "KIX",
+        "TPE"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "caa-local-exact-sectors-20261001",
+        "caa-local-exact-airport-dictionary-20261001"
+      ],
+      "products": [],
+      "note": "CAA listed physical local airport sector only. Foreign-carrier local passenger-sale rights and named RTW product use remain unverified, not legally prohibited. Route/currentness/operator proof cannot bypass this gate; non-target airline alliance filters retained."
+    },
+    {
+      "carrier": "FD",
+      "pair": [
+        "OKA",
+        "TPE"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "caa-local-exact-sectors-20261001",
+        "caa-local-exact-airport-dictionary-20261001"
+      ],
+      "products": [],
+      "note": "CAA listed physical local airport sector only. Foreign-carrier local passenger-sale rights and named RTW product use remain unverified, not legally prohibited. Route/currentness/operator proof cannot bypass this gate; non-target airline alliance filters retained."
+    },
+    {
+      "carrier": "AK",
+      "pair": [
+        "FUK",
+        "TPE"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "caa-local-exact-sectors-20261001",
+        "caa-local-exact-airport-dictionary-20261001"
+      ],
+      "products": [],
+      "note": "CAA listed physical local airport sector only. Foreign-carrier local passenger-sale rights and named RTW product use remain unverified, not legally prohibited. Route/currentness/operator proof cannot bypass this gate; non-target airline alliance filters retained."
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "KIX",
+        "TPE"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "caa-local-exact-sectors-20261001",
+        "caa-local-exact-airport-dictionary-20261001"
+      ],
+      "products": [],
+      "note": "CAA listed physical local airport sector only. Foreign-carrier local passenger-sale rights and named RTW product use remain unverified, not legally prohibited. Route/currentness/operator proof cannot bypass this gate; non-target airline alliance filters retained."
+    },
+    {
+      "carrier": "CX",
+      "pair": [
+        "NGO",
+        "TPE"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "caa-local-exact-sectors-20261001",
+        "caa-local-exact-airport-dictionary-20261001"
+      ],
+      "products": [],
+      "note": "CAA listed physical local airport sector only. Foreign-carrier local passenger-sale rights and named RTW product use remain unverified, not legally prohibited. Route/currentness/operator proof cannot bypass this gate; non-target airline alliance filters retained."
+    },
+    {
+      "carrier": "VZ",
+      "pair": [
+        "OKA",
+        "TPE"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "caa-local-exact-sectors-20261001",
+        "caa-local-exact-airport-dictionary-20261001"
+      ],
+      "products": [],
+      "note": "CAA listed physical local airport sector only. Foreign-carrier local passenger-sale rights and named RTW product use remain unverified, not legally prohibited. Route/currentness/operator proof cannot bypass this gate; non-target airline alliance filters retained."
+    },
+    {
+      "carrier": "KL",
+      "pair": [
+        "MNL",
+        "TPE"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "caa-local-exact-sectors-20261001",
+        "caa-local-exact-airport-dictionary-20261001"
+      ],
+      "products": [],
+      "note": "CAA listed physical local airport sector only. Foreign-carrier local passenger-sale rights and named RTW product use remain unverified, not legally prohibited. Route/currentness/operator proof cannot bypass this gate; non-target airline alliance filters retained."
+    },
+    {
+      "carrier": "TR",
+      "pair": [
+        "CTS",
+        "TPE"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "caa-local-exact-sectors-20261001",
+        "caa-local-exact-airport-dictionary-20261001"
+      ],
+      "products": [],
+      "note": "CAA listed physical local airport sector only. Foreign-carrier local passenger-sale rights and named RTW product use remain unverified, not legally prohibited. Route/currentness/operator proof cannot bypass this gate; non-target airline alliance filters retained."
+    },
+    {
+      "carrier": "D7",
+      "pair": [
+        "KIX",
+        "TPE"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "caa-local-exact-sectors-20261001",
+        "caa-local-exact-airport-dictionary-20261001"
+      ],
+      "products": [],
+      "note": "CAA listed physical local airport sector only. Foreign-carrier local passenger-sale rights and named RTW product use remain unverified, not legally prohibited. Route/currentness/operator proof cannot bypass this gate; non-target airline alliance filters retained."
+    },
+    {
+      "carrier": "SL",
+      "pair": [
+        "KHH",
+        "OKA"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "caa-local-exact-sectors-20261001",
+        "caa-local-exact-airport-dictionary-20261001"
+      ],
+      "products": [],
+      "note": "CAA listed physical local airport sector only. Foreign-carrier local passenger-sale rights and named RTW product use remain unverified, not legally prohibited. Route/currentness/operator proof cannot bypass this gate; non-target airline alliance filters retained."
+    },
+    {
+      "carrier": "AK",
+      "pair": [
+        "KHH",
+        "KIX"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "caa-local-exact-sectors-20261001",
+        "caa-local-exact-airport-dictionary-20261001"
+      ],
+      "products": [],
+      "note": "CAA listed physical local airport sector only. Foreign-carrier local passenger-sale rights and named RTW product use remain unverified, not legally prohibited. Route/currentness/operator proof cannot bypass this gate; non-target airline alliance filters retained."
+    },
+    {
+      "carrier": "SL",
+      "pair": [
+        "OKA",
+        "KHH"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "caa-local-exact-sectors-20261001",
+        "caa-local-exact-airport-dictionary-20261001"
+      ],
+      "products": [],
+      "note": "CAA listed physical local airport sector only. Foreign-carrier local passenger-sale rights and named RTW product use remain unverified, not legally prohibited. Route/currentness/operator proof cannot bypass this gate; non-target airline alliance filters retained."
+    },
+    {
+      "carrier": "AK",
+      "pair": [
+        "KIX",
+        "KHH"
+      ],
+      "localPassengerSale": "unknown",
+      "checkedOn": "2026-10-01",
+      "sourceIds": [
+        "caa-local-exact-sectors-20261001",
+        "caa-local-exact-airport-dictionary-20261001"
+      ],
+      "products": [],
+      "note": "CAA listed physical local airport sector only. Foreign-carrier local passenger-sale rights and named RTW product use remain unverified, not legally prohibited. Route/currentness/operator proof cannot bypass this gate; non-target airline alliance filters retained."
+    }
+  ]
+}

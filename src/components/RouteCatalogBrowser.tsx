@@ -1,3 +1,5 @@
+import { useEvidenceClock } from '../lib/use-evidence-clock.ts';
+import {sourceReviewStatusLabel} from '../lib/rtw/route-date-semantics.ts';
 import { useMemo, useState, type ReactNode } from 'react';
 import { useLocale } from '../i18n/use-locale.ts';
 import type { ScheduleEntry } from '../lib/schemas/flight-schedules.ts';
@@ -91,6 +93,7 @@ const COPY = {
     flightCandidate: '候選班號參考',
     operating: '已確認營運者',
     providerListed: '供應商列示，實際營運者需再驗證',
+    unknownIdentity: '營運身份未知',
     activeDays: '營運日',
     exactDates: '指定日期',
     validity: '有效期間',
@@ -133,6 +136,7 @@ const COPY = {
     flightCandidate: 'Candidate flight-number reference',
     operating: 'Operating carrier confirmed',
     providerListed: 'Provider-listed; operating identity requires verification',
+    unknownIdentity: 'Operating identity unknown',
     activeDays: 'Operating days',
     exactDates: 'Exact dates',
     validity: 'Validity',
@@ -180,6 +184,7 @@ function EvidenceRow({ evidence, locale }: { evidence: RouteCatalogEvidenceView;
         {weekdays && <><dt>{copy.activeDays}</dt><dd>{weekdays}</dd></>}
         {evidence.addedDates.length > 0 && <><dt>{copy.exactDates}</dt><dd>{evidence.addedDates.join(' · ')}</dd></>}
         {validity && <><dt>{copy.validity}</dt><dd>{validity}</dd></>}
+        {evidence.sourceReview && <><dt>{locale==='zh-TW'?'來源覆核窗（程式設定）':'Source review window (generated policy)'}</dt><dd>{evidence.sourceReview.from} → {evidence.sourceReview.until} · {sourceReviewStatusLabel(evidence.sourceReview.state,locale==='zh-TW')} · {locale==='zh-TW'?'並非服務有效期':'Not service validity'}</dd></>}
         {time && <><dt>{copy.time}</dt><dd>{time}</dd></>}
         {evidence.source && (
           <>
@@ -243,6 +248,7 @@ export function RouteCatalogBrowser({
   initialCarrier,
 }: RouteCatalogBrowserProps): React.ReactElement {
   const { locale: appLocale, t } = useLocale();
+  const evidenceNow = useEvidenceClock();
   const locale: 'en' | 'zh-TW' = appLocale === 'zh-TW' ? 'zh-TW' : 'en';
   const copy = COPY[locale];
   const [mode, setMode] = useState<RouteCatalogGroupMode>('from');
@@ -251,11 +257,12 @@ export function RouteCatalogBrowser({
   const [localRegionFilter, setLocalRegionFilter] = useState<RouteCatalogLocalRegionFilter>('all');
   const pairs = useMemo(() => buildRouteCatalogPairs({
     routeNetwork,
+    evidenceNow,
     schedules,
     officialSchedules,
     memberCodes,
     airports,
-  }), [routeNetwork, schedules, officialSchedules, memberCodes, airports]);
+  }), [routeNetwork, schedules, officialSchedules, memberCodes, airports, evidenceNow]);
   const carrierOptions = useMemo(() => listRouteCatalogCarrierOptions(pairs), [pairs]);
   const carrierFilteredPairs = useMemo(() => filterRouteCatalogPairs({
     pairs,
@@ -509,7 +516,7 @@ export function RouteCatalogBrowser({
                                                   <span className="route-browser-carrier-name">
                                                     <code>{carrier.carrier}</code>
                                                     <small className={carrier.identity === 'operating' ? 'operating' : 'provider-listed'}>
-                                                      {carrier.identity === 'operating' ? copy.operating : copy.providerListed}
+                                                      {carrier.identity === 'operating' ? copy.operating : carrier.identity === 'provider-listed' ? copy.providerListed : copy.unknownIdentity}
                                                     </small>
                                                   </span>
                                                   <span>{carrier.flightNumbers.length + carrier.candidateFlightNumbers.length} {copy.flights}</span>

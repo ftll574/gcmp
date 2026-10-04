@@ -860,10 +860,446 @@
       "url": "https://www.flightsfrom.com/SCQ-TFN",
       "checkedOn": "2026-09-12",
       "note": "Air Europa last operated SCQ→TFN in 2023; current nonstop service is not Air Europa."
+    },
+    {
+      "id": "finnair-japan-summer-table-20261002",
+      "url": "https://www.finnair.com/jp-ja/japan-information/flight-schedule",
+      "checkedOn": "2026-10-02",
+      "note": "Official passenger Japan summer timetable 29Mar–24Oct2026, independently directed Japan→HEL/HEL→Japan rows including AY079/080 and KIX AY069/070 row starts30Jun/1Jul. Source-only corroboration of8 existing AY relationships; local clocks/day offsets/weekdays and14 source rows preserved in docs/coverage-ledger/ay-japan-source-proof-20261002/evidence.json. Does not extend existing routewide dates, establish actual AY operator, add dated schedules, confirm availability/RTW eligibility or promote source flight numbers. Explicit JL-operated AY5072/5073/5826/5827 stay marketing-only; missing AY NRT↔FRA not added."
+    },
+    {
+      "id": "adsbiq-20260801-0906",
+      "url": "https://github.com/Sky-Power-Services/adsbiq-data/releases",
+      "checkedOn": "2026-09-08",
+      "note": "ODbL ADSBiq aircraft-diff observations from 2026-08-01 through 2026-09-06, using the public 2026-08 and 2026-09 release assets. Only exact active-alliance callsigns observed during this recent window are considered; observation alone does not provide an airport pair. Missing upstream daily assets: 2026-08-30.",
+      "routeReviewWindow": {
+        "from": "2026-09-08",
+        "until": "2026-10-07",
+        "basis": "generated-freshness-policy"
+      }
+    },
+    {
+      "id": "vrs-standing-data-20260907-recent",
+      "url": "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+      "checkedOn": "2026-09-07",
+      "note": "CC0 standing-data exact callsign-to-route mapping. A route is retained only when the exact callsign was actually observed in the Aug 1-Sep 6 ADSBiq window."
+    },
+    {
+      "id": "air-routes-current-pair-index-20260908-recent",
+      "url": "https://air-routes.com/sitemap.xml",
+      "checkedOn": "2026-09-08",
+      "note": "Public search-index sitemap additionally confirms each retained physical pair remains in the current scheduled-passenger route index (65,052 directional pairs)."
+    },
+    {
+      "id": "flight-numbers-adsbiq-recent-20260908",
+      "url": "https://github.com/Sky-Power-Services/adsbiq-data/releases",
+      "checkedOn": "2026-09-08",
+      "note": "Recent exact ADSBiq callsign observation (2026-08-01 through 2026-09-06) joined to the VRS standing-data callsign route and valid commercial flight-number suffix. Only routes whose operating carrier was already confirmed elsewhere are promoted to selectable route-level flight numbers."
+    },
+    {
+      "id": "flight-numbers-vrs-standing-20260907",
+      "url": "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+      "checkedOn": "2026-09-07",
+      "note": "CC0 VRS standing callsign/route dictionary flight-number reference. Standing rows can outlive current service, so these numbers remain candidates unless independently observed and paired with already-confirmed operating-carrier evidence."
+    },
+    {
+      "id": "iata-live-airline-codes-20260909",
+      "url": "https://www.iata.org/contentassets/82a24c7a736142b6bd18e20f77dcef60/ich-members.pdf",
+      "checkedOn": "2026-10-03",
+      "publishedOn": "2026-09-09",
+      "note": "IATA Clearing House live-member list identifies WN/Southwest Airlines Co. (526), G4/Allegiant Air LLC (268), and 4B/Boutique Air Inc. (184). Establishes code identity only, not route service or actual operation."
+    },
+    {
+      "id": "faa-asqp-carrier-codes-20261003",
+      "url": "https://www.aspm.faa.gov/aspmhelp/index/ASQP__Carrier_Codes_and_Names.html",
+      "checkedOn": "2026-10-03",
+      "note": "FAA ASQP carrier-code reference cross-correlates WN/SWA with Southwest Airlines and G4/AAY with Allegiant LLC; identity corroboration only."
+    },
+    {
+      "id": "faa-carrier-designators-20261003",
+      "url": "https://www.faa.gov/air_traffic/publications/atpubs/cnt_html/chap3_section_3.html",
+      "checkedOn": "2026-10-03",
+      "note": "FAA carrier designator reference lists AAY Allegiant Inc. and BTQ Boutique Air; identity corroboration only, with the current IATA-listed name/code variant retained where it differs."
+    },
+    {
+      "id": "southwest-mdw-pdx-20261003",
+      "url": "https://www.southwest.com/en/flights/flights-from-chicago-midway-to-portland-or",
+      "checkedOn": "2026-10-03",
+      "note": "Southwest's current route page lists MDW–PDX fares and its directed nonstop-route fact; its frequency section is DOT scheduled-average data for 2025-09-01 through 2025-09-30 and is not used as current frequency evidence."
+    },
+    {
+      "id": "southwest-pdx-mdw-20261003",
+      "url": "https://www.southwest.com/en/flights/flights-from-portland-or-to-chicago-midway",
+      "checkedOn": "2026-10-03",
+      "note": "Southwest's current PDX–MDW route page and directed nonstop-route fact were observed by the parent cloud research task; local retrieval timed out. Its frequency section refers to September 2025 DOT averages only."
+    },
+    {
+      "id": "southwest-eug-las-20261003",
+      "url": "https://www.southwest.com/en/flights/flights-from-eugene-to-las-vegas",
+      "checkedOn": "2026-10-03",
+      "note": "Southwest's current route page lists EUG–LAS fares and its directed nonstop-route fact; its frequency section is DOT scheduled-average data for 2025-09-01 through 2025-09-30 and is not used as current frequency evidence."
+    },
+    {
+      "id": "southwest-las-eug-20261003",
+      "url": "https://www.southwest.com/en/flights/flights-from-las-vegas-to-eugene",
+      "checkedOn": "2026-10-03",
+      "note": "Southwest's current LAS–EUG route page and directed nonstop-route fact were observed by the parent cloud research task; local retrieval timed out. Its frequency section refers to September 2025 DOT averages only."
+    },
+    {
+      "id": "allegiant-eug-las-20261003",
+      "url": "https://www.allegiantair.com/en/flights-from-eugene-to-las-vegas",
+      "checkedOn": "2026-10-03",
+      "note": "Allegiant's current route page lists late-2026 fares and explicitly says all Allegiant EUG–LAS flights are nonstop. This is provider-listed route evidence, not independently established aircraft operation."
+    },
+    {
+      "id": "allegiant-las-eug-20261003",
+      "url": "https://www.allegiantair.com/en/flights/flights-from-las-vegas-to-eugene",
+      "checkedOn": "2026-10-03",
+      "note": "Allegiant's current reverse-direction route page and directed nonstop fact were observed by the parent cloud research task; local retrieval was inaccessible. Current late-2026 fare evidence was included in that observation."
+    },
+    {
+      "id": "boutique-pdt-pdx-status-20261003",
+      "url": "https://www.boutiqueair.com/flight_statuses?sort=flight_number",
+      "checkedOn": "2026-10-03",
+      "note": "Boutique Air's published 2026-10-03 flight-status rows list three scheduled PDT–PDX legs and three PDX–PDT legs. Numeric-only labels are preserved as route topology evidence and are not promoted to carrier flight designators or actual-operated-flight proof."
+    },
+    {
+      "id": "boutique-pdt-pdx-schedule-20261003",
+      "url": "https://boutiqueair.com/p/Schedule",
+      "checkedOn": "2026-10-03",
+      "note": "The provider schedule supplied for review lists three directed legs each way effective 2024-05-01; its age limits freshness and no current daily-frequency claim is inferred. Local retrieval timed out."
+    },
+    {
+      "id": "mco-nonstop-brazil-20261003",
+      "url": "https://www.flymco.com/international-service/",
+      "checkedOn": "2026-10-03",
+      "note": "Parent cloud researcher visually inspected the official MCO page: “Non-stop service to 55 international destinations” / “Nonstop International Destinations” lists “Brasilia, Brazil (BSB)” under GOL. Page says destinations are scheduled within the next 12 months and dates are tentative; it has no body as-of date. Not locally captured or hashed. Supports only the directed provider-listed MCO–BSB nonstop relationship, not current actual operation, a service window, a schedule, flight numbers or RTW eligibility."
+    },
+    {
+      "id": "iata-gol-identity-20261003",
+      "url": "https://www.iata.org/en/about/members/airline-list/gol-linhas-aereas/406/",
+      "checkedOn": "2026-10-03",
+      "note": "IATA member record supports GOL code identity GLO/G3 only. It does not establish route service, universal marketing or codeshare aliases, or current flight operation."
+    },
+    {
+      "id": "latam-br-gru-rec-direct-20261003",
+      "url": "https://www.latamairlines.com/br/pt/destinos/voos-para-recife",
+      "checkedOn": "2026-10-03",
+      "note": "Parent cloud researcher inspected the official LATAM Brazil GRU–REC route page; it explicitly lists GRU→REC as Direct/daily. Not locally captured or hashed. This is directional provider-listed route topology, not flight-specific operator evidence, a selected schedule, confirmed flight numbers or RTW eligibility."
+    },
+    {
+      "id": "iata-latam-brasil-identity-20261003",
+      "url": "https://www.iata.org/en/about/members/airline-list/latam-airlines-brasil/281/",
+      "checkedOn": "2026-10-03",
+      "note": "IATA member record supports TAM/JJ code identity for LATAM Airlines Brasil only. It does not establish route service or universal marketing/codeshare aliases. Route evidence remains provider-listed; no flight-specific operating identity is claimed."
+    },
+    {
+      "id": "infraero-sdu-gol-20261003",
+      "url": "https://voosonlinecore.infraero.gov.br/",
+      "checkedOn": "2026-10-03",
+      "note": "Parent cloud researcher observed the SDU live board on Oct 3. It lists GOL arrivals from BSB 1806, 1810 and 1812 and departures to BSB 1807, 1809 and 1811. Flights 1804/1808 were canceled and excluded. Escalas was blank with no source legend, so the board alone is not treated as a nonstop statement. Not locally captured or hashed."
+    },
+    {
+      "id": "bsb-gol-boards-20261003",
+      "url": "https://www.bsb.aero/passageiros/voos-online",
+      "checkedOn": "2026-10-03",
+      "note": "Parent cloud researcher observed Oct 3 BSB board rows: GOL 1419 to CGH at 20:45 (No horário) and 1806 to SDU at 12:30 (Última chamada); 1808 was canceled and excluded. Board provides dated direction/flight context, not stop semantics. Not locally captured or hashed."
+    },
+    {
+      "id": "gru-gol-boards-20261003",
+      "url": "https://www.gru.com.br/pt/passageiro/voos/chegadas-e-partidas",
+      "checkedOn": "2026-10-03",
+      "note": "Parent cloud researcher observed the Oct 3 GOL-Doméstico filter at 12:04 local with directed GRU rows: VIX 1384/1386/1388, POA 1236/1238/1240, BEL 1516 and MAO 1544. The admitted route evidence uses only flight numbers joined to the pinned SIROS/VRA stage rows. The board has no stop field. Not locally captured or hashed."
+    },
+    {
+      "id": "aena-cgh-gol-20261003",
+      "url": "https://www.aenabrasil.com.br/pt/aeroportos/aeroporto-de-congonhas/informacoes-de-voos.html",
+      "checkedOn": "2026-10-03",
+      "note": "Parent cloud researcher observed Oct 3 CGH rows: GLO 1400 to BSB at 06:00; GLO 1624 to SSA at 06:55 (VOO ENCERRADO), with 1626 at 09:30 and 1628 at 11:20 reported completed. Stop semantics are not supplied. Not locally captured or hashed."
+    },
+    {
+      "id": "motiva-cwb-gol-20261003",
+      "url": "https://aeroportos.motiva.com.br/curitiba-pr/voos/",
+      "checkedOn": "2026-10-03",
+      "note": "Parent cloud researcher observed the Oct 3 CWB board row GOL 1743 to Brasília at 17:35 (Previsto); a separate Oct 4 row lists 1745 at 06:00. This tranche joins only Oct 3 flight 1743 to matching pinned SIROS/VRA endpoints. Not locally captured or hashed; the board does not state intermediate-stop semantics."
+    },
+    {
+      "id": "anac-vra-aug2026-flight-joins-20261003",
+      "url": "https://siros.anac.gov.br/siros/registros/diversos/vra/2026/VRA_2026_08.csv",
+      "checkedOn": "2026-10-03",
+      "note": "Exact flight-number joins were recomputed locally from pinned August VRA bytes (27,597,831 bytes, SHA-256 a993dab4f8e192a473c998f7fe17703de489aaa359a4b6eb45631f68d99081d1): REALIZADO rows with valid actual departure/arrival timestamps in August, raw GLO operator, exact flight number and exact ICAO origin/destination. For each selected number all matched rows use the stated pair and no other pair occurs that month. This is historical actual movement evidence; passenger/cargo and VRA nonstop semantics remain unknown and it does not establish Oct 3 operation."
+    },
+    {
+      "id": "anac-siros-brazil-plan-20261002",
+      "url": "https://siros.anac.gov.br/siros/registros/registros/registros.csv",
+      "checkedOn": "2026-10-02",
+      "note": "Exact flight-number stage records come from the pinned SIROS snapshot dated Oct 2, 2026 (27,842,178 bytes; SHA-256 2bc37f1f1098f2f87d830662c953f0443067dad168f334719c466221318941c1). Selected rows are registered regular passenger plans whose Oct 3 validity/weekday matches and whose raw operator maps GLO→G3. SIROS CSV has no explicit nonstop flag; stage numbers are ordinal, not a total-stage count. This is planned registration evidence, not actual Oct 3 operation, confirmed flight number or RTW eligibility. Public redistribution remains notice-review."
+    },
+    {
+      "id": "salvador-gol-board-20261003",
+      "url": "https://www.salvador-airport.com.br/index.php/pt-br/partidas-e-chegadas",
+      "checkedOn": "2026-10-03",
+      "note": "Official Salvador airport live board, page last updated 2026-10-03 09:52:56; researcher observed GOL 1916 Salvador→Maceió at 15:10 Confirmado. Board display does not state nonstop status. The dated board tuple joins to the exact GLO SIROS stage and August VRA endpoint pair recorded in the Brazil evidence ledger."
+    },
+    {
+      "id": "riogaleao-gol-board-20261003",
+      "url": "https://www.riogaleao.com/passageiros/voos/painel-de-voos/",
+      "checkedOn": "2026-10-03",
+      "note": "Official RIOgaleão live board observed 2026-10-03 16:54 UTC; researcher observed the dated GOL rows documented in the Brazil evidence ledger. The board does not state nonstop status. Only exact endpoint directions joined to applicable SIROS stages and August VRA actual pairs were admitted; multi-stage plans were limited to the displayed first airport pair."
+    },
+    {
+      "id": "riogaleao-gol-board-bulk-20261003",
+      "url": "https://www.riogaleao.com/passageiros/voos/painel-de-voos/",
+      "checkedOn": "2026-10-03",
+      "note": "Official RIOgaleão GOL-filtered structured board snapshot observed 2026-10-03 17:45–17:48 UTC, locally retained as docs/coverage-ledger/siros-brazil-three-carrier-20261003/riogaleao_gol_board_2026-10-03.json (136 rows, SHA-256 abe8f420cc927ef5841be1ec21cdfbb0f4cb6dc26e6e7c96c850155701d2c04d). Visible horizon is only through 14:10 departures and 14:05 arrivals on Oct 4; load-more was tried once per direction with no extra dated GOL rows. The board has no general stops/nonstop field."
+    },
+    {
+      "id": "bsb-gol-board-bulk-20261003",
+      "url": "https://www.bsb.aero/passageiros/voos-online",
+      "checkedOn": "2026-10-03",
+      "note": "Locally saved official BSB board snapshot for Oct 3, 2026 (SHA-256 3b753b6236c108dcad347528b7003b49a7f4c48ea7422afc843ed7306e1b1bb1). Contains 22 GOL domestic departure rows and one GOL domestic arrival row within visible filters; the domestic arrival filter remained at 15 rendered rows after one load-more click, so the collection is bounded. The six admitted directed route joins are detailed in bsb-gol-board-batch-adjudication-20261003.json. The display brand is not a flight-specific operator confirmation."
+    },
+    {
+      "id": "aena-rec-arrivals-bulk-20261003",
+      "url": "https://www.aenabrasil.com.br/pt/aeroportos/aeroporto-internacional-do-recife-guararapes-gilberto-freyre/Informacoes-de-voo.html",
+      "checkedOn": "2026-10-03",
+      "note": "Official Aena Recife arrivals board packet, SHA-256 96be1c6053197161676cc2440ce37f4a7c6bb2694ffc5278c78111ad273c4be7; arrivals observed 2026-10-03T19:27:36Z. Airport timezone America/Recife is explicit in the packet. The 121 carrier target rows preserve per-row date, displayed flight designator, local arrival clock, status and raw origin label; the board does not supply other-airport IATA codes."
+    },
+    {
+      "id": "aena-rec-departures-bulk-20261003",
+      "url": "https://www.aenabrasil.com.br/pt/aeroportos/aeroporto-internacional-do-recife-guararapes-gilberto-freyre/Informacoes-de-voo.html",
+      "checkedOn": "2026-10-03",
+      "note": "Official Aena Recife departures board packet, SHA-256 96be1c6053197161676cc2440ce37f4a7c6bb2694ffc5278c78111ad273c4be7; departures observed 2026-10-03T19:29:43Z. Airport timezone America/Recife is explicit in the packet. The 118 carrier target rows preserve per-row date, displayed flight designator, local departure clock, status and raw destination label; the board does not supply other-airport IATA codes."
+    },
+    {
+      "id": "aena-cgh-departures-bulk-20261003",
+      "url": "https://www.aenabrasil.com.br/pt/aeroportos/aeroporto-de-congonhas/informacoes-de-voos.html",
+      "checkedOn": "2026-10-03",
+      "note": "Official Aena CGH departures board packet, SHA-256 b3a8c0205669ce1f1392bb64c1e27d04d7c97fbe278451b79daab8b33f245f75; observed 2026-10-03T19:38:08Z. Displayed local clocks use inferred America/Sao_Paulo. The 339 GOL/TAM outbound rows preserve the raw endpoint labels and per-row dates; one unresolved endpoint label remains held. No arrivals were collected."
+    },
+    {
+      "id": "anac-siros-rec-cgh-plans-20261003",
+      "url": "https://siros.anac.gov.br/siros/registros/registros/registros.csv",
+      "checkedOn": "2026-10-03",
+      "note": "Date-specific registered planned passenger stage rows from the pinned Oct 2 SIROS snapshot (27,842,178 bytes, SHA-256 2bc37f1f1098f2f87d830662c953f0443067dad168f334719c466221318941c1), captured 2026-10-02T14:23:47.646507Z. Query-date slices cover the explicit Oct 3–4 board service dates and UTC weekday flags. Registered carrier identity mappings were checked Oct 3: AZU→AD, GLO→G3, TAM→JJ. Registration rows are plan evidence only, not actual operation, a selected schedule or RTW eligibility."
+    },
+    {
+      "id": "anac-vra-rec-cgh-realized-20261003",
+      "url": "https://siros.anac.gov.br/siros/registros/diversos/vra/2026/VRA_2026_08.csv",
+      "checkedOn": "2026-10-03",
+      "note": "Local August 2026 VRA cache, 27,597,831 bytes, SHA-256 a993dab4f8e192a473c998f7fe17703de489aaa359a4b6eb45631f68d99081d1; exact retrieval instant unavailable, verification date 2026-10-03. Joined rows require status REALIZADO and exact raw operator ICAO, flight number and ICAO airport pair. Historical movement corroboration only; passenger/cargo classification, current operation and nonstop status are not inferred from VRA."
+    },
+    {
+      "id": "iata-azul-identity-20261003",
+      "url": "https://www.iata.org/en/about/members/airline-list/azul-brazilian-airlines/440/",
+      "checkedOn": "2026-10-03",
+      "note": "IATA member identity reference used only for the registered operator code mapping AZU→AD; not evidence of an individual flight operator, schedule or route."
+    },
+    {
+      "id": "emirates-dxb-gru-route-page-20261004",
+      "url": "https://www.emirates.com/english/destinations/dxb/gru/flights-from-dubai-to-sao-paulo/",
+      "checkedOn": "2026-10-04",
+      "note": "Current Emirates directional passenger route page lists EK261 and explicitly labels it Operated by EK; page reports seven flights per week. Parent-researched primary observation, raw page hash not supplied. Current route listing only; no date-specific availability or selectable schedule is asserted."
+    },
+    {
+      "id": "emirates-gru-dxb-route-page-20261004",
+      "url": "https://www.emirates.com/br/english/destinations/gru/dxb/flights-from-sao-paulo-to-dubai/",
+      "checkedOn": "2026-10-04",
+      "note": "Current Emirates reverse directional route page lists EK262 and Operated by EK; pair shown as seven flights per week. Parent-researched observation, raw page hash not supplied; no date-specific availability is asserted."
+    },
+    {
+      "id": "emirates-dxb-gig-route-page-20261004",
+      "url": "https://www.emirates.com/english/destinations/dxb/gig/flights-from-dubai-to-rio-de-janeiro/",
+      "checkedOn": "2026-10-04",
+      "note": "Current Emirates directional route page lists EK247 and Operated by EK; pair shown as seven flights per week. Parent-researched observation, raw page hash not supplied; no date-specific availability is asserted."
+    },
+    {
+      "id": "emirates-gig-dxb-route-page-20261004",
+      "url": "https://www.emirates.com/br/english/destinations/gig/dxb/flights-from-rio-de-janeiro-to-dubai/",
+      "checkedOn": "2026-10-04",
+      "note": "Current Emirates directional route page lists EK248 and Operated by EK; pair shown as seven flights per week. Parent-researched observation, raw page hash not supplied; no date-specific availability is asserted."
+    },
+    {
+      "id": "emirates-gig-eze-route-page-20261004",
+      "url": "https://www.emirates.com/br/english/destinations/gig/eze/flights-from-rio-de-janeiro-to-buenos-aires/",
+      "checkedOn": "2026-10-04",
+      "note": "Current Emirates passenger route page lists EK247 for GIG→EZE; the official launch/timetable source describes this as the adjacent Brazil–Argentina segment. Provider-listed directed leg; not a DXB→EZE shortcut. Page observation relayed by parent, raw page hash unavailable."
+    },
+    {
+      "id": "emirates-eze-gig-route-page-20261004",
+      "url": "https://www.emirates.com/br/english/destinations/eze/gig/flights-from-buenos-aires-to-rio-de-janeiro/",
+      "checkedOn": "2026-10-04",
+      "note": "Current Emirates passenger route page lists EK248 for EZE→GIG; official linked-leg timetable describes this as an adjacent segment before GIG→DXB. Provider-listed directed leg; no reverse route inferred beyond this page."
+    },
+    {
+      "id": "emirates-linked-leg-topology-20261004",
+      "url": "https://www.emirates.com/media-centre/emirates-boosts-services-to-brazil-and-argentina-to-five-weekly-flights-from-december/",
+      "checkedOn": "2026-10-04",
+      "note": "Emirates announcement presents EK247 as DXB→GIG followed by GIG→EZE, and EK248 as EZE→GIG followed by GIG→DXB. GIG is the intermediate stop on the longer through-service; no DXB↔EZE edge is created."
+    },
+    {
+      "id": "emirates-daily-frequency-update-20261004",
+      "url": "https://www.emirates.com/media-centre/emirates-layers-on-retrofitted-aircraft-with-latest-product-including-premium-economy-to-more-cities/",
+      "checkedOn": "2026-10-04",
+      "note": "Emirates announcement states the linked EK247/EK248 Brazil–Argentina services became daily effective 2025-10-26. This is frequency context, not a date-specific Oct 4 schedule or selectable inventory."
+    },
+    {
+      "id": "anac-siros-full-stage-plans-20261004",
+      "url": "https://siros.anac.gov.br/siros/registros/registros/registros.csv",
+      "checkedOn": "2026-10-04",
+      "note": "Pinned Oct 2 SIROS CSV, 27,842,178 bytes, SHA-256 2bc37f1f1098f2f87d830662c953f0443067dad168f334719c466221318941c1. Exact active Sunday Oct 4 stage rows included UAE/EK 0247 OMDB→SBGL and SBGL→SAEZ; UAE/EK 0248 SAEZ→SBGL and SBGL→OMDB; UAE/EK 0261 OMDB→SBGR; UAE/EK 0262 SBGR→OMDB; and LAN/LA Oct 4 plans for GIG→SCL 0771/0775/0777 and GIG→EZE 0776. SIROS documents registered planned adjacent-stage topology, not actual operation or selected schedule."
+    },
+    {
+      "id": "anac-vra-aug2026-ek-lan-exact-joins-20261004",
+      "url": "https://siros.anac.gov.br/siros/registros/diversos/vra/2026/VRA_2026_08.csv",
+      "checkedOn": "2026-10-04",
+      "note": "Pinned August 2026 VRA CSV, 27,597,831 bytes, SHA-256 a993dab4f8e192a473c998f7e17703de489aaa359a4b6eb45631f68d99081d1. Exact REALIZADO raw-operator/flight-number/ICAO-pair actual-record matches: UAE 0261 OMDB→SBGR 31; UAE 0262 SBGR→OMDB 31; UAE 0247 OMDB→SBGL 26 and SBGL→SAEZ 26; UAE 0248 SAEZ→SBGL 26 and SBGL→OMDB 26; LAN 0771/0775/0777 SBGL→SCEL 31/31/22; LAN 0776 SBGL→SAEZ 23. Historical corroboration only; no October actual flight or schedule is inferred."
+    },
+    {
+      "id": "riogaleao-gig-scl-board-20261004",
+      "url": "https://www.riogaleao.com/passageiros/voos/painel-de-voos/",
+      "checkedOn": "2026-10-04",
+      "note": "Parent researcher directly inspected GIG departures filtered to Santiago; Amanhã resolved to Oct 4 from the same board context showing Oct 3. Programado rows: LA775 13:40, LA771 18:05, LA777 19:25, each labeled LATAM Airlines Group Chile. Separate LA8106 11:25 is labeled LATAM Airlines Brasil and is excluded. Relayed observation; raw capture/hash unavailable."
+    },
+    {
+      "id": "riogaleao-gig-eze-board-20261004",
+      "url": "https://www.riogaleao.com/passageiros/voos/painel-de-voos/",
+      "checkedOn": "2026-10-04",
+      "note": "Parent researcher directly inspected GIG departures filtered to Buenos Aires; Amanhã resolved to Oct 4. Programado GIG→EZE LA776 11:10 is explicitly labeled LATAM Airlines Group Chile. LA8044 13:45 is LATAM Airlines Brasil to AEP and is excluded. Relayed observation; raw capture/hash unavailable."
+    },
+    {
+      "id": "latam-gig-scl-direct-page-20261004",
+      "url": "https://www.latamairlines.com/br/pt/destinos/chile/voos-de-rio-de-janeiro-para-santiago",
+      "checkedOn": "2026-10-04",
+      "note": "Official LATAM Brazil page lists GIG→SCL as a direct route with future offers; no date-specific schedule or flight-specific operating entity. Used with the Oct 4 GIG board rows explicitly labelled LATAM Airlines Group Chile and matching LAN SIROS/VRA stages. Parent observation, raw page hash unavailable."
+    },
+    {
+      "id": "latam-gig-eze-direct-page-20261004",
+      "url": "https://www.latamairlines.com/br/pt/destinos/argentina/voos-de-rio-de-janeiro-para-buenos-aires",
+      "checkedOn": "2026-10-04",
+      "note": "Official LATAM Brazil page lists GIG→EZE with direct offers/frequency; exact Oct 4 board row LA776 is explicitly labelled LATAM Airlines Group Chile. LATAM Brasil LA8044 to AEP is excluded. Parent observation, raw page hash unavailable."
+    },
+    {
+      "id": "riogaleao-31-row-board-primary-relayed-20261004",
+      "url": "https://www.riogaleao.com/passageiros/voos/painel-de-voos/",
+      "checkedOn": "2026-10-04",
+      "note": "Exact 31-row rendered-board observation packet, parent-researched and relayed. Local packet file SHA-256 1feae97a4a38938714d624eb013be7c8023088474b4ac52f5e1d78254d922b51; packet-declared sha256_payload 854ed1b7f6e0c38e6575d7f4a4bbd954963acb3ee93c92900117ce59f23f51cb is retained as provided and is not claimed to equal the local JSON serialization hash. Observed 2026-10-04T00:24:04Z / 2026-10-03T21:24:04-03:00. Rows distinguish LATAM Airlines Peru, LATAM Airlines Group Chile, JetSMART Argentina, generic JetSMART Airlines, and generic Sky Airline. Scheduled board listings only; local raw page capture/hash unavailable."
+    },
+    {
+      "id": "iata-latam-peru-lp-identity-20261004",
+      "url": "https://www.iata.org/en/about/members/airline-list/latam-airlines-peru/149/",
+      "checkedOn": "2026-10-04",
+      "note": "IATA profile identity crosswalk LPE→LP, accounting code 544, reconciled with Peru MTC former-name record. Code/entity mapping only; does not establish a flight operator."
+    },
+    {
+      "id": "iata-jetsmart-argentina-wj-identity-20261004",
+      "url": "https://www.iata.org/en/about/members/airline-list/jetsmart-argentina/667/",
+      "checkedOn": "2026-10-04",
+      "note": "IATA profile identity crosswalk JES→WJ, accounting code 974, Argentina. Code/entity mapping only; distinct from Chile JA and Peru JZ."
+    },
+    {
+      "id": "latam-scl-gig-direct-page-20261004",
+      "url": "https://www.latamairlines.com/cl/es/destinos/brasil/vuelos-desde-santiago-a-rio-de-janeiro",
+      "checkedOn": "2026-10-04",
+      "note": "Official LATAM Chile page lists SCL→GIG direct offers; no dated schedule or per-flight operator. The Oct 4 board row label independently names LATAM Airlines Group Chile."
+    },
+    {
+      "id": "pinned-lan-la-identity-code-table-20261004",
+      "url": "https://raw.githubusercontent.com/jpatokal/openflights/master/data/airlines.dat",
+      "checkedOn": "2026-10-04",
+      "note": "The pinned 45-row public airline identity table maps LAN→LA; all code pairs are cross-verified by the repository provenance script. Identity only. Combined with exact board airline label LATAM Airlines Group Chile, this does not claim that every marketed LATAM flight is operated by LAN."
+    },
+    {
+      "id": "siros-brazil-generic-carrier-identity-20261004",
+      "url": "https://siros.anac.gov.br/siros/registros/registros/registros.csv",
+      "checkedOn": "2026-10-04",
+      "note": "Pinned SIROS Oct 2 snapshot, 27,842,178 bytes, SHA-256 2bc37f1f1098f2f87d830662c953f0443067dad168f334719c466221318941c1. Exact Sunday Oct 4 stages for carrier H2 (registrations SKU-0000000000048436956/6962) and JA (JAT-0000000000048398611/8618) establish only the listed directed legs: SCL→GIG, GIG→MVD, MVD→GIG, GIG→SCL. Stage clocks corroborate adjacency, not through-service identity, actual operation, or flight-number prefix."
+    },
+    {
+      "id": "riogaleao-generic-carrier-board-relayed-20261004",
+      "url": "https://www.riogaleao.com/passageiros/voos/painel-de-voos/",
+      "checkedOn": "2026-10-04",
+      "note": "Parent-relayed rendered-board observation packet riogaleao-international-board-relayed-20261004.json, observed 2026-10-04T00:24:04Z. For the eight H2/JA admissions, only exact SIROS-matched board rows 20, 22, 23, 25, 27, 28, 30, and 31 support the listed directed legs; row 29 (SKU 625) is excluded and held because its endpoint topology is unresolved. Board listings are not actual-operation evidence."
+    },
+    {
+      "id": "skyairline-official-directed-market-pages-20261004",
+      "url": "https://www.skyairline.com/flights/es/vuelos-desde-montevideo-a-rio-de-janeiro",
+      "checkedOn": "2026-10-04",
+      "note": "Official SKY page lists the directed MVD→GIG passenger market. For the other H2 legs, topology is established by exact distinct SIROS physical stages and the Rio board, not by fare-market listings. No operation date, flight number, or RTW eligibility inferred."
+    },
+    {
+      "id": "jetsmart-official-directed-market-pages-20261004",
+      "url": "https://jetsmart.com/ofertas/es-py/vuelos-desde-rio-de-janeiro-a-montevideo",
+      "checkedOn": "2026-10-04",
+      "note": "Official JetSMART directed passenger-market pages list GIG→MVD and MVD→GIG offers in relevant local markets. Other JA legs are established by exact distinct SIROS physical stages and the Rio board. Market listings do not establish stop count, actual operation, or RTW eligibility."
+    },
+    {
+      "id": "iata-skyairline-h2-identity-20261004",
+      "url": "https://www.iata.org/en/about/members/airline-list/sky-airline/",
+      "checkedOn": "2026-10-04",
+      "note": "IATA identity crosswalk for Sky Airline IATA code H2, reconciled to raw carrier-code identity on the board/SIROS packet; identity only."
+    },
+    {
+      "id": "iata-jetsmart-chile-ja-identity-20261004",
+      "url": "https://www.iata.org/en/about/members/airline-list/jetsmart-chile/666/",
+      "checkedOn": "2026-10-04",
+      "note": "IATA identity crosswalk JAT→JA, accounting code 973, Chile; distinct from JetSMART Argentina WJ and Peru JZ. Identity only."
+    },
+    {
+      "id": "icao-surinam-airways-slm-identity-20261004",
+      "url": "https://www.icao.int/CORSIA/AeroplaneOperators",
+      "checkedOn": "2026-10-04",
+      "note": "ICAO operator reference identifies Surinam Airways LTD as raw operator SLM; raw-operator identity only."
+    },
+    {
+      "id": "siros-surinam-airways-pbm-bel-20261004",
+      "url": "https://siros.anac.gov.br/siros/registros/registros/registros.csv",
+      "checkedOn": "2026-10-04",
+      "note": "Pinned SIROS Oct 2 snapshot, SHA-256 2bc37f1f1098f2f87d830662c953f0443067dad168f334719c466221318941c1. Exact raw-operator SLM plan rows map to physical PBM→BEL and BEL→PBM endpoints. Stage clock/date values conflict with the separate official local timetable extract; no exact date/clock join is asserted. Planned route evidence only, not actual operation, ticketability, flight-number assignment, or RTW eligibility."
+    },
+    {
+      "id": "surinam-airways-official-pbm-bel-timetable-20261004",
+      "url": "https://www.flyslm.com/travel-information/passengers/flight-schedule",
+      "checkedOn": "2026-10-04",
+      "note": "Official Surinam Airways timetable independently lists scheduled service in both PBM→BEL and BEL→PBM directions with validity overlapping Oct 4–10, 2026. A separate audit found unresolved date/clock conflicts against SIROS rows; this supports route-level directed timetable connectivity only, not a schedule-level row join, actual operation, ticketability, flight-number assignment, or RTW eligibility."
     }
   ],
   "carrierUniverses": [],
   "routes": [
+    {
+      "carrier": "4B",
+      "pair": [
+        "PDT",
+        "PDX"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "boutique-pdt-pdx-status-20261003",
+        "boutique-pdt-pdx-schedule-20261003",
+        "iata-live-airline-codes-20260909",
+        "faa-carrier-designators-20261003"
+      ]
+    },
+    {
+      "carrier": "4B",
+      "pair": [
+        "PDX",
+        "PDT"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "boutique-pdt-pdx-status-20261003",
+        "boutique-pdt-pdx-schedule-20261003",
+        "iata-live-airline-codes-20260909",
+        "faa-carrier-designators-20261003"
+      ]
+    },
     {
       "carrier": "AC",
       "pair": [
@@ -1029,6 +1465,888 @@
       "carrierIdentity": "provider-listed"
     },
     {
+      "carrier": "AD",
+      "pair": [
+        "AJU",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "BEL",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "BSB",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "CGH",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "CNF",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "CPV",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "FEN",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "FOR",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "GIG",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "GRU",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "GYN",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "JPA",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "MCZ",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "MVD",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "NAT",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "OPO",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "PNZ",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "POA",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "RAO",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "REC",
+        "AJU"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "REC",
+        "BEL"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "REC",
+        "CGH"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "REC",
+        "CNF"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "REC",
+        "CPV"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "REC",
+        "FEN"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "REC",
+        "FOR"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "REC",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "REC",
+        "GRU"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "REC",
+        "GYN"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "REC",
+        "JPA"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "REC",
+        "MAD"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "REC",
+        "MCZ"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "REC",
+        "MVD"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "REC",
+        "NAT"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "REC",
+        "PNZ"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "REC",
+        "POA"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "REC",
+        "RAO"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "REC",
+        "SJP"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "REC",
+        "SSA"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "REC",
+        "THE"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "REC",
+        "UDI"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "REC",
+        "VCP"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "SJP",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "SLZ",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "SSA",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "THE",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "UDI",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "VCP",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "AD",
+      "pair": [
+        "VIX",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-azul-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
       "carrier": "AI",
       "pair": [
         "SFO",
@@ -1058,6 +2376,141 @@
     {
       "carrier": "AY",
       "pair": [
+        "HEL",
+        "HND"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "flightNumbers": [
+        "AY61"
+      ],
+      "flightNumberSourceIds": [
+        "flight-numbers-adsbiq-recent-20260908"
+      ],
+      "sourceIds": [
+        "adsbiq-20260801-0906",
+        "vrs-standing-data-20260907-recent",
+        "air-routes-current-pair-index-20260908-recent",
+        "finnair-japan-summer-table-20261002"
+      ],
+      "effectiveFrom": "2026-09-08",
+      "effectiveUntil": "2026-10-07"
+    },
+    {
+      "carrier": "AY",
+      "pair": [
+        "HEL",
+        "KIX"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "flightNumbers": [
+        "AY67",
+        "AY69"
+      ],
+      "flightNumberSourceIds": [
+        "flight-numbers-adsbiq-recent-20260908"
+      ],
+      "flightNumberCandidates": [
+        "AY77"
+      ],
+      "flightNumberCandidateSourceIds": [
+        "flight-numbers-vrs-standing-20260907"
+      ],
+      "sourceIds": [
+        "adsbiq-20260801-0906",
+        "vrs-standing-data-20260907-recent",
+        "air-routes-current-pair-index-20260908-recent",
+        "finnair-japan-summer-table-20261002"
+      ],
+      "effectiveFrom": "2026-09-08",
+      "effectiveUntil": "2026-10-07"
+    },
+    {
+      "carrier": "AY",
+      "pair": [
+        "HEL",
+        "NGO"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "flightNumbers": [
+        "AY79"
+      ],
+      "flightNumberSourceIds": [
+        "flight-numbers-adsbiq-recent-20260908"
+      ],
+      "sourceIds": [
+        "adsbiq-20260801-0906",
+        "vrs-standing-data-20260907-recent",
+        "air-routes-current-pair-index-20260908-recent",
+        "finnair-japan-summer-table-20261002"
+      ],
+      "effectiveFrom": "2026-09-08",
+      "effectiveUntil": "2026-10-07"
+    },
+    {
+      "carrier": "AY",
+      "pair": [
+        "HEL",
+        "NRT"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "flightNumbers": [
+        "AY73"
+      ],
+      "flightNumberSourceIds": [
+        "flight-numbers-adsbiq-recent-20260908"
+      ],
+      "flightNumberCandidates": [
+        "AY71",
+        "AY7211",
+        "AY9499"
+      ],
+      "flightNumberCandidateSourceIds": [
+        "flight-numbers-vrs-standing-20260907"
+      ],
+      "sourceIds": [
+        "adsbiq-20260801-0906",
+        "vrs-standing-data-20260907-recent",
+        "air-routes-current-pair-index-20260908-recent",
+        "finnair-japan-summer-table-20261002"
+      ],
+      "effectiveFrom": "2026-09-08",
+      "effectiveUntil": "2026-10-07"
+    },
+    {
+      "carrier": "AY",
+      "pair": [
+        "HND",
+        "HEL"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "flightNumbers": [
+        "AY62"
+      ],
+      "flightNumberSourceIds": [
+        "flight-numbers-adsbiq-recent-20260908"
+      ],
+      "sourceIds": [
+        "adsbiq-20260801-0906",
+        "vrs-standing-data-20260907-recent",
+        "air-routes-current-pair-index-20260908-recent",
+        "finnair-japan-summer-table-20261002"
+      ],
+      "effectiveFrom": "2026-09-08",
+      "effectiveUntil": "2026-10-07"
+    },
+    {
+      "carrier": "AY",
+      "pair": [
         "KEM",
         "KOK"
       ],
@@ -1067,6 +2520,92 @@
         "ay-kem-kok-ended-20260912"
       ],
       "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "AY",
+      "pair": [
+        "KIX",
+        "HEL"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "flightNumbers": [
+        "AY68",
+        "AY70"
+      ],
+      "flightNumberSourceIds": [
+        "flight-numbers-adsbiq-recent-20260908"
+      ],
+      "flightNumberCandidates": [
+        "AY78"
+      ],
+      "flightNumberCandidateSourceIds": [
+        "flight-numbers-vrs-standing-20260907"
+      ],
+      "sourceIds": [
+        "adsbiq-20260801-0906",
+        "vrs-standing-data-20260907-recent",
+        "air-routes-current-pair-index-20260908-recent",
+        "finnair-japan-summer-table-20261002"
+      ],
+      "effectiveFrom": "2026-09-08",
+      "effectiveUntil": "2026-10-07"
+    },
+    {
+      "carrier": "AY",
+      "pair": [
+        "NGO",
+        "HEL"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "flightNumbers": [
+        "AY80"
+      ],
+      "flightNumberSourceIds": [
+        "flight-numbers-adsbiq-recent-20260908"
+      ],
+      "sourceIds": [
+        "adsbiq-20260801-0906",
+        "vrs-standing-data-20260907-recent",
+        "air-routes-current-pair-index-20260908-recent",
+        "finnair-japan-summer-table-20261002"
+      ],
+      "effectiveFrom": "2026-09-08",
+      "effectiveUntil": "2026-10-07"
+    },
+    {
+      "carrier": "AY",
+      "pair": [
+        "NRT",
+        "HEL"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "flightNumbers": [
+        "AY74"
+      ],
+      "flightNumberSourceIds": [
+        "flight-numbers-adsbiq-recent-20260908"
+      ],
+      "flightNumberCandidates": [
+        "AY72",
+        "AY7212"
+      ],
+      "flightNumberCandidateSourceIds": [
+        "flight-numbers-vrs-standing-20260907"
+      ],
+      "sourceIds": [
+        "adsbiq-20260801-0906",
+        "vrs-standing-data-20260907-recent",
+        "air-routes-current-pair-index-20260908-recent",
+        "finnair-japan-summer-table-20261002"
+      ],
+      "effectiveFrom": "2026-09-08",
+      "effectiveUntil": "2026-10-07"
     },
     {
       "carrier": "AZ",
@@ -1478,6 +3017,1736 @@
       "effectiveFrom": "2026-09-06"
     },
     {
+      "carrier": "G3",
+      "pair": [
+        "AJU",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "BEL",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "BSB",
+        "CGH"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "bsb-gol-boards-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ]
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "BSB",
+        "FLN"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "bsb-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "BSB",
+        "FOR"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "bsb-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "BSB",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "BSB",
+        "GRU"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "bsb-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "BSB",
+        "MAO"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "bsb-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "BSB",
+        "POA"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "bsb-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "BSB",
+        "PVH"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "bsb-gol-boards-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "BSB",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "BSB",
+        "SDU"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "infraero-sdu-gol-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ]
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "BSB",
+        "SLZ"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "bsb-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "AJU"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "ARU"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "BPS"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "BSB"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-gol-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ]
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "BYO"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "CGB"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "CGR"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "CNF"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "CWB"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "CXJ"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "FLN"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "FOR"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "GEL"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "GYN"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "IGU"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "IOS"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "IZA"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "JOI"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "JPA"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "LDB"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "MCZ"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "MGF"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "MOC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "NAT"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "NVT"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "PET"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "POA"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "PPB"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "RAO"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "SDU"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "SJP"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "SSA"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-gol-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ]
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "UDI"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CGH",
+        "VIX"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CNF",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "COR",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CWB",
+        "BSB"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "motiva-cwb-gol-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ]
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "CWB",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "FEN",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "FLN",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "GIG",
+        "AJU"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "GIG",
+        "BEL"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "GIG",
+        "CNF"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "GIG",
+        "CWB"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "GIG",
+        "FLN"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "GIG",
+        "GRU"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "GIG",
+        "IGU"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "GIG",
+        "NAT"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "GIG",
+        "NVT"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "GIG",
+        "POA"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "GIG",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "GIG",
+        "SLZ"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "GIG",
+        "SSA"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "GIG",
+        "UDI"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "GIG",
+        "VCP"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "GRU",
+        "BEL"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "gru-gol-boards-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ]
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "GRU",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "GRU",
+        "MAO"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "gru-gol-boards-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ]
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "GRU",
+        "POA"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "gru-gol-boards-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ]
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "GRU",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "GRU",
+        "VIX"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "gru-gol-boards-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ]
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "IGU",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "IOS",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "JPA",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "MCO",
+        "BSB"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "mco-nonstop-brazil-20261003",
+        "iata-gol-identity-20261003"
+      ]
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "MCZ",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "NAT",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "NVT",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "REC",
+        "BSB"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "REC",
+        "CGH"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "REC",
+        "COR"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "REC",
+        "FEN"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "REC",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "REC",
+        "GRU"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "REC",
+        "SSA"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "SDU",
+        "BSB"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "infraero-sdu-gol-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ]
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "SLZ",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "SSA",
+        "MCZ"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "salvador-gol-board-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "SSA",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G3",
+      "pair": [
+        "VCP",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-gol-board-bulk-20261003",
+        "anac-vra-aug2026-flight-joins-20261003",
+        "anac-siros-brazil-plan-20261002",
+        "iata-gol-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "G4",
+      "pair": [
+        "EUG",
+        "LAS"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "allegiant-eug-las-20261003",
+        "iata-live-airline-codes-20260909",
+        "faa-asqp-carrier-codes-20261003"
+      ]
+    },
+    {
+      "carrier": "G4",
+      "pair": [
+        "LAS",
+        "EUG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "allegiant-las-eug-20261003",
+        "iata-live-airline-codes-20260909",
+        "faa-asqp-carrier-codes-20261003"
+      ]
+    },
+    {
       "carrier": "HA",
       "pair": [
         "HNL",
@@ -1490,6 +4759,616 @@
         "ha-hnl-rar-other-operator-20260912"
       ],
       "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "BSB",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "CGH",
+        "BPS"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "CGH",
+        "BSB"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "CGH",
+        "CGB"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "CGH",
+        "CGR"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "CGH",
+        "CNF"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "CGH",
+        "CWB"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "CGH",
+        "FLN"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "CGH",
+        "FOR"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "CGH",
+        "GYN"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "CGH",
+        "IGU"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "CGH",
+        "IOS"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "CGH",
+        "JOI"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "CGH",
+        "JPA"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "CGH",
+        "LDB"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "CGH",
+        "MCZ"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "CGH",
+        "MGF"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "CGH",
+        "NVT"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "CGH",
+        "POA"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "CGH",
+        "RAO"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "CGH",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "CGH",
+        "SDU"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "CGH",
+        "SJP"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "CGH",
+        "SSA"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "CGH",
+        "UDI"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "CGH",
+        "VIX"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-cgh-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "EZE",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "FOR",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-arrivals-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "GRU",
+        "REC"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "latam-br-gru-rec-direct-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ]
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "REC",
+        "BSB"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "REC",
+        "CGH"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "REC",
+        "EZE"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "REC",
+        "FOR"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
+    },
+    {
+      "carrier": "JJ",
+      "pair": [
+        "REC",
+        "GRU"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "aena-rec-departures-bulk-20261003",
+        "anac-vra-rec-cgh-realized-20261003",
+        "anac-siros-rec-cgh-plans-20261003",
+        "iata-latam-brasil-identity-20261003"
+      ],
+      "effectiveFrom": "2026-10-03"
     },
     {
       "carrier": "LH",
@@ -2799,6 +6678,629 @@
         "ux-scq-tfn-ended-20260912"
       ],
       "effectiveFrom": "2026-09-12"
+    },
+    {
+      "carrier": "WN",
+      "pair": [
+        "EUG",
+        "LAS"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "southwest-eug-las-20261003",
+        "iata-live-airline-codes-20260909",
+        "faa-asqp-carrier-codes-20261003"
+      ]
+    },
+    {
+      "carrier": "WN",
+      "pair": [
+        "LAS",
+        "EUG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "southwest-las-eug-20261003",
+        "iata-live-airline-codes-20260909",
+        "faa-asqp-carrier-codes-20261003"
+      ]
+    },
+    {
+      "carrier": "WN",
+      "pair": [
+        "MDW",
+        "PDX"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "southwest-mdw-pdx-20261003",
+        "iata-live-airline-codes-20260909",
+        "faa-asqp-carrier-codes-20261003"
+      ]
+    },
+    {
+      "carrier": "WN",
+      "pair": [
+        "PDX",
+        "MDW"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "southwest-pdx-mdw-20261003",
+        "iata-live-airline-codes-20260909",
+        "faa-asqp-carrier-codes-20261003"
+      ]
+    },
+    {
+      "carrier": "EK",
+      "pair": [
+        "DXB",
+        "GRU"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "emirates-dxb-gru-route-page-20261004",
+        "anac-siros-full-stage-plans-20261004",
+        "anac-vra-aug2026-ek-lan-exact-joins-20261004"
+      ],
+      "flightNumberCandidates": [
+        "EK261"
+      ],
+      "flightNumberCandidateSourceIds": [
+        "emirates-dxb-gru-route-page-20261004"
+      ]
+    },
+    {
+      "carrier": "EK",
+      "pair": [
+        "GRU",
+        "DXB"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "emirates-gru-dxb-route-page-20261004",
+        "anac-siros-full-stage-plans-20261004",
+        "anac-vra-aug2026-ek-lan-exact-joins-20261004"
+      ],
+      "flightNumberCandidates": [
+        "EK262"
+      ],
+      "flightNumberCandidateSourceIds": [
+        "emirates-gru-dxb-route-page-20261004"
+      ]
+    },
+    {
+      "carrier": "EK",
+      "pair": [
+        "DXB",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "emirates-dxb-gig-route-page-20261004",
+        "anac-siros-full-stage-plans-20261004",
+        "anac-vra-aug2026-ek-lan-exact-joins-20261004",
+        "emirates-linked-leg-topology-20261004",
+        "emirates-daily-frequency-update-20261004"
+      ],
+      "flightNumberCandidates": [
+        "EK247"
+      ],
+      "flightNumberCandidateSourceIds": [
+        "emirates-dxb-gig-route-page-20261004"
+      ]
+    },
+    {
+      "carrier": "EK",
+      "pair": [
+        "GIG",
+        "DXB"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "emirates-gig-dxb-route-page-20261004",
+        "anac-siros-full-stage-plans-20261004",
+        "anac-vra-aug2026-ek-lan-exact-joins-20261004",
+        "emirates-linked-leg-topology-20261004",
+        "emirates-daily-frequency-update-20261004"
+      ],
+      "flightNumberCandidates": [
+        "EK248"
+      ],
+      "flightNumberCandidateSourceIds": [
+        "emirates-gig-dxb-route-page-20261004"
+      ]
+    },
+    {
+      "carrier": "EK",
+      "pair": [
+        "GIG",
+        "EZE"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "emirates-gig-eze-route-page-20261004",
+        "anac-siros-full-stage-plans-20261004",
+        "anac-vra-aug2026-ek-lan-exact-joins-20261004",
+        "emirates-linked-leg-topology-20261004",
+        "emirates-daily-frequency-update-20261004"
+      ],
+      "flightNumberCandidates": [
+        "EK247"
+      ],
+      "flightNumberCandidateSourceIds": [
+        "emirates-gig-eze-route-page-20261004"
+      ]
+    },
+    {
+      "carrier": "EK",
+      "pair": [
+        "EZE",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "emirates-eze-gig-route-page-20261004",
+        "anac-siros-full-stage-plans-20261004",
+        "anac-vra-aug2026-ek-lan-exact-joins-20261004",
+        "emirates-linked-leg-topology-20261004",
+        "emirates-daily-frequency-update-20261004"
+      ],
+      "flightNumberCandidates": [
+        "EK248"
+      ],
+      "flightNumberCandidateSourceIds": [
+        "emirates-eze-gig-route-page-20261004"
+      ]
+    },
+    {
+      "carrier": "LA",
+      "pair": [
+        "GIG",
+        "SCL"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "latam-gig-scl-direct-page-20261004",
+        "anac-siros-full-stage-plans-20261004",
+        "anac-vra-aug2026-ek-lan-exact-joins-20261004",
+        "riogaleao-gig-scl-board-20261004",
+        "riogaleao-31-row-board-primary-relayed-20261004"
+      ],
+      "flightNumberCandidates": [
+        "LA775",
+        "LA771",
+        "LA777"
+      ],
+      "flightNumberCandidateSourceIds": [
+        "riogaleao-gig-scl-board-20261004",
+        "riogaleao-31-row-board-primary-relayed-20261004"
+      ]
+    },
+    {
+      "carrier": "LA",
+      "pair": [
+        "GIG",
+        "EZE"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "latam-gig-eze-direct-page-20261004",
+        "anac-siros-full-stage-plans-20261004",
+        "anac-vra-aug2026-ek-lan-exact-joins-20261004",
+        "riogaleao-gig-eze-board-20261004",
+        "riogaleao-31-row-board-primary-relayed-20261004"
+      ],
+      "flightNumberCandidates": [
+        "LA776"
+      ],
+      "flightNumberCandidateSourceIds": [
+        "riogaleao-gig-eze-board-20261004",
+        "riogaleao-31-row-board-primary-relayed-20261004"
+      ]
+    },
+    {
+      "carrier": "LP",
+      "pair": [
+        "GIG",
+        "LIM"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-31-row-board-primary-relayed-20261004",
+        "iata-latam-peru-lp-identity-20261004",
+        "anac-siros-full-stage-plans-20261004",
+        "anac-vra-aug2026-ek-lan-exact-joins-20261004"
+      ]
+    },
+    {
+      "carrier": "LP",
+      "pair": [
+        "LIM",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-31-row-board-primary-relayed-20261004",
+        "iata-latam-peru-lp-identity-20261004",
+        "anac-siros-full-stage-plans-20261004",
+        "anac-vra-aug2026-ek-lan-exact-joins-20261004"
+      ]
+    },
+    {
+      "carrier": "LA",
+      "pair": [
+        "SCL",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-31-row-board-primary-relayed-20261004",
+        "pinned-lan-la-identity-code-table-20261004",
+        "anac-siros-full-stage-plans-20261004",
+        "anac-vra-aug2026-ek-lan-exact-joins-20261004",
+        "latam-scl-gig-direct-page-20261004"
+      ],
+      "flightNumberCandidates": [
+        "LA776",
+        "LA774",
+        "LA770"
+      ],
+      "flightNumberCandidateSourceIds": [
+        "riogaleao-31-row-board-primary-relayed-20261004",
+        "pinned-lan-la-identity-code-table-20261004"
+      ]
+    },
+    {
+      "carrier": "LA",
+      "pair": [
+        "EZE",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-31-row-board-primary-relayed-20261004",
+        "pinned-lan-la-identity-code-table-20261004",
+        "anac-siros-full-stage-plans-20261004",
+        "anac-vra-aug2026-ek-lan-exact-joins-20261004"
+      ],
+      "flightNumberCandidates": [
+        "LA777"
+      ],
+      "flightNumberCandidateSourceIds": [
+        "riogaleao-31-row-board-primary-relayed-20261004",
+        "pinned-lan-la-identity-code-table-20261004"
+      ]
+    },
+    {
+      "carrier": "WJ",
+      "pair": [
+        "AEP",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-31-row-board-primary-relayed-20261004",
+        "iata-jetsmart-argentina-wj-identity-20261004",
+        "anac-siros-full-stage-plans-20261004",
+        "anac-vra-aug2026-ek-lan-exact-joins-20261004"
+      ],
+      "flightNumberCandidates": [
+        "WJ3812",
+        "WJ3814"
+      ],
+      "flightNumberCandidateSourceIds": [
+        "riogaleao-31-row-board-primary-relayed-20261004",
+        "iata-jetsmart-argentina-wj-identity-20261004"
+      ]
+    },
+    {
+      "carrier": "WJ",
+      "pair": [
+        "COR",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-31-row-board-primary-relayed-20261004",
+        "iata-jetsmart-argentina-wj-identity-20261004",
+        "anac-siros-full-stage-plans-20261004"
+      ]
+    },
+    {
+      "carrier": "WJ",
+      "pair": [
+        "EZE",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-31-row-board-primary-relayed-20261004",
+        "iata-jetsmart-argentina-wj-identity-20261004",
+        "anac-siros-full-stage-plans-20261004"
+      ]
+    },
+    {
+      "carrier": "WJ",
+      "pair": [
+        "GIG",
+        "AEP"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-31-row-board-primary-relayed-20261004",
+        "iata-jetsmart-argentina-wj-identity-20261004",
+        "anac-siros-full-stage-plans-20261004",
+        "anac-vra-aug2026-ek-lan-exact-joins-20261004"
+      ],
+      "flightNumberCandidates": [
+        "WJ3813",
+        "WJ3815"
+      ],
+      "flightNumberCandidateSourceIds": [
+        "riogaleao-31-row-board-primary-relayed-20261004",
+        "iata-jetsmart-argentina-wj-identity-20261004"
+      ]
+    },
+    {
+      "carrier": "WJ",
+      "pair": [
+        "GIG",
+        "EZE"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-31-row-board-primary-relayed-20261004",
+        "iata-jetsmart-argentina-wj-identity-20261004",
+        "anac-siros-full-stage-plans-20261004"
+      ]
+    },
+    {
+      "carrier": "WJ",
+      "pair": [
+        "GIG",
+        "COR"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-31-row-board-primary-relayed-20261004",
+        "iata-jetsmart-argentina-wj-identity-20261004",
+        "anac-siros-full-stage-plans-20261004"
+      ]
+    },
+    {
+      "carrier": "H2",
+      "pair": [
+        "SCL",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-generic-carrier-board-relayed-20261004",
+        "iata-skyairline-h2-identity-20261004",
+        "siros-brazil-generic-carrier-identity-20261004",
+        "skyairline-official-directed-market-pages-20261004"
+      ]
+    },
+    {
+      "carrier": "H2",
+      "pair": [
+        "GIG",
+        "MVD"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-generic-carrier-board-relayed-20261004",
+        "iata-skyairline-h2-identity-20261004",
+        "siros-brazil-generic-carrier-identity-20261004",
+        "skyairline-official-directed-market-pages-20261004"
+      ]
+    },
+    {
+      "carrier": "H2",
+      "pair": [
+        "MVD",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-generic-carrier-board-relayed-20261004",
+        "iata-skyairline-h2-identity-20261004",
+        "siros-brazil-generic-carrier-identity-20261004",
+        "skyairline-official-directed-market-pages-20261004"
+      ]
+    },
+    {
+      "carrier": "H2",
+      "pair": [
+        "GIG",
+        "SCL"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-generic-carrier-board-relayed-20261004",
+        "iata-skyairline-h2-identity-20261004",
+        "siros-brazil-generic-carrier-identity-20261004",
+        "skyairline-official-directed-market-pages-20261004"
+      ]
+    },
+    {
+      "carrier": "JA",
+      "pair": [
+        "SCL",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-generic-carrier-board-relayed-20261004",
+        "iata-jetsmart-chile-ja-identity-20261004",
+        "siros-brazil-generic-carrier-identity-20261004",
+        "jetsmart-official-directed-market-pages-20261004"
+      ]
+    },
+    {
+      "carrier": "JA",
+      "pair": [
+        "GIG",
+        "MVD"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-generic-carrier-board-relayed-20261004",
+        "iata-jetsmart-chile-ja-identity-20261004",
+        "siros-brazil-generic-carrier-identity-20261004",
+        "jetsmart-official-directed-market-pages-20261004"
+      ]
+    },
+    {
+      "carrier": "JA",
+      "pair": [
+        "MVD",
+        "GIG"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-generic-carrier-board-relayed-20261004",
+        "iata-jetsmart-chile-ja-identity-20261004",
+        "siros-brazil-generic-carrier-identity-20261004",
+        "jetsmart-official-directed-market-pages-20261004"
+      ]
+    },
+    {
+      "carrier": "JA",
+      "pair": [
+        "GIG",
+        "SCL"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "riogaleao-generic-carrier-board-relayed-20261004",
+        "iata-jetsmart-chile-ja-identity-20261004",
+        "siros-brazil-generic-carrier-identity-20261004",
+        "jetsmart-official-directed-market-pages-20261004"
+      ]
+    },
+    {
+      "carrier": "PY",
+      "pair": [
+        "PBM",
+        "BEL"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "icao-surinam-airways-slm-identity-20261004",
+        "siros-surinam-airways-pbm-bel-20261004",
+        "surinam-airways-official-pbm-bel-timetable-20261004"
+      ]
+    },
+    {
+      "carrier": "PY",
+      "pair": [
+        "BEL",
+        "PBM"
+      ],
+      "service": "nonstop",
+      "status": "published",
+      "carrierIdentity": "provider-listed",
+      "routeEvidence": "official-directed",
+      "sourceIds": [
+        "icao-surinam-airways-slm-identity-20261004",
+        "siros-surinam-airways-pbm-bel-20261004",
+        "surinam-airways-official-pbm-bel-timetable-20261004"
+      ]
     }
   ]
 }

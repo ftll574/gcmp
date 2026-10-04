@@ -25,7 +25,7 @@ export function LandingPage({ onNavigate }: Props): React.ReactElement {
       ['建立你的路線', '選聯盟、開票方案、航司與班號，GCMP 即時檢查方向、停留、航段與距離規則。'],
       ['查完整航線資料', '獨立航線資料庫可依航空公司、洲別、區域與大型國家內部區域逐層篩選。'],
     ],
-    pattern: '班號有來源，不靠猜。', patternBody: '展示航線會標示目前收錄的實際營運者與已確認班號；座位與特定日期是否執飛，仍需在開票前重新確認。',
+    pattern: '班號有來源，不靠猜。', patternBody: '展示航線會標示班號來源、候選班號與營運者查證狀態；特定日期是否執飛仍需另外查證。',
     patternCta: '查看航線資料',
     footer: '給喜歡繞遠路的人。',
   } : {
@@ -38,7 +38,7 @@ export function LandingPage({ onNavigate }: Props): React.ReactElement {
       ['Build your route', 'Choose an alliance, ticketing program, carrier and flight number while GCMP checks direction, stops, sectors and distance.'],
       ['Explore the route library', 'Browse the network separately by airline, continent, region and local areas inside large countries.'],
     ],
-    pattern: 'Flight numbers with evidence', patternBody: 'Showcase routes display the operating identity and confirmed flight numbers currently in the catalog. Seats and date-specific operation still need to be rechecked before ticketing.',
+    pattern: 'Flight numbers with evidence', patternBody: 'Showcase routes show flight-number sources, candidate numbers and operating identity evidence. Operation on a specific date still needs separate verification.',
     patternCta: 'Open route library',
     footer: 'Built for people who enjoy the long way around.',
   };
@@ -106,7 +106,7 @@ export function LandingPage({ onNavigate }: Props): React.ReactElement {
         <section className="landing-section landing-route-story">
           <div>
             <span className="landing-kicker">{copy.pattern}</span>
-            <h2>{locale === 'zh-TW' ? '每條展示航線，都能追到它的營運與班號證據。' : 'Every showcase route keeps its operating and flight-number evidence close.'}</h2>
+            <h2>{locale === 'zh-TW' ? '每條展示航線，都保留來源與待確認的營運身份。' : 'Every showcase route shows its sources and operating identity limits.'}</h2>
           </div>
           <p>{copy.patternBody}</p>
           <a className="text-link" href={siteViewHref('routes')} onClick={(event) => {

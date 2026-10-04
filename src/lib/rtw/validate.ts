@@ -1,3 +1,5 @@
+import { sameAirport } from '../airport-identity.ts';
+import { passengerRouteUseDecision } from './passenger-route-use.ts';
 import { isFlightLeg, type Airport, type FlightLeg, type Leg, type RoutingRequest } from '../types.ts';
 import type { AllianceCatalog } from '../schemas/alliance.ts';
 import type { RtwRuleSet, RtwSurfaceDistancePolicy } from '../schemas/rtw-rule.ts';
@@ -579,6 +581,19 @@ export function validateRtwRoute(
 ): RtwValidationResult {
   const findings: RtwFinding[] = [];
   const sourceUrl = source(ruleSet);
+  // Revalidate manual/shared legs independently of discovery and live results.
+  // Missing rights/product evidence is not a claim of legal prohibition.
+  legs.forEach((leg, index) => {
+    if (!isFlightLeg(leg)) return;
+    const decision = passengerRouteUseDecision(leg.operatingCarrier, leg.from, leg.to, leg.departsOn ?? '', ruleSet.id);
+    if (decision === 'local-sale-unverified' || decision === 'product-use-unverified') findings.push({
+      ruleId: 'passenger-route-use', severity: 'fail', affectedLegIndexes: [index],
+      message: decision === 'local-sale-unverified'
+        ? `${leg.operatingCarrier} ${leg.from}-${leg.to}: standalone passenger-sale eligibility is unverified; this is not a finding of legal prohibition.`
+        : `${leg.operatingCarrier} ${leg.from}-${leg.to}: local passenger permission does not verify use under ${ruleSet.label}; RTW ticketability remains unverified.`,
+    });
+  });
+
   const segmentCount = flightSegmentCount(legs);
   const surfaceCount = surfaceSectorCount(legs);
   const stopoverCount = knownStopoverCount(legs, ruleSet.surfaceSectorsCountAsStopovers);
@@ -868,8 +883,8 @@ export function validateRtwRoute(
       const entry = inputs.schedules.find(
         (candidate) =>
           candidate.carrier === leg.operatingCarrier &&
-          candidate.pair[0] === leg.from &&
-          candidate.pair[1] === leg.to,
+          sameAirport(candidate.pair[0], leg.from) &&
+          sameAirport(candidate.pair[1], leg.to),
       );
       if (!entry || entry.status === 'suspended') continue;
       if (!isScheduleEntryEffectiveOn(entry, leg.departsOn)) continue;

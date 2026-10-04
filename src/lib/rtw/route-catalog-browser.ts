@@ -1,3 +1,5 @@
+import {routeSourceReviewWindow,sourceReviewState,type SourceReviewWindow,type SourceReviewState} from './route-date-semantics.ts';
+import { airportIdentityPairKey } from '../airport-identity.ts';
 import type { ScheduleEntry } from '../schemas/flight-schedules.ts';
 import type { ContinentId } from '../schemas/country-continent.ts';
 import type { RouteNetworkCatalog } from '../schemas/route-network.ts';
@@ -75,6 +77,7 @@ export interface RouteCatalogSourceView {
 }
 
 export interface RouteCatalogEvidenceView {
+  readonly sourceReview?:SourceReviewWindow & {readonly state:SourceReviewState};
   readonly id: string;
   readonly kind: 'route' | 'weekly-schedule' | 'official-service' | 'flight-number-reference' | 'flight-number-candidate';
   readonly flightNumbers: ReadonlyArray<string>;
@@ -91,7 +94,7 @@ export interface RouteCatalogEvidenceView {
 
 export interface RouteCatalogCarrierView {
   readonly carrier: string;
-  readonly identity: 'operating' | 'provider-listed';
+  readonly identity: 'operating' | 'provider-listed' | 'unknown';
   readonly flightNumbers: ReadonlyArray<string>;
   readonly candidateFlightNumbers: ReadonlyArray<string>;
   readonly evidence: ReadonlyArray<RouteCatalogEvidenceView>;
@@ -134,7 +137,7 @@ export interface RouteCatalogContinentGroup {
 
 interface MutableCarrier {
   carrier: string;
-  identity: 'operating' | 'provider-listed';
+  identity: 'operating' | 'provider-listed' | 'unknown';
   flightNumbers: Set<string>;
   candidateFlightNumbers: Set<string>;
   evidence: RouteCatalogEvidenceView[];
@@ -183,7 +186,7 @@ function sourceFromPublication(source: RouteBrowserOfficialSource | undefined): 
 }
 
 function pairBucket(pairs: Map<string, MutablePair>, from: string, to: string): MutablePair {
-  const key = `${from}-${to}`;
+  const key = airportIdentityPairKey(from, to);
   let pair = pairs.get(key);
   if (!pair) {
     pair = { from, to, carriers: new Map() };
@@ -192,13 +195,13 @@ function pairBucket(pairs: Map<string, MutablePair>, from: string, to: string): 
   return pair;
 }
 
-function carrierBucket(pair: MutablePair, carrier: string, identity: 'operating' | 'provider-listed'): MutableCarrier {
+function carrierBucket(pair: MutablePair, carrier: string, identity: 'operating' | 'provider-listed' | 'unknown'): MutableCarrier {
   let row = pair.carriers.get(carrier);
   if (!row) {
     row = { carrier, identity, flightNumbers: new Set(), candidateFlightNumbers: new Set(), evidence: [] };
     pair.carriers.set(carrier, row);
-  } else if (identity === 'operating') {
-    row.identity = 'operating';
+  } else if (identity === 'operating' || (identity === 'provider-listed' && row.identity === 'unknown')) {
+    row.identity = identity;
   }
   return row;
 }
@@ -230,6 +233,7 @@ function pushEvidence(carrier: MutableCarrier, evidence: RouteCatalogEvidenceVie
 }
 
 export interface BuildRouteCatalogPairsInput {
+  readonly evidenceNow?: number;
   readonly routeNetwork?: RouteNetworkCatalog | null | undefined;
   readonly schedules?: ReadonlyArray<ScheduleEntry> | null | undefined;
   readonly officialSchedules?: RouteBrowserOfficialCatalog | null | undefined;
@@ -253,15 +257,16 @@ export function buildRouteCatalogPairs(input: BuildRouteCatalogPairsInput): Read
   const blockedRouteKeys = new Set(
     (input.routeNetwork?.routes ?? [])
       .filter((route) => route.status !== 'published')
-      .map((route) => `${route.carrier}:${route.pair[0]}-${route.pair[1]}`),
+      .map((route) => `${route.carrier}:${airportIdentityPairKey(route.pair[0], route.pair[1])}`),
   );
   const blocked = (carrier: string, from: string, to: string): boolean =>
-    blockedRouteKeys.has(`${carrier}:${from}-${to}`);
+    blockedRouteKeys.has(`${carrier}:${airportIdentityPairKey(from, to)}`);
 
   for (const route of input.routeNetwork?.routes ?? []) {
     if (route.status !== 'published' || !input.memberCodes.has(route.carrier)) continue;
     const pair = pairBucket(pairs, route.pair[0], route.pair[1]);
-    const carrier = carrierBucket(pair, route.carrier, route.carrierIdentity ?? 'operating');
+    const carrier = carrierBucket(pair, route.carrier, route.carrierIdentity ?? 'unknown');
+    const reviewWindow=routeSourceReviewWindow(route,routeSources);
     for (const sourceId of route.sourceIds) {
       const source = routeSources.get(sourceId);
       pushEvidence(carrier, {
@@ -271,8 +276,7 @@ export function buildRouteCatalogPairs(input: BuildRouteCatalogPairsInput): Read
         candidateFlightNumbers: [],
         daysOfWeek: [],
         addedDates: [],
-        effectiveFrom: route.effectiveFrom,
-        effectiveUntil: route.effectiveUntil,
+        ...(reviewWindow?{sourceReview:{...reviewWindow,state:sourceReviewState(reviewWindow,input.evidenceNow)}}:{effectiveFrom:route.effectiveFrom,effectiveUntil:route.effectiveUntil}),
         source: source ? {
           url: source.url,
           label: source.note,

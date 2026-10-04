@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "builtOn": "2026-09-15",
+  "builtOn": "2026-10-04",
   "routeNetworkVersion": "2026.3",
   "stats": {
-    "publishedRoutes": 30121,
+    "publishedRoutes": 31062,
     "allianceMembers": 60,
     "alliances": 3
   },
@@ -146,7 +146,17 @@
           "carrier": "BR",
           "carrierName": "EVA Air",
           "flightNumber": "BR184",
-          "distanceNm": 1178
+          "distanceNm": 1178,
+          "carrierIdentity": "provider-listed",
+          "flightNumberStatus": "candidate",
+          "sourceUrls": [
+            "https://www.narita-airport.jp/en/flight/arr-search/20261001-BR0184/",
+            "https://www.narita-airport.jp/en/flight/arr-search/20261001-BR0198/",
+            "https://www.narita-airport.jp/en/flight/arr-search/20261001-BR0196/",
+            "https://www.flypeach.com/tw",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases"
+          ]
         },
         {
           "from": "NRT",
@@ -154,7 +164,16 @@
           "carrier": "NH",
           "carrierName": "All Nippon Airways",
           "flightNumber": "NH6",
-          "distanceNm": 4726
+          "distanceNm": 4726,
+          "carrierIdentity": "provider-listed",
+          "flightNumberStatus": "candidate",
+          "sourceUrls": [
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://air-routes.com/sitemap.xml",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases"
+          ]
         },
         {
           "from": "LAX",
@@ -162,7 +181,17 @@
           "carrier": "UA",
           "carrierName": "United Airlines",
           "flightNumber": "UA1195",
-          "distanceNm": 293
+          "distanceNm": 293,
+          "carrierIdentity": "provider-listed",
+          "flightNumberStatus": "candidate",
+          "sourceUrls": [
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://air-routes.com/sitemap.xml",
+            "https://transtats.bts.gov/PREZIP/On_Time_Marketing_Carrier_On_Time_Performance_Beginning_January_2018_2026_6.zip",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases"
+          ]
         },
         {
           "from": "SFO",
@@ -170,7 +199,17 @@
           "carrier": "UA",
           "carrierName": "United Airlines",
           "flightNumber": "UA1141",
-          "distanceNm": 2224
+          "distanceNm": 2224,
+          "carrierIdentity": "provider-listed",
+          "flightNumberStatus": "candidate",
+          "sourceUrls": [
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://air-routes.com/sitemap.xml",
+            "https://transtats.bts.gov/PREZIP/On_Time_Marketing_Carrier_On_Time_Performance_Beginning_January_2018_2026_6.zip",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases"
+          ]
         },
         {
           "from": "EWR",
@@ -178,7 +217,15 @@
           "carrier": "LH",
           "carrierName": "Lufthansa",
           "flightNumber": "LH403",
-          "distanceNm": 3354
+          "distanceNm": 3354,
+          "carrierIdentity": "provider-listed",
+          "flightNumberStatus": "candidate",
+          "sourceUrls": [
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://air-routes.com/sitemap.xml",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases"
+          ]
         },
         {
           "from": "FRA",
@@ -186,7 +233,15 @@
           "carrier": "LH",
           "carrierName": "Lufthansa",
           "flightNumber": "LH1298",
-          "distanceNm": 992
+          "distanceNm": 992,
+          "carrierIdentity": "provider-listed",
+          "flightNumberStatus": "candidate",
+          "sourceUrls": [
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://air-routes.com/sitemap.xml",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases"
+          ]
         },
         {
           "from": "IST",
@@ -194,7 +249,15 @@
           "carrier": "SQ",
           "carrierName": "Singapore Airlines",
           "flightNumber": "SQ391",
-          "distanceNm": 4687
+          "distanceNm": 4687,
+          "carrierIdentity": "provider-listed",
+          "flightNumberStatus": "candidate",
+          "sourceUrls": [
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://air-routes.com/sitemap.xml",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases"
+          ]
         },
         {
           "from": "SIN",
@@ -202,7 +265,14 @@
           "carrier": "BR",
           "carrierName": "EVA Air",
           "flightNumber": "BR216",
-          "distanceNm": 1740
+          "distanceNm": 1740,
+          "carrierIdentity": "provider-listed",
+          "flightNumberStatus": "candidate",
+          "sourceUrls": [
+            "https://www.changiairport.com/en/fly/flight-information/departures.html",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases"
+          ]
         }
       ]
     },
@@ -222,7 +292,17 @@
           "carrier": "CX",
           "carrierName": "Cathay Pacific",
           "flightNumber": "CX407",
-          "distanceNm": 435
+          "distanceNm": 435,
+          "carrierIdentity": "provider-listed",
+          "flightNumberStatus": "candidate",
+          "sourceUrls": [
+            "https://flights.cathaypacific.com/destinations/en_TW/flights-from-taipei-to-hong-kong",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://air-routes.com/sitemap.xml",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases"
+          ]
         },
         {
           "from": "HKG",
@@ -230,7 +310,17 @@
           "carrier": "CX",
           "carrierName": "Cathay Pacific",
           "flightNumber": "CX237",
-          "distanceNm": 5200
+          "distanceNm": 5200,
+          "carrierIdentity": "provider-listed",
+          "flightNumberStatus": "candidate",
+          "sourceUrls": [
+            "https://flights.cathaypacific.com/destinations/en_HK/flights-from-hong-kong-to-london",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://air-routes.com/sitemap.xml",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases"
+          ]
         },
         {
           "from": "LHR",
@@ -238,7 +328,18 @@
           "carrier": "BA",
           "carrierName": "British Airways",
           "flightNumber": "BA181",
-          "distanceNm": 2991
+          "distanceNm": 2991,
+          "carrierIdentity": "provider-listed",
+          "flightNumberStatus": "candidate",
+          "sourceUrls": [
+            "https://www.britishairways.com/content/flights/usa/new-york",
+            "https://mediacentre.britishairways.com/news/17022022/british-airways-announces-new-daytime-flight-from-newark-to-london-heathrow",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://air-routes.com/sitemap.xml",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases"
+          ]
         },
         {
           "from": "JFK",
@@ -246,7 +347,18 @@
           "carrier": "AA",
           "carrierName": "American Airlines",
           "flightNumber": "AA1",
-          "distanceNm": 2146
+          "distanceNm": 2146,
+          "carrierIdentity": "provider-listed",
+          "flightNumberStatus": "candidate",
+          "sourceUrls": [
+            "https://news.aa.com/news/news-details/2025/A-suite-first-flight-Americans-new-Airbus-A321XLR-debuts-on-transcontinental-route-FLT-12/",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://air-routes.com/sitemap.xml",
+            "https://transtats.bts.gov/PREZIP/On_Time_Marketing_Carrier_On_Time_Performance_Beginning_January_2018_2026_6.zip",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases"
+          ]
         },
         {
           "from": "LAX",
@@ -254,7 +366,16 @@
           "carrier": "JL",
           "carrierName": "Japan Airlines",
           "flightNumber": "JL61",
-          "distanceNm": 4726
+          "distanceNm": 4726,
+          "carrierIdentity": "provider-listed",
+          "flightNumberStatus": "candidate",
+          "sourceUrls": [
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://air-routes.com/sitemap.xml",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases"
+          ]
         },
         {
           "from": "NRT",
@@ -262,7 +383,18 @@
           "carrier": "JL",
           "carrierName": "Japan Airlines",
           "flightNumber": "JL809",
-          "distanceNm": 1178
+          "distanceNm": 1178,
+          "carrierIdentity": "operating",
+          "flightNumberStatus": "candidate",
+          "sourceUrls": [
+            "https://www.jal.co.jp/jp/en/info/2026/inter/east-asia/",
+            "https://www.jal.co.jp/jp/en/inter/airport/",
+            "https://www.narita-airport.jp/en/flight/dep-search/20261001-JL8663/",
+            "https://www.narita-airport.jp/en/flight/dep-search/20261001-JL0809/",
+            "https://www.flypeach.com/tw",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2"
+          ]
         }
       ]
     },
@@ -282,7 +414,16 @@
           "carrier": "KE",
           "carrierName": "Korean Air",
           "flightNumber": "KE2022",
-          "distanceNm": 790
+          "distanceNm": 790,
+          "carrierIdentity": "provider-listed",
+          "flightNumberStatus": "candidate",
+          "sourceUrls": [
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://air-routes.com/sitemap.xml",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases"
+          ]
         },
         {
           "from": "ICN",
@@ -290,7 +431,16 @@
           "carrier": "KE",
           "carrierName": "Korean Air",
           "flightNumber": "KE207",
-          "distanceNm": 5197
+          "distanceNm": 5197,
+          "carrierIdentity": "provider-listed",
+          "flightNumberStatus": "candidate",
+          "sourceUrls": [
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://air-routes.com/sitemap.xml",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases"
+          ]
         },
         {
           "from": "LAX",
@@ -298,7 +448,17 @@
           "carrier": "DL",
           "carrierName": "Delta Air Lines",
           "flightNumber": "DL320",
-          "distanceNm": 1688
+          "distanceNm": 1688,
+          "carrierIdentity": "provider-listed",
+          "flightNumberStatus": "candidate",
+          "sourceUrls": [
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://air-routes.com/sitemap.xml",
+            "https://transtats.bts.gov/PREZIP/On_Time_Marketing_Carrier_On_Time_Performance_Beginning_January_2018_2026_6.zip",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases"
+          ]
         },
         {
           "from": "ATL",
@@ -306,7 +466,15 @@
           "carrier": "DL",
           "carrierName": "Delta Air Lines",
           "flightNumber": "DL100",
-          "distanceNm": 3810
+          "distanceNm": 3810,
+          "carrierIdentity": "provider-listed",
+          "flightNumberStatus": "candidate",
+          "sourceUrls": [
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://air-routes.com/sitemap.xml",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases"
+          ]
         },
         {
           "from": "CDG",
@@ -314,7 +482,16 @@
           "carrier": "VN",
           "carrierName": "Vietnam Airlines",
           "flightNumber": "VN18",
-          "distanceNm": 4945
+          "distanceNm": 4945,
+          "carrierIdentity": "provider-listed",
+          "flightNumberStatus": "candidate",
+          "sourceUrls": [
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://air-routes.com/sitemap.xml",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases"
+          ]
         },
         {
           "from": "HAN",
@@ -322,7 +499,16 @@
           "carrier": "VN",
           "carrierName": "Vietnam Airlines",
           "flightNumber": "VN578",
-          "distanceNm": 882
+          "distanceNm": 882,
+          "carrierIdentity": "provider-listed",
+          "flightNumberStatus": "candidate",
+          "sourceUrls": [
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://air-routes.com/sitemap.xml",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases"
+          ]
         }
       ]
     },
@@ -333,8 +519,8 @@
       "titleEn": "Four long-haul legs from Taiwan",
       "eyebrowZh": "舊金山 · 紐約 · 巴黎 · 台北",
       "eyebrowEn": "San Francisco · New York · Paris · Taipei",
-      "descriptionZh": "不限定單一聯盟，只用目前資料庫中的已確認班號示範：台灣如何用四個長程航段快速看懂跨太平洋與跨大西洋。",
-      "descriptionEn": "A mixed-alliance view using confirmed designators from the current catalog to make the Pacific and Atlantic structure instantly legible.",
+      "descriptionZh": "不限定單一聯盟，以航網與候選班號展示跨太平洋與跨大西洋骨架；日期與實際營運者仍需確認。",
+      "descriptionEn": "A mixed-alliance route skeleton with reference designators; dates and actual operating carriers require verification.",
       "legs": [
         {
           "from": "TPE",
@@ -342,7 +528,15 @@
           "carrier": "BR",
           "carrierName": "EVA Air",
           "flightNumber": "BR8",
-          "distanceNm": 5611
+          "distanceNm": 5611,
+          "carrierIdentity": "provider-listed",
+          "flightNumberStatus": "candidate",
+          "sourceUrls": [
+            "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter2",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://air-routes.com/sitemap.xml",
+            "https://www.flightsfrom.com/TPE-SFO"
+          ]
         },
         {
           "from": "SFO",
@@ -350,7 +544,18 @@
           "carrier": "AA",
           "carrierName": "American Airlines",
           "flightNumber": "AA16",
-          "distanceNm": 2242
+          "distanceNm": 2242,
+          "carrierIdentity": "provider-listed",
+          "flightNumberStatus": "candidate",
+          "sourceUrls": [
+            "https://news.aa.com/news/news-details/2025/A-suite-first-flight-Americans-new-Airbus-A321XLR-debuts-on-transcontinental-route-FLT-12/",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://air-routes.com/sitemap.xml",
+            "https://transtats.bts.gov/PREZIP/On_Time_Marketing_Carrier_On_Time_Performance_Beginning_January_2018_2026_6.zip",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases"
+          ]
         },
         {
           "from": "JFK",
@@ -358,7 +563,16 @@
           "carrier": "AA",
           "carrierName": "American Airlines",
           "flightNumber": "AA42",
-          "distanceNm": 3150
+          "distanceNm": 3150,
+          "carrierIdentity": "provider-listed",
+          "flightNumberStatus": "candidate",
+          "sourceUrls": [
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://air-routes.com/sitemap.xml",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://github.com/Sky-Power-Services/adsbiq-data/releases"
+          ]
         },
         {
           "from": "CDG",
@@ -366,7 +580,16 @@
           "carrier": "BR",
           "carrierName": "EVA Air",
           "flightNumber": "BR88",
-          "distanceNm": 5284
+          "distanceNm": 5284,
+          "carrierIdentity": "provider-listed",
+          "flightNumberStatus": "candidate",
+          "sourceUrls": [
+            "https://github.com/MrAirspace/aircraft-flight-schedules/releases/tag/aircraft_flight_schedules_2026_quarter2",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://air-routes.com/sitemap.xml",
+            "https://github.com/vradarserver/standing-data/commit/3c4afbf23a9933c00bcd8db514b4af21ae86e4a2",
+            "https://www.flightsfrom.com/CDG-TPE"
+          ]
         }
       ]
     }

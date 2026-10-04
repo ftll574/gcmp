@@ -1,3 +1,7 @@
+import { useEvidenceClock } from '../lib/use-evidence-clock.ts';
+import {sourceReviewStatusLabel} from '../lib/rtw/route-date-semantics.ts';
+import { airportEvidenceShardLetter, sameAirport } from '../lib/airport-identity.ts';
+import { canUsePassengerRoute } from '../lib/rtw/passenger-route-use.ts';
 import { useEffect, useMemo, useState } from 'react';
 import { fetchLiveRoutes } from '../lib/live-route-client.ts';
 import type { LiveRouteResponse } from '../lib/schemas/live-routes.ts';
@@ -40,6 +44,7 @@ interface DestinationsPanelProps {
   readonly runtimeNetworkShardBaseUrl?: string | null;
   readonly networkGaps?: ReadonlyArray<NetworkGapEntry> | null;
   readonly carriers: ReadonlyArray<ExplorerCarrier>;
+  readonly productId?: string | undefined;
   readonly chainEnd?: string | undefined;
   readonly pendingIata?: string | undefined;
   readonly lookupAirport: (iata: string) => Airport | undefined;
@@ -88,7 +93,7 @@ interface ManualDraft {
  * schedule or an award seat. Each add button names its operating carrier. */
 export function DestinationsPanel({
   airports, schedules, officialSchedules = null, network = null, networkGaps = null, carriers,
-  runtimeNetworkShardBaseUrl,
+  runtimeNetworkShardBaseUrl, productId,
   chainEnd, pendingIata, lookupAirport, onAddPair, onAddSurface, onMapGuideChange,
   selectedDestination: controlledDestination,
   onDestinationChange,
@@ -101,6 +106,7 @@ export function DestinationsPanel({
   const attachable = activeOrigin !== '' && (chainEnd === activeOrigin || pendingIata === activeOrigin);
   const [queryState, setQueryState] = useState<{ origin: string; value: string }>({ origin: '', value: '' });
   const [referenceDate, setReferenceDate] = useState(todayIso);
+  const evidenceNow = useEvidenceClock();
   const [flightTarget, setFlightTarget] = useState<{
     from: string;
     to: string;
@@ -114,7 +120,7 @@ export function DestinationsPanel({
   const [manualDraft, setManualDraft] = useState<ManualDraft | null>(null);
   const eligibleCodes = useMemo(() => new Set(carriers.map((carrier) => carrier.code)), [carriers]);
   const allKnownAirports = useMemo(() => new Set(airports.map((airport) => airport.iata)), [airports]);
-  const originShardKey = /^[A-Z]/.test(activeOrigin) ? activeOrigin[0]! : '';
+  const originShardKey = /^[A-Z]/.test(activeOrigin) ? airportEvidenceShardLetter(activeOrigin) : '';
   const originShardUrl = runtimeNetworkShardBaseUrl && originShardKey
     ? `${runtimeNetworkShardBaseUrl.replace(/\/$/, '')}/${originShardKey}.json`
     : '';
@@ -142,19 +148,21 @@ export function DestinationsPanel({
     ?? (originShardState?.url === originShardUrl ? originShardState.network : network);
   const index = useMemo(() => buildNextLegIndex({
     network: discoveryNetwork,
+    productId,
     schedules,
     ...(officialSchedules ? { officialSchedules } : {}),
     networkGaps,
     eligibleCarriers: eligibleCodes,
     referenceDate,
+    evidenceNow,
     knownAirports: allKnownAirports,
     ...(activeOrigin ? { origin: activeOrigin } : {}),
-  }), [discoveryNetwork, schedules, officialSchedules, networkGaps, eligibleCodes, referenceDate, activeOrigin, allKnownAirports]);
+  }), [discoveryNetwork, schedules, officialSchedules, networkGaps, eligibleCodes, referenceDate, activeOrigin, allKnownAirports, productId, evidenceNow]);
   const airportsByIata = useMemo(() => new Map(airports.map((airport) => [airport.iata, airport] as const)), [airports]);
   const manualAirportIndex = useMemo(() => buildAirportIndex(airports), [airports]);
   const sameCityAirports = useMemo(() => {
     if (!activeOrigin) return [];
-    const originAirport = airportsByIata.get(activeOrigin);
+    const originAirport = lookupAirport(activeOrigin);
     const candidates = new Set(metropolitanAirportsFor(activeOrigin));
     if (originAirport?.city.trim()) {
       const city = originAirport.city.trim().toUpperCase();
@@ -165,13 +173,13 @@ export function DestinationsPanel({
       }
     }
     return [...candidates]
-      .filter((iata) => iata !== activeOrigin)
+      .filter((iata) => !sameAirport(iata, activeOrigin))
       .flatMap((iata) => {
         const airport = airportsByIata.get(iata);
         return airport ? [airport] : [];
       })
       .sort((a, b) => a.iata.localeCompare(b.iata));
-  }, [activeOrigin, airports, airportsByIata]);
+  }, [activeOrigin, airports, airportsByIata, lookupAirport]);
   const liveBase = liveApiBase === undefined ? '/api' : liveApiBase;
   const [liveRouteState, setLiveRouteState] = useState<{ origin: string; response: LiveRouteResponse | null }>({ origin: '', response: null });
   useEffect(() => {
@@ -189,13 +197,13 @@ export function DestinationsPanel({
   }, [liveBase, activeOrigin, attachable]);
   const liveRoutes = liveRouteState.origin === activeOrigin ? liveRouteState.response : null;
   const originDestinations = useMemo(
-    () => mergeLiveNextLegDestinations(index.get(activeOrigin) ?? [], liveRoutes, eligibleCodes, allKnownAirports),
-    [index, activeOrigin, liveRoutes, eligibleCodes, allKnownAirports],
+    () => mergeLiveNextLegDestinations(index.get(activeOrigin) ?? [], liveRoutes, eligibleCodes, allKnownAirports, { referenceDate, productId }),
+    [index, activeOrigin, liveRoutes, eligibleCodes, allKnownAirports, referenceDate, productId],
   );
   const query = queryState.origin === activeOrigin ? queryState.value : '';
   const manualQuery = manualQueryState.origin === activeOrigin ? manualQueryState.value : '';
   const manualResults = useMemo(() => manualQuery.trim()
-    ? manualAirportIndex.search(manualQuery, { limit: 8, locale }).filter((result) => result.airport.iata !== activeOrigin)
+    ? manualAirportIndex.search(manualQuery, { limit: 8, locale }).filter((result) => !sameAirport(result.airport.iata, activeOrigin))
     : [], [manualAirportIndex, manualQuery, locale, activeOrigin]);
   const carrierName = (code: string): string => carriers.find((carrier) => carrier.code === code)?.name ?? code;
   const liveCarrierNote = locale === 'zh-TW'
@@ -296,6 +304,7 @@ export function DestinationsPanel({
           className="rtw-next-add-later"
           data-add-surface={`${from.iata}-${to.iata}`}
           onClick={() => {
+            if (sameAirport(from.iata, to.iata)) return;
             onAddSurface(from.iata, to.iata, draft.stopover);
             setSurfaceDraft(null);
             setQueryState({ origin: activeOrigin, value: '' });
@@ -435,6 +444,7 @@ export function DestinationsPanel({
                 data-add-manual={`${activeOrigin}-${activeManualDraft.to}`}
                 disabled={activeManualDraft.mode === 'flight' && !activeManualDraft.carrier}
                 onClick={() => {
+                  if (sameAirport(activeOrigin, activeManualDraft.to)) return;
                   if (activeManualDraft.mode === 'surface') {
                     onAddSurface(activeOrigin, activeManualDraft.to, activeManualDraft.stopover);
                   } else if (activeManualDraft.carrier) {
@@ -479,6 +489,7 @@ export function DestinationsPanel({
               <span>{source.note}</span>
             </li>
           ))}
+          {option.sourceReview && <li>{t('rtw.discovery.sourceReviewWindow')}: {option.sourceReview.from} → {option.sourceReview.until} · {sourceReviewStatusLabel(option.sourceReview.state,locale==='zh-TW')} · {t('rtw.discovery.notServiceValidity')}</li>}
           {option.routeWindow && (option.routeWindow.from || option.routeWindow.until) && (
             <li>{option.routeWindow.from ?? '…'} – {option.routeWindow.until ?? '…'}</li>
           )}
@@ -585,7 +596,7 @@ export function DestinationsPanel({
                 </details>
               )] : [];
               if (numbers.length === 0) {
-                if (option.identityStatus === 'provider-listed') {
+                if (option.identityStatus === 'provider-listed' || option.identityStatus === 'unknown') {
                   return [...candidateCards, ...candidateOverflow, (
                     <button
                       key={`${option.carrier}-live-candidate`}
@@ -827,6 +838,7 @@ export function DestinationsPanel({
           </details>
           {network === null && <p className="rtw-discovery-load-note" role="status">{t('rtw.discovery.networkUnavailable')}</p>}
           <p className="rtw-next-count">{t('rtw.discovery.count', { destinations: destinations.length, options: optionCount })}</p>
+          <p className="rtw-scope-note" data-route-product-scope>{t('rtw.discovery.productScope')}</p>
           {destinations.length === 0 ? (
             <div className="rtw-explorer-empty">
               <p>{originDestinations.length === 0
@@ -845,6 +857,8 @@ export function DestinationsPanel({
         {...(liveBase ? { apiBase: liveBase } : {})}
         flightNumber={flightTarget.flightNumber}
         onClose={() => setFlightTarget(null)} onChoose={(flight) => {
+          if (sameAirport(flight.from, flight.to)) return;
+          if (!canUsePassengerRoute(flight.carrier, flight.from, flight.to, selectedDepartureDate(flight), productId)) return;
           onAddPair(flight.from, flight.to, flight.carrier, {
             departsOn: selectedDepartureDate(flight),
             flightNumber: flight.flightNumber,

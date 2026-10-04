@@ -685,6 +685,7 @@ export function LandingGlobe({ catalog, onPlan }: Props): React.ReactElement {
         <span>{formatAlliance(active.alliance)}</span>
         <h2>{title}</h2>
         <p>{eyebrow}</p>
+        <p>{locale === 'zh-TW' ? '航網示例；日期、實際營運者與可選航班請於規劃器查證。' : 'Route example; verify dates, actual operators and selectable flights in the planner.'}</p>
       </div>
 
       <div className="landing-three-metrics" aria-label={locale === 'zh-TW' ? '目前航線摘要' : 'Current route summary'}>
@@ -719,6 +720,7 @@ export function LandingGlobe({ catalog, onPlan }: Props): React.ReactElement {
           >
             <span>{leg.from}→{leg.to}</span>
             <strong>{leg.flightNumber}</strong>
+            <small>{leg.flightNumberStatus === 'confirmed' ? (locale === 'zh-TW' ? '班號參考 · 日期待查' : 'Designator reference · verify dates') : (locale === 'zh-TW' ? '候選班號 · 營運待確認' : 'Candidate · operator unverified')}</small>
           </button>
         ))}
       </div>

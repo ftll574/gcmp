@@ -563,6 +563,8 @@ export function parseShareUrl(input: string): UrlParseResult {
  *   →  /r/v1/SFO-NRT-BKK,JFK-LHR-CDG?op=AA,JL;BA,BA&p=AA&c=J
  */
 export function encodeShareUrl(req: RoutingRequest): string {
+  // Draft routing groups carry no shareable legs; keep all per-leg arrays aligned.
+  req = { ...req, groups: req.groups.filter((group) => group.legs.length > 0) };
   const groupChains = req.groups.map((group) => {
     const codes = [
       group.legs[0]?.from,

@@ -1,3 +1,4 @@
+import { AIRPORT_IDENTITIES } from './airport-identity.ts';
 /**
  * Fast airport lookup + autocomplete index.
  *
@@ -45,6 +46,16 @@ export function buildAirportIndex(airports: ReadonlyArray<Airport>): AirportInde
   const byIata = new Map<string, Airport>();
   for (const a of airports) {
     byIata.set(a.iata.toUpperCase(), a);
+  }
+
+  // Missing historical identifiers are query views of the same source airport.
+  // Keep `all` and public airport records unchanged; a legacy share keeps its IATA.
+  for (const identity of AIRPORT_IDENTITIES) {
+    const source = byIata.get(identity.evidenceCode);
+    if (!source) continue;
+    for (const code of identity.codes) {
+      if (!byIata.has(code)) byIata.set(code, { ...source, iata: code });
+    }
   }
 
   function lookup(iata: string): Airport | undefined {

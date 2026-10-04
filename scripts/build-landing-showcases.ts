@@ -91,8 +91,8 @@ const SHOWCASES: ReadonlyArray<ShowcasePlan> = [
     titleEn: 'Four long-haul legs from Taiwan',
     eyebrowZh: '舊金山 · 紐約 · 巴黎 · 台北',
     eyebrowEn: 'San Francisco · New York · Paris · Taipei',
-    descriptionZh: '不限定單一聯盟，只用目前資料庫中的已確認班號示範：台灣如何用四個長程航段快速看懂跨太平洋與跨大西洋。',
-    descriptionEn: 'A mixed-alliance view using confirmed designators from the current catalog to make the Pacific and Atlantic structure instantly legible.',
+    descriptionZh: '不限定單一聯盟，以航網與候選班號展示跨太平洋與跨大西洋骨架；日期與實際營運者仍需確認。',
+    descriptionEn: 'A mixed-alliance route skeleton with reference designators; dates and actual operating carriers require verification.',
     legs: [
       { from: 'TPE', to: 'SFO', carrier: 'BR', flightNumber: 'BR8' },
       { from: 'SFO', to: 'JFK', carrier: 'AA', flightNumber: 'AA16' },
@@ -135,11 +135,8 @@ function main(): void {
         candidate.pair[1] === plannedLeg.to,
       );
       if (!route) throw new Error(`Landing showcase route missing: ${plannedLeg.carrier} ${plannedLeg.from}-${plannedLeg.to}`);
-      if (route.carrierIdentity === 'provider-listed') {
-        throw new Error(`Landing showcase requires confirmed operating identity: ${plannedLeg.carrier} ${plannedLeg.from}-${plannedLeg.to}`);
-      }
-      if (!route.flightNumbers?.includes(plannedLeg.flightNumber)) {
-        throw new Error(`Landing flight number is no longer confirmed: ${plannedLeg.flightNumber} ${plannedLeg.from}-${plannedLeg.to}`);
+      if (![...(route.flightNumbers ?? []), ...(route.flightNumberCandidates ?? [])].includes(plannedLeg.flightNumber)) {
+        throw new Error(`Landing flight number lacks source evidence: ${plannedLeg.flightNumber} ${plannedLeg.from}-${plannedLeg.to}`);
       }
       const from = airportByIata.get(plannedLeg.from);
       const to = airportByIata.get(plannedLeg.to);
@@ -151,6 +148,9 @@ function main(): void {
       return {
         ...plannedLeg,
         carrierName,
+        carrierIdentity: route.carrierIdentity ?? 'unknown',
+        flightNumberStatus: route.carrierIdentity === 'operating' && route.flightNumbers?.includes(plannedLeg.flightNumber) ? 'confirmed' : 'candidate',
+        sourceUrls: [...new Set([...route.sourceIds, ...(route.flightNumberSourceIds ?? []), ...(route.flightNumberCandidateSourceIds ?? [])])].flatMap((id) => { const source = runtime.sources.find((row) => row.id === id); return source ? [source.url] : []; }),
         distanceNm: Math.round(distanceNm(from, to)),
       };
     }),

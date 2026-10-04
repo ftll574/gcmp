@@ -3,6 +3,8 @@ import { LandingPage } from './components/LandingPage.tsx';
 import type { SiteView } from './components/SiteHeader.tsx';
 import { useLocaleState } from './i18n/use-locale-state.ts';
 
+const LazyProgressPage = lazy(() => import('./components/DataProgressPage.tsx').then(module => ({ default: module.DataProgressPage })));
+
 const LazyPlannerApp = lazy(() =>
   import('./App.tsx').then((module) => ({ default: module.App })),
 );
@@ -12,7 +14,7 @@ const LazyRoutesApp = lazy(() =>
 
 function viewFromLocation(): SiteView {
   const explicit = new URLSearchParams(window.location.search).get('view');
-  if (explicit === 'home' || explicit === 'planner' || explicit === 'routes') return explicit;
+  if (explicit === 'home' || explicit === 'planner' || explicit === 'routes' || explicit === 'progress') return explicit;
   return window.location.hash.startsWith('#/r/') ? 'planner' : 'home';
 }
 
@@ -49,7 +51,7 @@ export function SiteApp(): React.ReactElement {
 
   return (
     <Suspense fallback={<div className="app-loading site-app-loading" role="status"><p>{locale === 'zh-TW' ? '載入中…' : 'Loading…'}</p></div>}>
-      {view === 'routes'
+      {view === 'progress' ? <LazyProgressPage onNavigate={navigate} /> : view === 'routes'
         ? <LazyRoutesApp onNavigateSite={navigate} />
         : <LazyPlannerApp siteView="planner" onNavigateSite={navigate} />}
     </Suspense>

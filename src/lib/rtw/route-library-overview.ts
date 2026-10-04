@@ -1,3 +1,4 @@
+import { airportIdentityKey, airportIdentityPairKey } from '../airport-identity.ts';
 import type { ContinentId } from '../schemas/country-continent.ts';
 import type { RouteNetworkCatalog, RouteNetworkEntry } from '../schemas/route-network.ts';
 import type { Airport } from '../types.ts';
@@ -35,6 +36,7 @@ export interface RouteLibraryOverviewModel {
   readonly carrierCount: number;
   readonly operatingCount: number;
   readonly providerListedCount: number;
+  readonly unknownIdentityCount: number;
   readonly confirmedNumberCount: number;
   readonly candidateOnlyCount: number;
   readonly topCarriers: ReadonlyArray<RouteLibraryCarrierStat>;
@@ -62,13 +64,14 @@ function routeIsConfirmed(route: RouteNetworkEntry): boolean {
 }
 
 export function buildRouteLibraryOverview(input: BuildRouteLibraryOverviewInput): RouteLibraryOverviewModel {
-  const routes = input.network.routes.filter((route) => route.status === 'published' && input.memberCodes.has(route.carrier));
+  const routes = [...new Map(input.network.routes.filter((route) => route.status === 'published' && input.memberCodes.has(route.carrier)).map(route => [`${route.carrier}:${airportIdentityPairKey(route.pair[0], route.pair[1])}`, route])).values()];
   const airportsUsed = new Set<string>();
   const carrierCounts = new Map<string, { routes: number; confirmed: number }>();
   const hubDegree = new Map<string, number>();
   const continentCounts = new Map<RouteLibraryContinent, number>();
   let operatingCount = 0;
   let providerListedCount = 0;
+  let unknownIdentityCount = 0;
   let confirmedNumberCount = 0;
   let candidateOnlyCount = 0;
 
@@ -80,7 +83,7 @@ export function buildRouteLibraryOverview(input: BuildRouteLibraryOverviewInput)
   };
 
   for (const route of routes) {
-    const [from, to] = route.pair;
+    const [from, to] = route.pair.map(airportIdentityKey) as [string, string];
     airportsUsed.add(from);
     airportsUsed.add(to);
     hubDegree.set(from, (hubDegree.get(from) ?? 0) + 1);
@@ -90,7 +93,8 @@ export function buildRouteLibraryOverview(input: BuildRouteLibraryOverviewInput)
     if (routeIsConfirmed(route)) carrier.confirmed += 1;
     carrierCounts.set(route.carrier, carrier);
     if (route.carrierIdentity === 'provider-listed') providerListedCount += 1;
-    else operatingCount += 1;
+    else if (route.carrierIdentity === 'operating') operatingCount += 1;
+    else unknownIdentityCount += 1;
     if (routeIsConfirmed(route)) confirmedNumberCount += 1;
     else if ((route.flightNumberCandidates?.length ?? 0) > 0) candidateOnlyCount += 1;
     const continent = continentOf(from);
@@ -144,6 +148,7 @@ export function buildRouteLibraryOverview(input: BuildRouteLibraryOverviewInput)
     carrierCount: carrierCounts.size,
     operatingCount,
     providerListedCount,
+    unknownIdentityCount,
     confirmedNumberCount,
     candidateOnlyCount,
     topCarriers,

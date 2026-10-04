@@ -1,3 +1,4 @@
+import { airportEvidenceShardLetter } from '../lib/airport-identity.ts';
 import { lazy, Suspense, useEffect, useId, useMemo, useState } from 'react';
 import { buildAirportIndex, type AirportIndex } from '../lib/airport-index.ts';
 import type { RouteNetworkCatalog } from '../lib/schemas/route-network.ts';
@@ -233,9 +234,9 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
   const airportIndex = useMemo(() => buildAirportIndex(data.airports), [data.airports]);
   const airports = airportIndex.byIata;
   const selectionOriginLetter = selection?.kind === 'route'
-    ? selection.id.slice(0, 1)
+    ? airportEvidenceShardLetter(selection.id)
     : selection?.kind === 'airport'
-      ? selection.id.slice(0, 1)
+      ? airportEvidenceShardLetter(selection.id)
       : null;
   const selectedCarrier = selection?.kind === 'airline' ? selection.id : null;
   const originShardMeta = selectionOriginLetter ? data.routeNetworkRuntimeMeta?.originShards[selectionOriginLetter] : undefined;

@@ -1,3 +1,5 @@
+import { isKnownAirport } from '../airport-identity.ts';
+import {routeWithinExplicitServiceWindow} from '../rtw/route-date-semantics.ts';
 import { z } from 'zod';
 
 // Route observations deliberately contain no weekdays or seat inventory.
@@ -11,6 +13,8 @@ export const RouteNetworkSourceSchema = z.object({
   url: SourceUrlSchema,
   checkedOn: DateSchema,
   publishedOn: DateSchema.optional(),
+  /** Generator review policy, never a passenger service period. */
+  routeReviewWindow: z.object({from:DateSchema,until:DateSchema,basis:z.literal('generated-freshness-policy')}).strict().refine(w=>w.from<=w.until,'Inverted source review window').optional(),
   note: z.string().min(1),
 }).strict();
 export type RouteNetworkSource = z.infer<typeof RouteNetworkSourceSchema>;
@@ -43,6 +47,8 @@ export const RouteNetworkEntrySchema = z.object({
   carrier: z.string().regex(/^[A-Z0-9]{2,3}$/),
   pair: z.tuple([z.string().regex(/^[A-Z]{3}$/), z.string().regex(/^[A-Z]{3}$/)]),
   service: z.literal('nonstop'),
+  /** Registered plans are evidence only; never upgrade carrier identity, confirmed designators or dated selectable services. */
+  registeredPlans: z.array(z.object({registrationId:z.string().min(1),registeredOperator:z.string().regex(/^[A-Z0-9]{2,3}$/),flightNumberRaw:z.string().regex(/^\d{1,4}$/),effectiveFrom:DateSchema,effectiveUntil:DateSchema,weekdays:z.array(z.number().int().min(1).max(7)).min(1),departureUTC:z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/),arrivalUTC:z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/),arrivalDayOffset:z.null(),codeshareRaw:z.string().optional(),codeshareCompleteness:z.literal('unknown').optional(),stageNumber:z.number().int().positive().optional(),versionConflict:z.boolean().optional(),confidence:z.literal('high-confidence-schema-inference'),sourceId:SourceIdSchema}).strict()).optional(),
   /** `identity-unresolved` preserves a sourced route relationship that is no
    * longer safe to present as a current plannable carrier-route because no
    * same-carrier commercial designator can be corroborated. */
@@ -50,7 +56,11 @@ export const RouteNetworkEntrySchema = z.object({
   /** A listed/marketing carrier is useful for route discovery but is not
    * automatically the operating carrier. Dated/operator evidence must
    * promote it before itinerary persistence. */
-  carrierIdentity: z.enum(['operating', 'provider-listed']).optional(),
+  carrierIdentity: z.enum(['operating', 'provider-listed', 'unknown']).optional(),
+  /** Independently reviewed official directional nonstop route evidence.
+   * Allows listed-carrier discovery without a designator; never proves the
+   * actual operator or a dated flight. Unmarked provider graphs stay gated. */
+  routeEvidence: z.literal('official-directed').optional(),
   /** Exact designators backed strongly enough for route planning. They still
    * do not assert a weekday, time, award seat, or date-specific operation. */
   flightNumbers: z.array(FlightDesignatorSchema).optional(),
@@ -71,6 +81,9 @@ export const RouteNetworkEntrySchema = z.object({
   }
   if (new Set(entry.sourceIds).size !== entry.sourceIds.length) {
     ctx.addIssue({ code: 'custom', path: ['sourceIds'], message: 'Duplicate source reference' });
+  }
+  for (const plan of entry.registeredPlans ?? []) {
+    if (plan.registeredOperator !== entry.carrier || plan.effectiveFrom > plan.effectiveUntil || new Set(plan.weekdays).size !== plan.weekdays.length) ctx.addIssue({code:'custom',path:['registeredPlans'],message:'Invalid registered plan operator, interval or weekdays'});
   }
   const expectedPrefix = entry.carrier.toUpperCase();
   for (const [field, numbers] of [
@@ -127,6 +140,7 @@ export const RouteNetworkCatalogSchema = z.object({
     const key = `${route.carrier}:${route.pair.join('-')}`;
     if (routes.has(key)) ctx.addIssue({ code: 'custom', path: ['routes', index], message: 'Duplicate directional route' });
     routes.add(key);
+    for(const plan of route.registeredPlans ?? []) if(!route.sourceIds.includes(plan.sourceId)) ctx.addIssue({code:'custom',path:['routes',index,'registeredPlans'],message:'Registered plan requires route source reference'});
     route.sourceIds.forEach((id) => {
       if (!sources.has(id)) ctx.addIssue({ code: 'custom', path: ['routes', index, 'sourceIds'], message: `Unknown source ${id}` });
     });
@@ -139,6 +153,7 @@ export const RouteNetworkCatalogSchema = z.object({
       });
     }
   });
+  const routeSources = new Map(catalog.sources.map(source => [source.id, source]));
   const universes = new Set<string>();
   catalog.carrierUniverses.forEach((universe, index) => {
     if (universes.has(universe.carrier)) {
@@ -151,8 +166,7 @@ export const RouteNetworkCatalogSchema = z.object({
     if (universe.scope === 'complete') {
       const represented = catalog.routes.filter((route) => route.carrier === universe.carrier
         && route.status === 'published'
-        && (!route.effectiveFrom || universe.asOf >= route.effectiveFrom)
-        && (!route.effectiveUntil || universe.asOf <= route.effectiveUntil)).length;
+        && routeWithinExplicitServiceWindow(route, universe.asOf, routeSources)).length;
       if (universe.directionalRouteDenominator !== represented) {
         ctx.addIssue({
           code: 'custom',
@@ -171,7 +185,7 @@ export function parseRouteNetworkCatalog(raw: unknown, knownAirports?: ReadonlyS
   if (knownAirports) {
     for (const route of catalog.routes) {
       for (const code of route.pair) {
-        if (!knownAirports.has(code)) throw new Error(`route-network: unknown airport ${code}`);
+        if (!isKnownAirport(code, knownAirports)) throw new Error(`route-network: unknown airport ${code}`);
       }
     }
   }
