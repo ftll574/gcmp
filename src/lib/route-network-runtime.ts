@@ -1,4 +1,5 @@
-import type { RouteNetworkCatalog } from './schemas/route-network.ts';
+import { parseRouteNetworkCatalog, type RouteNetworkCatalog } from './schemas/route-network.ts';
+import { carrierIdentityKey } from './carrier-identity.ts';
 
 export interface RuntimeRouteNetworkMeta {
   readonly outputSha256: string;
@@ -69,7 +70,7 @@ export function parseRuntimeRouteNetworkCarrierManifest(raw: unknown): RuntimeRo
   if (!isRecord(raw.carriers)) fail('carrier metadata carriers is invalid');
   const carriers: Record<string, RuntimeRouteNetworkShardMeta> = {};
   for (const [carrier, shard] of Object.entries(raw.carriers)) {
-    if (!/^[A-Z0-9]{2,3}$/.test(carrier) || !isRecord(shard)) fail('carrier metadata entry is invalid');
+    if (!/^(?:[A-Z0-9]{2,3}|[A-Z]{2}\+[A-Z0-9]{3}\+[a-z0-9-]+)$/.test(carrier) || !isRecord(shard)) fail('carrier metadata entry is invalid');
     if (!Number.isInteger(shard.routes) || (shard.routes as number) < 0) fail(`carrier metadata ${carrier}.routes is invalid`);
     if (!Number.isInteger(shard.bytes) || (shard.bytes as number) < 0) fail(`carrier metadata ${carrier}.bytes is invalid`);
     if (typeof shard.sha256 !== 'string' || !/^[a-f0-9]{64}$/.test(shard.sha256)) {
@@ -82,6 +83,36 @@ export function parseRuntimeRouteNetworkCarrierManifest(raw: unknown): RuntimeRo
     };
   }
   return { runtimeSha256: raw.runtimeSha256, carriers };
+}
+
+/** Schema-validated carrier shard fallback for browsers without WebCrypto. */
+export function parseRuntimeRouteNetworkCarrierShard(
+  raw: unknown,
+  carrierIdentity: string,
+  knownAirports?: ReadonlySet<string>,
+): RouteNetworkCatalog {
+  const network = parseRouteNetworkCatalog(raw, knownAirports);
+  if (network.routes.some((route) => carrierIdentityKey(route) !== carrierIdentity || route.status !== 'published')) {
+    fail(`carrier shard ${carrierIdentity} contains routes outside its published carrier scope`);
+  }
+  return network;
+}
+
+/** Verify the build hash where supported; otherwise use strict schema and identity validation. */
+export async function parseRuntimeRouteNetworkCarrierShardBytes(
+  bytes: ArrayBuffer,
+  meta: RuntimeRouteNetworkShardMeta,
+  carrierIdentity: string,
+  knownAirports?: ReadonlySet<string>,
+): Promise<RouteNetworkCatalog> {
+  if (globalThis.crypto?.subtle) return parseHashedRuntimeRouteNetworkCarrierShard(bytes, meta, carrierIdentity, knownAirports);
+  let raw: unknown;
+  try {
+    raw = JSON.parse(new TextDecoder().decode(bytes)) as unknown;
+  } catch {
+    fail('carrier shard JSON is malformed');
+  }
+  return parseRuntimeRouteNetworkCarrierShard(raw, carrierIdentity, knownAirports);
 }
 
 function parseRuntimeJson(text: string, expectedRoutes: number, knownAirports?: ReadonlySet<string>): RouteNetworkCatalog {
@@ -167,8 +198,5 @@ export async function parseHashedRuntimeRouteNetworkCarrierShard(
   knownAirports?: ReadonlySet<string>,
 ): Promise<RouteNetworkCatalog> {
   const network = await parseHashedRuntimeRouteNetworkShard(bytes, meta, knownAirports);
-  if (network.routes.some((route) => route.carrier !== carrier || route.status !== 'published')) {
-    fail(`carrier shard ${carrier} contains routes outside its published carrier scope`);
-  }
-  return network;
+  return parseRuntimeRouteNetworkCarrierShard(network, carrier, knownAirports);
 }

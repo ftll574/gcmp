@@ -632,7 +632,14 @@ export function RouteEntityMap({
       }
       if (airport) {
         const iata = String(airport.properties?.iata ?? '');
-        if (iata) focusSelection({ kind: 'airport', iata });
+        if (iata) {
+          const airportFromModel = model.airportByIata.get(iata);
+          if (airportFromModel && airportFromModel.iata !== selectedAirport?.iata) {
+            onAirportSelect(airportFromModel);
+          } else {
+            focusSelection({ kind: 'airport', iata });
+          }
+        }
         return;
       }
       if (route) {
@@ -651,7 +658,7 @@ export function RouteEntityMap({
       map.off('mousemove', onMapMove);
       map.off('click', onMapClick);
     };
-  }, [copy.clusters, copy.zoomCluster, focusSelection, locale, model, ready]);
+  }, [copy.clusters, copy.zoomCluster, focusSelection, locale, model, onAirportSelect, ready, selectedAirport?.iata]);
 
   const activeAirport = selection?.kind === 'airport' ? model.airportByIata.get(selection.iata) ?? null : null;
   const activeRoutes = inspectorRoutes(model, selection);

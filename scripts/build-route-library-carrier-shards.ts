@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { parseRouteNetworkCatalog, type RouteNetworkCatalog } from '../src/lib/schemas/route-network.ts';
+import { carrierIdentityKey, carrierShardName } from '../src/lib/carrier-identity.ts';
 
 const ROOT = resolve(import.meta.dirname, '..');
 const ROUTE_ROOT = resolve(ROOT, 'public', 'data', 'route-network');
@@ -37,13 +38,13 @@ rmSync(OUT_DIR, { recursive: true, force: true });
 mkdirSync(OUT_DIR, { recursive: true });
 
 const publishedRoutes = runtime.routes.filter((route) => route.status === 'published');
-const carriers = [...new Set(publishedRoutes.map((route) => route.carrier))].sort();
+const carriers = [...new Set(publishedRoutes.map((route) => carrierIdentityKey(route)))].sort();
 const carrierMeta: Record<string, { routes: number; bytes: number; sha256: string }> = {};
 let totalBytes = 0;
 
 for (const carrier of carriers) {
-  const routes = publishedRoutes.filter((route) => route.carrier === carrier);
-  const carrierUniverses = runtime.carrierUniverses.filter((universe) => universe.carrier === carrier);
+  const routes = publishedRoutes.filter((route) => carrierIdentityKey(route) === carrier);
+  const carrierUniverses = runtime.carrierUniverses.filter((universe) => carrierIdentityKey(universe) === carrier);
   const sourceIds = new Set([
     ...routes.flatMap((route) => [
       ...route.sourceIds,
@@ -62,7 +63,8 @@ for (const carrier of carriers) {
   parseRouteNetworkCatalog(shard, airportCodes);
   const text = `${JSON.stringify(shard)}\n`;
   const bytes = normalizedBytes(text);
-  writeFileSync(resolve(OUT_DIR, `${carrier}.json`), text);
+  const shardName = routes[0] ? carrierShardName(routes[0]) : carrier;
+  writeFileSync(resolve(OUT_DIR, `${shardName}.json`), text);
   carrierMeta[carrier] = { routes: routes.length, bytes, sha256: sha256(text) };
   totalBytes += bytes;
 }

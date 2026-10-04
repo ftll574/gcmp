@@ -1,7 +1,8 @@
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, statSync, unlinkSync, writeFileSync } from 'node:fs';
 import { parseRouteNetworkCatalog, type RouteNetworkCatalog } from '../src/lib/schemas/route-network.ts';
-import { mergeRouteNetworkCatalogs, mergeRouteNumberEvidence } from '../src/lib/rtw/route-network-merge.ts';
+import { carrierRouteKey } from '../src/lib/carrier-identity.ts';
+import { mergeRouteNetworkCatalogs, mergeRouteNumberEvidence, preserveRuntimeRoutesThenQuarantine } from '../src/lib/rtw/route-network-merge.ts';
 
 const INPUTS = [
   'current.json',
@@ -17,6 +18,8 @@ const OPTIONAL_INPUTS = [
 ] as const;
 const NUMBER_INPUT = 'flight-numbers-current.json';
 const CORRECTIONS_INPUT = 'current-corrections.json';
+const QUARANTINES_INPUT = 'flight-number-quarantines.json';
+const PRESERVATION_INPUT = 'scripts/data/accepted-runtime-preservation.json';
 
 const root = 'public/data/route-network';
 const airportCodes = new Set<string>(
@@ -69,7 +72,7 @@ const numberedRuntime = mergeRouteNumberEvidence(
 // current planner edge must at least carry a source-backed commercial flight
 // identity. Keep unresolved relationships in the audit graph without
 // presenting them as current selectable routes.
-const runtime = parseRouteNetworkCatalog({
+const gatedRuntime = parseRouteNetworkCatalog({
   ...numberedRuntime,
   routes: numberedRuntime.routes.map((route) =>
     route.status === 'published'
@@ -79,15 +82,27 @@ const runtime = parseRouteNetworkCatalog({
       ? { ...route, status: 'identity-unresolved' as const }
       : route),
 }, airportCodes);
+const preservationRaw = readFileSync(PRESERVATION_INPUT, 'utf8');
+rawByFile.set(PRESERVATION_INPUT, preservationRaw);
+const quarantineRaw = readFileSync(`${root}/${QUARANTINES_INPUT}`, 'utf8');
+rawByFile.set(QUARANTINES_INPUT, quarantineRaw);
+const acceptedRuntime = preserveRuntimeRoutesThenQuarantine(
+  gatedRuntime,
+  JSON.parse(preservationRaw),
+  JSON.parse(quarantineRaw),
+);
 
 // This artifact is fetched on every app startup. Keep it compact; the source
 // layers remain human-reviewable and the tiny meta file carries diagnostics.
-const runtimeText = `${JSON.stringify(runtime)}\n`;
+const runtimeText = `${JSON.stringify(acceptedRuntime)}\n`;
 writeFileSync(`${root}/runtime-current.json`, runtimeText);
 
+const runtime = acceptedRuntime;
+const acceptedRouteKeys = new Set(JSON.parse(preservationRaw).routes.map((route: RouteNetworkCatalog['routes'][number]) => carrierRouteKey(route, ...route.pair)));
 const publishedRoutes = runtime.routes.filter((route) => route.status === 'published');
 const unnumberedPublishedRoutes = publishedRoutes.filter((route) =>
-  (route.flightNumbers?.length ?? 0) === 0 && (route.flightNumberCandidates?.length ?? 0) === 0,
+  !acceptedRouteKeys.has(carrierRouteKey(route, ...route.pair))
+    && (route.flightNumbers?.length ?? 0) === 0 && (route.flightNumberCandidates?.length ?? 0) === 0,
 );
 if (unnumberedPublishedRoutes.length > 0) {
   throw new Error(`Published routes without flight identity: ${unnumberedPublishedRoutes
@@ -95,8 +110,9 @@ if (unnumberedPublishedRoutes.length > 0) {
     .map((route) => `${route.carrier}:${route.pair[0]}-${route.pair[1]}`)
     .join(', ')}${unnumberedPublishedRoutes.length > 20 ? ` (+${unnumberedPublishedRoutes.length - 20} more)` : ''}`);
 }
-const confirmedOperatingRoutes = publishedRoutes.filter((route) => route.carrierIdentity !== 'provider-listed').length;
-const providerListedRoutes = publishedRoutes.length - confirmedOperatingRoutes;
+const confirmedOperatingRoutes = publishedRoutes.filter((route) => route.carrierIdentity === 'operating').length;
+const providerListedRoutes = publishedRoutes.filter((route) => route.carrierIdentity === 'provider-listed').length;
+const unknownIdentityRoutes = publishedRoutes.filter((route) => !route.carrierIdentity || route.carrierIdentity === 'unknown').length;
 const confirmedFlightNumberRoutes = publishedRoutes.filter((route) => (route.flightNumbers?.length ?? 0) > 0).length;
 const candidateFlightNumberRoutes = publishedRoutes.filter((route) => (route.flightNumberCandidates?.length ?? 0) > 0).length;
 const anyFlightNumberRoutes = publishedRoutes.filter((route) =>
@@ -105,12 +121,13 @@ const anyFlightNumberRoutes = publishedRoutes.filter((route) =>
 const routeCountByCarrier = new Map<string, number>();
 const confirmedOperatingCountByCarrier = new Map<string, number>();
 const providerListedCountByCarrier = new Map<string, number>();
+const unknownIdentityCountByCarrier = new Map<string, number>();
 for (const route of runtime.routes) {
   if (route.status !== 'published') continue;
   routeCountByCarrier.set(route.carrier, (routeCountByCarrier.get(route.carrier) ?? 0) + 1);
   const identityCounts = route.carrierIdentity === 'provider-listed'
     ? providerListedCountByCarrier
-    : confirmedOperatingCountByCarrier;
+    : route.carrierIdentity === 'operating' ? confirmedOperatingCountByCarrier : unknownIdentityCountByCarrier;
   identityCounts.set(route.carrier, (identityCounts.get(route.carrier) ?? 0) + 1);
 }
 
@@ -147,7 +164,7 @@ for (const letter of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') {
 // produces byte-identical output, which keeps generated artifacts diffable.
 const builtOn = new Date(
   Math.max(
-    ...[...INPUTS, ...OPTIONAL_INPUTS, CORRECTIONS_INPUT, NUMBER_INPUT]
+    ...[...INPUTS, ...OPTIONAL_INPUTS, CORRECTIONS_INPUT, NUMBER_INPUT, QUARANTINES_INPUT, PRESERVATION_INPUT]
       .map((file) => `${root}/${file}`)
       .filter((path) => existsSync(path))
       .map((path) => statSync(path).mtimeMs),
@@ -164,7 +181,7 @@ const meta = {
   license: 'ODbL-1.0',
   licenseNote: 'Derived database of ODbL-licensed ADS-B route sources; share-alike applies.',
   mergeStrategy: 'curated + generated',
-  inputs: Object.fromEntries([...INPUTS, ...OPTIONAL_INPUTS.filter((file) => rawByFile.has(file)), CORRECTIONS_INPUT, NUMBER_INPUT]
+  inputs: Object.fromEntries([...INPUTS, ...OPTIONAL_INPUTS.filter((file) => rawByFile.has(file)), CORRECTIONS_INPUT, NUMBER_INPUT, QUARANTINES_INPUT, PRESERVATION_INPUT]
     .map((file) => [file, sha256(rawByFile.get(file)!)])),
   outputSha256: sha256(runtimeText),
   routes: runtime.routes.length,
@@ -172,6 +189,7 @@ const meta = {
   carriers: new Set(runtime.routes.map((route) => route.carrier)).size,
   confirmedOperatingRoutes,
   providerListedRoutes,
+  unknownIdentityRoutes,
   confirmedFlightNumberRoutes,
   candidateFlightNumberRoutes,
   anyFlightNumberRoutes,
@@ -181,6 +199,9 @@ const meta = {
   ),
   providerListedCountByCarrier: Object.fromEntries(
     [...providerListedCountByCarrier.entries()].sort(([a], [b]) => a.localeCompare(b)),
+  ),
+  unknownIdentityCountByCarrier: Object.fromEntries(
+    [...unknownIdentityCountByCarrier.entries()].sort(([a], [b]) => a.localeCompare(b)),
   ),
   originShards,
 };

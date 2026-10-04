@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { isCalendarDate } from '../calendar-date.ts';
+import { CarrierEntityKeySchema } from './route-network.ts';
 
 const DateValue = z.string().refine(isCalendarDate, 'Expected a real calendar date');
 const TimeValue = z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/);
@@ -50,7 +51,7 @@ const TimetableFields = {
   source: PublicationSourceSchema,
 };
 export const PublishedFlightSchema = z.object({
-  carrier: z.string().regex(/^[A-Z0-9]{2}$/), ...TimetableFields,
+  carrier: z.string().regex(/^[A-Z0-9]{2}$/), carrierEntityKey: CarrierEntityKeySchema.optional(), ...TimetableFields,
   /** Independent evidence that the displayed carrier is the operator.
    * Optional for airline-owned publications whose source already establishes
    * the operator; required by the TDX adapter before promoting a reference. */
@@ -86,6 +87,7 @@ export type TimetableReference = z.infer<typeof TimetableReferenceSchema>;
 
 export const OfficialServiceSchema = z.object({
   id: z.string().min(1), carrier: z.string().regex(/^[A-Z0-9]{2}$/),
+  carrierEntityKey: CarrierEntityKeySchema.optional(), carrierEntityName: z.string().min(1).optional(),
   flightNumber: z.string().regex(/^\d{1,4}[A-Z]?$/),
   from: z.string().regex(/^[A-Z]{3}$/), to: z.string().regex(/^[A-Z]{3}$/),
   effectiveFrom: DateValue, effectiveUntil: DateValue,
@@ -96,6 +98,7 @@ export const OfficialServiceSchema = z.object({
   sourceId: z.string().min(1),
 }).strict().superRefine((row, ctx) => {
   if (row.from === row.to || row.effectiveFrom > row.effectiveUntil) ctx.addIssue({ code: 'custom', message: 'Invalid route or validity window' });
+  if (row.carrier === '2F' && !row.carrierEntityKey) ctx.addIssue({ code: 'custom', path: ['carrierEntityKey'], message: 'Shared IATA code 2F requires a qualified official-service identity' });
   if (new Set(row.daysOfWeek).size !== row.daysOfWeek.length) ctx.addIssue({ code: 'custom', message: 'Duplicate weekdays' });
   if (new Set(row.addedDates).size !== row.addedDates.length || new Set(row.removedDates).size !== row.removedDates.length) ctx.addIssue({ code: 'custom', message: 'Duplicate exceptions' });
   if (row.addedDates.some((date) => row.removedDates.includes(date))) ctx.addIssue({ code: 'custom', message: 'Conflicting date exceptions' });

@@ -77,7 +77,7 @@ function RouteCard({ route, onSelect, compact = false }: {
     <button type="button" className={`entity-route-card${compact ? ' compact' : ''}`} onClick={() => onSelect({ kind: 'route', id: routeId(route) })}>
       <span className="entity-route-codes"><code>{route.from.iata}</code><b>→</b><code>{route.to.iata}</code></span>
       <strong>{route.to.city}</strong>
-      <small>{route.carriers.map((carrier) => carrier.carrier).join(' · ')} · {route.distanceNm.toLocaleString()} nm</small>
+      <small>{route.carriers.map((carrier) => carrier.carrierEntityKey ? `${carrier.carrier} · ${carrier.name}` : carrier.carrier).join(' · ')} · {route.distanceNm.toLocaleString()} nm</small>
       {numbers.length > 0 && <span className="entity-route-number-preview">{numbers.join(' · ')}</span>}
     </button>
   );
@@ -294,11 +294,11 @@ export function RouteLibraryExplorer({
         {!networkComplete && <p className="entity-shard-notice" role="status">{copy.routeShardNotice}</p>}
         <section className="entity-section route-carrier-list"><div className="entity-section-heading"><h3>{copy.routeDetail}</h3>{(reverseExists || !networkComplete) && <button type="button" className="entity-inline-button" onClick={() => choose({ kind: 'route', id: reverseId })}>{copy.reverse}</button>}</div>
           {route.carriers.map((carrier) => (
-            <article className="route-carrier-card" key={carrier.carrier}>
+            <article className="route-carrier-card" key={carrier.carrierEntityKey ?? carrier.carrier}>
               <header><div><code>{carrier.carrier}</code><strong>{carrier.name}</strong></div><span className={carrier.identity}>{carrier.identity === 'operating' ? copy.operatingCarrier : carrier.identity === 'provider-listed' ? copy.provider : copy.unknownIdentity}</span></header>
-              <div className="route-carrier-numbers"><span>{copy.confirmedNumbers}</span>{carrier.confirmedNumbers.length > 0 ? <div>{carrier.confirmedNumbers.map((number) => <button type="button" key={number} disabled={carrier.identity !== 'operating'} onClick={() => onPlanRoute({ from: route.from.iata, to: route.to.iata, carrier: carrier.carrier, flightNumber: number.slice(carrier.carrier.length) })}>{number}</button>)}</div> : <small>{copy.noNumber}</small>}</div>
+              <div className="route-carrier-numbers"><span>{copy.confirmedNumbers}</span>{carrier.confirmedNumbers.length > 0 ? <div>{carrier.confirmedNumbers.map((number) => <button type="button" key={number} disabled={carrier.identity !== 'operating' || Boolean(carrier.carrierEntityKey)} onClick={() => onPlanRoute({ from: route.from.iata, to: route.to.iata, carrier: carrier.carrier, flightNumber: number.slice(carrier.carrier.length) })}>{number}</button>)}</div> : <small>{copy.noNumber}</small>}</div>
               {carrier.candidateNumbers.length > 0 && <div className="route-carrier-candidates"><span>{copy.candidateNumbers}</span><div>{carrier.candidateNumbers.slice(0, 14).map((number) => <code key={number}>{number}</code>)}</div></div>}
-              <div className="route-carrier-actions"><button type="button" disabled={carrier.identity !== 'operating'} onClick={() => onPlanRoute({ from: route.from.iata, to: route.to.iata, carrier: carrier.carrier })}>{copy.planCarrier}</button></div>
+              <div className="route-carrier-actions"><button type="button" disabled={carrier.identity !== 'operating' || Boolean(carrier.carrierEntityKey)} onClick={() => onPlanRoute({ from: route.from.iata, to: route.to.iata, carrier: carrier.carrier })}>{copy.planCarrier}</button></div>
               {carrier.sourcePairs.some(([from, to]) => from !== route.from.iata || to !== route.to.iata) && <p>{zh ? '原始來源代碼' : 'Original source codes'}: {carrier.sourcePairs.map(pair => pair.join(' → ')).join(', ')} · {[route.from.iata, route.to.iata].map(airportIdentityLabel).filter(Boolean).join(' · ')}</p>}
               <RegisteredPlansEvidence plans={carrier.registeredPlans} sources={carrier.sources} zh={zh} />
 
@@ -314,7 +314,7 @@ export function RouteLibraryExplorer({
 
   return (
     <section className="route-library-entity-explorer">
-      {selection && <div className="entity-breadcrumb"><button type="button" onClick={() => onSelect(null)}>← {copy.back}</button><span>{selection.kind === 'airport' ? copy.airportLabel : selection.kind === 'airline' ? copy.airlineLabel : copy.routeLabel}</span><strong>{selection.id.replace('-', ' → ')}</strong></div>}
+      {selection && <div className="entity-breadcrumb"><button type="button" onClick={() => onSelect(null)}>← {copy.back}</button><span>{selection.kind === 'airport' ? copy.airportLabel : selection.kind === 'airline' ? copy.airlineLabel : copy.routeLabel}</span><strong>{selection.kind === 'airline' && airlineProfile ? `${airlineProfile.carrier} · ${airlineProfile.name}` : selection.kind === 'route' ? selection.id.replace('-', ' → ') : selection.id}</strong></div>}
 
       {!selection ? (
         <div className="entity-explore-home">

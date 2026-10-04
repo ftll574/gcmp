@@ -858,7 +858,7 @@ export function DestinationsPanel({
         flightNumber={flightTarget.flightNumber}
         onClose={() => setFlightTarget(null)} onChoose={(flight) => {
           if (sameAirport(flight.from, flight.to)) return;
-          if (!canUsePassengerRoute(flight.carrier, flight.from, flight.to, selectedDepartureDate(flight), productId)) return;
+          if (!canUsePassengerRoute(flight.carrier, flight.from, flight.to, selectedDepartureDate(flight), productId, flight.carrierEntityKey)) return;
           onAddPair(flight.from, flight.to, flight.carrier, {
             departsOn: selectedDepartureDate(flight),
             flightNumber: flight.flightNumber,

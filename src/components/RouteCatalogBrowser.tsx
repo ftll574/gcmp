@@ -376,8 +376,8 @@ export function RouteCatalogBrowser({
                 {carrierOptions.map((option) => {
                   const name = carrierNames?.get(option.carrier);
                   return (
-                    <option key={option.carrier} value={option.carrier}>
-                      {option.carrier}{name ? ` · ${name}` : ''} · {option.routeCount} {copy.routes}
+                    <option key={option.value ?? option.carrier} value={option.value ?? option.carrier}>
+                      {option.label ?? `${option.carrier}${name ? ` · ${name}` : ''}`} · {option.routeCount} {copy.routes}
                     </option>
                   );
                 })}
@@ -508,13 +508,13 @@ export function RouteCatalogBrowser({
                                         <div className="route-browser-carriers">
                                           {route.carriers.map((carrier) => (
                                             <LazyDisclosure
-                                              key={carrier.carrier}
+                                              key={carrier.carrierEntityKey ?? carrier.carrier}
                                               className="route-browser-carrier"
                                               data={{ carrier: carrier.carrier }}
                                               summary={(
                                                 <>
                                                   <span className="route-browser-carrier-name">
-                                                    <code>{carrier.carrier}</code>
+                                                    <code>{carrier.carrierEntityName ? `${carrier.carrier} · ${carrier.carrierEntityName}` : carrier.carrier}</code>
                                                     <small className={carrier.identity === 'operating' ? 'operating' : 'provider-listed'}>
                                                       {carrier.identity === 'operating' ? copy.operating : carrier.identity === 'provider-listed' ? copy.providerListed : copy.unknownIdentity}
                                                     </small>

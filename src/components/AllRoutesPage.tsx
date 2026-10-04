@@ -1,15 +1,17 @@
 import { airportEvidenceShardLetter } from '../lib/airport-identity.ts';
+import { carrierShardNameFromKey } from '../lib/carrier-identity.ts';
 import { lazy, Suspense, useEffect, useId, useMemo, useState } from 'react';
 import { buildAirportIndex, type AirportIndex } from '../lib/airport-index.ts';
 import type { RouteNetworkCatalog } from '../lib/schemas/route-network.ts';
 import {
   parseHashedRuntimeRouteNetwork,
-  parseHashedRuntimeRouteNetworkCarrierShard,
   parseHashedRuntimeRouteNetworkShard,
+  parseRuntimeRouteNetworkCarrierShardBytes,
   parseRuntimeRouteNetworkCarrierManifest,
   type RuntimeRouteNetworkCarrierManifest,
 } from '../lib/route-network-runtime.ts';
 import type { RouteLibraryEntitySelection } from '../lib/rtw/route-library-entities.ts';
+import { parseRouteLibrarySelection } from '../lib/rtw/route-library-selection.ts';
 import type { Airport } from '../lib/types.ts';
 import type { RouteLibraryData } from '../state/use-route-library-data.ts';
 import { RouteLibraryExplorer } from './RouteLibraryExplorer.tsx';
@@ -181,16 +183,6 @@ function EarlyAirportSearch({
   );
 }
 
-function selectionFromLocation(): RouteLibraryEntitySelection | null {
-  const params = new URLSearchParams(window.location.search);
-  const kind = params.get('entity');
-  const rawId = params.get('id')?.toUpperCase() ?? '';
-  if (kind === 'airport' && /^[A-Z]{3}$/.test(rawId)) return { kind, id: rawId };
-  if (kind === 'airline' && /^[A-Z0-9]{2,3}$/.test(rawId)) return { kind, id: rawId };
-  if (kind === 'route' && /^[A-Z]{3}-[A-Z]{3}$/.test(rawId)) return { kind, id: rawId };
-  return null;
-}
-
 function allianceFromLocation(): AllianceFilter {
   const value = new URLSearchParams(window.location.search).get('alliance');
   return value === 'star' || value === 'oneworld' || value === 'skyteam' ? value : 'all';
@@ -228,7 +220,7 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
   const [carrierShardFailureCode, setCarrierShardFailureCode] = useState<string | null>(null);
   const [fullNetworkRequested, setFullNetworkRequested] = useState(false);
   const [alliance, setAlliance] = useState<AllianceFilter>(allianceFromLocation);
-  const [selection, setSelection] = useState<RouteLibraryEntitySelection | null>(selectionFromLocation);
+  const [selection, setSelection] = useState<RouteLibraryEntitySelection | null>(() => parseRouteLibrarySelection(window.location.search));
   const [query, setQuery] = useState(queryFromLocation);
   const [advancedOpen, setAdvancedOpen] = useState(advancedFromLocation);
   const airportIndex = useMemo(() => buildAirportIndex(data.airports), [data.airports]);
@@ -257,7 +249,7 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
         && selection?.kind === 'airline'
         && selectedCarrier === loadedNetwork.carrier
         ? loadedNetwork.network
-      : null;
+        : null;
 
   useEffect(() => {
     if (fullNetworkReady || fullNetworkRequested || selection?.kind !== 'airline') return;
@@ -334,25 +326,14 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
     if (carrierShardFailureCode === selectedCarrier) return;
     if (loadedNetwork?.scope === 'carrier-shard' && loadedNetwork.carrier === selectedCarrier) return;
     const controller = new AbortController();
-    const shardUrl = `${data.routeNetworkCarrierShardBaseUrl}/${selectedCarrier}.json`;
+    const shardUrl = `${data.routeNetworkCarrierShardBaseUrl}/${carrierShardNameFromKey(selectedCarrier)}.json`;
     void fetch(shardUrl, { signal: controller.signal })
       .then(async (response) => {
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const knownAirports = new Set(airports.keys());
-        if (globalThis.crypto?.subtle) {
-          return parseHashedRuntimeRouteNetworkCarrierShard(
-            await response.arrayBuffer(),
-            carrierShardMeta,
-            selectedCarrier,
-            knownAirports,
-          );
-        }
-        const { parseRouteNetworkCatalog } = await import('../lib/schemas/route-network.ts');
-        const network = parseRouteNetworkCatalog(await response.json(), knownAirports);
-        if (network.routes.some((route) => route.carrier !== selectedCarrier || route.status !== 'published')) {
-          throw new Error(`carrier shard ${selectedCarrier} contains routes outside its published carrier scope`);
-        }
-        return network;
+        return parseRuntimeRouteNetworkCarrierShardBytes(
+          await response.arrayBuffer(), carrierShardMeta, selectedCarrier, knownAirports,
+        );
       })
       .then((network) => {
         setLoadedNetwork((current) => current?.scope === 'full'
@@ -423,7 +404,7 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
 
   useEffect(() => {
     const sync = (): void => {
-      setSelection(selectionFromLocation());
+      setSelection(parseRouteLibrarySelection(window.location.search));
       setAlliance(allianceFromLocation());
       setQuery(queryFromLocation());
       setAdvancedOpen(advancedFromLocation());
@@ -467,6 +448,11 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
       .map((membership) => membership.airline),
   ), [memberships, alliance]);
   const carrierNames = useMemo(() => new Map(memberships.map((membership) => [membership.airline, membership.airlineName] as const)), [memberships]);
+  const selectionMemberCodes = useMemo<ReadonlySet<string>>(() => {
+    if (!selectedCarrier?.includes('+') || !displayNetwork) return memberCodes;
+    const carrier = displayNetwork.routes.find(route => route.carrierEntityKey === selectedCarrier)?.carrier;
+    return carrier ? new Set([...memberCodes, carrier]) : memberCodes;
+  }, [displayNetwork, memberCodes, selectedCarrier]);
   const selectEntity = (next: RouteLibraryEntitySelection | null): void => {
     const url = new URL(window.location.href);
     url.searchParams.set('view', 'routes');
@@ -508,7 +494,7 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
               network={displayNetwork}
               airports={airports}
               carrierNames={carrierNames}
-              memberCodes={memberCodes}
+              memberCodes={selectionMemberCodes}
               alliance={alliance}
               onAllianceChange={changeAlliance}
               query={query}

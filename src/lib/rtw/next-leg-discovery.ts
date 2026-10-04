@@ -17,6 +17,7 @@ export type NextLegScheduleStatus = 'covered' | 'weekday-mismatch' | 'unknown' |
 
 export interface NextLegOption {
   readonly carrier: string;
+  readonly carrierEntityKey?: string;
   readonly from: string;
   readonly to: string;
   /**
@@ -130,6 +131,7 @@ export function buildNextLegIndex({
 }: DiscoveryInputs): ReadonlyMap<string, ReadonlyArray<NextLegDestination>> {
   interface Bucket {
     carrier: string;
+    carrierEntityKey?: string;
     from: string;
     to: string;
     route?: RouteNetworkEntry;
@@ -139,28 +141,28 @@ export function buildNextLegIndex({
   }
   const buckets = new Map<string, Bucket>();
   const sources = new Map(network?.sources.map((source) => [source.id, source]) ?? []);
-  function bucket(carrier: string, from: string, to: string): Bucket | null {
+  function bucket(carrier: string, from: string, to: string, carrierEntityKey?: string): Bucket | null {
     if (origin && !sameAirport(from, origin)) return null;
     from = origin ?? airportCodeOn(from, referenceDate);
     to = airportCodeOn(to, referenceDate);
     if (!eligibleCarriers.has(carrier) || sameAirport(from, to)) return null;
-    if (!canUsePassengerRoute(carrier, from, to, referenceDate, productId)) return null;
+    if (!canUsePassengerRoute(carrier, from, to, referenceDate, productId, carrierEntityKey)) return null;
     if (knownAirports && (!isKnownAirport(from, knownAirports) || !isKnownAirport(to, knownAirports))) return null;
-    const key = `${carrier}:${airportIdentityPairKey(from, to)}`;
+    const key = `${carrierEntityKey ?? carrier}:${airportIdentityPairKey(from, to)}`;
     let result = buckets.get(key);
     if (!result) {
-      result = { carrier, from, to, schedules: [], officialServices: [], flightNumberReferences: [] };
+      result = { carrier, from, to, ...(carrierEntityKey ? { carrierEntityKey } : {}), schedules: [], officialServices: [], flightNumberReferences: [] };
       buckets.set(key, result);
     }
     return result;
   }
   for (const route of network?.routes ?? []) {
-    const item = bucket(route.carrier, route.pair[0], route.pair[1]);
+    const item = bucket(route.carrier, route.pair[0], route.pair[1], route.carrierEntityKey);
     if (item && (!item.route || route.status !== 'published')) item.route = route;
   }
   for (const schedule of schedules) bucket(schedule.carrier, schedule.pair[0], schedule.pair[1])?.schedules.push(schedule);
   for (const service of officialSchedules?.services ?? []) {
-    bucket(service.carrier, service.from, service.to)?.officialServices.push(service);
+    bucket(service.carrier, service.from, service.to, service.carrierEntityKey)?.officialServices.push(service);
   }
   for (const reference of officialSchedules?.flightNumberReferences ?? []) {
     bucket(reference.carrier, reference.from, reference.to)?.flightNumberReferences.push(reference);
@@ -245,7 +247,7 @@ export function buildNextLegIndex({
     ])].filter((number) => !confirmedNumberSet.has(number)).sort();
     const reviewWindow=item.route?routeSourceReviewWindow(item.route,sources):null;
     options.push({
-      carrier: item.carrier, from: item.from, to: item.to, scheduleStatus,
+      carrier: item.carrier, ...(item.carrierEntityKey ? { carrierEntityKey: item.carrierEntityKey } : {}), from: item.from, to: item.to, scheduleStatus,
       flightNumbers: confirmedNumbers
         .sort((a, b) => {
           const departureA = departureByDesignator.get(a);

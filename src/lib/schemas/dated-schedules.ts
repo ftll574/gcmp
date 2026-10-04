@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { datesBetween, isCalendarDate } from '../calendar-date.ts';
 import { PublishedFlightSchema, TimetableReferenceSchema, type PublishedFlight } from './published-schedules.ts';
+import { CarrierEntityKeySchema } from './route-network.ts';
 
 const DateSchema = z.string().refine(isCalendarDate, 'Expected a real YYYY-MM-DD date');
 const AirportCode = z.string().regex(/^[A-Z]{3}$/);
@@ -20,6 +21,7 @@ export type FlightQuery = z.infer<typeof FlightQuerySchema>;
 
 export const DatedFlightSchema = z.object({
   carrier: z.string().regex(/^[A-Z0-9]{2}$/),
+  carrierEntityKey: CarrierEntityKeySchema.optional(),
   flightNumber: z.string().regex(/^\d{1,4}[A-Z]?$/),
   from: AirportCode, to: AirportCode,
   departureLocal: LocalTimeSchema, arrivalLocal: LocalTimeSchema,

@@ -585,7 +585,7 @@ export function validateRtwRoute(
   // Missing rights/product evidence is not a claim of legal prohibition.
   legs.forEach((leg, index) => {
     if (!isFlightLeg(leg)) return;
-    const decision = passengerRouteUseDecision(leg.operatingCarrier, leg.from, leg.to, leg.departsOn ?? '', ruleSet.id);
+    const decision = passengerRouteUseDecision(leg.operatingCarrier, leg.from, leg.to, leg.departsOn ?? '', ruleSet.id, undefined, leg.operatingCarrierEntityKey);
     if (decision === 'local-sale-unverified' || decision === 'product-use-unverified') findings.push({
       ruleId: 'passenger-route-use', severity: 'fail', affectedLegIndexes: [index],
       message: decision === 'local-sale-unverified'

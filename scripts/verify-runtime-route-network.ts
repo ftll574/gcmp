@@ -12,6 +12,8 @@ const INPUTS = [
   'standing-current.json',
   'current-corrections.json',
   'flight-numbers-current.json',
+  'flight-number-quarantines.json',
+  'scripts/data/accepted-runtime-preservation.json',
 ] as const;
 
 function sha256(text: string): string {
@@ -30,7 +32,8 @@ const meta = JSON.parse(readFileSync(`${ROOT}/runtime-current.meta.json`, 'utf8'
 };
 
 for (const file of INPUTS) {
-  const actual = sha256(readFileSync(`${ROOT}/${file}`, 'utf8'));
+  const path = file.startsWith('scripts/') ? file : `${ROOT}/${file}`;
+  const actual = sha256(readFileSync(path, 'utf8'));
   if (meta.inputs[file] !== actual) throw new Error(`Stale runtime input hash: ${file}`);
 }
 const runtimeText = readFileSync(`${ROOT}/runtime-current.json`, 'utf8');

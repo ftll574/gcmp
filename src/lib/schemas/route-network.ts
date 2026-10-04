@@ -1,6 +1,11 @@
 import { isKnownAirport } from '../airport-identity.ts';
 import {routeWithinExplicitServiceWindow} from '../rtw/route-date-semantics.ts';
 import { z } from 'zod';
+import { carrierIdentityKey, carrierRouteKey } from '../carrier-identity.ts';
+
+export const CarrierEntityKeySchema = z.string().regex(/^[A-Z]{2}\+[A-Z0-9]{3}\+[a-z0-9]+(?:-[a-z0-9]+)*$/);
+/** IATA 2F is a controlled duplicate; code-only records have no safe entity identity. */
+const SHARED_IATA_CODES = new Set(['2F']);
 
 // Route observations deliberately contain no weekdays or seat inventory.
 const DateSchema = z.iso.date();
@@ -25,12 +30,15 @@ export type RouteNetworkSource = z.infer<typeof RouteNetworkSourceSchema>;
  * Anything less stays `partial`; there is no "near complete" shortcut. */
 export const CarrierRouteUniverseSchema = z.object({
   carrier: z.string().regex(/^[A-Z0-9]{2,3}$/),
+  carrierEntityKey: CarrierEntityKeySchema.optional(),
+  carrierEntityName: z.string().min(1).optional(),
   scope: z.enum(['partial', 'complete']),
   asOf: DateSchema,
   directionalRouteDenominator: z.number().int().positive().optional(),
   sourceIds: z.array(SourceIdSchema).min(1),
   note: z.string().min(1),
 }).strict().superRefine((universe, ctx) => {
+  if (SHARED_IATA_CODES.has(universe.carrier) && !universe.carrierEntityKey) ctx.addIssue({ code: 'custom', path: ['carrierEntityKey'], message: `Shared IATA code ${universe.carrier} requires a qualified carrier entity key` });
   if (new Set(universe.sourceIds).size !== universe.sourceIds.length) {
     ctx.addIssue({ code: 'custom', path: ['sourceIds'], message: 'Duplicate source reference' });
   }
@@ -45,10 +53,12 @@ export type CarrierRouteUniverse = z.infer<typeof CarrierRouteUniverseSchema>;
 
 export const RouteNetworkEntrySchema = z.object({
   carrier: z.string().regex(/^[A-Z0-9]{2,3}$/),
+  carrierEntityKey: CarrierEntityKeySchema.optional(),
+  carrierEntityName: z.string().min(1).optional(),
   pair: z.tuple([z.string().regex(/^[A-Z]{3}$/), z.string().regex(/^[A-Z]{3}$/)]),
   service: z.literal('nonstop'),
   /** Registered plans are evidence only; never upgrade carrier identity, confirmed designators or dated selectable services. */
-  registeredPlans: z.array(z.object({registrationId:z.string().min(1),registeredOperator:z.string().regex(/^[A-Z0-9]{2,3}$/),flightNumberRaw:z.string().regex(/^\d{1,4}$/),effectiveFrom:DateSchema,effectiveUntil:DateSchema,weekdays:z.array(z.number().int().min(1).max(7)).min(1),departureUTC:z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/),arrivalUTC:z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/),arrivalDayOffset:z.null(),codeshareRaw:z.string().optional(),codeshareCompleteness:z.literal('unknown').optional(),stageNumber:z.number().int().positive().optional(),versionConflict:z.boolean().optional(),confidence:z.literal('high-confidence-schema-inference'),sourceId:SourceIdSchema}).strict()).optional(),
+  registeredPlans: z.array(z.object({registrationId:z.string().min(1),registeredOperator:z.string().regex(/^[A-Z0-9]{2,3}$/),registeredOperatorICAO:z.string().regex(/^[A-Z]{3}$/).optional(),carrierEntityKey:CarrierEntityKeySchema.optional(),flightNumberRaw:z.string().regex(/^\d{1,4}$/),effectiveFrom:DateSchema,effectiveUntil:DateSchema,weekdays:z.array(z.number().int().min(1).max(7)).min(1),departureUTC:z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/),arrivalUTC:z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/),arrivalDayOffset:z.null(),codeshareRaw:z.string().optional(),codeshareCompleteness:z.literal('unknown').optional(),stageNumber:z.number().int().positive().optional(),versionConflict:z.boolean().optional(),confidence:z.literal('high-confidence-schema-inference'),sourceId:SourceIdSchema}).strict()).optional(),
   /** `identity-unresolved` preserves a sourced route relationship that is no
    * longer safe to present as a current plannable carrier-route because no
    * same-carrier commercial designator can be corroborated. */
@@ -61,6 +71,8 @@ export const RouteNetworkEntrySchema = z.object({
    * Allows listed-carrier discovery without a designator; never proves the
    * actual operator or a dated flight. Unmarked provider graphs stay gated. */
   routeEvidence: z.literal('official-directed').optional(),
+  /** Route-level admission; registered-plan enrichment must never attach to this row. */
+  routeEvidenceScope: z.literal('route-only').optional(),
   /** Exact designators backed strongly enough for route planning. They still
    * do not assert a weekday, time, award seat, or date-specific operation. */
   flightNumbers: z.array(FlightDesignatorSchema).optional(),
@@ -73,8 +85,12 @@ export const RouteNetworkEntrySchema = z.object({
   effectiveFrom: DateSchema.optional(),
   effectiveUntil: DateSchema.optional(),
 }).strict().superRefine((entry, ctx) => {
+  if (SHARED_IATA_CODES.has(entry.carrier) && !entry.carrierEntityKey) ctx.addIssue({ code: 'custom', path: ['carrierEntityKey'], message: `Shared IATA code ${entry.carrier} requires a qualified carrier entity key` });
   if (entry.pair[0] === entry.pair[1]) {
     ctx.addIssue({ code: 'custom', path: ['pair'], message: 'Endpoints must differ' });
+  }
+  if (entry.routeEvidenceScope === 'route-only' && (entry.carrierIdentity !== 'provider-listed' || entry.routeEvidence !== 'official-directed' || entry.registeredPlans !== undefined || entry.flightNumbers !== undefined || entry.flightNumberCandidates !== undefined || entry.effectiveFrom !== undefined || entry.effectiveUntil !== undefined)) {
+    ctx.addIssue({ code: 'custom', path: ['routeEvidenceScope'], message: 'Route-only evidence must remain an undated provider-listed relationship without plan or flight-number promotion' });
   }
   if (entry.effectiveFrom && entry.effectiveUntil && entry.effectiveFrom > entry.effectiveUntil) {
     ctx.addIssue({ code: 'custom', path: ['effectiveUntil'], message: 'Inverted validity window' });
@@ -83,7 +99,7 @@ export const RouteNetworkEntrySchema = z.object({
     ctx.addIssue({ code: 'custom', path: ['sourceIds'], message: 'Duplicate source reference' });
   }
   for (const plan of entry.registeredPlans ?? []) {
-    if (plan.registeredOperator !== entry.carrier || plan.effectiveFrom > plan.effectiveUntil || new Set(plan.weekdays).size !== plan.weekdays.length) ctx.addIssue({code:'custom',path:['registeredPlans'],message:'Invalid registered plan operator, interval or weekdays'});
+    if ((plan.registeredOperator !== entry.carrier && !(entry.carrierEntityKey && plan.registeredOperatorICAO === entry.carrierEntityKey.split('+')[1])) || (entry.carrierEntityKey && (plan.carrierEntityKey !== entry.carrierEntityKey || plan.registeredOperatorICAO !== entry.carrierEntityKey.split('+')[1])) || (plan.carrierEntityKey !== undefined && plan.carrierEntityKey !== entry.carrierEntityKey) || plan.effectiveFrom > plan.effectiveUntil || new Set(plan.weekdays).size !== plan.weekdays.length) ctx.addIssue({code:'custom',path:['registeredPlans'],message:'Invalid registered plan operator, entity, interval or weekdays'});
   }
   const expectedPrefix = entry.carrier.toUpperCase();
   for (const [field, numbers] of [
@@ -137,7 +153,7 @@ export const RouteNetworkCatalogSchema = z.object({
   });
   const routes = new Set<string>();
   catalog.routes.forEach((route, index) => {
-    const key = `${route.carrier}:${route.pair.join('-')}`;
+    const key = carrierRouteKey(route, ...route.pair);
     if (routes.has(key)) ctx.addIssue({ code: 'custom', path: ['routes', index], message: 'Duplicate directional route' });
     routes.add(key);
     for(const plan of route.registeredPlans ?? []) if(!route.sourceIds.includes(plan.sourceId)) ctx.addIssue({code:'custom',path:['routes',index,'registeredPlans'],message:'Registered plan requires route source reference'});
@@ -154,17 +170,29 @@ export const RouteNetworkCatalogSchema = z.object({
     }
   });
   const routeSources = new Map(catalog.sources.map(source => [source.id, source]));
+  const identityByCode = new Map<string, Set<string>>();
+  for (const route of catalog.routes) {
+    const identities = identityByCode.get(route.carrier) ?? new Set<string>();
+    identities.add(carrierIdentityKey(route));
+    identityByCode.set(route.carrier, identities);
+  }
+  for (const [code, identities] of identityByCode) {
+    if (identities.size > 1 && catalog.routes.some(route => route.carrier === code && !route.carrierEntityKey)) {
+      ctx.addIssue({ code: 'custom', path: ['routes'], message: `Ambiguous shared carrier code ${code} requires qualified entity keys on every route` });
+    }
+  }
   const universes = new Set<string>();
   catalog.carrierUniverses.forEach((universe, index) => {
-    if (universes.has(universe.carrier)) {
+    const universeKey = carrierIdentityKey(universe);
+    if (universes.has(universeKey)) {
       ctx.addIssue({ code: 'custom', path: ['carrierUniverses', index, 'carrier'], message: 'Duplicate carrier universe' });
     }
-    universes.add(universe.carrier);
+    universes.add(universeKey);
     universe.sourceIds.forEach((id) => {
       if (!sources.has(id)) ctx.addIssue({ code: 'custom', path: ['carrierUniverses', index, 'sourceIds'], message: `Unknown source ${id}` });
     });
     if (universe.scope === 'complete') {
-      const represented = catalog.routes.filter((route) => route.carrier === universe.carrier
+      const represented = catalog.routes.filter((route) => carrierIdentityKey(route) === universeKey
         && route.status === 'published'
         && routeWithinExplicitServiceWindow(route, universe.asOf, routeSources)).length;
       if (universe.directionalRouteDenominator !== represented) {

@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { describe, expect, test } from 'vitest';
 import { buildAirportIndex } from '../../../src/lib/airport-index.ts';
 import { parseAirportCatalog } from '../../../src/lib/schemas/airports.ts';
-import { parseRouteNetworkCatalog } from '../../../src/lib/schemas/route-network.ts';
+import { parseRouteNetworkCatalog, RouteNetworkCatalogSchema } from '../../../src/lib/schemas/route-network.ts';
 import {
   buildAirportEntityProfile,
   buildAirlineEntityProfile,
@@ -26,6 +26,23 @@ const memberCodes = new Set(carrierNames.keys());
 const input = { network, airports: airportIndex.byIata, carrierNames, memberCodes };
 
 describe('entity-first route library model', () => {
+  test('airport counts and route cards distinguish qualified entities sharing one IATA code', () => {
+    const sharedNetwork = RouteNetworkCatalogSchema.parse({
+      version: '2026.3', coverage: 'curated-not-complete',
+      sources: [{ id: 'one', url: 'https://example.com/one', checkedOn: '2026-10-04', note: 'Fixture.' }, { id: 'two', url: 'https://example.com/two', checkedOn: '2026-10-04', note: 'Fixture.' }],
+      carrierUniverses: [], routes: [
+        { carrier: '2F', carrierEntityKey: 'BR+ACN+azul-conecta-ltda', carrierEntityName: 'Azul Conecta Ltda.', pair: ['TPE', 'NRT'], service: 'nonstop', status: 'published', sourceIds: ['one'] },
+        { carrier: '2F', carrierEntityKey: 'BR+XYZ+other-airline', carrierEntityName: 'Other Airline S.A.', pair: ['TPE', 'NRT'], service: 'nonstop', status: 'published', sourceIds: ['two'] },
+      ],
+    });
+    const model = { ...input, network: sharedNetwork, memberCodes: new Set(['2F']) };
+    const profile = buildAirportEntityProfile(model, 'TPE')!;
+    expect(profile.airlineCount).toBe(2);
+    expect(profile.outgoingRoutes[0]?.carriers.map(carrier => carrier.name)).toEqual(['Azul Conecta Ltda.', 'Other Airline S.A.']);
+    expect(buildAirlineEntityProfile(model, '2F')).toBeNull();
+    expect(buildAirlineEntityProfile(model, 'BR+ACN+azul-conecta-ltda')?.routes).toHaveLength(1);
+  });
+
   test('builds an airport page with TPE destinations, airlines and countries', () => {
     const profile = buildAirportEntityProfile(input, 'TPE');
     expect(profile).not.toBeNull();
@@ -68,4 +85,34 @@ describe('entity-first route library model', () => {
     expect(searchRouteLibraryEntities({ ...input, query: 'TPE-NRT' }).some((result) => result.selection.kind === 'route' && result.selection.id === 'TPE-NRT')).toBe(true);
     expect(searchRouteLibraryEntities({ ...input, query: 'BR198' }).some((result) => result.kind === 'flight' && result.selection.id === 'TPE-NRT')).toBe(true);
   });
+  test('qualified airline entities are searchable by legal name and canonical key', () => {
+    const sharedNetwork = RouteNetworkCatalogSchema.parse({
+      version: '2026.3', coverage: 'curated-not-complete',
+      sources: [{ id: 'one', url: 'https://example.com/one', checkedOn: '2026-10-04', note: 'Fixture.' }], carrierUniverses: [],
+      routes: [{ carrier: '2F', carrierEntityKey: 'BR+ACN+azul-conecta-ltda', carrierEntityName: 'Azul Conecta Ltda.', pair: ['TPE', 'NRT'], service: 'nonstop', status: 'published', sourceIds: ['one'] }],
+    });
+    const model = { ...input, network: sharedNetwork, memberCodes: new Set(['2F']) };
+    expect(searchRouteLibraryEntities({ ...model, query: 'Azul Conecta' }).some(row => row.selection.id === 'BR+ACN+azul-conecta-ltda')).toBe(true);
+    expect(searchRouteLibraryEntities({ ...model, query: 'BR+ACN+azul-conecta-ltda' }).some(row => row.selection.id === 'BR+ACN+azul-conecta-ltda')).toBe(true);
+  });
+  test('real route-only ACN identity searches and opens its isolated non-member shard profile', () => {
+    const key = 'BR+ACN+azul-conecta-ltda';
+    const result = searchRouteLibraryEntities({ ...input, query: 'Azul Conecta' }).find(row => row.selection.kind === 'airline' && row.selection.id === key);
+    expect(result).toMatchObject({ title: '2F · Azul Conecta Ltda.', subtitle: 'IATA 2F · ICAO ACN · BR' });
+    const selected = buildAirlineEntityProfile({ ...input, memberCodes: new Set([...memberCodes, '2F']) }, key);
+    expect(selected).toMatchObject({ carrier: '2F', carrierEntityKey: key, name: 'Azul Conecta Ltda.', airportCount: 3, operatingRouteCount: 0, confirmedRouteCount: 0 });
+    expect(selected!.routes.map(route => `${route.from.iata}-${route.to.iata}`).sort()).toEqual(['CNF-DTI', 'CNF-JDR', 'DTI-CNF', 'JDR-CNF']);
+    expect(selected!.routes.flatMap(route => route.carriers)).toEqual(expect.arrayContaining([
+      expect.objectContaining({ carrier: '2F', carrierEntityKey: key, name: 'Azul Conecta Ltda.', identity: 'provider-listed', confirmedNumbers: [], candidateNumbers: [], registeredPlans: [] }),
+    ]));
+    expect(buildAirlineEntityProfile({ ...input, memberCodes: new Set([...memberCodes, '2F']) }, 'AD')?.routes.some(route => route.carriers.some(carrier => carrier.carrierEntityKey === key)) ?? false).toBe(false);
+  });
 });
+
+ test('keeps registered plans separate from confirmed designators and operating identity', () => {
+  const card=buildRouteEntityProfile(input,'YYZ-GIG')?.route.carriers.find(x=>x.carrier==='AC');
+  const row=network.routes.find(x=>x.carrier==='AC'&&x.pair.join('-')==='YYZ-GIG')!;
+  expect(card?.registeredPlans).toEqual(row.registeredPlans);expect(card?.registeredPlans.length).toBeGreaterThan(0);
+  expect(card?.identity).toBe('provider-listed');expect(card?.confirmedNumbers).toEqual(row.flightNumbers??[]);
+  const br=buildRouteEntityProfile(input,'TPE-NRT')?.route.carriers.find(x=>x.carrier==='BR');expect(br?.registeredPlans).toEqual([]);
+ });

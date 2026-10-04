@@ -640,7 +640,7 @@ function Ready({
     if (!isCarrierEligibleForProduct(flight.carrier, selectedRtwProduct, data.allianceCatalog)) return;
     updateActiveGroup((group) => ({ legs: group.legs.map((leg, i) =>
       i === legIndex && isFlightLeg(leg) && leg.from === flight.from && leg.to === flight.to
-        ? { ...leg, operatingCarrier: flight.carrier, departsOn: selectedDepartureDate(flight), flightNumber: flight.flightNumber }
+        ? (() => { const rest = { ...leg }; delete rest.operatingCarrierEntityKey; return { ...rest, operatingCarrier: flight.carrier, ...(flight.carrierEntityKey ? { operatingCarrierEntityKey: flight.carrierEntityKey } : {}), departsOn: selectedDepartureDate(flight), flightNumber: flight.flightNumber }; })()
         : leg) }));
   }
 

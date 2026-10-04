@@ -1262,6 +1262,39 @@
       "url": "https://www.flyslm.com/travel-information/passengers/flight-schedule",
       "checkedOn": "2026-10-04",
       "note": "Official Surinam Airways timetable independently lists scheduled service in both PBM→BEL and BEL→PBM directions with validity overlapping Oct 4–10, 2026. A separate audit found unresolved date/clock conflicts against SIROS rows; this supports route-level directed timetable connectivity only, not a schedule-level row join, actual operation, ticketability, flight-number assignment, or RTW eligibility."
+    },
+    {
+      "id":"icao-sky-airline-peru-skx-identity-20261004","url":"https://www.icao.int/publications/DOC8643/Pages/Search.aspx","checkedOn":"2026-10-04","note":"Official ICAO identity reference: raw operator ICAO SKX is SKY Airline Peru S.A.C.; identity only, not route evidence."
+    },
+    {
+      "id":"faa-sky-airline-peru-h8-identity-20261004","url":"https://www.faa.gov/documentLibrary/media/Order/7340.2P_Chg_2_dtd_3_19_26.pdf","checkedOn":"2026-10-04","note":"FAA Order 7340.2P Change 2 independently identifies IATA H8 / ICAO SKX / SKY Airline Peru S.A.C.; H2 remains separate marketing code."
+    },
+    {
+      "id":"lim-airport-h8-board-5566-5567-relayed-20261004","url":"https://www.lima-airport.com/en/pasajeros/vuelos?day=today&adi=departures&scope=all&q=5566","checkedOn":"2026-10-04","note":"Official Lima airport board observation parent-relayed: H2 5566 LIM departure 10:55 local and 5567 LIM arrival 22:05 local on Oct 4. Raw screenshots/page capture unavailable locally; no capture hash claimed."
+    },
+    {
+      "id":"siros-skyairline-peru-lim-gru-20261004","url":"https://siros.anac.gov.br/siros/registros/registros/registros.csv","checkedOn":"2026-10-04","note":"Pinned SIROS CSV sha256 2bc37f1f1098f2f87d830662c953f0443067dad168f334719c466221318941c1; exact date-applicable regular passenger stages: SKX 5566 SPJC-SBGR 15:55-20:55Z registration SKX-0000000000046092875 and SKX 5567 SBGR-SPJC 22:00-03:05Z registration SKX-0000000000046092876. Admission is route-level only; no number, plan, time, actual-operation or RTW promotion."
+    },
+    {
+      "id":"iata-2f-controlled-duplicate-identity-20261004","url":"https://www.iata.org/en/publications/directories/code-search/?airline.search=2F","checkedOn":"2026-10-04","note":"IATA 2F is a controlled duplicate designator; route records must carry exact qualified entity identity."
+    },
+    {
+      "id":"anac-acn-qualified-identity-20261004","url":"https://www.gov.br/anac/pt-br/acesso-a-informacao/participacao-social/consultas-publicas/consultas/2025/cp-03-2025/cp-03-2025-air.pdf","checkedOn":"2026-10-04","note":"ANAC identity reference for raw ICAO ACN and Azul Conecta Ltda. Exact entity key BR+ACN+azul-conecta-ltda; do not substitute parent Azul AD."
+    },
+    {
+      "id":"siros-acn-cnf-jdr-dti-20261004","url":"https://siros.anac.gov.br/siros/registros/registros/registros.csv","checkedOn":"2026-10-04","note":"Pinned SIROS CSV sha256 2bc37f1f1098f2f87d830662c953f0443067dad168f334719c466221318941c1. Source-backed registered regular-passenger stages for CNF-JDR, JDR-CNF, CNF-DTI, DTI-CNF, valid on reviewed 2026-10-04/05/09 dates. Operator fields ACN / AZUL CONECTA LTDA. (EX TWO TAXI AEREO LTDA); no registered plans are emitted by this route-only admission."
+    },
+    {
+      "id":"azul-cnf-jdr-launch-20260519","url":"https://www.voeazul.com.br/content/dam/azul/voe-azul/imprensa/Azul%C2%A0lan%C3%A7a%20rota%20in%C3%A9dita%20entre%20o%20Aeroporto%20de%20Confins%20%28MG%29%20e%20S%C3%A3o%20Jo%C3%A3o%C2%A0del-Rei%20%28MG%29%20e%20amplia%20conectividade%20regional%20em%20Minas%20Gerais.pdf","checkedOn":"2026-10-04","publishedOn":"2026-05-19","note":"Azul official release names Azul Conecta, starts route 2026-08-02 and states three weekly frequencies each direction. Independent release's local timetable matches JDR SIROS stages after UTC-3 conversion."
+    },
+    {
+      "id":"bh-airport-cnf-jdr-launch-20260506","url":"https://www.bh-airport.com.br/pt-BR/press-room/releases?news=primeiro-lugar-no-ranking-de-destinos-domesticos-do-pais-e-do-bh-airport","checkedOn":"2026-10-04","publishedOn":"2026-05-06","note":"BH Airport release independently names Azul Conecta and three weekly frequencies each way for CNF-JDR. Page timed out on latest local review; source retained as corroboration from research dossier."
+    },
+    {
+      "id":"mg-cnf-dti-launch-20260424","url":"https://www.mg.gov.br/planejamento/noticias/voos-entre-confins-e-diamantina-comecam-em-agosto","checkedOn":"2026-10-04","publishedOn":"2026-04-24","note":"Minas Gerais government release identifies Azul Conecta and three weekly frequencies each way for CNF-DTI from August 2026. Published timetable conflict is unresolved; route-only scope."
+    },
+    {
+      "id":"bh-airport-cnf-dti-current-202609","url":"https://www.bh-airport.com.br/pt-BR/press-room/releases?news=diamantina-entra-na-rota-do-bh-airport","checkedOn":"2026-10-04","publishedOn":"2026-09-01","note":"BH Airport September release confirms CNF-DTI service began; publishes Monday/Friday 14:20 and Sunday 18:20 CNF departures. SIROS departures are 55 minutes earlier; unresolved conflict; no reverse clock corroboration. Route evidence only, no clock promotion."
     }
   ],
   "carrierUniverses": [],
@@ -7301,6 +7334,24 @@
         "siros-surinam-airways-pbm-bel-20261004",
         "surinam-airways-official-pbm-bel-timetable-20261004"
       ]
+    },
+    {
+      "carrier":"H8","pair":["LIM","GRU"],"service":"nonstop","status":"published","carrierIdentity":"provider-listed","routeEvidence":"official-directed","routeEvidenceScope":"route-only","sourceIds":["icao-sky-airline-peru-skx-identity-20261004","faa-sky-airline-peru-h8-identity-20261004","lim-airport-h8-board-5566-5567-relayed-20261004","siros-skyairline-peru-lim-gru-20261004"]
+    },
+    {
+      "carrier":"H8","pair":["GRU","LIM"],"service":"nonstop","status":"published","carrierIdentity":"provider-listed","routeEvidence":"official-directed","routeEvidenceScope":"route-only","sourceIds":["icao-sky-airline-peru-skx-identity-20261004","faa-sky-airline-peru-h8-identity-20261004","lim-airport-h8-board-5566-5567-relayed-20261004","siros-skyairline-peru-lim-gru-20261004"]
+    },
+    {
+      "carrier":"2F","carrierEntityKey":"BR+ACN+azul-conecta-ltda","carrierEntityName":"Azul Conecta Ltda.","pair":["CNF","JDR"],"service":"nonstop","status":"published","carrierIdentity":"provider-listed","routeEvidence":"official-directed","routeEvidenceScope":"route-only","sourceIds":["iata-2f-controlled-duplicate-identity-20261004","anac-acn-qualified-identity-20261004","siros-acn-cnf-jdr-dti-20261004","azul-cnf-jdr-launch-20260519","bh-airport-cnf-jdr-launch-20260506"]
+    },
+    {
+      "carrier":"2F","carrierEntityKey":"BR+ACN+azul-conecta-ltda","carrierEntityName":"Azul Conecta Ltda.","pair":["JDR","CNF"],"service":"nonstop","status":"published","carrierIdentity":"provider-listed","routeEvidence":"official-directed","routeEvidenceScope":"route-only","sourceIds":["iata-2f-controlled-duplicate-identity-20261004","anac-acn-qualified-identity-20261004","siros-acn-cnf-jdr-dti-20261004","azul-cnf-jdr-launch-20260519","bh-airport-cnf-jdr-launch-20260506"]
+    },
+    {
+      "carrier":"2F","carrierEntityKey":"BR+ACN+azul-conecta-ltda","carrierEntityName":"Azul Conecta Ltda.","pair":["CNF","DTI"],"service":"nonstop","status":"published","carrierIdentity":"provider-listed","routeEvidence":"official-directed","routeEvidenceScope":"route-only","sourceIds":["iata-2f-controlled-duplicate-identity-20261004","anac-acn-qualified-identity-20261004","siros-acn-cnf-jdr-dti-20261004","mg-cnf-dti-launch-20260424","bh-airport-cnf-dti-current-202609"]
+    },
+    {
+      "carrier":"2F","carrierEntityKey":"BR+ACN+azul-conecta-ltda","carrierEntityName":"Azul Conecta Ltda.","pair":["DTI","CNF"],"service":"nonstop","status":"published","carrierIdentity":"provider-listed","routeEvidence":"official-directed","routeEvidenceScope":"route-only","sourceIds":["iata-2f-controlled-duplicate-identity-20261004","anac-acn-qualified-identity-20261004","siros-acn-cnf-jdr-dti-20261004","mg-cnf-dti-launch-20260424","bh-airport-cnf-dti-current-202609"]
     }
   ]
 }

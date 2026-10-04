@@ -98,7 +98,7 @@ function routeFeature(route: RouteLibraryRouteCard, count: number, importance: n
       from: route.from.iata,
       to: route.to.iata,
       distanceNm: route.distanceNm,
-      carriers: route.carriers.map((carrier) => carrier.carrier).join(' · '),
+      carriers: route.carriers.map((carrier) => carrier.carrierEntityKey ? `${carrier.carrier} · ${carrier.name}` : carrier.carrier).join(' · '),
       confirmedNumbers: route.carriers.flatMap((carrier) => carrier.confirmedNumbers).slice(0, 8).join(' · '),
       importance,
     },
@@ -135,7 +135,7 @@ export function buildClusterBundledRoutes(
       existing.routes.push(route);
       existing.importance = Math.max(existing.importance, importance);
       for (const carrier of route.carriers) {
-        existing.carriers.add(carrier.carrier);
+        existing.carriers.add(carrier.carrierEntityKey ? `${carrier.carrier} · ${carrier.name}` : carrier.carrier);
         for (const number of carrier.confirmedNumbers) {
           if (existing.confirmedNumbers.length < 8 && !existing.confirmedNumbers.includes(number)) existing.confirmedNumbers.push(number);
         }
@@ -146,7 +146,7 @@ export function buildClusterBundledRoutes(
     const carriers = new Set<string>();
     const confirmedNumbers: string[] = [];
     for (const carrier of route.carriers) {
-      carriers.add(carrier.carrier);
+      carriers.add(carrier.carrierEntityKey ? `${carrier.carrier} · ${carrier.name}` : carrier.carrier);
       for (const number of carrier.confirmedNumbers) {
         if (confirmedNumbers.length < 8 && !confirmedNumbers.includes(number)) confirmedNumbers.push(number);
       }

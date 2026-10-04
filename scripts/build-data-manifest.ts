@@ -14,6 +14,7 @@
  */
 import { createHash } from 'node:crypto';
 import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { isCarrierShardPath } from './lib/runtime-shard-paths.ts';
 import { join, relative, resolve } from 'node:path';
 
 const ROOT = resolve(process.cwd());
@@ -181,7 +182,6 @@ function allFiles(): string[] {
 
 /** Shard rule: runtime-origins/A.json … Z.json → kind=shard, no per-file entry. */
 const ORIGIN_SHARD_RE = /^route-network\/runtime-origins\/[A-Z]\.json$/;
-const CARRIER_SHARD_RE = /^route-network\/runtime-carriers\/[A-Z0-9]{2}\.json$/;
 
 function build(): void {
   const files = allFiles().filter((p) => p !== 'DATA_MANIFEST.json'); // never list the manifest itself
@@ -196,7 +196,7 @@ function build(): void {
         : path.endsWith('.meta.json')
           ? 'meta'
           : 'derived';
-    if (ORIGIN_SHARD_RE.test(path) || CARRIER_SHARD_RE.test(path)) kind = 'shard';
+    if (ORIGIN_SHARD_RE.test(path) || isCarrierShardPath(path)) kind = 'shard';
 
     const producer = PRODUCERS[path] ?? null;
     const { source, license } = describe(path);
@@ -219,7 +219,6 @@ function build(): void {
     if (kind === 'shard') {
       inputs = ['route-network/runtime-current.json'];
     }
-
     datasets.push({
       id: path.replace(/\.json$/, '').replace(/\//g, '.'),
       path,

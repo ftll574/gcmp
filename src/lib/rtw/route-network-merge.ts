@@ -1,5 +1,6 @@
 import {routeSourceReviewWindow} from './route-date-semantics.ts';
 import { z } from 'zod';
+import { carrierIdentityKey, carrierRouteKey } from '../carrier-identity.ts';
 import { RouteNetworkSourceSchema, RouteNetworkCatalogSchema, type CarrierRouteUniverse, type RouteNetworkCatalog } from '../schemas/route-network.ts';
 
 function sourceKey(source: RouteNetworkCatalog['sources'][number]): string {
@@ -112,10 +113,10 @@ export function mergeRouteNumberEvidence(
     if (!existing) sources.set(source.id, source);
   }
   const routes = new Map<string, RouteNetworkCatalog['routes'][number]>(
-    network.routes.map((route) => [`${route.carrier}:${route.pair[0]}-${route.pair[1]}`, route]),
+    network.routes.map((route) => [carrierRouteKey(route, ...route.pair), route]),
   );
   for (const row of evidence.routes) {
-    const key = `${row.carrier}:${row.pair[0]}-${row.pair[1]}`;
+    const key = carrierRouteKey(row, ...row.pair);
     const existing = routes.get(key);
     if (!existing) throw new Error(`Flight-number evidence references missing route ${key}`);
     const merged = mergeRouteNumbers(row, existing);
@@ -164,10 +165,10 @@ export function mergeRouteNetworkCatalogs(
   }
 
   const routes = new Map<string, RouteNetworkCatalog['routes'][number]>(
-    observed.routes.map((route) => [`${route.carrier}:${route.pair[0]}-${route.pair[1]}`, route]),
+    observed.routes.map((route) => [carrierRouteKey(route, ...route.pair), route]),
   );
   for (const route of curated.routes) {
-    const key = `${route.carrier}:${route.pair[0]}-${route.pair[1]}`;
+    const key = carrierRouteKey(route, ...route.pair);
     const lower = routes.get(key);
     // Missing identity cannot erase a known provider-only limitation. Never
     // inherit operating proof from a lower-priority observation, and keep
@@ -182,9 +183,10 @@ export function mergeRouteNetworkCatalogs(
   }
 
   const universes = new Map<string, CarrierRouteUniverse>();
-  for (const universe of observed.carrierUniverses) universes.set(universe.carrier, universe);
+  for (const universe of observed.carrierUniverses) universes.set(carrierIdentityKey(universe), universe);
   for (const universe of curated.carrierUniverses) {
-    universes.set(universe.carrier, mergeUniverse(universes.get(universe.carrier), universe));
+    const key = carrierIdentityKey(universe);
+    universes.set(key, mergeUniverse(universes.get(key), universe));
   }
 
   return RouteNetworkCatalogSchema.parse({
@@ -241,10 +243,38 @@ export function applyRouteNumberQuarantines(network: RouteNetworkCatalog, input:
     delete clean.flightNumberCandidates; delete clean.flightNumberCandidateSourceIds;
     return {
       ...clean,
+      ...(route.status === 'published' && confirmed.length === 0 && candidates.length === 0
+        ? { status: 'identity-unresolved' as const }
+        : {}),
       ...(confirmed.length ? { flightNumbers: confirmed, flightNumberSourceIds: route.flightNumberSourceIds } : {}),
       ...(candidates.length ? { flightNumberCandidates: candidates, flightNumberCandidateSourceIds: route.flightNumberCandidateSourceIds } : {}),
       sourceIds: [...new Set([...route.sourceIds, ...matches.flatMap(rule => rule.sourceIds)])],
     };
   });
   return RouteNetworkCatalogSchema.parse({ ...network, sources: [...sources.values()], routes });
+}
+
+/** Restore accepted public runtime rows before applying current quarantine.
+ * Preservation must never reintroduce a blocked designator. */
+export function preserveRuntimeRoutesThenQuarantine(
+  network: RouteNetworkCatalog,
+  preservationInput: unknown,
+  quarantineInput: unknown,
+): RouteNetworkCatalog {
+  const preservation = RouteNetworkCatalogSchema.parse(preservationInput);
+  const sources = new Map(network.sources.map((source) => [source.id, source] as const));
+  for (const source of preservation.sources) {
+    const prior = sources.get(source.id);
+    if (prior && sourceKey(prior) !== sourceKey(source)) throw new Error(`Conflicting preservation source ${source.id}`);
+    if (!prior) sources.set(source.id, source);
+  }
+  const routes = new Map(network.routes.map((route) => [carrierRouteKey(route, ...route.pair), route] as const));
+  for (const route of preservation.routes) {
+    const key = carrierRouteKey(route, ...route.pair);
+    if (!routes.has(key)) throw new Error(`Preservation references missing route ${key}`);
+    routes.set(key, route);
+  }
+  // Preserve accepted descriptor order. New, non-preservation sources remain deterministic after it.
+  const orderedSources = [...preservation.sources, ...network.sources.filter((source) => !preservation.sources.some((item) => item.id === source.id))];
+  return applyRouteNumberQuarantines({ ...network, sources: orderedSources, routes: [...routes.values()] }, quarantineInput);
 }

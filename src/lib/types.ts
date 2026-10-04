@@ -144,6 +144,8 @@ export interface FlightLeg extends BaseLeg {
   /** `surface: true` is reserved for SurfaceLeg; flown legs normally omit it. */
   readonly surface?: false | undefined;
   readonly operatingCarrier: AirlineIata;
+  /** Optional qualified operator identity where an IATA code is shared. */
+  readonly operatingCarrierEntityKey?: string;
   /** Operating flight-number suffix, e.g. 473 for CX473. A saved reference,
    * not a persistent claim of current schedule/seat availability. */
   readonly flightNumber?: string;

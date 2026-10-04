@@ -1,18 +1,18 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-04T05:53:22.497Z",
+  "generatedAt": "2026-10-04T10:44:20.781Z",
   "routeEvidenceStatus": {
     "state": "verified",
     "asOf": "2026-10-03",
-    "validatedAtUTC": "2026-10-04T05:36:16Z",
-    "testFiles": 161,
-    "testSuites": 306,
-    "testsPassed": 1694,
+    "validatedAtUTC": "2026-10-04T10:40:34Z",
+    "testFiles": 164,
+    "testSuites": 309,
+    "testsPassed": 1715,
     "testsFailed": 0,
-    "airports": 5353,
-    "runtimeRoutes": 31652,
-    "runtimePublishedRoutes": 31062,
-    "runtimeSHA256": "94cfdb6ffe3ede154875be6b8e742b3191fed508496f331252b628e2e80235ef",
+    "airports": 5355,
+    "runtimeRoutes": 31658,
+    "runtimePublishedRoutes": 31068,
+    "runtimeSHA256": "2bd353350db6d871099a2c2aa2aee23b63b0a7e65cccbbc502d9234eeb017c8a",
     "brazil": {
       "previousBatchDirections": 51,
       "recentBatchDirections": 127,
@@ -99,9 +99,9 @@
       "heldFlaggedYesOutsideAirportTypeScope": 124,
       "heldSeaplaneBases": 71,
       "heldHeliports": 53,
-      "runtimeSHA256": "94cfdb6ffe3ede154875be6b8e742b3191fed508496f331252b628e2e80235ef",
-      "runtimeRoutes": 31652,
-      "runtimePublishedRoutes": 31062,
+      "runtimeSHA256": "2bd353350db6d871099a2c2aa2aee23b63b0a7e65cccbbc502d9234eeb017c8a",
+      "runtimeRoutes": 31658,
+      "runtimePublishedRoutes": 31068,
       "newRouteDirections": 0,
       "currentServiceEstablished": false
     },
@@ -265,7 +265,7 @@
     "sirosBrazilBulk": {
       "state": "stale",
       "reviewRuntimeSHA256": "02d9abc817db4073a088376eaed39e72d9a5ccdea07157f13bf808d455f90c1e",
-      "currentRuntimeSHA256": "94cfdb6ffe3ede154875be6b8e742b3191fed508496f331252b628e2e80235ef"
+      "currentRuntimeSHA256": "2bd353350db6d871099a2c2aa2aee23b63b0a7e65cccbbc502d9234eeb017c8a"
     },
     "palSummerInventory": {
       "state": "reviewed",
@@ -1297,8 +1297,8 @@
     }
   },
   "legacy": {
-    "total": 31652,
-    "published": 31062
+    "total": 31658,
+    "published": 31068
   },
   "qualified": {
     "airports": 8798,

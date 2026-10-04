@@ -1,5 +1,6 @@
 import {routeSourceReviewWindow,sourceReviewState,type SourceReviewWindow,type SourceReviewState} from './route-date-semantics.ts';
 import { airportIdentityPairKey } from '../airport-identity.ts';
+import { carrierIdentityKey } from '../carrier-identity.ts';
 import type { ScheduleEntry } from '../schemas/flight-schedules.ts';
 import type { ContinentId } from '../schemas/country-continent.ts';
 import type { RouteNetworkCatalog } from '../schemas/route-network.ts';
@@ -12,6 +13,8 @@ export type RouteCatalogLocalRegionFilter = 'all' | `local:${string}`;
 
 export interface RouteCatalogCarrierOption {
   readonly carrier: string;
+  readonly value?: string;
+  readonly label?: string;
   readonly routeCount: number;
 }
 
@@ -94,6 +97,8 @@ export interface RouteCatalogEvidenceView {
 
 export interface RouteCatalogCarrierView {
   readonly carrier: string;
+  readonly carrierEntityKey?: string;
+  readonly carrierEntityName?: string;
   readonly identity: 'operating' | 'provider-listed' | 'unknown';
   readonly flightNumbers: ReadonlyArray<string>;
   readonly candidateFlightNumbers: ReadonlyArray<string>;
@@ -137,6 +142,8 @@ export interface RouteCatalogContinentGroup {
 
 interface MutableCarrier {
   carrier: string;
+  entityKey: string | undefined;
+  name: string | undefined;
   identity: 'operating' | 'provider-listed' | 'unknown';
   flightNumbers: Set<string>;
   candidateFlightNumbers: Set<string>;
@@ -198,7 +205,7 @@ function pairBucket(pairs: Map<string, MutablePair>, from: string, to: string): 
 function carrierBucket(pair: MutablePair, carrier: string, identity: 'operating' | 'provider-listed' | 'unknown'): MutableCarrier {
   let row = pair.carriers.get(carrier);
   if (!row) {
-    row = { carrier, identity, flightNumbers: new Set(), candidateFlightNumbers: new Set(), evidence: [] };
+    row = { carrier, identity, entityKey: undefined, name: undefined, flightNumbers: new Set(), candidateFlightNumbers: new Set(), evidence: [] };
     pair.carriers.set(carrier, row);
   } else if (identity === 'operating' || (identity === 'provider-listed' && row.identity === 'unknown')) {
     row.identity = identity;
@@ -257,15 +264,23 @@ export function buildRouteCatalogPairs(input: BuildRouteCatalogPairsInput): Read
   const blockedRouteKeys = new Set(
     (input.routeNetwork?.routes ?? [])
       .filter((route) => route.status !== 'published')
-      .map((route) => `${route.carrier}:${airportIdentityPairKey(route.pair[0], route.pair[1])}`),
+    .map((route) => `${carrierIdentityKey(route)}:${airportIdentityPairKey(route.pair[0], route.pair[1])}`),
   );
   const blocked = (carrier: string, from: string, to: string): boolean =>
     blockedRouteKeys.has(`${carrier}:${airportIdentityPairKey(from, to)}`);
+  const qualifiedCodes = new Set((input.routeNetwork?.routes ?? []).filter(route => route.carrierEntityKey).map(route => route.carrier));
+  // Auxiliary schedules/flight-number references only identify IATA. A
+  // controlled duplicate or qualified runtime entity needs raw operator
+  // identity before those IATA-only layers can be joined safely.
+  const ambiguousCode = (carrier: string): boolean => carrier === '2F' || qualifiedCodes.has(carrier);
 
   for (const route of input.routeNetwork?.routes ?? []) {
     if (route.status !== 'published' || !input.memberCodes.has(route.carrier)) continue;
     const pair = pairBucket(pairs, route.pair[0], route.pair[1]);
-    const carrier = carrierBucket(pair, route.carrier, route.carrierIdentity ?? 'unknown');
+    const carrier = carrierBucket(pair, carrierIdentityKey(route), route.carrierIdentity ?? 'unknown');
+    carrier.carrier = route.carrier;
+    carrier.entityKey = route.carrierEntityKey;
+    carrier.name = route.carrierEntityName ?? route.carrier;
     const reviewWindow=routeSourceReviewWindow(route,routeSources);
     for (const sourceId of route.sourceIds) {
       const source = routeSources.get(sourceId);
@@ -310,7 +325,7 @@ export function buildRouteCatalogPairs(input: BuildRouteCatalogPairsInput): Read
   }
 
   for (const schedule of input.schedules ?? []) {
-    if (schedule.status === 'suspended' || !input.memberCodes.has(schedule.carrier)
+    if (schedule.status === 'suspended' || ambiguousCode(schedule.carrier) || !input.memberCodes.has(schedule.carrier)
       || blocked(schedule.carrier, schedule.pair[0], schedule.pair[1])) continue;
     const pair = pairBucket(pairs, schedule.pair[0], schedule.pair[1]);
     const carrier = carrierBucket(pair, schedule.carrier, 'operating');
@@ -333,7 +348,7 @@ export function buildRouteCatalogPairs(input: BuildRouteCatalogPairsInput): Read
 
   const official = input.officialSchedules;
   for (const service of official?.services ?? []) {
-    if (!input.memberCodes.has(service.carrier) || blocked(service.carrier, service.from, service.to)) continue;
+    if (ambiguousCode(service.carrier) || !input.memberCodes.has(service.carrier) || blocked(service.carrier, service.from, service.to)) continue;
     const pair = pairBucket(pairs, service.from, service.to);
     const carrier = carrierBucket(pair, service.carrier, 'operating');
     pushEvidence(carrier, {
@@ -353,7 +368,7 @@ export function buildRouteCatalogPairs(input: BuildRouteCatalogPairsInput): Read
   }
 
   for (const reference of official?.flightNumberReferences ?? []) {
-    if (!input.memberCodes.has(reference.carrier) || blocked(reference.carrier, reference.from, reference.to)) continue;
+    if (ambiguousCode(reference.carrier) || !input.memberCodes.has(reference.carrier) || blocked(reference.carrier, reference.from, reference.to)) continue;
     const pair = pairBucket(pairs, reference.from, reference.to);
     const carrier = carrierBucket(pair, reference.carrier, 'operating');
     pushEvidence(carrier, {
@@ -372,6 +387,8 @@ export function buildRouteCatalogPairs(input: BuildRouteCatalogPairsInput): Read
       const carriers = [...pair.carriers.values()]
         .map((carrier): RouteCatalogCarrierView => ({
           carrier: carrier.carrier,
+          ...(carrier.entityKey ? { carrierEntityKey: carrier.entityKey } : {}),
+          ...(carrier.name ? { carrierEntityName: carrier.name } : {}),
           identity: carrier.identity,
           flightNumbers: [...carrier.flightNumbers].sort(compareFlightNumbers),
           candidateFlightNumbers: [...carrier.candidateFlightNumbers]
@@ -411,15 +428,19 @@ function continentOf(
 export function listRouteCatalogCarrierOptions(
   pairs: ReadonlyArray<RouteCatalogPairView>,
 ): ReadonlyArray<RouteCatalogCarrierOption> {
-  const routesByCarrier = new Map<string, number>();
+  const routesByCarrier = new Map<string, { carrier: string; label?: string; count: number; qualified: boolean }>();
   for (const pair of pairs) {
     for (const carrier of pair.carriers) {
-      routesByCarrier.set(carrier.carrier, (routesByCarrier.get(carrier.carrier) ?? 0) + 1);
+      const value = carrier.carrierEntityKey ?? carrier.carrier;
+      const qualified = carrier.carrierEntityKey !== undefined;
+      const row = routesByCarrier.get(value) ?? { carrier: carrier.carrier, ...(qualified ? { label: `${carrier.carrier} · ${carrier.carrierEntityName ?? carrier.carrierEntityKey}` } : {}), count: 0, qualified };
+      row.count += 1;
+      routesByCarrier.set(value, row);
     }
   }
   return [...routesByCarrier.entries()]
-    .map(([carrier, routeCount]) => ({ carrier, routeCount }))
-    .sort((a, b) => a.carrier.localeCompare(b.carrier));
+    .map(([value, row]) => ({ carrier: row.carrier, ...(row.qualified ? { value, label: row.label } : {}), routeCount: row.count }))
+    .sort((a, b) => (a.label ?? a.carrier).localeCompare(b.label ?? b.carrier));
 }
 
 export interface RouteCatalogRegionOptionsInput {
@@ -532,7 +553,7 @@ export function filterRouteCatalogPairs(
       if (input.airportBrowseRegions?.get(iata) !== localRegion) return [];
     }
     const carriers = selectedCarrier
-      ? pair.carriers.filter((carrier) => carrier.carrier === selectedCarrier)
+      ? pair.carriers.filter((carrier) => (carrier.carrierEntityKey ?? carrier.carrier) === selectedCarrier)
       : pair.carriers;
     if (carriers.length === 0) return [];
     return [{
@@ -574,7 +595,7 @@ export function groupRouteCatalog(input: GroupRouteCatalogInput): ReadonlyArray<
         .map(([country, airports]): RouteCatalogCountryGroup => {
           const airportGroups = [...airports.entries()]
             .map(([iata, routes]): RouteCatalogAirportGroup => {
-              const carrierCodes = new Set(routes.flatMap((route) => route.carriers.map((carrier) => carrier.carrier)));
+              const carrierCodes = new Set(routes.flatMap((route) => route.carriers.map((carrier) => carrier.carrierEntityKey ?? carrier.carrier)));
               return {
                 iata,
                 airport: (input.mode === 'from' ? routes[0]?.fromAirport : routes[0]?.toAirport) ?? null,
@@ -593,7 +614,7 @@ export function groupRouteCatalog(input: GroupRouteCatalogInput): ReadonlyArray<
             country,
             airports: airportGroups,
             routeCount: airportGroups.reduce((sum, airport) => sum + airport.routeCount, 0),
-            carrierCount: new Set(airportGroups.flatMap((airport) => airport.routes.flatMap((route) => route.carriers.map((carrier) => carrier.carrier)))).size,
+            carrierCount: new Set(airportGroups.flatMap((airport) => airport.routes.flatMap((route) => route.carriers.map((carrier) => carrier.carrierEntityKey ?? carrier.carrier)))).size,
             flightCount: new Set(airportGroups.flatMap((airport) => airport.routes.flatMap((route) => route.carriers.flatMap((carrier) => [...carrier.flightNumbers, ...carrier.candidateFlightNumbers])))).size,
           };
         })
@@ -604,7 +625,7 @@ export function groupRouteCatalog(input: GroupRouteCatalogInput): ReadonlyArray<
         countries: countryGroups,
         airportCount: allAirports.length,
         routeCount: allAirports.reduce((sum, airport) => sum + airport.routeCount, 0),
-        carrierCount: new Set(allAirports.flatMap((airport) => airport.routes.flatMap((route) => route.carriers.map((carrier) => carrier.carrier)))).size,
+        carrierCount: new Set(allAirports.flatMap((airport) => airport.routes.flatMap((route) => route.carriers.map((carrier) => carrier.carrierEntityKey ?? carrier.carrier)))).size,
         flightCount: new Set(allAirports.flatMap((airport) => airport.routes.flatMap((route) => route.carriers.flatMap((carrier) => [...carrier.flightNumbers, ...carrier.candidateFlightNumbers])))).size,
       };
     })

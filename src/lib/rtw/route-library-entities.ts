@@ -3,6 +3,7 @@ import { distanceNm } from '../calc/haversine.ts';
 import type { ContinentId } from '../schemas/country-continent.ts';
 import type { RouteNetworkCatalog, RouteNetworkEntry, RouteNetworkSource } from '../schemas/route-network.ts';
 import type { Airport } from '../types.ts';
+import { carrierIdentityKey } from '../carrier-identity.ts';
 
 export type RouteLibraryEntitySelection =
   | { readonly kind: 'airport'; readonly id: string }
@@ -11,6 +12,7 @@ export type RouteLibraryEntitySelection =
 
 export interface RouteLibraryCarrierRoute {
   readonly carrier: string;
+  readonly carrierEntityKey?: string;
   readonly name: string;
   readonly identity: 'operating' | 'provider-listed' | 'unknown';
   readonly confirmedNumbers: ReadonlyArray<string>;
@@ -39,6 +41,7 @@ export interface AirportEntityProfile {
 
 export interface AirlineEntityProfile {
   readonly carrier: string;
+  readonly carrierEntityKey?: string;
   readonly name: string;
   readonly routes: ReadonlyArray<RouteLibraryRouteCard>;
   readonly airportCount: number;
@@ -84,7 +87,7 @@ function carriersForPair(
   carrierNames: ReadonlyMap<string, string>,
 ): ReadonlyArray<RouteLibraryCarrierRoute> {
   const groups = new Map<string, RouteNetworkEntry[]>();
-  for (const row of rows) groups.set(row.carrier, [...(groups.get(row.carrier) ?? []), row]);
+  for (const row of rows) { const key = carrierIdentityKey(row); groups.set(key, [...(groups.get(key) ?? []), row]); }
   return [...groups.values()].map((group) => {
     const row = group.find(row => row.carrierIdentity === 'operating') ?? group.find(row => row.carrierIdentity === 'provider-listed') ?? group[0]!;
     const sourceIds = new Set([
@@ -94,7 +97,8 @@ function carriersForPair(
     ]);
     return {
       carrier: row.carrier,
-      name: carrierNames.get(row.carrier) ?? row.carrier,
+      ...(row.carrierEntityKey ? { carrierEntityKey: row.carrierEntityKey } : {}),
+      name: row.carrierEntityName ?? carrierNames.get(row.carrier) ?? row.carrier,
       identity: row.carrierIdentity ?? 'unknown',
       confirmedNumbers: [...new Set(group.flatMap(row => row.flightNumbers ?? []))],
       candidateNumbers: [...new Set(group.flatMap(row => row.flightNumberCandidates ?? []))],
@@ -231,7 +235,7 @@ export function buildAirportEntityProfile(input: BuildRouteLibraryEntityInput, i
   const incomingRouteCount = new Set(rows.filter((row) => sameAirport(row.pair[1], airport.iata)).map((row) => airportIdentityPairKey(row.pair[0], row.pair[1]))).size;
   const outgoingRoutes = buildPairCards(input, outgoingRows).map(route => ({ ...route, from: airport })).sort((a, b) =>
     b.carriers.length - a.carriers.length || a.to.city.localeCompare(b.to.city));
-  const airlines = new Set(outgoingRows.map((row) => row.carrier));
+  const airlines = new Set(outgoingRows.map((row) => carrierIdentityKey(row)));
   const countries = new Set(outgoingRoutes.map((route) => route.to.country));
   return {
     airport,
@@ -245,12 +249,17 @@ export function buildAirportEntityProfile(input: BuildRouteLibraryEntityInput, i
 }
 
 export function buildAirlineEntityProfile(input: BuildRouteLibraryEntityInput, carrier: string): AirlineEntityProfile | null {
-  const code = carrier.toUpperCase();
-  const rows = publishedRows(input).filter((row) => row.carrier === code);
+  const selection = carrier.includes('+') ? carrier : carrier.toUpperCase();
+  const matches = publishedRows(input).filter((row) => row.carrier === selection || row.carrierEntityKey === selection);
+  const identities = new Set(matches.map(carrierIdentityKey));
+  if (identities.size > 1 && !matches.some(row => row.carrierEntityKey === selection)) return null;
+  const rows = matches.filter(row => carrierIdentityKey(row) === selection);
   if (rows.length === 0) return null;
+  const code = rows[0]!.carrier;
+  const entityKey = rows[0]!.carrierEntityKey;
   const routes = buildPairCards(input, rows).map((route) => ({
     ...route,
-    carriers: route.carriers.filter((row) => row.carrier === code),
+    carriers: route.carriers.filter((row) => (row.carrierEntityKey ?? row.carrier) === selection),
   }));
   const airportsUsed = new Set<string>();
   const countries = new Set<string>();
@@ -270,7 +279,8 @@ export function buildAirlineEntityProfile(input: BuildRouteLibraryEntityInput, c
     .slice(0, 10);
   return {
     carrier: code,
-    name: input.carrierNames.get(code) ?? code,
+    ...(entityKey ? { carrierEntityKey: entityKey } : {}),
+    name: rows[0]!.carrierEntityName ?? input.carrierNames.get(code) ?? code,
     routes,
     airportCount: airportsUsed.size,
     countryCount: countries.size,
@@ -319,13 +329,20 @@ export function searchRouteLibraryEntities(
     title: `${airport.iata} · ${airport.city}`,
     subtitle: `${airport.name} · ${airport.country}`,
   });
-  const addAirline = (carrier: string, name: string): void => add({
+  const addAirline = (carrier: string, name: string, titleCode = carrier, subtitle?: string): void => add({
     key: `airline:${carrier}`,
     selection: { kind: 'airline', id: carrier },
     kind: 'airline',
-    title: `${carrier} · ${name}`,
-    subtitle: input.locale === 'zh-TW' ? '航空公司航網' : 'Airline network',
+    title: `${titleCode} · ${name}`,
+    subtitle: subtitle ?? (input.locale === 'zh-TW' ? '航空公司航網' : 'Airline network'),
   });
+
+  const qualifiedQuery = query;
+  if (/^[A-Z]{2}\+[A-Z0-9]{3}\+[a-z0-9]+(?:-[a-z0-9]+)*$/.test(qualifiedQuery)) {
+    const entity = input.network.routes.find(row => row.status === 'published' && row.carrierEntityKey === qualifiedQuery);
+    if (entity) addAirline(qualifiedQuery, entity.carrierEntityName ?? qualifiedQuery, entity.carrier,
+      `IATA ${entity.carrier} · ICAO ${qualifiedQuery.split('+')[1]} · ${qualifiedQuery.split('+')[0]}`);
+  }
 
   const routeMatch = /^([A-Z]{3})\s*(?:-|→|>|TO|\s)\s*([A-Z]{3})$/.exec(upper);
   if (routeMatch && input.airports.has(routeMatch[1]!) && input.airports.has(routeMatch[2]!)) {
@@ -388,5 +405,11 @@ export function searchRouteLibraryEntities(
       return rank(carrierA, nameA) - rank(carrierB, nameB) || carrierA.localeCompare(carrierB);
     });
   for (const [carrier, name] of airlineMatches) addAirline(carrier, name);
+  const entityMatches = [...new Map(input.network.routes.filter(row => row.status === 'published' && row.carrierEntityKey && row.carrierEntityName)
+    .map(row => [row.carrierEntityKey!, row] as const)).values()]
+    .filter(row => row.carrierEntityKey !== upper && row.carrierEntityName!.toUpperCase().includes(upper))
+    .sort((a, b) => a.carrierEntityName!.localeCompare(b.carrierEntityName!) || a.carrierEntityKey!.localeCompare(b.carrierEntityKey!));
+  for (const row of entityMatches) addAirline(row.carrierEntityKey!, row.carrierEntityName!, row.carrier,
+    `IATA ${row.carrier} · ICAO ${row.carrierEntityKey!.split('+')[1]} · ${row.carrierEntityKey!.split('+')[0]}`);
   return results;
 }

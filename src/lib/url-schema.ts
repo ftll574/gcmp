@@ -169,9 +169,15 @@ export function parseShareUrl(input: string): UrlParseResult {
   const fcRaw = params.get('fc');
   const dRaw = params.get('d');
   const fnRaw = params.get('fn');
+  const oeRaw = params.get('oe');
   const flightNumbersByGroup = fnRaw === null ? null : fnRaw.split(';');
   if (flightNumbersByGroup && flightNumbersByGroup.length !== iataByGroup.length) {
     return err('mismatched-op-length', 'Flight-number groups must match the airport groups.');
+  }
+  let operatorEntitiesByGroupStr: string[] | null = null;
+  if (oeRaw !== null) {
+    operatorEntitiesByGroupStr = oeRaw.split(';');
+    if (operatorEntitiesByGroupStr.length !== iataByGroup.length) return err('mismatched-op-length', 'Qualified-operator groups must match the airport groups.');
   }
   const stopoverRaw = params.get('stp');
   const surfaceRaw = params.get('surf');
@@ -310,6 +316,18 @@ export function parseShareUrl(input: string): UrlParseResult {
         `Group ${gi + 1}: expected ${expectedOpCount} operating carrier(s) for ${iataCodes.length} airports; got ${operatingCarriers.length}.`,
       );
     }
+    let operatorEntities: ReadonlyArray<string | undefined> | null = null;
+    if (operatorEntitiesByGroupStr) {
+      const rawEntities = (operatorEntitiesByGroupStr[gi] ?? '').split(',');
+      if (rawEntities.length !== expectedOpCount) return err('mismatched-op-length', `Group ${gi + 1}: qualified operators must match the leg count.`);
+      const parsedEntities: Array<string | undefined> = [];
+      for (const cell of rawEntities) {
+        if (!cell) parsedEntities.push(undefined);
+        else if (/^[A-Z]{2}\+[A-Z0-9]{3}\+[a-z0-9]+(?:-[a-z0-9]+)*$/.test(cell)) parsedEntities.push(cell);
+        else return err('malformed-path', `Invalid qualified operator identity: "${cell}".`);
+      }
+      operatorEntities = parsedEntities;
+    }
     // Decode fare-class letters for this group, if present.
     let fareClasses: ReadonlyArray<string | undefined> | null = null;
     if (fcByGroupStr) {
@@ -433,6 +451,7 @@ export function parseShareUrl(input: string): UrlParseResult {
       const manual = manuals?.[i];
       const departsOn = departures?.[i];
       const flightNumber = flightNumbers?.[i];
+      const operatingCarrierEntityKey = operatorEntities?.[i];
       if (surface === true) {
         // Legacy links stored a placeholder carrier (and could also carry
         // flight-only metadata) on surface sectors. Accept a syntactically
@@ -441,8 +460,8 @@ export function parseShareUrl(input: string): UrlParseResult {
         if (operatingCarrier !== '' && !/^[A-Z0-9]{2,3}$/.test(operatingCarrier)) {
           return err('malformed-path', `Invalid operating carrier code: "${operatingCarrier}"`);
         }
-        if (flightNumber) {
-          return err('malformed-path', 'A flight number requires a flown leg and 1–4 digits with an optional letter suffix.');
+        if (flightNumber || operatingCarrierEntityKey) {
+          return err('malformed-path', 'Flight-only metadata requires a flown leg.');
         }
         legs.push({
           from,
@@ -462,6 +481,7 @@ export function parseShareUrl(input: string): UrlParseResult {
         from,
         to,
         operatingCarrier,
+        ...(operatingCarrierEntityKey ? { operatingCarrierEntityKey } : {}),
         ...(legCabin !== undefined ? { cabin: legCabin } : {}),
         ...(fc !== undefined ? { fareClass: fc } : {}),
         ...(stopover !== undefined ? { stopover } : {}),
@@ -611,6 +631,10 @@ export function encodeShareUrl(req: RoutingRequest): string {
   const datesByGroup = anyDated
     ? req.groups.map((group) => group.legs.map((leg) => isFlightLeg(leg) ? (leg.departsOn ?? '') : '').join(','))
     : null;
+  const anyQualifiedOperator = req.groups.some((g) => g.legs.some((leg) => isFlightLeg(leg) && leg.operatingCarrierEntityKey !== undefined));
+  const operatorEntitiesByGroup = anyQualifiedOperator
+    ? req.groups.map((group) => group.legs.map((leg) => isFlightLeg(leg) ? (leg.operatingCarrierEntityKey ?? '') : '').join(','))
+    : null;
 
   const path = groupChains.join(',');
   const op = opByGroup.join(';');
@@ -640,6 +664,7 @@ export function encodeShareUrl(req: RoutingRequest): string {
   if (datesByGroup) {
     params.set('d', datesByGroup.join(';'));
   }
+  if (operatorEntitiesByGroup) params.set('oe', operatorEntitiesByGroup.join(';'));
   if (req.groups.some((group) => group.legs.some((leg) => isFlightLeg(leg) && leg.flightNumber !== undefined))) {
     params.set('fn', req.groups.map((group) => group.legs.map((leg) => isFlightLeg(leg) ? (leg.flightNumber ?? '') : '').join(',')).join(';'));
   }

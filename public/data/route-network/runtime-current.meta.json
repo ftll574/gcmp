@@ -3,7 +3,7 @@
   "builtOn": "2026-10-04",
   "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
   "license": "ODbL-1.0",
-  "licenseNote": "Derived database of ODbL-licensed ADS-B route sources; share-alike applies. SIROS registered plan facts retain separately attributed Creative Commons Attribution provenance; publisher version unspecified. This mixed legacy artifact is not the qualified public release package.",
+  "licenseNote": "Derived database of ODbL-licensed ADS-B route sources; share-alike applies.",
   "mergeStrategy": "curated + generated",
   "inputs": {
     "current.json": "51fa9f42008daa852af9a4142d3da9ed40b68c4be83ea354b603f1c1dbb40bc5",
@@ -13,27 +13,23 @@
     "bts-marketing-current.json": "f749b64957f572dfcfbdba184b4276342895024b74eb61b44426b61fd37eeb75",
     "standing-current.json": "da0d580b0fff8286ed665baa37b418489b8eb94f1ed4f86235c19ce9a7286340",
     "validated-static-current.json": "10953c6f7975191ce577fbe6406768813684c6de284b2c2508070dd9bdd33712",
-    "../../../docs/coverage-ledger/siros-range-review-20261002/source.json": "01d1133e28cec5b5d9af269e9d88d82a1e3029ed8f2d0bcc0b21e090e316c362",
-    "../../../docs/coverage-ledger/siros-range-review-20261002/sample.csv": "3f964528a5e109570a790738657d21cb4af7156908ecb947db94150255193574",
-    "../../../docs/coverage-ledger/siros-full-20261002/capture.json": "24f6a8dbd2f1b223146218322fd47b8db154e1f106ca41d38e98663dcd6904e4",
-    "../../../docs/coverage-ledger/siros-full-20261002/registros.csv": "5bb920f42094958d82a1907e0d51f6328fa7fc73e78cd0e4907faae65b267dce",
-    "../../../docs/coverage-ledger/siros-mapped-20261002/carrier-mappings.json": "1a64823948811757fd07f754f6d5cb05cd6a7271178070761a6198ee5acd4f67",
-    "../../../docs/coverage-ledger/siros-skyteam-20261003/scope.json": "1cb255a59440ee51d72d778049c55b3357c4829d7b1eaebb99ec18264e8f8c83",
-    "current-corrections.json": "ecfba318d19edb1e39c968f5b438174b61acb3117e4278d4438022cf8d83c87e",
+    "current-corrections.json": "f823532091208c5a2d71034df8b2073781d3cecc688aad4bfb821d9e348f9d85",
     "flight-numbers-current.json": "deaed1fdb0d879155aaa4728586058319596dcf357fa3e86a1e665fcb3b117f5",
-    "flight-number-quarantines.json": "cffad2c1fe9091b364c80036d69be2f7bf0f7156ff1c845e38400cb00e9bd622"
+    "flight-number-quarantines.json": "cffad2c1fe9091b364c80036d69be2f7bf0f7156ff1c845e38400cb00e9bd622",
+    "scripts/data/accepted-runtime-preservation.json": "4e731a78fc683073ad334e9d597c055de5b9c6b87362c9000564b42bb056bba4"
   },
-  "outputSha256": "94cfdb6ffe3ede154875be6b8e742b3191fed508496f331252b628e2e80235ef",
-  "routes": 31652,
-  "publishedRoutes": 31062,
-  "carriers": 123,
+  "outputSha256": "2bd353350db6d871099a2c2aa2aee23b63b0a7e65cccbbc502d9234eeb017c8a",
+  "routes": 31658,
+  "publishedRoutes": 31068,
+  "carriers": 125,
   "confirmedOperatingRoutes": 1535,
-  "providerListedRoutes": 29491,
+  "providerListedRoutes": 29497,
   "unknownIdentityRoutes": 36,
   "confirmedFlightNumberRoutes": 295,
   "candidateFlightNumberRoutes": 30605,
   "anyFlightNumberRoutes": 30681,
   "routeCountByCarrier": {
+    "2F": 4,
     "2W": 2,
     "3U": 4,
     "4B": 2,
@@ -86,6 +82,7 @@
     "GJ": 2,
     "GK": 6,
     "H2": 4,
+    "H8": 2,
     "HA": 112,
     "HB": 2,
     "HO": 2,
@@ -205,6 +202,7 @@
     "ZH": 463
   },
   "providerListedCountByCarrier": {
+    "2F": 4,
     "2W": 2,
     "3U": 2,
     "4B": 2,
@@ -256,6 +254,7 @@
     "GJ": 2,
     "GK": 6,
     "H2": 4,
+    "H8": 2,
     "HA": 112,
     "HB": 2,
     "HO": 2,
@@ -327,6 +326,18 @@
     "ZE": 8,
     "ZH": 182
   },
+  "unknownIdentityCountByCarrier": {
+    "A3": 1,
+    "AC": 3,
+    "AT": 7,
+    "AV": 1,
+    "FJ": 1,
+    "NZ": 15,
+    "OS": 3,
+    "OU": 1,
+    "RJ": 2,
+    "WY": 2
+  },
   "originShards": {
     "A": {
       "routes": 2291,
@@ -339,14 +350,14 @@
       "sha256": "173564d727a1f6c6be3bb64f19ffbee1b1ea259f7b4e3e7965a39ec7b65b1b53"
     },
     "C": {
-      "routes": 2610,
-      "bytes": 1402207,
-      "sha256": "9813f1baef125ae9098030b82acc67e076524fcd847fb7fb883ad3de457510d3"
+      "routes": 2612,
+      "bytes": 1406183,
+      "sha256": "275aa79426ff60989a7fcb4411067424cb4b442afc3390fca5c5ca5251a1e573"
     },
     "D": {
-      "routes": 2006,
-      "bytes": 975323,
-      "sha256": "f36c056aa4a175502983c04ef0921a66e179612ccfc52b73cbd647357d5a6426"
+      "routes": 2007,
+      "bytes": 977795,
+      "sha256": "1aa6cb24baa9a86ff07213c213d31879f8c81f561ec5e9ecda9742d7211bd921"
     },
     "E": {
       "routes": 558,
@@ -359,9 +370,9 @@
       "sha256": "d49ad40094b7c4a890e2e47eafbb2b14606238cae3672b4fe1e4c06081f514f4"
     },
     "G": {
-      "routes": 669,
-      "bytes": 798857,
-      "sha256": "2eba20c3de00d631d99d722722db5427a631fb1e979ce94a47f5b7ba51b0e3f8"
+      "routes": 670,
+      "bytes": 800740,
+      "sha256": "9d791f9076309e4794da6674c46f867ae5d9a73ceffb9731879617880ce736e7"
     },
     "H": {
       "routes": 1594,
@@ -374,9 +385,9 @@
       "sha256": "1f2db0287628b6f7d203643531284c080894088cb89b67a4a9be2bd67488e087"
     },
     "J": {
-      "routes": 782,
-      "bytes": 374469,
-      "sha256": "ca0d76d066deef5fe7dcb2f6f6c4b2fb5d7001d4063c22c19468eaef53830451"
+      "routes": 783,
+      "bytes": 377117,
+      "sha256": "03581f076499c064eed571201c4429b56dac951a1fd781e258eab0e3d3ec2640"
     },
     "K": {
       "routes": 972,
@@ -384,9 +395,9 @@
       "sha256": "6991b1ebcf8dbf52761f2b0e87149b8df3e5e37ad6df584dca4121325ff12d3b"
     },
     "L": {
-      "routes": 1969,
-      "bytes": 1100711,
-      "sha256": "82133b34d5832c32447467ad1d640481fc94c20e6c3b4abd6e9f2b9e28eca299"
+      "routes": 1970,
+      "bytes": 1102594,
+      "sha256": "cb60a77df08adeb238e55d0e262fff72a0f3271f326b1fa8da25477afccfa611"
     },
     "M": {
       "routes": 2340,

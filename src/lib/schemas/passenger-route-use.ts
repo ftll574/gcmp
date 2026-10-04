@@ -1,5 +1,7 @@
 import { z } from 'zod';
 import { RouteNetworkSourceSchema } from './route-network.ts';
+import { CarrierEntityKeySchema } from './route-network.ts';
+import { carrierRouteKey } from '../carrier-identity.ts';
 
 const ProductUseSchema = z.object({
   productId: z.string().min(1),
@@ -16,6 +18,8 @@ export const PassengerRouteUseCatalogSchema = z.object({
   sources: z.array(RouteNetworkSourceSchema),
   entries: z.array(z.object({
     carrier: z.string().regex(/^[A-Z0-9]{2,3}$/),
+    carrierEntityKey: CarrierEntityKeySchema.optional(),
+    carrierEntityName: z.string().min(1).optional(),
     pair: z.tuple([z.string().regex(/^[A-Z]{3}$/), z.string().regex(/^[A-Z]{3}$/)]),
     localPassengerSale: z.enum(['permitted', 'unknown', 'not-permitted']),
     checkedOn: z.iso.date(),
@@ -29,7 +33,8 @@ export const PassengerRouteUseCatalogSchema = z.object({
   const sources = new Set(catalog.sources.map(source => source.id));
   const keys = new Set<string>();
   catalog.entries.forEach((row, index) => {
-    const key = `${row.carrier}:${row.pair.join('-')}`;
+    if (row.carrier === '2F' && !row.carrierEntityKey) ctx.addIssue({ code: 'custom', path: ['entries', index, 'carrierEntityKey'], message: 'Shared IATA code 2F requires a qualified passenger-use identity' });
+    const key = carrierRouteKey(row, ...row.pair);
     if (keys.has(key)) ctx.addIssue({ code: 'custom', path: ['entries', index], message: 'Duplicate directed passenger-use rule' });
     keys.add(key);
     if (row.pair[0] === row.pair[1] || (row.rightsFrom && row.rightsUntil && row.rightsFrom > row.rightsUntil)) ctx.addIssue({ code: 'custom', path: ['entries', index], message: 'Invalid direction/rights interval' });
