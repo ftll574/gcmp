@@ -159,7 +159,12 @@
     "ariaLabel": "地圖顯示航線：{chain}"
   },
   "mobile": {
-    "banner": "手機版 — 點一個範例先看看，完整編輯體驗在桌機最佳。"
+    "banner": "手機可直接編輯行程、挑選下一站並檢查規則。",
+    "navLabel": "規劃快捷導覽",
+    "itinerary": "行程",
+    "nextStop": "下一航點",
+    "map": "航線圖",
+    "review": "檢查規則"
   },
   "gcmapImport": {
     "open": "從 gcmap 匯入",

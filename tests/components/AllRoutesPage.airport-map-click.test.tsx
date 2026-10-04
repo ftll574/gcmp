@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 
@@ -36,6 +36,7 @@ vi.mock('maplibre-gl', () => {
     getLayer() { return {}; }
     isStyleLoaded() { return true; }
     getCanvas() { return document.createElement('canvas'); }
+    getStyle() { return { layers: [] }; }
     getCenter() { return { lng: 121.23, lat: 25.08 }; }
     getZoom() { return 8; }
     project() { return { x: 0, y: 0 }; }
@@ -91,10 +92,34 @@ test('MapLibre TPE airport click selects the AllRoutesPage airport profile and u
   render(<SiteApp />);
   await screen.findByRole('heading', { name: '探索全球航網' }, { timeout: 15_000 });
   await waitFor(() => expect(mapHarness.instance?.handlers.has('click')).toBe(true), { timeout: 10_000 });
+  expect(vi.mocked(fetch).mock.calls.some(([url]) => String(url).endsWith('/data/route-network/runtime-current.json'))).toBe(false);
+  expect(screen.getByRole('button', { name: '搜尋全部航線與班號' })).toBeInTheDocument();
+  expect(Number(document.querySelector('.entity-map-card')?.getAttribute('data-map-routes'))).toBeGreaterThan(0);
   mapHarness.dispatchAirport = true;
   mapHarness.instance!.emit('click', { point: { x: 0, y: 0 } });
   await screen.findByRole('heading', { name: /TPE.*Taoyuan/ }, { timeout: 10_000 });
   expect(new URLSearchParams(window.location.search).get('entity')).toBe('airport');
   expect(new URLSearchParams(window.location.search).get('id')).toBe('TPE');
   expect(screen.getByText('目的地列表 · 92')).toBeInTheDocument();
+  expect(vi.mocked(fetch).mock.calls.some(([url]) => String(url).endsWith('/data/route-network/runtime-origins/T.json'))).toBe(true);
+  expect(vi.mocked(fetch).mock.calls.some(([url]) => String(url).endsWith('/data/route-network/runtime-current.json'))).toBe(false);
+}, 20_000);
+
+test('a missing optional preview does not auto-fetch the full network on a fresh visit', async () => {
+  const originalFetch = vi.mocked(fetch).getMockImplementation();
+  const requests: string[] = [];
+  vi.mocked(fetch).mockImplementation(async (input: RequestInfo | URL) => {
+    const path = String(input).split('?')[0] ?? '';
+    requests.push(path);
+    if (path === '/data/site/landing-showcases.json') return { ok: false, status: 503, json: async () => undefined } as Response;
+    return originalFetch!(input);
+  });
+
+  render(<SiteApp />);
+  await screen.findByRole('heading', { name: '探索全球航網' }, { timeout: 15_000 });
+  expect(screen.getByText(/來源示例目前無法載入/)).toBeInTheDocument();
+  expect(requests).not.toContain('/data/route-network/runtime-current.json');
+
+  fireEvent.click(screen.getByRole('button', { name: '搜尋全部航線與班號' }));
+  await waitFor(() => expect(requests).toContain('/data/route-network/runtime-current.json'), { timeout: 5_000 });
 }, 20_000);

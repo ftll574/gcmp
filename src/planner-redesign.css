@@ -1,0 +1,191 @@
+.planner-site-page { background: #e7ebe4; }
+.planner-site-page > .site-header { flex-basis: 72px; }
+.planner-action-toolbar { min-height: 54px; padding-inline: 24px; border-bottom-color: #c7d0c9; background: #f6f4ec; }
+.planner-action-context span { color: #176478; letter-spacing: .12em; }
+.planner-action-context strong { color: #17343d; }
+
+.app-gate { min-height: 0; height: auto; flex: 1 1 auto; overflow: auto; background: #e7ebe4; }
+.rtw-gate {
+  width: min(1450px, calc(100% - 64px)); margin: 0 auto; padding: 38px 0 116px;
+  display: grid; grid-template-columns: minmax(250px, .78fr) minmax(0, 1.55fr); gap: 28px 42px; align-content: start;
+}
+.rtw-gate-intro { grid-column: 1 / -1; max-width: none; display: grid; grid-template-columns: minmax(310px, .8fr) minmax(300px, 1fr); align-items: end; gap: 14px 48px; padding: 0 0 25px; border-bottom: 1px solid #bbc9c2; }
+.rtw-gate-intro .rtw-eyebrow { grid-column: 1 / -1; margin: 0; color: #176478; font: 700 11px/1 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; }
+.rtw-gate-intro h1 { max-width: none; color: #17343d; font-size: clamp(34px, 4vw, 54px); line-height: 1.06; letter-spacing: -.045em; }
+.rtw-gate-intro > p:last-child { max-width: 52ch; margin: 0 0 3px; color: #526a6d; font-size: 15px; line-height: 1.65; }
+.rtw-gate-section { min-width: 0; gap: 20px; }
+.rtw-gate-section + .rtw-gate-section { padding: 0; border: 0; }
+.rtw-gate-section-head { grid-template-columns: 36px minmax(0,1fr); gap: 12px; }
+.rtw-gate-step { width: 32px; height: 32px; display: grid; place-items: center; border: 1px solid #9fb4ae; border-radius: 50%; color: #176478; font-size: 13px; background: #f5f3e9; }
+.rtw-gate-section-head h2 { color: #17343d; font-size: 20px; line-height: 1.3; }
+.rtw-gate-section-head p { color: #607679; font-size: 13px; line-height: 1.55; }
+.rtw-gate-alliances { grid-template-columns: 1fr; gap: 8px; padding: 0; }
+.rtw-gate-alliance {
+  position: relative; min-height: 76px; gap: 6px; padding: 13px 16px 13px 20px; border: 1px solid #c3cec8;
+  border-radius: 7px; background: #f7f6ee; transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+.rtw-gate-alliance::before { content: ''; position: absolute; inset: 12px auto 12px 0; width: 3px; background: #91a7a1; }
+.rtw-gate-alliance[data-alliance="star"]::before { background: #466a9d; }
+.rtw-gate-alliance[data-alliance="oneworld"]::before { background: #a6532c; }
+.rtw-gate-alliance[data-alliance="skyteam"]::before { background: #536d7b; }
+.rtw-gate-alliance:hover { border-color: #72929a; background: #fffdf6; transform: translateY(-1px); }
+.rtw-gate-alliance.selected { border-color: #176478; background: #dceae4; box-shadow: inset 0 0 0 1px #176478; }
+.rtw-gate-alliance strong { color: #18333c; font-size: 16px; }
+.rtw-gate-alliance span { color: #597174; font-size: 12px; line-height: 1.45; }
+.rtw-gate-network-summary { gap: 8px; padding: 15px 16px; border: 1px solid #bfcbc5; border-radius: 7px; background: #f7f6ee; }
+.rtw-gate-network-summary strong { color: #17343d; font-size: 16px; }
+.rtw-gate-network-summary span { color: #5c7375; font-size: 12px; }
+.rtw-gate-carriers { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 6px; }
+.rtw-gate-carriers li { min-width: 0; border-color: #cad3cc; border-radius: 6px; background: #f8f7f0; }
+.rtw-gate-carriers strong { color: #176478; }
+.rtw-gate-carriers small { color: #607679; }
+.rtw-gate-carriers em { color: #28634c; }
+.rtw-gate-members, .rtw-gate-routes, .rtw-gate-reference-programs { border-color: #c3cec8; }
+.rtw-gate-members > summary, .rtw-gate-routes > summary, .rtw-gate-reference-programs > summary { color: #176478; font-size: 13px; }
+.rtw-gate-products { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+.rtw-gate-product { border: 1px solid #c5d0c9; border-radius: 8px; background: #f8f7f0; }
+.rtw-gate-product.selected { border-color: #176478; background: #e2eee7; box-shadow: 0 0 0 1px #176478; }
+.rtw-gate-product-choice { padding: 17px; }
+.rtw-gate-product-choice:hover { background: rgba(255,255,255,.5); }
+.rtw-gate-product-name { color: #18333c; font-size: 18px; line-height: 1.3; }
+.rtw-gate-product-kind, .rtw-gate-product-note, .rtw-gate-catalog-note { color: #607679; line-height: 1.5; }
+.rtw-gate-rule-list li, .rtw-gate-ticketing-rules li { color: #425e64; line-height: 1.5; }
+.rtw-gate-status { border-radius: 4px; font-size: 10px; }
+.rtw-gate-sources a { color: #176478; }
+.rtw-gate-footer { position: fixed; left: 0; right: 0; bottom: 0; justify-content: flex-end; padding: 12px max(32px, calc((100vw - 1450px)/2)); border: 0; border-top: 1px solid #b8c8c1; background: rgba(245,244,236,.96); backdrop-filter: blur(12px); }
+.rtw-gate-footer > div { margin-right: auto; }
+.rtw-gate-footer span { color: #607679; }
+.rtw-gate-footer strong { color: #18333c; font-size: 14px; }
+.rtw-gate-continue { min-height: 44px; padding-inline: 21px; border-radius: 6px; background: #173c47; }
+.rtw-gate-continue:hover:not(:disabled) { background: #0e5364; }
+.rtw-gate-continue:disabled { opacity: .58; }
+
+@media (min-width: 1150px) {
+  .rtw-gate:not(:has(.rtw-gate-network-summary)) .rtw-gate-section { grid-column: 1 / -1; }
+  .rtw-gate:not(:has(.rtw-gate-network-summary)) .rtw-gate-alliances { grid-template-columns: repeat(3, minmax(0,1fr)); }
+}
+
+.planner-site-page .app-workbench { background: #e5e9e2; }
+.planner-site-page .route-editor { background: #f6f4ec; border-color: #bdc9c3; }
+.planner-site-page .route-plan-bar { background: #e7ece5; color: #17343d; }
+.planner-site-page .route-plan-bar span { color: #526a6d; }
+.planner-site-page .route-plan-bar strong { color: #17343d; }
+.planner-site-page .planner-action-toolbar .action-row button { border-radius: 5px; }
+.planner-site-page .app-banner { border-color: #d3ad78; background: #fff3da; color: #643f20; }
+.planner-site-page .app-footer, .planner-site-page .route-editor-scroll { scrollbar-color: #96aaa4 transparent; }
+.planner-site-page .route-setup-summary { border-radius: 6px; background: #e8eee7; }
+.planner-site-page .route-setup-summary-copy small { color: #526a6d; }
+.planner-site-page .route-setup-summary-copy strong { color: #17343d; }
+.planner-site-page .route-setup-summary-copy em,
+.planner-site-page .route-setup-summary-action { color: #176478; }
+.planner-site-page .route-setup-stage > .route-editor-step .rtw-eyebrow { color: #a9c5c5; }
+.planner-site-page .route-setup-stage > .route-editor-step > p { color: #d1dfda; }
+.planner-site-page .route-next-step { border-color: #9eb3ac; border-radius: 7px; background: #eef2e9; }
+.planner-site-page .route-next-step > header { color: #17343d; }
+.planner-site-page .route-next-step .rtw-explorer-head h3 { color: #17343d; }
+.planner-site-page .route-next-step .rtw-explorer-head p,
+.planner-site-page .route-next-step .rtw-next-start-prompt { color: #36575e; }
+.planner-site-page .route-map-panel { background: #dce9e7; }
+.planner-site-page input, .planner-site-page select { border-color: #aebfba; border-radius: 6px; background: #fbfaf5; }
+
+@media (max-width: 767px) {
+  .app.mobile {
+    height: auto;
+    min-height: 100svh;
+    overflow-x: hidden;
+    overflow-y: visible;
+    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+  }
+  .app.mobile .app-workbench {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .app.mobile .route-editor {
+    flex: 0 0 auto;
+    height: auto;
+    min-height: 0;
+    border-right: 0;
+  }
+  .app.mobile .route-editor-scroll {
+    max-height: none;
+    min-height: auto;
+    overflow: visible;
+    padding: 14px;
+  }
+  .app.mobile .route-editor-footer { flex: 0 0 auto; }
+  .app.mobile .route-editor-step { align-items: flex-start; flex-direction: column; gap: 7px; }
+  .app.mobile .route-plan-bar { align-items: flex-start; gap: 8px; padding: 10px; }
+  .app.mobile .route-plan-bar strong { overflow-wrap: anywhere; }
+  .app.mobile .app-map-wrap {
+    flex: 0 0 auto;
+    height: min(58svh, 600px);
+    min-height: 380px;
+    scroll-margin-top: 16px;
+  }
+  .app.mobile #route-editor,
+  .app.mobile #route-next-step { scroll-margin-top: 146px; }
+  .app.mobile .mobile-planner-nav {
+    position: fixed;
+    z-index: 55;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 5px;
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+    border-top: 1px solid #aebfba;
+    background: #fbfaf5;
+    box-shadow: 0 -5px 18px rgba(22, 52, 59, .08);
+  }
+  .app.mobile .mobile-planner-nav button {
+    min-width: 0;
+    min-height: 46px;
+    padding: 5px 3px;
+    border: 1px solid #c4d0c9;
+    border-radius: 6px;
+    background: #f4f3eb;
+    color: #24454d;
+    font: 650 clamp(10px, 2.8vw, 12px)/1.25 var(--font-sans);
+    cursor: pointer;
+  }
+  .app.mobile .mobile-planner-nav button:hover { background: #e8eee7; }
+  .app.mobile .mobile-planner-nav button:focus-visible { outline: 3px solid #b34937; outline-offset: 2px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+@media (min-width: 1150px) {
+  .rtw-gate:has(.rtw-gate-network-summary) .rtw-gate-section:nth-of-type(2) { grid-column: 1; grid-row: 2; }
+  .rtw-gate:has(.rtw-gate-network-summary) .rtw-gate-section:nth-of-type(3) { grid-column: 2; grid-row: 2; }
+  .rtw-gate:has(.rtw-gate-network-summary) .rtw-gate-section:nth-of-type(4) { grid-column: 1 / -1; grid-row: 3; }
+  .rtw-gate-alliances { align-content: start; }
+}
+@media (max-width: 1149px) {
+  .rtw-gate { width: min(940px, calc(100% - 40px)); grid-template-columns: 1fr; gap: 27px; padding-top: 28px; }
+  .rtw-gate-intro { grid-template-columns: 1fr; gap: 12px; }
+  .rtw-gate-intro .rtw-eyebrow { grid-column: 1; }
+  .rtw-gate-alliances { grid-template-columns: repeat(3, minmax(0,1fr)); }
+  .rtw-gate-products { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .rtw-gate-footer { padding-inline: 20px; }
+}
+@media (max-width: 680px) {
+  .planner-site-page { height: auto; min-height: 100svh; overflow: visible; }
+  .planner-site-page > .app { min-height: calc(100svh - 64px); }
+  .planner-site-page > .site-header { flex-basis: auto; }
+  .rtw-gate { width: auto; margin: 0; padding: 25px 18px 110px; gap: 26px; }
+  .rtw-gate-intro { padding-bottom: 20px; }
+  .rtw-gate-intro h1 { font-size: 34px; }
+  .rtw-gate-intro > p:last-child { font-size: 14px; }
+  .rtw-gate-alliances { grid-template-columns: 1fr; }
+  .rtw-gate-products { grid-template-columns: 1fr; }
+  .rtw-gate-carriers { grid-template-columns: 1fr 1fr; }
+  .rtw-gate-footer { padding: 10px 14px; gap: 10px; }
+  .rtw-gate-footer > div { max-width: 48%; }
+  .rtw-gate-continue { padding-inline: 12px; font-size: 12px; }
+  .planner-action-toolbar { padding: 8px 13px; }
+}

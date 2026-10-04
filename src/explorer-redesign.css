@@ -1,0 +1,93 @@
+.routes-page { min-height: 100vh; background: var(--system-background); }
+.routes-page-main { width: min(1540px, calc(100% - 64px)); margin: 0 auto; padding: 42px 0 76px; }
+.routes-page-intro { max-width: none; display: grid; grid-template-columns: minmax(280px,.8fr) minmax(300px,1fr); align-items: end; gap: 12px 46px; padding-bottom: 24px; border-bottom-color: #bdc9c3; }
+.routes-page-intro .routes-page-kicker { grid-column: 1/-1; color: #176478; font: 700 11px/1 var(--font-mono); letter-spacing: .13em; text-transform: uppercase; }
+.routes-page-intro h1 { max-width: 14ch; margin: 0; color: #17343d; font-size: clamp(38px,5vw,62px); letter-spacing: -.05em; line-height: 1.02; }
+.routes-page-intro p { max-width: 52ch; margin: 0; color: #536d70; font-size: 15px; line-height: 1.65; }
+.route-library-entity-explorer { gap: 22px; }
+.entity-search-shell { grid-template-columns: minmax(240px,.65fr) minmax(360px,1.35fr); gap: 30px; padding: 20px 0; border: 0; border-bottom: 1px solid #bdc9c3; border-radius: 0; background: transparent; }
+.entity-search-copy h2 { color: #17343d; font-size: clamp(26px,3vw,38px); letter-spacing: -.035em; }
+.entity-search-copy p { color: #536d70; font-size: 13px; line-height: 1.6; }
+.entity-search-input, .entity-search-shell input { min-height: 48px; border: 1px solid #aebfba; border-radius: 6px; background: #fbfaf5; }
+.entity-filter-row button, .entity-alliance-tabs button { min-height: 38px; border-radius: 5px; }
+.entity-map-preview-layer { background: #dce9e7; }
+.entity-map-preview-grid line { stroke: rgba(32,91,101,.23); stroke-dasharray: 2 6; }
+.entity-map-preview-routes path { stroke: rgba(23,100,120,.68); stroke-width: 1.5; }
+.entity-map-preview-airports circle { fill: #a6532c; stroke: #f3f1e8; stroke-width: 2; }
+.entity-map-preview-status { border-radius: 5px; border-color: #b7c7c0; background: rgba(251,250,245,.96); }
+.entity-map-preview-status strong { color: #17343d; }
+.entity-map-preview-status span { color: #536d70; }
+.entity-map-stats { border-radius: 5px; border-color: #b7c7c0; background: rgba(251,250,245,.96); box-shadow: 0 4px 12px rgba(22,52,59,.1); }
+.entity-map-stats strong { color: #17343d; }
+.entity-map-stats span { color: #536d70; }
+.entity-map-inspector { border-radius: 8px; border-color: #b7c7c0; background: rgba(251,250,245,.98); }
+.entity-map-inspector-routes > div { border-radius: 5px; background: #edf1e9; }
+.entity-map-inspector header code, .entity-map-inspector-routes code { color: #176478; }
+.entity-detail-hero h2 { color: #17343d; }
+.entity-detail-hero > div:first-child > span { color: #176478; }
+.entity-route-card { border-radius: 6px; background: #fbfaf5; }
+.entity-route-card:hover { border-color: #176478; background: #f1f4eb; }
+.entity-route-codes code { color: #176478; }
+.entity-shard-notice { border-radius: 5px; background: #e8eee7; color: #425e64; }
+.entity-breadcrumb { color: #526a6d; }
+.route-context-loading__map { background: #dce9e7; }
+
+@media (max-width: 760px) {
+  .routes-page-main { width: auto; margin: 0; padding: 27px 18px 56px; }
+  .routes-page-intro { grid-template-columns: 1fr; gap: 12px; padding-bottom: 19px; }
+  .routes-page-intro .routes-page-kicker { grid-column: 1; }
+  .routes-page-intro h1 { font-size: 38px; }
+  .entity-search-shell { grid-template-columns: 1fr; gap: 16px; padding: 18px 0; }
+  .maplibre-route-map { height: min(64svh, 540px); min-height: 380px; }
+}
+
+@media (max-width: 700px) {
+  .entity-map-stats {
+    display: grid;
+    grid-template-columns: repeat(2, max-content);
+    gap: 6px 10px;
+    width: max-content;
+    max-width: calc(100% - 64px);
+    overflow: visible;
+    white-space: normal;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .routes-page-intro { border-bottom-color: var(--separator); }
+  .routes-page-intro .routes-page-kicker,
+  .entity-detail-hero > div:first-child > span,
+  .entity-route-codes code,
+  .entity-map-inspector header code,
+  .entity-map-inspector-routes code { color: #85d0c8; }
+  .routes-page-intro h1,
+  .entity-search-copy h2,
+  .entity-detail-hero h2,
+  .entity-map-inspector header strong { color: var(--label); }
+  .routes-page-intro p,
+  .entity-search-copy p,
+  .entity-detail-hero p,
+  .entity-breadcrumb { color: var(--secondary-label); }
+  .entity-search-shell { border-bottom-color: var(--separator); }
+  .entity-search-input,
+  .entity-search-shell input { border-color: var(--separator); background: var(--secondary-system-background); color: var(--label); }
+  .entity-search-input::placeholder,
+  .entity-search-shell input::placeholder { color: var(--tertiary-label); }
+  .entity-map-preview-layer,
+  .route-context-loading__map { background: #142e33; }
+  .entity-map-preview-grid line { stroke: rgba(198,220,210,.2); }
+  .entity-map-preview-routes path { stroke: rgba(133,208,200,.72); }
+  .entity-map-preview-airports circle { fill: #e0a273; stroke: #1b353a; }
+  .entity-map-preview-status,
+  .entity-map-stats,
+  .entity-map-inspector { border-color: var(--separator); background: rgba(27,53,58,.97); color: var(--label); }
+  .entity-map-preview-status strong,
+  .entity-map-stats strong { color: var(--label); }
+  .entity-map-preview-status span,
+  .entity-map-stats span { color: var(--secondary-label); }
+  .entity-map-inspector-routes > div { background: var(--tertiary-system-background); }
+  .entity-route-card { border-color: var(--separator); background: var(--secondary-system-background); color: var(--label); }
+  .entity-route-card:hover { border-color: #85d0c8; background: var(--tertiary-system-background); }
+  .entity-route-card > small { color: var(--secondary-label); }
+  .entity-shard-notice { border-color: var(--separator); background: var(--tertiary-system-background); color: var(--secondary-label); }
+}

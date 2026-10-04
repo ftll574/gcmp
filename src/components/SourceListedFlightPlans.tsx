@@ -1,7 +1,7 @@
 import {SOURCE_LISTED_FUTURE_PLANS,listedPlanCalendarLabel} from '../lib/source-listed-flight-plans.ts';
 /** Read-only source evidence: no itinerary callbacks or flight-selection controls. */
 export function SourceListedFlightPlans():React.ReactElement {
- return <section className="data-progress-card" aria-labelledby="source-listed-plans">
+ return <section className="route-evidence-panel" aria-labelledby="source-listed-plans">
   <h2 id="source-listed-plans">來源列示的未來計畫</h2>
   <p>以下保留公告中的方向、日期與班號，尚不可作為可選航班。實際執飛公司及可訂位狀態未確認，不計入目前航線新增。</p>
   <ul aria-label="來源列示未來計畫">{SOURCE_LISTED_FUTURE_PLANS.map(plan=><li key={plan.key}>

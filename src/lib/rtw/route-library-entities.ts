@@ -3,6 +3,7 @@ import { distanceNm } from '../calc/haversine.ts';
 import type { ContinentId } from '../schemas/country-continent.ts';
 import type { RouteNetworkCatalog, RouteNetworkEntry, RouteNetworkSource } from '../schemas/route-network.ts';
 import type { Airport } from '../types.ts';
+import type { LandingShowcaseCatalog } from '../schemas/landing-showcase.ts';
 import { carrierIdentityKey } from '../carrier-identity.ts';
 
 export type RouteLibraryEntitySelection =
@@ -61,12 +62,134 @@ export interface RouteLibraryFingerprint {
   readonly coreHubs: ReadonlyArray<{ readonly airport: Airport; readonly connections: number }>;
 }
 
+/** A small, explicitly illustrative map graph assembled only from the
+ * source-checked legs in the existing landing showcase artifact. It is not a
+ * substitute for the complete route catalog used by search and profiles. */
+export function buildLandingShowcaseFingerprint(
+  catalog: LandingShowcaseCatalog,
+  airports: ReadonlyMap<string, Airport>,
+  memberCodes?: ReadonlySet<string> | null,
+): RouteLibraryFingerprint {
+  const routesByDirection = new Map<string, RouteLibraryRouteCard>();
+  for (const showcase of catalog.showcases) {
+    for (const leg of showcase.legs) {
+      if (memberCodes && !memberCodes.has(leg.carrier)) continue;
+      const from = airports.get(leg.from);
+      const to = airports.get(leg.to);
+      if (!from || !to) continue;
+      const key = `${from.iata}-${to.iata}`;
+      const current = routesByDirection.get(key);
+      const carrierKey = `${leg.carrier}:${leg.carrierName}`;
+      const currentCarrier = current?.carriers.find(carrier => `${carrier.carrier}:${carrier.name}` === carrierKey);
+      const carrier: RouteLibraryCarrierRoute = currentCarrier
+        ? { ...currentCarrier, candidateNumbers: [...new Set([...currentCarrier.candidateNumbers, leg.flightNumber])], sourcePairs: [...currentCarrier.sourcePairs, [from.iata, to.iata] as const] }
+        : {
+            carrier: leg.carrier,
+            name: leg.carrierName,
+            identity: leg.carrierIdentity,
+            confirmedNumbers: [],
+            candidateNumbers: [leg.flightNumber],
+            sources: [],
+            sourcePairs: [[from.iata, to.iata]],
+            registeredPlans: [],
+          };
+      routesByDirection.set(key, {
+        from,
+        to,
+        distanceNm: leg.distanceNm,
+        carriers: currentCarrier
+          ? current!.carriers.map(row => `${row.carrier}:${row.name}` === carrierKey ? carrier : row)
+          : [...(current?.carriers ?? []), carrier],
+      });
+    }
+  }
+  const routes = [...routesByDirection.values()];
+  const degrees = new Map<string, number>();
+  for (const route of routes) {
+    degrees.set(route.from.iata, (degrees.get(route.from.iata) ?? 0) + 1);
+    degrees.set(route.to.iata, (degrees.get(route.to.iata) ?? 0) + 1);
+  }
+  const hubs = [...degrees.entries()]
+    .map(([iata, connections]) => ({ airport: airports.get(iata), connections }))
+    .filter((row): row is { airport: Airport; connections: number } => row.airport !== undefined)
+    .sort((a, b) => b.connections - a.connections || a.airport.iata.localeCompare(b.airport.iata));
+  return { routes, hubs, coreHubs: hubs.slice(0, 16) };
+}
+
 export interface RouteLibrarySearchResult {
   readonly key: string;
   readonly selection: RouteLibraryEntitySelection;
   readonly kind: 'airport' | 'airline' | 'route' | 'flight';
   readonly title: string;
   readonly subtitle: string;
+}
+
+/** Search only the flight/route examples that were loaded for the map preview.
+ * Flight numbers stay explicitly marked as candidates; selecting one opens the
+ * normal route detail, which resolves its complete evidence from route shards.
+ */
+export function searchLandingShowcaseEntities(
+  catalog: LandingShowcaseCatalog | null | undefined,
+  airports: ReadonlyMap<string, Airport>,
+  query: string,
+  memberCodes?: ReadonlySet<string> | null,
+  locale: 'en' | 'zh-TW' = 'en',
+): ReadonlyArray<RouteLibrarySearchResult> {
+  if (!catalog || !query.trim()) return [];
+  const upper = query.trim().toUpperCase().replace(/\s+/g, ' ');
+  const results: RouteLibrarySearchResult[] = [];
+  const seen = new Set<string>();
+  const add = (result: RouteLibrarySearchResult): void => {
+    if (seen.has(result.key) || results.length >= 12) return;
+    seen.add(result.key);
+    results.push(result);
+  };
+  const routeMatch = /^([A-Z]{3})\s*(?:-|→|>|TO|\s)\s*([A-Z]{3})$/.exec(upper);
+  if (routeMatch && airports.has(routeMatch[1]!) && airports.has(routeMatch[2]!)) {
+    const from = routeMatch[1]!;
+    const to = routeMatch[2]!;
+    const found = catalog.showcases.some(showcase => showcase.legs.some(leg =>
+      leg.from === from && leg.to === to && (!memberCodes || memberCodes.has(leg.carrier))));
+    if (found) add({
+      key: `route:${from}-${to}`,
+      selection: { kind: 'route', id: `${from}-${to}` },
+      kind: 'route',
+      title: `${from} → ${to}`,
+      subtitle: locale === 'zh-TW' ? '有來源的行程示例 · 航線詳情會顯示候選營運者' : 'Sourced journey example · candidate operators shown in route details',
+    });
+  }
+  if (!/^[A-Z0-9]{2,3}\d{1,4}[A-Z]?$/.test(upper)) return results;
+  const flightResults: RouteLibrarySearchResult[] = [];
+  const flightResultKeys = new Set<string>();
+  for (const showcase of catalog.showcases) {
+    for (const leg of showcase.legs) {
+      if (memberCodes && !memberCodes.has(leg.carrier)) continue;
+      const flightNumber = leg.flightNumber.toUpperCase();
+      if (!flightNumber.startsWith(upper)) continue;
+      const from = airports.get(leg.from);
+      const to = airports.get(leg.to);
+      if (!from || !to) continue;
+      const key = `flight:${flightNumber}:${leg.from}-${leg.to}`;
+      if (flightResultKeys.has(key)) continue;
+      flightResultKeys.add(key);
+      flightResults.push({
+        key,
+        selection: { kind: 'route', id: `${leg.from}-${leg.to}` },
+        kind: 'flight',
+        title: `${flightNumber} · ${leg.from} → ${leg.to}`,
+        subtitle: locale === 'zh-TW' ? `${leg.carrier} · 示例候選班號，尚未確認` : `${leg.carrier} · Candidate in sourced journey example`,
+      });
+    }
+  }
+  flightResults.sort((a, b) => {
+    const numberA = a.title.split(' · ')[0] ?? '';
+    const numberB = b.title.split(' · ')[0] ?? '';
+    return Number(numberB === upper) - Number(numberA === upper)
+      || numberA.length - numberB.length
+      || a.title.localeCompare(b.title);
+  });
+  for (const result of flightResults) add(result);
+  return results;
 }
 
 export interface BuildRouteLibraryEntityInput {
@@ -363,17 +486,32 @@ export function searchRouteLibraryEntities(
   if (exactAirlineName) addAirline(upper, exactAirlineName);
 
   if (/^[A-Z0-9]{2,3}\d{1,4}[A-Z]?$/.test(upper)) {
+    const flightResults: RouteLibrarySearchResult[] = [];
     for (const row of publishedRows(input)) {
-      if (!(row.flightNumbers ?? []).includes(upper) && !(row.flightNumberCandidates ?? []).includes(upper)) continue;
-      const id = row.pair.join('-');
-      add({
-        key: `flight:${upper}:${id}`,
-        selection: { kind: 'route', id },
-        kind: 'flight',
-        title: `${upper} · ${row.pair[0]} → ${row.pair[1]}`,
-        subtitle: input.carrierNames.get(row.carrier) ?? row.carrier,
-      });
+      const confirmed = (row.flightNumbers ?? []).filter(number => number.startsWith(upper));
+      const candidates = (row.flightNumberCandidates ?? []).filter(number => number.startsWith(upper));
+      for (const number of [...new Set([...confirmed, ...candidates])]) {
+        const id = row.pair.join('-');
+        const isConfirmed = confirmed.includes(number);
+        flightResults.push({
+          key: `flight:${number}:${id}`,
+          selection: { kind: 'route', id },
+          kind: 'flight',
+          title: `${number} · ${row.pair[0]} → ${row.pair[1]}`,
+          subtitle: `${input.carrierNames.get(row.carrier) ?? row.carrier} · ${isConfirmed
+            ? (input.locale === 'zh-TW' ? '已確認班號' : 'Confirmed flight number')
+            : (input.locale === 'zh-TW' ? '候選班號' : 'Candidate flight number')}`,
+        });
+      }
     }
+    flightResults.sort((a, b) => {
+      const numberA = a.title.split(' · ')[0] ?? '';
+      const numberB = b.title.split(' · ')[0] ?? '';
+      return Number(numberB === upper) - Number(numberA === upper)
+        || numberA.length - numberB.length
+        || a.title.localeCompare(b.title);
+    });
+    for (const result of flightResults) add(result);
   }
 
   const airportMatches = [...input.airports.values()]

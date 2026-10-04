@@ -2,7 +2,7 @@ import {CALI_PRIMARY_REFERENCES} from '../lib/cali-primary-references.ts';
 /** Read-only evidence; future selected results never create planner services. */
 export function CaliPrimaryReferences({pair=null,zh=true}:{readonly pair?:string|null;readonly zh?:boolean}):React.ReactElement|null {
  const rows=CALI_PRIMARY_REFERENCES.filter(r=>pair===null||r.pair.join('-')===pair);if(!rows.length)return null;
- return <section className="data-progress-card" data-cali-primary-references>
+ return <section className="route-evidence-panel" data-cali-primary-references>
   <h2>{zh?'卡利官方航線參考':'Cali official route references'}</h2>
   <p>{zh?'獨立航空公司來源；未新增可選日期航班、實際已飛或環球票適用保證。':'Independent airline sources; no selectable dated services, actual-flight or RTW eligibility guarantee.'}</p>
   <ul aria-label={zh?'卡利方向參考':'Cali direction references'}>{rows.map(r=><li key={r.key} data-cali-primary-key={r.key}>

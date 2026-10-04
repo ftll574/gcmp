@@ -6,7 +6,7 @@ export function SirosRegisteredQueryExplorer({catalog}:{readonly catalog:SirosRe
  const [query,setQuery]=useState('');const [carrier,setCarrier]=useState('all');
  const carriers=useMemo(()=>[...new Set(catalog.rows.map(row=>row.registeredOperatorIATA))].sort(),[catalog.rows]);
  const filtered=useMemo(()=>{const q=query.trim().toUpperCase();return catalog.rows.filter(row=>(carrier==='all'||row.registeredOperatorIATA===carrier)&&(!q||[row.key,row.registrationId,row.designatorRaw,row.originICAO,row.destinationICAO].some(value=>value.toUpperCase().includes(q))));},[catalog.rows,query,carrier]);
- return <section className="data-progress-card siros-query-explorer" aria-labelledby="siros-query-explorer-title">
+ return <section className="route-evidence-panel siros-query-explorer" aria-labelledby="siros-query-explorer-title">
   <h3 id="siros-query-explorer-title">本機 SIROS 登記方向探索（僅開發環境）</h3>
   <p>查詢日 {catalog.queryDate}（UTC；星期 {catalog.queryWeekdayUTC}），來源快照日 {catalog.sourceDate}。以下只顯示該日有效且符合星期旗標的登記計畫，不是已確認航班。登記營運者不證明實際執飛。</p>
   <p>{catalog.operatorDirectionKeys} 個登記營運者方向、{catalog.eligibleMappedRows.toLocaleString()} 筆已映射計畫；機場方向 {catalog.airportDirections}，其中 {catalog.directionsAlreadyPresentAnyCarrier} 個已由任一航空公司發布、{catalog.directionsAbsentAllCarriers} 個目前沒有發布方向。另有 {catalog.endpointHeldRows} 筆端點待查。查詢日同一方向／班號時刻衝突 {catalog.conflictDirections} 個；全來源有效期間曾標記的衝突方向 {catalog.historicalConflictDirections} 個，僅作歷史提示。班號格式隔離 {catalog.designatorQuarantineRows} 筆。</p>

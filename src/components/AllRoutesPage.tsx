@@ -40,7 +40,6 @@ function RouteNetworkLoading({
   airportIndex,
   airports,
   carrierNames,
-  routeCount,
   zh,
   onSelectAirport,
 }: {
@@ -48,15 +47,12 @@ function RouteNetworkLoading({
   readonly airportIndex: AirportIndex;
   readonly airports: ReadonlyMap<string, Airport>;
   readonly carrierNames: ReadonlyMap<string, string>;
-  readonly routeCount?: number | undefined;
   readonly zh: boolean;
   readonly onSelectAirport: (iata: string) => void;
 }): React.ReactElement {
   let label = zh ? '全球航網' : 'Global network';
   let title = zh ? '正在準備航線資料' : 'Preparing route data';
-  let detail = routeCount
-    ? (zh ? `正在驗證 ${routeCount.toLocaleString()} 條方向航線…` : `Verifying ${routeCount.toLocaleString()} directional routes…`)
-    : (zh ? '正在驗證航線資料…' : 'Verifying route data…');
+  let detail = zh ? '正在驗證航線資料…' : 'Verifying route data…';
 
   if (selection?.kind === 'airport') {
     const airport = airports.get(selection.id);
@@ -202,13 +198,13 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
   const copy = locale === 'zh-TW' ? {
     eyebrow: '航線資料庫', title: '探索全球航網',
     intro: '從機場、城市、航空公司、航線或班號，直接進入目前收錄的航網資料。',
-    all: '全部聯盟', loading: '正在載入航線資料…', error: '航線資料載入失敗', retry: '重新載入',
+    all: '全部聯盟', loading: '正在載入航線資料…', error: '完整航網搜尋失敗；目前搜尋條件與選取項目已保留。', retry: '重試完整搜尋',
     advanced: '詳細篩選', advancedBody: '依出發地、抵達地、航空公司與區域篩選完整航線。', closeAdvanced: '收起詳細篩選',
     footer: '航線證據會隨時間變動。開票前請再次確認日期與實際營運航空公司。',
   } : {
     eyebrow: 'Route library', title: 'Explore the global route network',
     intro: 'Start from an airport, city, airline, route or flight number and move directly through the network in the current catalog.',
-    all: 'All alliances', loading: 'Loading route data…', error: 'Route library failed to load', retry: 'Reload',
+    all: 'All alliances', loading: 'Loading route data…', error: 'Full-network search failed. Your query, filters and selection are preserved.', retry: 'Retry full search',
     advanced: 'Detailed filters', advancedBody: 'Filter the complete network by origin, destination, airline and region.', closeAdvanced: 'Close detailed filters',
     footer: 'Route evidence changes over time. Always recheck date and operating carrier before ticketing.',
   };
@@ -219,6 +215,7 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
   const [carrierManifestFailed, setCarrierManifestFailed] = useState(false);
   const [carrierShardFailureCode, setCarrierShardFailureCode] = useState<string | null>(null);
   const [fullNetworkRequested, setFullNetworkRequested] = useState(false);
+  const [fullNetworkLoadAttempt, setFullNetworkLoadAttempt] = useState(0);
   const [alliance, setAlliance] = useState<AllianceFilter>(allianceFromLocation);
   const [selection, setSelection] = useState<RouteLibraryEntitySelection | null>(() => parseRouteLibrarySelection(window.location.search));
   const [query, setQuery] = useState(queryFromLocation);
@@ -231,14 +228,23 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
       ? airportEvidenceShardLetter(selection.id)
       : null;
   const selectedCarrier = selection?.kind === 'airline' ? selection.id : null;
+  const routeQualifiedCarrierKey = selection?.kind === 'route'
+    ? loadedNetwork?.network.routes.find(route => `${route.pair[0]}-${route.pair[1]}` === selection.id && route.carrierEntityKey)?.carrierEntityKey ?? null
+    : null;
   const originShardMeta = selectionOriginLetter ? data.routeNetworkRuntimeMeta?.originShards[selectionOriginLetter] : undefined;
-  const carrierShardMeta = selectedCarrier ? carrierShardManifest?.carriers[selectedCarrier] : undefined;
   const carrierShardSupportAvailable = Boolean(
     data.routeNetworkRuntimeMeta
     && data.routeNetworkCarrierShardBaseUrl
     && data.routeNetworkCarrierShardManifestUrl,
   );
   const fullNetworkReady = loadedNetwork?.scope === 'full';
+  const previewNetwork = useMemo<RouteNetworkCatalog>(() => ({
+    version: data.routeMapPreview?.routeNetworkVersion ?? '2026.3',
+    coverage: 'curated-not-complete',
+    sources: [],
+    carrierUniverses: [],
+    routes: [],
+  }), [data.routeMapPreview?.routeNetworkVersion]);
   const displayNetwork = loadedNetwork?.scope === 'full'
     ? loadedNetwork.network
     : loadedNetwork?.scope === 'origin-shard'
@@ -249,10 +255,16 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
         && selection?.kind === 'airline'
         && selectedCarrier === loadedNetwork.carrier
         ? loadedNetwork.network
+      : loadedNetwork?.scope === 'carrier-shard'
+          && selection?.kind === 'route'
+          && routeQualifiedCarrierKey === loadedNetwork.carrier
+          ? loadedNetwork.network
+          : selection === null
+            ? previewNetwork
         : null;
 
   useEffect(() => {
-    if (fullNetworkReady || fullNetworkRequested || selection?.kind !== 'airline') return;
+    if (fullNetworkReady || fullNetworkRequested || (selection?.kind !== 'airline' && selection?.kind !== 'route')) return;
     if (carrierShardManifest || carrierManifestFailed || !carrierShardSupportAvailable || !data.routeNetworkCarrierShardManifestUrl) return;
     const controller = new AbortController();
     void fetch(data.routeNetworkCarrierShardManifestUrl, { signal: controller.signal })
@@ -279,11 +291,14 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
     fullNetworkReady,
     fullNetworkRequested,
     selection?.kind,
+    selection?.id,
   ]);
 
   useEffect(() => {
     if (fullNetworkReady || fullNetworkRequested) return;
     if ((selection?.kind !== 'route' && selection?.kind !== 'airport') || !selectionOriginLetter || !originShardMeta) return;
+    if (selection.kind === 'route' && loadedNetwork?.scope === 'carrier-shard'
+      && loadedNetwork.network.routes.some(route => `${route.pair[0]}-${route.pair[1]}` === selection.id && route.carrierEntityKey)) return;
     if (shardFailureLetter === selectionOriginLetter) return;
     if (loadedNetwork?.scope === 'origin-shard' && loadedNetwork.originLetter === selectionOriginLetter) return;
 
@@ -318,42 +333,46 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
     originShardMeta,
     selectionOriginLetter,
     selection?.kind,
+    selection?.id,
     shardFailureLetter,
   ]);
 
   useEffect(() => {
-    if (fullNetworkReady || fullNetworkRequested || selection?.kind !== 'airline' || !selectedCarrier || !carrierShardMeta || !data.routeNetworkCarrierShardBaseUrl) return;
-    if (carrierShardFailureCode === selectedCarrier) return;
-    if (loadedNetwork?.scope === 'carrier-shard' && loadedNetwork.carrier === selectedCarrier) return;
+    const carrierKey = selection?.kind === 'airline' ? selectedCarrier : routeQualifiedCarrierKey;
+    const carrierMeta = carrierKey ? carrierShardManifest?.carriers[carrierKey] : undefined;
+    if (fullNetworkReady || fullNetworkRequested || !carrierKey || !carrierMeta || !data.routeNetworkCarrierShardBaseUrl) return;
+    if (carrierShardFailureCode === carrierKey) return;
+    if (loadedNetwork?.scope === 'carrier-shard' && loadedNetwork.carrier === carrierKey) return;
     const controller = new AbortController();
-    const shardUrl = `${data.routeNetworkCarrierShardBaseUrl}/${carrierShardNameFromKey(selectedCarrier)}.json`;
+    const shardUrl = `${data.routeNetworkCarrierShardBaseUrl}/${carrierShardNameFromKey(carrierKey)}.json`;
     void fetch(shardUrl, { signal: controller.signal })
       .then(async (response) => {
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const knownAirports = new Set(airports.keys());
         return parseRuntimeRouteNetworkCarrierShardBytes(
-          await response.arrayBuffer(), carrierShardMeta, selectedCarrier, knownAirports,
+          await response.arrayBuffer(), carrierMeta, carrierKey, knownAirports,
         );
       })
       .then((network) => {
         setLoadedNetwork((current) => current?.scope === 'full'
           ? current
-          : { scope: 'carrier-shard', carrier: selectedCarrier, network });
+          : { scope: 'carrier-shard', carrier: carrierKey, network });
       })
       .catch((reason: unknown) => {
         if ((reason as { name?: string }).name === 'AbortError') return;
-        setCarrierShardFailureCode(selectedCarrier);
+        setCarrierShardFailureCode(carrierKey);
       });
     return () => controller.abort();
   }, [
     airports,
     carrierShardFailureCode,
-    carrierShardMeta,
+    carrierShardManifest,
     data.routeNetworkCarrierShardBaseUrl,
     fullNetworkReady,
     fullNetworkRequested,
     loadedNetwork,
     selectedCarrier,
+    routeQualifiedCarrierKey,
     selection?.kind,
   ]);
 
@@ -361,19 +380,26 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
     !data.routeNetworkRuntimeMeta
     || !carrierShardSupportAvailable
     || carrierManifestFailed
-    || (carrierShardManifest !== null && !carrierShardMeta)
+    || (carrierShardManifest !== null && !carrierShardManifest.carriers[selectedCarrier!])
     || carrierShardFailureCode === selectedCarrier
   );
+  const routeNeedsCarrierShard = selection?.kind === 'route' && Boolean(routeQualifiedCarrierKey)
+    && !(loadedNetwork?.scope === 'carrier-shard' && loadedNetwork.carrier === routeQualifiedCarrierKey);
   const originSelectionNeedsFullNetwork = (selection?.kind === 'route' || selection?.kind === 'airport')
     && (!originShardMeta || shardFailureLetter === selectionOriginLetter);
 
   const shouldLoadFullNetwork = !fullNetworkReady && (
     fullNetworkRequested
-    || selection === null
     || advancedOpen
     || airlineNeedsFullNetwork
-    || originSelectionNeedsFullNetwork
+    || (originSelectionNeedsFullNetwork && !routeNeedsCarrierShard)
   );
+  const fullNetworkLoading = shouldLoadFullNetwork && !fullNetworkReady && error === null;
+  const requestFullNetwork = (): void => {
+    setError(null);
+    setFullNetworkRequested(true);
+    setFullNetworkLoadAttempt((attempt) => attempt + 1);
+  };
 
   useEffect(() => {
     if (!shouldLoadFullNetwork || fullNetworkReady) return;
@@ -400,7 +426,7 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
         setError(reason instanceof Error ? reason.message : String(reason));
       });
     return () => controller.abort();
-  }, [shouldLoadFullNetwork, fullNetworkReady, data.routeNetworkRuntimeUrl, data.routeNetworkRuntimeMeta, airports]);
+  }, [shouldLoadFullNetwork, fullNetworkReady, fullNetworkLoadAttempt, data.routeNetworkRuntimeUrl, data.routeNetworkRuntimeMeta, airports]);
 
   useEffect(() => {
     const sync = (): void => {
@@ -449,10 +475,11 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
   ), [memberships, alliance]);
   const carrierNames = useMemo(() => new Map(memberships.map((membership) => [membership.airline, membership.airlineName] as const)), [memberships]);
   const selectionMemberCodes = useMemo<ReadonlySet<string>>(() => {
-    if (!selectedCarrier?.includes('+') || !displayNetwork) return memberCodes;
-    const carrier = displayNetwork.routes.find(route => route.carrierEntityKey === selectedCarrier)?.carrier;
+    const selectedEntityKey = selectedCarrier?.includes('+') ? selectedCarrier : routeQualifiedCarrierKey;
+    if (!selectedEntityKey || !displayNetwork) return memberCodes;
+    const carrier = displayNetwork.routes.find(route => route.carrierEntityKey === selectedEntityKey)?.carrier;
     return carrier ? new Set([...memberCodes, carrier]) : memberCodes;
-  }, [displayNetwork, memberCodes, selectedCarrier]);
+  }, [displayNetwork, memberCodes, routeQualifiedCarrierKey, selectedCarrier]);
   const selectEntity = (next: RouteLibraryEntitySelection | null): void => {
     const url = new URL(window.location.href);
     url.searchParams.set('view', 'routes');
@@ -483,15 +510,15 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
           airportIndex={airportIndex}
           airports={airports}
           carrierNames={carrierNames}
-          routeCount={data.routeNetworkRuntimeMeta?.routes}
           zh={zh}
           onSelectAirport={(iata) => selectEntity({ kind: 'airport', id: iata })}
         />}
-        {error && <div className="routes-error" role="alert"><strong>{copy.error}</strong><span>{error}</span><button type="button" onClick={() => window.location.reload()}>{copy.retry}</button></div>}
+        {error && <div className="routes-error" role="alert"><strong>{copy.error}</strong><span>{error}</span><button type="button" onClick={requestFullNetwork}>{copy.retry}</button></div>}
         {displayNetwork && (
           <>
             <RouteLibraryExplorer
               network={displayNetwork}
+              routeMapPreview={data.routeMapPreview}
               airports={airports}
               carrierNames={carrierNames}
               memberCodes={selectionMemberCodes}
@@ -505,7 +532,10 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
               onSelect={selectEntity}
               onPlanRoute={onPlanRoute}
               networkComplete={fullNetworkReady}
-              onRequestFullNetwork={() => setFullNetworkRequested(true)}
+              fullNetworkLoading={fullNetworkLoading}
+              fullNetworkError={error}
+              onRequestFullNetwork={requestFullNetwork}
+              onRetryFullNetwork={requestFullNetwork}
             />
 
             <section className="routes-advanced-shell">

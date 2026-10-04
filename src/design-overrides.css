@@ -1,0 +1,161 @@
+/* GCMP atlas system: aeronautical chart inks, pale chart stock and measured route notation. */
+:root {
+  --label: #18333c;
+  --secondary-label: #526a6d;
+  --tertiary-label: #647c7d;
+  --quaternary-label: #829596;
+  --separator: #cad3cd;
+  --opaque-separator: #aabbb5;
+  --system-background: #f3f1e8;
+  --secondary-system-background: #fbfaf5;
+  --tertiary-system-background: #e8ece6;
+  --grouped-background: #e5eae4;
+  --secondary-grouped-background: #faf9f4;
+  --tint: #176478;
+  --tint-pressed: #104e60;
+  --tint-fill-soft: rgba(23, 100, 120, .12);
+  --semantic-green: #28634c;
+  --semantic-orange: #a6532c;
+  --semantic-red: #a43f3a;
+  --map-land: #f2efdf;
+  --map-sea: #dce9e7;
+  --map-coast: rgba(37, 76, 83, .45);
+  --map-graticule: rgba(37, 76, 83, .17);
+  --font-display: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+  --radius-button: 8px;
+  --radius-input: 8px;
+  --radius-control: 8px;
+  --radius-card: 10px;
+  --radius-sheet: 16px;
+  --focus-ring-color: #b34937;
+  --shadow-popover: 0 9px 28px rgba(22, 52, 59, .13);
+  --material-thin: rgba(243, 241, 232, .76);
+  --material-regular: rgba(243, 241, 232, .92);
+  --material-thick: rgba(251, 250, 245, .98);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --label: #e6eee9;
+    --secondary-label: #bfceca;
+    --tertiary-label: #94aaa6;
+    --quaternary-label: #78928f;
+    --separator: #3a5558;
+    --opaque-separator: #526d6f;
+    --system-background: #14292f;
+    --secondary-system-background: #1b353a;
+    --tertiary-system-background: #213d41;
+    --grouped-background: #1e393d;
+    --secondary-grouped-background: #1a3338;
+    --tint: #85d0c8;
+    --tint-pressed: #a5e0d7;
+    --tint-fill-soft: rgba(133, 208, 200, .14);
+    --semantic-green: #79c39a;
+    --semantic-orange: #e0a273;
+    --semantic-red: #ed9185;
+    --map-land: #263d3e;
+    --map-sea: #142e33;
+    --map-coast: rgba(198, 220, 210, .42);
+    --map-graticule: rgba(198, 220, 210, .19);
+    --material-thin: rgba(20, 41, 47, .76);
+    --material-regular: rgba(20, 41, 47, .92);
+    --material-thick: rgba(27, 53, 58, .98);
+    color-scheme: dark;
+  }
+}
+
+html { scroll-behavior: smooth; }
+body { background: var(--system-background); color: var(--label); font-family: var(--font-sans); }
+::selection { background: #b8d5cb; color: #173841; }
+:focus-visible { outline: 2px solid #b34937 !important; outline-offset: 3px; }
+button, input, select, textarea { font: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+
+.site-page { background: var(--system-background); }
+.site-header {
+  min-height: 72px; grid-template-columns: minmax(200px, 1fr) auto minmax(200px, 1fr);
+  padding-inline: clamp(20px, 4vw, 64px); border-bottom-color: #27454c;
+  background: #17343d; color: #f5f3e9; backdrop-filter: none;
+}
+.site-brand { align-items: center; gap: 14px; color: #f5f3e9; }
+.site-brand-mark { font-size: 25px; letter-spacing: -.065em; }
+.site-brand > span:last-child { color: #b6c9c2; font-size: 12px; }
+.site-nav { gap: 3px; padding: 4px; border: 1px solid rgba(230, 240, 235, .16); border-radius: 9px; background: rgba(8, 27, 34, .35); }
+.site-nav a { min-height: 36px; display: inline-flex; align-items: center; border-radius: 6px; padding: 0 16px; color: #bdcfca; font-size: 13px; font-weight: 600; }
+.site-nav a:hover { color: white; background: rgba(255,255,255,.08); }
+.site-nav a.active { background: #e5d9b9; color: #18343d; }
+.site-header .lang-picker { background: rgba(230,240,235,.1); color: #e8efe9; }
+.site-header .lang-picker:hover { background: rgba(230,240,235,.17); }
+.site-header .lang-picker-icon { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.2; }
+.site-header .lang-picker-select { color: #f5f3e9; }
+.site-header .lang-picker-select option { color: #18333c; background: #fbfaf5; }
+.skip-link:focus { background: #fffdf5; color: #18343c; }
+
+.landing-page { background: var(--system-background); }
+.landing-hero {
+  width: min(1720px, 100%); min-height: min(860px, calc(100svh - 72px));
+  grid-template-columns: minmax(400px, .9fr) minmax(580px, 1.1fr);
+  gap: clamp(36px, 4vw, 64px); padding: clamp(52px, 6vw, 88px) clamp(24px, 5vw, 80px) 72px;
+}
+.landing-hero::before { width: 700px; height: 700px; border-color: rgba(28, 80, 88, .1); box-shadow: 0 0 0 100px rgba(28,80,88,.04), 0 0 0 200px rgba(28,80,88,.025); }
+.landing-eyebrow { color: #176478; letter-spacing: .12em; }
+.landing-hero h1 { max-width: none; color: #17343d; font-size: clamp(54px, 6vw, 88px); line-height: .99; letter-spacing: -.055em; }
+.landing-hero-copy > p { max-width: 42ch; color: #526a6d; font-size: 17px; line-height: 1.75; }
+.site-button { min-height: 50px; border-radius: 7px; }
+.site-button.primary { border-color: #17343d; background: #17343d; color: #f5f3e9; }
+.site-button.secondary { border-color: #98aaa5; color: #17343d; }
+.landing-stats { gap: 30px; border-color: #bdc9c4; }
+.landing-stats dt { color: #17343d; }
+.landing-stats dd { color: #526a6d; }
+.landing-globe-shell { max-width: 1000px; }
+.landing-three-card, .landing-three-loading { min-height: clamp(520px, 68vh, 720px); border-radius: 10px; }
+.landing-three-card { border: 1px solid rgba(220, 235, 226, .28); background: #102b33; box-shadow: 0 18px 44px rgba(22, 52, 59, .19); }
+.landing-three-card::after { inset: 10px; border-radius: 3px; border-color: rgba(230,240,235,.16); }
+.landing-three-ambient { filter: none; opacity: .48; }
+.landing-three-copy { top: 28px; left: 30px; }
+.landing-three-copy h2 { letter-spacing: -.025em; }
+.landing-three-metrics span { border-radius: 4px; font-variant-numeric: tabular-nums; }
+.landing-showcase-switcher { right: 18px; width: 188px; }
+.landing-showcase-switcher button { min-height: 46px; border-radius: 4px; }
+.landing-three-description a { border-radius: 5px; }
+.landing-section { margin-inline: clamp(24px, 5vw, 80px); border-color: #c5cec8; }
+.landing-section h2 { color: #17343d; letter-spacing: -.04em; }
+.landing-feature-grid { border-color: #bdc9c4; background: #bdc9c4; }
+.landing-feature-grid article { background: #f9f8f1; }
+.landing-feature-grid article > span { color: #176478; }
+.landing-feature-grid p, .landing-route-story p { color: #526a6d; }
+.landing-support { background: #17343d; color: #f4f1e6; }
+.landing-support p { color: #c0cfca; }
+
+@media (max-width: 900px) {
+  .site-header { grid-template-columns: 1fr auto; gap: 10px 16px; }
+  .site-nav { grid-column: 1 / -1; grid-row: 2; justify-self: stretch; justify-content: center; }
+  .site-header-tools { grid-column: 2; grid-row: 1; }
+  .landing-hero { grid-template-columns: 1fr; min-height: 0; padding-top: 46px; }
+  .landing-hero h1 { max-width: 14ch; }
+  .landing-three-card, .landing-three-loading { min-height: min(70svh, 640px); }
+}
+@media (max-width: 620px) {
+  .site-header { min-height: 64px; padding: 10px 16px; }
+  .site-brand > span:last-child { display: none; }
+  .site-nav { justify-content: space-between; }
+  .site-nav a { flex: 1; justify-content: center; min-height: 40px; padding-inline: 7px; font-size: 12px; }
+  .landing-hero { gap: 32px; padding: 38px 18px 48px; }
+  .landing-hero h1 { font-size: clamp(48px, 14vw, 70px); }
+  .landing-hero-copy > p { font-size: 16px; }
+  .landing-stats { flex-wrap: wrap; gap: 14px 22px; margin-top: 34px; }
+  .landing-three-card, .landing-three-loading { min-height: 580px; }
+  .landing-three-copy { top: 20px; left: 18px; max-width: calc(100% - 36px); }
+  .landing-three-metrics { top: 116px; left: 18px; right: auto; }
+  .landing-showcase-switcher { top: auto; right: 12px; bottom: 114px; width: 148px; }
+  .landing-showcase-switcher button { min-height: 40px; padding: 7px; font-size: 10px; }
+  .landing-flight-strip { left: 16px; right: 12px; bottom: 65px; }
+  .landing-three-description { left: 16px; right: 16px; bottom: 14px; }
+  .landing-three-description p { display: none; }
+  .landing-section { margin-inline: 18px; padding-block: 56px; }
+  .landing-section-heading, .landing-route-story, .landing-support { grid-template-columns: 1fr; gap: 24px; }
+  .landing-feature-grid { grid-template-columns: 1fr; }
+  .landing-feature-grid article { min-height: 0; }
+  .text-link { grid-column: 1; }
+}

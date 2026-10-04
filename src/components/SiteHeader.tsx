@@ -1,8 +1,8 @@
 import { LanguagePicker } from './LanguagePicker.tsx';
 import { useLocaleState } from '../i18n/use-locale-state.ts';
-import { shouldHandleSiteLink, siteViewHref } from '../lib/site-navigation.ts';
+import { shouldHandleSiteLink, siteViewHref, type PublicSiteView } from '../lib/site-navigation.ts';
 
-export type SiteView = 'home' | 'planner' | 'routes' | 'progress';
+export type SiteView = PublicSiteView;
 
 interface Props {
   readonly active: SiteView;
@@ -12,8 +12,8 @@ interface Props {
 export function SiteHeader({ active, onNavigate }: Props): React.ReactElement {
   const { locale } = useLocaleState();
   const copy = locale === 'zh-TW'
-    ? { home: '首頁', planner: '規劃', routes: '航線資料庫', progress: '資料進度', tagline: '把世界航線變得清楚。', brand: 'gcmp 首頁', navigation: '主要導覽' }
-    : { home: 'Home', planner: 'Planner', routes: 'Route library', progress: 'Data progress', tagline: 'Round the world, clearly.', brand: 'gcmp home', navigation: 'Primary navigation' };
+    ? { home: '首頁', planner: '規劃', routes: '航線資料庫', tagline: '把世界航線變得清楚。', brand: 'gcmp 首頁', navigation: '主要導覽' }
+    : { home: 'Home', planner: 'Planner', routes: 'Route library', tagline: 'Round the world, clearly.', brand: 'gcmp home', navigation: 'Primary navigation' };
   return (
     <header className="site-header">
       <a className="skip-link" href="#main-content">{locale === 'zh-TW' ? '跳到主要內容' : 'Skip to main content'}</a>
@@ -26,7 +26,7 @@ export function SiteHeader({ active, onNavigate }: Props): React.ReactElement {
         <span>{copy.tagline}</span>
       </a>
       <nav className="site-nav" aria-label={copy.navigation}>
-        {(['home', 'planner', 'routes', 'progress'] as const).map((view) => <a
+        {(['home', 'planner', 'routes'] as const).map((view) => <a
           key={view}
           href={siteViewHref(view)}
           className={active === view ? 'active' : ''}
@@ -36,7 +36,7 @@ export function SiteHeader({ active, onNavigate }: Props): React.ReactElement {
             event.preventDefault();
             onNavigate(view);
           }}
-        >{view === 'home' ? copy.home : view === 'planner' ? copy.planner : view === 'routes' ? copy.routes : copy.progress}</a>)}
+        >{view === 'home' ? copy.home : view === 'planner' ? copy.planner : copy.routes}</a>)}
       </nav>
       <div className="site-header-tools"><LanguagePicker /></div>
     </header>

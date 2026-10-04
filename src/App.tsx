@@ -22,10 +22,9 @@ import { AirportAutocomplete } from './components/AirportAutocomplete.tsx';
 import { GroupTabs } from './components/GroupTabs.tsx';
 import { LegChain } from './components/LegChain.tsx';
 import { MapErrorBoundary } from './components/MapErrorBoundary.tsx';
-import { MobileBanner } from './components/MobileBanner.tsx';
 import { LandingPage } from './components/LandingPage.tsx';
-import { DataProgressPage } from './components/DataProgressPage.tsx';
 import { SiteHeader, type SiteView } from './components/SiteHeader.tsx';
+import { siteViewFromLocation } from './lib/site-navigation.ts';
 import { RtwLegTable } from './components/RtwLegTable.tsx';
 import { RtwPlanGate } from './components/RtwPlanGate.tsx';
 import { DestinationsPanel } from './components/DestinationsPanel.tsx';
@@ -66,6 +65,7 @@ import { useViewportWidth } from './state/use-viewport.ts';
 import './left-panel-ux.css';
 import './map-polish.css';
 import './App.css';
+import './planner-redesign.css';
 
 const LazyMapView = lazy(() =>
   import('./components/MapView.tsx').then((module) => ({ default: module.MapView })),
@@ -93,7 +93,7 @@ type InspectorPanel = 'rules' | 'tools' | 'saved';
 type ResizeHandle = 'editor';
 
 export interface AppProps {
-  readonly siteView?: Exclude<SiteView, 'home' | 'progress'>;
+  readonly siteView?: Exclude<SiteView, 'home'>;
   readonly onNavigateSite?: (view: SiteView) => void;
 }
 
@@ -107,19 +107,12 @@ export function App({ siteView: controlledSiteView, onNavigateSite: controlledNa
 
 function StandaloneApp(): React.ReactElement {
   const [siteView, setSiteView] = useState<SiteView>(() => {
-    const explicit = new URLSearchParams(window.location.search).get('view');
-    if (explicit === 'home' || explicit === 'planner' || explicit === 'routes' || explicit === 'progress') return explicit;
-    return window.location.hash.startsWith('#/r/') ? 'planner' : 'home';
+    return siteViewFromLocation();
   });
 
   useEffect(() => {
     const syncFromLocation = (): void => {
-      const explicit = new URLSearchParams(window.location.search).get('view');
-      if (explicit === 'home' || explicit === 'planner' || explicit === 'routes' || explicit === 'progress') {
-        setSiteView(explicit);
-        return;
-      }
-      setSiteView(window.location.hash.startsWith('#/r/') ? 'planner' : 'home');
+      setSiteView(siteViewFromLocation());
     };
     window.addEventListener('popstate', syncFromLocation);
     window.addEventListener('hashchange', syncFromLocation);
@@ -141,13 +134,11 @@ function StandaloneApp(): React.ReactElement {
     return <LandingPage onNavigate={navigateSite} />;
   }
 
-  if (siteView === 'progress') return <DataProgressPage onNavigate={navigateSite} />;
-
   return <LoadedSiteApp siteView={siteView} onNavigateSite={navigateSite} />;
 }
 
 interface LoadedSiteAppProps {
-  readonly siteView: Exclude<SiteView, 'home' | 'progress'>;
+  readonly siteView: Exclude<SiteView, 'home'>;
   readonly onNavigateSite: (view: SiteView) => void;
 }
 
@@ -770,7 +761,6 @@ function Ready({
 
   return (
     <div className={`app${isMobile ? ' mobile' : ''}`}>
-      <MobileBanner visible={isMobile} />
       <div className="planner-action-toolbar" aria-label={locale === 'zh-TW' ? '規劃器操作' : 'Planner actions'}>
         <div className="planner-action-context">
           <span>{t('rtw.onboarding.currentPlan')}</span>
@@ -803,7 +793,7 @@ function Ready({
           '--editor-width': `${editorWidth}px`,
         } as React.CSSProperties}
       >
-        <section className="route-editor" aria-label={locale === 'zh-TW' ? '路線輸入' : 'Routing input'}>
+        <section id="route-editor" className="route-editor" aria-label={locale === 'zh-TW' ? '路線輸入' : 'Routing input'}>
           <div className="route-editor-scroll">
             <div className="route-plan-bar">
               <div>
@@ -840,9 +830,7 @@ function Ready({
                     </div>
                     <p>{t('rtw.workflow.routeHint')}</p>
                   </div>
-                  {!isMobile && (
-                    <AirportAutocomplete index={airportIndex} onCommit={addAirport} />
-                  )}
+                  <AirportAutocomplete index={airportIndex} onCommit={addAirport} />
                   <Suspense fallback={null}>
                     <LazySeasonalItineraryFinder
                       productId={selectedRtwProductId}
@@ -933,6 +921,7 @@ function Ready({
               )}
             </section>
             <section
+              id="route-next-step"
               ref={routeNextStepRef}
               className="route-next-step"
               aria-label={t('rtw.workflow.explore')}
@@ -987,7 +976,7 @@ function Ready({
             setResizing('editor');
           }}
         />
-        <div ref={mapRef} className="app-map-wrap">
+        <div id="route-map" ref={mapRef} className="app-map-wrap">
           <div className="app-map-toolbar">
             <label className="map-toggle">
               <input
@@ -1108,6 +1097,21 @@ function Ready({
           </div>
         </aside>
       </main>
+      {isMobile && (
+        <nav className="mobile-planner-nav" aria-label={t('mobile.navLabel')}>
+          <button type="button" onClick={() => {
+            setRouteSetupExpanded(true);
+            document.getElementById('route-editor')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+          }}>{t('mobile.itinerary')}</button>
+          <button type="button" onClick={() => {
+            routeNextStepRef.current?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+          }}>{t('mobile.nextStop')}</button>
+          <button type="button" onClick={() => {
+            mapRef.current?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+          }}>{t('mobile.map')}</button>
+          <button type="button" onClick={() => toggleInspector('rules')}>{t('mobile.review')}</button>
+        </nav>
+      )}
       <footer className="app-footer">
         <span>
           {t('footer.openSource')} ·{' '}

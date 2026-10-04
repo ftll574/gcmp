@@ -3,11 +3,14 @@ import { join } from 'node:path';
 import { describe, expect, test } from 'vitest';
 import { buildAirportIndex } from '../../../src/lib/airport-index.ts';
 import { parseAirportCatalog } from '../../../src/lib/schemas/airports.ts';
+import { LandingShowcaseCatalogSchema } from '../../../src/lib/schemas/landing-showcase.ts';
 import { parseRouteNetworkCatalog, RouteNetworkCatalogSchema } from '../../../src/lib/schemas/route-network.ts';
 import {
   buildAirportEntityProfile,
   buildAirlineEntityProfile,
+  buildLandingShowcaseFingerprint,
   buildRouteEntityProfile,
+  searchLandingShowcaseEntities,
   searchRouteLibraryEntities,
 } from '../../../src/lib/rtw/route-library-entities.ts';
 
@@ -26,6 +29,24 @@ const memberCodes = new Set(carrierNames.keys());
 const input = { network, airports: airportIndex.byIata, carrierNames, memberCodes };
 
 describe('entity-first route library model', () => {
+  test('builds the lightweight map preview only from runtime-matched showcase legs, without promoting candidate evidence', () => {
+    const showcase = LandingShowcaseCatalogSchema.parse(JSON.parse(readFileSync(join(PUBLIC, 'data/site/landing-showcases.json'), 'utf8')));
+    const fingerprint = buildLandingShowcaseFingerprint(showcase, airportIndex.byIata, memberCodes);
+    const catalogLegs = showcase.showcases.flatMap(row => row.legs);
+    expect(fingerprint.routes.length).toBeGreaterThan(0);
+    expect(fingerprint.routes.length).toBeLessThan(network.routes.length);
+    for (const route of fingerprint.routes) for (const carrier of route.carriers) {
+      expect(carrier.confirmedNumbers).toEqual([]);
+      expect(carrier.sources).toEqual([]);
+      for (const flightNumber of carrier.candidateNumbers) {
+        expect(catalogLegs).toContainEqual(expect.objectContaining({
+          from: route.from.iata, to: route.to.iata, carrier: carrier.carrier,
+          carrierName: carrier.name, flightNumber, flightNumberStatus: 'candidate',
+        }));
+      }
+    }
+  });
+
   test('airport counts and route cards distinguish qualified entities sharing one IATA code', () => {
     const sharedNetwork = RouteNetworkCatalogSchema.parse({
       version: '2026.3', coverage: 'curated-not-complete',
@@ -85,6 +106,20 @@ describe('entity-first route library model', () => {
     expect(searchRouteLibraryEntities({ ...input, query: 'TPE-NRT' }).some((result) => result.selection.kind === 'route' && result.selection.id === 'TPE-NRT')).toBe(true);
     expect(searchRouteLibraryEntities({ ...input, query: 'BR198' }).some((result) => result.kind === 'flight' && result.selection.id === 'TPE-NRT')).toBe(true);
   });
+  test('searches flight-number prefixes and keeps preview designators explicitly candidate-only', () => {
+    const showcase = LandingShowcaseCatalogSchema.parse(JSON.parse(readFileSync(join(PUBLIC, 'data/site/landing-showcases.json'), 'utf8')));
+    const partial = searchLandingShowcaseEntities(showcase, airportIndex.byIata, 'BR1', memberCodes, 'zh-TW');
+    const complete = searchRouteLibraryEntities({ ...input, query: 'BR1', locale: 'zh-TW' });
+
+    expect(partial).toEqual(expect.arrayContaining([
+      expect.objectContaining({ kind: 'flight', title: 'BR184 · TPE → NRT', subtitle: expect.stringContaining('尚未確認') }),
+    ]));
+    expect(searchLandingShowcaseEntities(showcase, airportIndex.byIata, 'BR198', memberCodes, 'zh-TW')).toEqual([]);
+    expect(complete.length).toBeGreaterThan(partial.length);
+    expect(complete).toEqual(expect.arrayContaining([
+      expect.objectContaining({ kind: 'flight', title: 'BR1 · LAX → TPE', subtitle: 'EVA Air · 候選班號' }),
+    ]));
+  });
   test('qualified airline entities are searchable by legal name and canonical key', () => {
     const sharedNetwork = RouteNetworkCatalogSchema.parse({
       version: '2026.3', coverage: 'curated-not-complete',
@@ -105,6 +140,12 @@ describe('entity-first route library model', () => {
     expect(selected!.routes.flatMap(route => route.carriers)).toEqual(expect.arrayContaining([
       expect.objectContaining({ carrier: '2F', carrierEntityKey: key, name: 'Azul Conecta Ltda.', identity: 'provider-listed', confirmedNumbers: [], candidateNumbers: [], registeredPlans: [] }),
     ]));
+    const routeModel = { ...input, memberCodes: new Set([...memberCodes, selected!.carrier]) };
+    for (const routeId of ['CNF-DTI', 'CNF-JDR', 'DTI-CNF', 'JDR-CNF']) {
+      expect(buildRouteEntityProfile(routeModel, routeId)?.route.carriers).toEqual(expect.arrayContaining([
+        expect.objectContaining({ carrier: '2F', carrierEntityKey: key, identity: 'provider-listed', confirmedNumbers: [] }),
+      ]));
+    }
     expect(buildAirlineEntityProfile({ ...input, memberCodes: new Set([...memberCodes, '2F']) }, 'AD')?.routes.some(route => route.carriers.some(carrier => carrier.carrierEntityKey === key)) ?? false).toBe(false);
   });
 });

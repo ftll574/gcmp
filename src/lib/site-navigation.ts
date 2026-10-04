@@ -1,4 +1,16 @@
-export type PublicSiteView = 'home' | 'planner' | 'routes' | 'progress';
+export type PublicSiteView = 'home' | 'planner' | 'routes';
+
+export function siteViewFromLocation(): PublicSiteView {
+  const url = new URL(window.location.href);
+  const explicit = url.searchParams.get('view');
+  if (explicit === 'progress') {
+    url.searchParams.set('view', 'planner');
+    window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`);
+    return 'planner';
+  }
+  if (explicit === 'home' || explicit === 'planner' || explicit === 'routes') return explicit;
+  return url.hash.startsWith('#/r/') ? 'planner' : 'home';
+}
 
 export function siteViewHref(view: PublicSiteView, base = import.meta.env.BASE_URL): string {
   const url = new URL(window.location.href);

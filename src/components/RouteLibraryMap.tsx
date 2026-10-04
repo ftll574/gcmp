@@ -36,6 +36,37 @@ const HIT_SEARCH_RADIUS_PX = 10;
 const ROUTE_SELECT_RADIUS_PX = 18;
 const ROUTE_MAP_LABEL_FONT = ['Noto Sans Regular'];
 
+function applyAtlasBasemap(map: MapLibreMap, dark: boolean): void {
+  const palette = dark
+    ? { water: '#142e33', land: '#263d3e', parcel: '#304746', boundary: '#66817c', road: '#3b5656', label: '#dce8e2', halo: '#20373a' }
+    : { water: '#dce9e7', land: '#f2efdf', parcel: '#e7e6d8', boundary: '#9eaea4', road: '#c7cbbb', label: '#425d61', halo: '#f7f5eb' };
+  for (const layer of map.getStyle().layers ?? []) {
+    const id = layer.id.toLowerCase();
+    try {
+      if (layer.type === 'background') {
+        map.setPaintProperty(layer.id, 'background-color', palette.water);
+      } else if (id.includes('water')) {
+        if (layer.type === 'fill') map.setPaintProperty(layer.id, 'fill-color', palette.water);
+        if (layer.type === 'line') map.setPaintProperty(layer.id, 'line-color', palette.water);
+      } else if (/(landcover|landuse|park|grass|wood|earth|landfill)/.test(id) && layer.type === 'fill') {
+        map.setPaintProperty(layer.id, 'fill-color', palette.land);
+      } else if (id.includes('building') && layer.type === 'fill') {
+        map.setPaintProperty(layer.id, 'fill-color', palette.parcel);
+      } else if (/(boundary|admin|country)/.test(id) && layer.type === 'line') {
+        map.setPaintProperty(layer.id, 'line-color', palette.boundary);
+      } else if (/(road|transportation|highway|railway|path)/.test(id) && layer.type === 'line') {
+        map.setPaintProperty(layer.id, 'line-color', palette.road);
+      }
+      if (layer.type === 'symbol' && layer.paint && 'text-color' in layer.paint) {
+        map.setPaintProperty(layer.id, 'text-color', palette.label);
+        map.setPaintProperty(layer.id, 'text-halo-color', palette.halo);
+      }
+    } catch {
+      // Some provider styles use data-driven paint expressions; retain that layer as supplied.
+    }
+  }
+}
+
 export type RouteMapAllianceTheme = 'all' | 'star' | 'oneworld' | 'skyteam';
 
 interface RouteMapControls {
@@ -48,6 +79,17 @@ interface RouteMapControls {
   readonly searchPlaceholder: string;
   readonly searchDisabled?: boolean | undefined;
   readonly searchDisabledLabel?: string | undefined;
+  readonly searchNeedsFullNetwork?: boolean | undefined;
+  readonly loadFullSearchLabel?: string | undefined;
+  readonly searchPartialLabel?: ((count: number) => string) | undefined;
+  readonly searchPartialEmptyLabel?: string | undefined;
+  readonly searchFullLoadingLabel?: string | undefined;
+  readonly searchLoadErrorLabel?: string | undefined;
+  readonly searchNoResultsLabel?: string | undefined;
+  readonly fullNetworkLoading?: boolean | undefined;
+  readonly fullNetworkError?: string | null | undefined;
+  readonly onRequestFullNetwork?: (() => void) | undefined;
+  readonly onRetryFullNetwork?: (() => void) | undefined;
   readonly partialMapHelp?: string | undefined;
   readonly partialFallbackHelp?: string | undefined;
   readonly searchResults: ReadonlyArray<RouteLibrarySearchResult>;
@@ -55,7 +97,7 @@ interface RouteMapControls {
 }
 
 const ALLIANCE_ACCENTS: Readonly<Record<RouteMapAllianceTheme, { readonly light: string; readonly dark: string }>> = {
-  all: { light: '#277b68', dark: '#65c5a7' },
+  all: { light: '#176478', dark: '#85d0c8' },
   star: { light: '#9a7226', dark: '#d4ad58' },
   oneworld: { light: '#6b57a5', dark: '#a797df' },
   skyteam: { light: '#356f9f', dark: '#73abd5' },
@@ -124,7 +166,7 @@ function addSourcesAndLayers(map: MapLibreMap, dark: boolean): void {
     type: 'line',
     source: ROUTE_SOURCE,
     paint: {
-      'line-color': dark ? '#67c9ab' : '#3b8f78',
+      'line-color': dark ? '#85d0c8' : '#176478',
       'line-width': ['interpolate', ['linear'], ['zoom'], 0, 0.7, 3, 1.2, 8, 2],
       'line-opacity': ['interpolate', ['linear'], ['zoom'], 0, 0.22, 3, 0.38, 8, 0.58],
     },
@@ -140,7 +182,7 @@ function addSourcesAndLayers(map: MapLibreMap, dark: boolean): void {
     type: 'line',
     source: FOCUS_ROUTE_SOURCE,
     paint: {
-      'line-color': '#e37f38',
+      'line-color': '#a6532c',
       'line-width': ['interpolate', ['linear'], ['zoom'], 0, 2, 5, 3.6, 10, 5],
       'line-opacity': 0.96,
     },
@@ -151,7 +193,7 @@ function addSourcesAndLayers(map: MapLibreMap, dark: boolean): void {
     source: AIRPORT_SOURCE,
     filter: ['has', 'point_count'],
     paint: {
-      'circle-color': dark ? '#65c5a7' : '#277b68',
+      'circle-color': dark ? '#85d0c8' : '#176478',
       'circle-radius': ['step', ['get', 'point_count'], 15, 10, 19, 35, 24, 100, 30],
       'circle-opacity': 0.88,
       'circle-stroke-color': dark ? '#101813' : '#f7fbf8',
@@ -178,7 +220,7 @@ function addSourcesAndLayers(map: MapLibreMap, dark: boolean): void {
     source: AIRPORT_SOURCE,
     filter: ['!', ['has', 'point_count']],
     paint: {
-      'circle-color': dark ? '#65c5a7' : '#277b68',
+      'circle-color': dark ? '#85d0c8' : '#176478',
       'circle-radius': ['interpolate', ['linear'], ['get', 'connections'], 0, 3, 10, 4.5, 80, 7, 300, 10],
       'circle-stroke-color': dark ? '#101813' : '#f7fbf8',
       'circle-stroke-width': 1.6,
@@ -210,7 +252,7 @@ function addSourcesAndLayers(map: MapLibreMap, dark: boolean): void {
     type: 'circle',
     source: FOCUS_AIRPORT_SOURCE,
     paint: {
-      'circle-color': '#e37f38',
+      'circle-color': '#a6532c',
       'circle-radius': ['interpolate', ['linear'], ['zoom'], 0, 7, 8, 11],
       'circle-stroke-color': dark ? '#111a16' : '#ffffff',
       'circle-stroke-width': 2.5,
@@ -259,6 +301,8 @@ function airportSourceData(model: RouteMapModel, selection: InspectorSelection):
   return { type: 'FeatureCollection', features: model.airports.features.filter((feature) => !focused.has(feature.properties.iata)) };
 }
 
+const clusterAirportCache = new WeakMap<GeoJSONSource, Map<string, Promise<ReadonlyArray<string>>>>();
+
 async function clusterRepresentatives(
   map: MapLibreMap,
 ): Promise<ReadonlyMap<string, RouteMapEndpointRepresentative>> {
@@ -274,16 +318,26 @@ async function clusterRepresentatives(
   }
 
   const representatives = new Map<string, RouteMapEndpointRepresentative>();
+  let airportCache = clusterAirportCache.get(airportSource);
+  if (!airportCache) {
+    airportCache = new Map();
+    clusterAirportCache.set(airportSource, airportCache);
+  }
+  const zoomKey = map.getZoom().toFixed(2);
   await Promise.all([...byId.entries()].map(async ([clusterId, cluster]) => {
     if (cluster.geometry.type !== 'Point') return;
     const pointCount = Number(cluster.properties?.point_count ?? 0);
     if (!Number.isFinite(pointCount) || pointCount <= 0) return;
     const [lon, lat] = cluster.geometry.coordinates as [number, number];
-    const leaves = await airportSource.getClusterLeaves(clusterId, pointCount, 0);
-    for (const leaf of leaves) {
-      const iata = String(leaf.properties?.iata ?? '');
-      if (iata) representatives.set(iata, { key: `cluster:${clusterId}`, lon, lat });
+    const cacheKey = `${zoomKey}:${clusterId}`;
+    let airports = airportCache!.get(cacheKey);
+    if (!airports) {
+      airports = airportSource.getClusterLeaves(clusterId, pointCount, 0)
+        .then(leaves => leaves.map(leaf => String(leaf.properties?.iata ?? '')).filter(Boolean));
+      if (airportCache!.size >= 256) airportCache!.delete(airportCache!.keys().next().value!);
+      airportCache!.set(cacheKey, airports);
     }
+    for (const iata of await airports) representatives.set(iata, { key: `cluster:${clusterId}`, lon, lat });
   }));
   return representatives;
 }
@@ -355,6 +409,7 @@ export function RouteEntityMap({
   const mapRef = useRef<MapLibreMap | null>(null);
   const mapCameraRef = useRef<{ center: [number, number]; zoom: number }>({ center: [0, 18], zoom: 0.55 });
   const routeBundleRevisionRef = useRef(0);
+  const routeSourceStateRef = useRef<{ kind: 'full' | 'clustered' | null; key: string | null }>({ kind: null, key: null });
   const didInitialFitRef = useRef(false);
   const lastSelectionKeyRef = useRef<string | null>(null);
   const [ready, setReady] = useState(false);
@@ -367,6 +422,7 @@ export function RouteEntityMap({
   const searchListId = useId();
   const mapHelpId = useId();
   const model = useMemo(() => buildRouteMapModel(routes, hubs), [routes, hubs]);
+  useEffect(() => { routeSourceStateRef.current = { kind: null, key: null }; }, [model]);
   const copy = locale === 'zh-TW'
     ? { fit: '顯示完整航網', airport: '機場資訊', route: '航線詳情', confirmed: '已確認班號', noConfirmed: '尚無 confirmed 班號', fallback: '此瀏覽器無法啟用互動地圖。', fallbackHelp: '仍可使用搜尋與下方列表瀏覽航線。', mapHelp: '使用搜尋欄可用鍵盤選擇任何機場、航空公司、航線或班號；地圖提供拖曳與縮放瀏覽。', all: '全部', clusters: '個機場', zoomCluster: '點擊放大查看' }
     : { fit: 'Fit network', airport: 'Airport details', route: 'Route details', confirmed: 'Confirmed flights', noConfirmed: 'No confirmed flight number', fallback: 'Interactive map is unavailable in this browser.', fallbackHelp: 'Use search or the route list below to keep exploring.', mapHelp: 'Use the search field to select any airport, airline, route or flight number with the keyboard; the map supports pan and zoom.', all: 'All', clusters: 'airports', zoomCluster: 'Click to zoom in' };
@@ -406,7 +462,10 @@ export function RouteEntityMap({
   const refreshClusterAwareRoutes = useCallback(async (map: MapLibreMap, activeSelection: InspectorSelection): Promise<void> => {
     const revision = ++routeBundleRevisionRef.current;
     if (map.getZoom() > 5.01) {
-      source(map, ROUTE_SOURCE)?.setData(model.routes);
+      if (routeSourceStateRef.current.kind !== 'full') {
+        source(map, ROUTE_SOURCE)?.setData(model.routes);
+        routeSourceStateRef.current = { kind: 'full', key: null };
+      }
       if (cardRef.current) cardRef.current.dataset.mapBundledRoutes = '0';
       return;
     }
@@ -421,8 +480,14 @@ export function RouteEntityMap({
         const airport = model.airportByIata.get(iata);
         if (airport) withFocus.set(iata, { key: `focus:${iata}`, lon: airport.lon, lat: airport.lat });
       }
+      const bundleKey = [...withFocus.entries()]
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([iata, point]) => `${iata}:${point.key}:${point.lon.toFixed(4)}:${point.lat.toFixed(4)}`)
+        .join('|');
+      if (routeSourceStateRef.current.kind === 'clustered' && routeSourceStateRef.current.key === bundleKey) return;
       const bundled = buildClusterBundledRoutes(model, withFocus);
       source(map, ROUTE_SOURCE)?.setData(bundled);
+      routeSourceStateRef.current = { kind: 'clustered', key: bundleKey };
       if (cardRef.current) {
         cardRef.current.dataset.mapBundledRoutes = String(bundled.features.length);
         cardRef.current.dataset.mapBundleRepresentatives = String(representatives.size);
@@ -430,7 +495,10 @@ export function RouteEntityMap({
       }
     } catch (reason) {
       if (revision !== routeBundleRevisionRef.current) return;
-      source(map, ROUTE_SOURCE)?.setData(model.routes);
+      if (routeSourceStateRef.current.kind !== 'full') {
+        source(map, ROUTE_SOURCE)?.setData(model.routes);
+        routeSourceStateRef.current = { kind: 'full', key: null };
+      }
       if (cardRef.current) cardRef.current.dataset.mapBundleError = reason instanceof Error ? reason.message : String(reason);
     }
   }, [model]);
@@ -467,6 +535,7 @@ export function RouteEntityMap({
     map.addControl(new AttributionControl({ compact: true }), 'bottom-right');
     map.on('load', () => {
       try {
+        applyAtlasBasemap(map, dark);
         addSourcesAndLayers(map, dark);
         setReady(true);
       } catch (reason) {
@@ -499,11 +568,12 @@ export function RouteEntityMap({
         delete card.dataset.mapFirstClusterSize;
       }
     };
-    map.on('idle', updateDiagnostics);
+    const diagnosticsEnabled = import.meta.env.DEV || import.meta.env.MODE === 'test';
+    if (diagnosticsEnabled) map.on('idle', updateDiagnostics);
     return () => {
       const center = map.getCenter();
       mapCameraRef.current = { center: [center.lng, center.lat], zoom: map.getZoom() };
-      map.off('idle', updateDiagnostics);
+      if (diagnosticsEnabled) map.off('idle', updateDiagnostics);
       map.remove();
       mapRef.current = null;
     };
@@ -524,6 +594,7 @@ export function RouteEntityMap({
       ? { kind: 'route', routeId: selectedRouteId }
       : selectedAirport ? { kind: 'airport', iata: selectedAirport.iata } : null;
     source(map, ROUTE_SOURCE)?.setData(model.routes);
+    routeSourceStateRef.current = { kind: 'full', key: null };
     source(map, AIRPORT_SOURCE)?.setData(airportSourceData(model, initial));
     setFocusSources(map, model, initial);
     const selectionKey = initial?.kind === 'route'
@@ -738,8 +809,31 @@ export function RouteEntityMap({
             />
             {!controls.searchDisabled && controls.query && <button type="button" aria-label={locale === 'zh-TW' ? '清除搜尋' : 'Clear search'} onClick={() => { controls.onQueryChange(''); controls.onSearchOpenChange(false); }}>×</button>}
           </div>
-          {!controls.searchDisabled && controls.query && controls.searchOpen && <div id={searchListId} className="entity-map-search-results" role="listbox">
-            {controls.searchResults.length > 0 ? controls.searchResults.map((result, index) => <button type="button" role="option" id={`${searchListId}-option-${index}`} aria-selected={index === safeActiveSearchIndex} key={result.key} onClick={() => { controls.onSearchOpenChange(false); controls.onSearchResultSelect(result.selection); }}><span>{result.kind}</span><strong>{result.title}</strong><small>{result.subtitle}</small></button>) : <p>{locale === 'zh-TW' ? '沒有符合的結果' : 'No matching result'}</p>}
+          {!controls.searchDisabled && controls.query && controls.searchOpen && <div className="entity-map-search-results">
+            {controls.searchNeedsFullNetwork && <p className="entity-map-search-status" role="status">
+              {controls.fullNetworkLoading
+                ? controls.searchFullLoadingLabel ?? (locale === 'zh-TW' ? '正在搜尋完整航網…' : 'Searching the full network…')
+                : controls.fullNetworkError
+                  ? `${controls.searchLoadErrorLabel ?? (locale === 'zh-TW' ? '完整航網搜尋失敗' : 'Full-network search failed')}: ${controls.fullNetworkError}`
+                  : controls.searchResults.length > 0
+                    ? controls.searchPartialLabel?.(controls.searchResults.length) ?? (locale === 'zh-TW' ? `部分搜尋結果：${controls.searchResults.length} 筆。` : `Partial results: ${controls.searchResults.length}.`)
+                    : controls.searchPartialEmptyLabel ?? (locale === 'zh-TW' ? '完整航網尚未搜尋；目前沒有預覽命中。' : 'The full network has not been searched; there are no preview matches yet.')}
+            </p>}
+            <div id={searchListId} role="listbox">
+              {controls.searchResults.map((result, index) => <button type="button" role="option" id={`${searchListId}-option-${index}`} aria-selected={index === safeActiveSearchIndex} key={result.key} onClick={() => { controls.onSearchOpenChange(false); controls.onSearchResultSelect(result.selection); }}><span>{result.kind}</span><strong>{result.title}</strong><small>{result.subtitle}</small></button>)}
+            </div>
+            {controls.searchResults.length === 0 && (
+              <p className="entity-map-search-empty" role="status">
+                {controls.searchNeedsFullNetwork
+                  ? controls.fullNetworkError
+                    ? (locale === 'zh-TW' ? '部分預覽仍無符合結果；請重試完整搜尋以確認全球航網。' : 'There are no preview matches; retry the full search to check the global network.')
+                    : controls.fullNetworkLoading
+                      ? (locale === 'zh-TW' ? '完整航網載入中，目前尚無完整搜尋結果。' : 'The full network is loading; complete search results are not available yet.')
+                      : (locale === 'zh-TW' ? '目前沒有已載入的預覽結果。' : 'There are no matches in the loaded preview.')
+                  : controls.searchNoResultsLabel ?? (locale === 'zh-TW' ? '完整航網搜尋完成，沒有符合的結果。' : 'No matching result in the complete network.')}
+              </p>
+            )}
+            {controls.searchNeedsFullNetwork && controls.onRequestFullNetwork && <button type="button" className="entity-map-full-search" onClick={controls.fullNetworkError ? controls.onRetryFullNetwork ?? controls.onRequestFullNetwork : controls.onRequestFullNetwork} disabled={controls.fullNetworkLoading}>{controls.loadFullSearchLabel ?? (locale === 'zh-TW' ? '搜尋全部航線與班號' : 'Search all routes and flight numbers')}</button>}
           </div>}
         </div>
       </div>}

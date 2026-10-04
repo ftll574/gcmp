@@ -5,17 +5,20 @@ import { CaaPublishedTimetableEvidence } from './CaaPublishedTimetableEvidence.t
 import { useEvidenceClock } from '../lib/use-evidence-clock.ts';
 import { sourceReviewState, sourceReviewStatusLabel } from '../lib/rtw/route-date-semantics.ts';
 import { airportIdentityLabel } from '../lib/airport-identity.ts';
+import { buildAirportIndex } from '../lib/airport-index.ts';
 import { lazy, Suspense, useMemo, useState } from 'react';
 import type { ContinentId } from '../lib/schemas/country-continent.ts';
+import type { LandingShowcaseCatalog } from '../lib/schemas/landing-showcase.ts';
 import type { RouteNetworkCatalog } from '../lib/schemas/route-network.ts';
 import type { Airport } from '../lib/types.ts';
-import { buildRouteLibraryOverview } from '../lib/rtw/route-library-overview.ts';
 import {
   buildAirportEntityProfile,
   buildAirlineEntityProfile,
+  buildLandingShowcaseFingerprint,
   buildRouteLibraryFingerprint,
   buildRouteEntityProfile,
   routeLibraryEntityContinent,
+  searchLandingShowcaseEntities,
   searchRouteLibraryEntities,
   type RouteLibraryEntitySelection,
   type RouteLibraryRouteCard,
@@ -25,6 +28,7 @@ import type { RouteMapAllianceTheme } from './RouteLibraryMap.tsx';
 import { RouteLibraryMapPreview, type RouteLibraryMapPreviewStat } from './RouteLibraryMapPreview.tsx';
 import { RegisteredPlansEvidence } from './RegisteredPlansEvidence.tsx';
 import './RouteLibraryExplorer.css';
+import '../explorer-redesign.css';
 
 const LazyRouteEntityMap = lazy(() =>
   import('./RouteLibraryMap.tsx').then((module) => ({ default: module.RouteEntityMap })),
@@ -47,6 +51,7 @@ interface PlanRouteInput {
 
 interface Props {
   readonly network: RouteNetworkCatalog;
+  readonly routeMapPreview?: LandingShowcaseCatalog | null | undefined;
   readonly airports: ReadonlyMap<string, Airport>;
   readonly carrierNames: ReadonlyMap<string, string>;
   readonly memberCodes: ReadonlySet<string>;
@@ -60,7 +65,10 @@ interface Props {
   readonly query: string;
   readonly onQueryChange: (query: string) => void;
   readonly networkComplete?: boolean | undefined;
+  readonly fullNetworkLoading?: boolean | undefined;
+  readonly fullNetworkError?: string | null | undefined;
   readonly onRequestFullNetwork?: (() => void) | undefined;
+  readonly onRetryFullNetwork?: (() => void) | undefined;
 }
 
 function routeId(route: RouteLibraryRouteCard): string {
@@ -85,6 +93,7 @@ function RouteCard({ route, onSelect, compact = false }: {
 
 export function RouteLibraryExplorer({
   network,
+  routeMapPreview,
   airports,
   carrierNames,
   memberCodes,
@@ -98,7 +107,10 @@ export function RouteLibraryExplorer({
   query,
   onQueryChange,
   networkComplete = true,
+  fullNetworkLoading = false,
+  fullNetworkError = null,
   onRequestFullNetwork,
+  onRetryFullNetwork,
 }: Props): React.ReactElement {
   const { locale, t } = useLocale();
   const evidenceNow = useEvidenceClock();
@@ -107,25 +119,44 @@ export function RouteLibraryExplorer({
   const zh = locale === 'zh-TW';
   const [searchOpen, setSearchOpen] = useState(false);
   const [showRouteIndex, setShowRouteIndex] = useState(false);
-  const entityInput = useMemo(() => ({ network, airports, carrierNames, memberCodes }), [network, airports, carrierNames, memberCodes]);
+  const airportIndex = useMemo(() => buildAirportIndex([...airports.values()]), [airports]);
+  const entityMemberCodes = useMemo<ReadonlySet<string>>(() => {
+    if (selection?.kind !== 'airline' || !selection.id.includes('+')) return memberCodes;
+    const carrier = network.routes.find(route => route.carrierEntityKey === selection.id)?.carrier;
+    return carrier ? new Set([...memberCodes, carrier]) : memberCodes;
+  }, [memberCodes, network, selection]);
+  const entityInput = useMemo(() => ({ network, airports, carrierNames, memberCodes: entityMemberCodes }), [network, airports, carrierNames, entityMemberCodes]);
   const searchResults = useMemo(
-    () => networkComplete ? searchRouteLibraryEntities({ ...entityInput, query, locale: zh ? 'zh-TW' : 'en' }) : [],
-    [entityInput, query, zh, networkComplete],
+    () => {
+      const locale = zh ? 'zh-TW' : 'en';
+      const routeResults = [
+        ...(!networkComplete && !selection
+          ? searchLandingShowcaseEntities(routeMapPreview, airports, query, memberCodes, locale)
+          : []),
+        ...searchRouteLibraryEntities({ ...entityInput, query, locale }),
+      ];
+      const airportResults = airportIndex.search(query, { limit: 6, locale }).map(({ airport, match }) => ({
+        key: `airport:${airport.iata}`,
+        selection: { kind: 'airport' as const, id: airport.iata },
+        kind: 'airport' as const,
+        title: `${airport.iata} · ${airport.city}`,
+        subtitle: `${airport.name} · ${airport.country}${match === 'city-code' ? ` · ${query.toUpperCase()}` : ''}`,
+      }));
+      const priority = airportResults.filter(result => result.subtitle.endsWith(` · ${query.toUpperCase()}`));
+      const merged = new Map<string, typeof routeResults[number]>();
+      for (const result of [...priority, ...routeResults, ...airportResults]) if (!merged.has(result.key)) merged.set(result.key, result as typeof routeResults[number]);
+      return [...merged.values()];
+    },
+    [airports, entityInput, memberCodes, networkComplete, query, routeMapPreview, selection, zh, airportIndex],
   );
   const homeModel = useMemo(() => {
     if (selection) return null;
     return {
-      overview: buildRouteLibraryOverview({
-        network,
-        memberCodes,
-        airports,
-        carrierNames,
-        countryContinents,
-        airportContinentOverrides,
-      }),
-      fingerprint: buildRouteLibraryFingerprint(entityInput, alliance === 'all' ? 150 : 120),
+      fingerprint: !networkComplete && routeMapPreview
+        ? buildLandingShowcaseFingerprint(routeMapPreview, airports, memberCodes)
+        : buildRouteLibraryFingerprint(entityInput, alliance === 'all' ? 150 : 120),
     };
-  }, [selection, network, memberCodes, airports, carrierNames, countryContinents, airportContinentOverrides, entityInput, alliance]);
+  }, [selection, routeMapPreview, networkComplete, airports, entityInput, alliance, memberCodes]);
   const profiles = useMemo(() => ({
     airport: selection?.kind === 'airport' ? buildAirportEntityProfile(entityInput, selection.id) : null,
     airline: selection?.kind === 'airline' ? buildAirlineEntityProfile(entityInput, selection.id) : null,
@@ -160,8 +191,27 @@ export function RouteLibraryExplorer({
     searchPlaceholder: zh
       ? '搜尋機場、城市、航空公司、航線或班號，例如 TPE / Tokyo / BR198…'
       : 'Search airport, city, airline, route or flight number, e.g. TPE / Tokyo / BR198…',
-    searchDisabled: !networkComplete,
+    searchDisabled: false,
     searchDisabledLabel: zh ? '載入完整航網後可使用完整搜尋' : 'Full search is available after loading the full network',
+    searchNeedsFullNetwork: !networkComplete,
+    searchPartialLabel: (count: number): string => zh
+      ? `部分搜尋結果：${count} 筆。載入完整航網可搜尋其他航線與班號。`
+      : `Partial results: ${count}. Load the full network to search additional routes and flight numbers.`,
+    searchPartialEmptyLabel: zh
+      ? '完整航網尚未搜尋；目前沒有預覽命中，不代表全球沒有符合航線或班號。'
+      : 'The full network has not been searched. No preview matches does not mean there are no matching routes or flight numbers.',
+    searchFullLoadingLabel: zh ? '正在搜尋完整航網…' : 'Searching the full network…',
+    searchLoadErrorLabel: zh ? '完整航網搜尋失敗' : 'Full-network search failed',
+    searchNoResultsLabel: zh ? '完整航網搜尋完成，沒有符合的結果。' : 'Full-network search is complete. No matching results.',
+    loadFullSearchLabel: fullNetworkLoading
+      ? (zh ? '正在搜尋全部航線與班號…' : 'Searching all routes and flight numbers…')
+      : fullNetworkError
+        ? (zh ? '重試完整搜尋' : 'Retry full search')
+        : (zh ? '搜尋全部航線與班號' : 'Search all routes and flight numbers'),
+    fullNetworkLoading,
+    fullNetworkError,
+    onRequestFullNetwork,
+    onRetryFullNetwork,
     partialMapHelp: selection?.kind === 'airport'
       ? (zh ? '已載入此機場所有出發航線；可以拖曳與縮放地圖，載入完整航網後可使用完整搜尋與抵達統計。' : 'All outbound routes for this airport are loaded; pan and zoom the map, then load the full network for global search and inbound statistics.')
       : selection?.kind === 'airline'
@@ -179,7 +229,12 @@ export function RouteLibraryExplorer({
   const copy = zh ? {
     searchPlaceholder: '搜尋機場、城市、航空公司、航線或班號，例如 TPE / Tokyo / BR / TPE-NRT / BR198',
     exploreTitle: '全球航網',
-    exploreBody: '機場、航空公司、航線與班號，都可以直接從地圖探索。',
+    exploreBody: '地圖先展示有來源的環球示例；搜尋機場可查看完整出發航網。完整航線與班號搜尋可按需載入。',
+    previewNotice: '地圖目前顯示有來源的環球行程示例；機場詳情會載入該機場完整航線。搜尋未列出的航線或班號前，請先載入完整航網。',
+    previewUnavailable: '來源示例目前無法載入；尚未搜尋完整航網，因此目前空白不代表沒有航線。可搜尋機場，或明確載入完整航網搜尋。',
+    loadFullNetwork: '搜尋全部航線與班號',
+    retryFullNetwork: '重試完整搜尋',
+    loadingFullNetwork: '正在搜尋全部航線與班號…',
     routes: '方向航線', airports: '機場', airlines: '航空公司', confirmed: 'confirmed 班號航線',
     topHubs: '熱門樞紐', topAirlines: '大型航網', openAirport: '查看機場',
     outbound: '直飛目的地', countries: '國家／地區', inbound: '抵達方向航線',
@@ -198,7 +253,12 @@ export function RouteLibraryExplorer({
   } : {
     searchPlaceholder: 'Search airport, city, airline, route or flight number — TPE / Tokyo / BR / TPE-NRT / BR198',
     exploreTitle: 'Global route network',
-    exploreBody: 'Explore airports, airlines, routes and flight numbers directly on the map.',
+    exploreBody: 'The map starts with source-backed journey examples. Airport profiles load complete outbound routes; load the full catalog when you need any route or flight-number match.',
+    previewNotice: 'The map currently shows source-backed journey examples; airport details load that airport’s complete route set. Load the full catalog before searching for routes or flight numbers outside these examples.',
+    previewUnavailable: 'Sourced examples are temporarily unavailable. The complete network has not been searched, so an empty preview does not mean there are no routes. Search airports or explicitly load the full network.',
+    loadFullNetwork: 'Search all routes and flight numbers',
+    retryFullNetwork: 'Retry full search',
+    loadingFullNetwork: 'Searching all routes and flight numbers…',
     routes: 'directional routes', airports: 'airports', airlines: 'airlines', confirmed: 'routes with confirmed numbers',
     topHubs: 'Popular hubs', topAirlines: 'Largest networks', openAirport: 'Open airport',
     outbound: 'nonstop destinations', countries: 'countries/regions', inbound: 'inbound directional routes',
@@ -215,12 +275,7 @@ export function RouteLibraryExplorer({
     loadInbound: 'Load inbound statistics',
     loadGlobalSearch: 'Enable full search',
   };
-  const homeStats: ReadonlyArray<RouteLibraryMapPreviewStat> = homeModel ? [
-    { value: homeModel.overview.routeCount, label: copy.routes },
-    { value: homeModel.overview.airportCount, label: copy.airports },
-    { value: homeModel.overview.carrierCount, label: copy.airlines },
-    { value: homeModel.overview.confirmedNumberCount, label: copy.confirmed },
-  ] : [];
+  const homeStats: ReadonlyArray<RouteLibraryMapPreviewStat> = [];
 
   let entityContent: React.ReactNode = null;
   if (airportProfile) {
@@ -319,6 +374,7 @@ export function RouteLibraryExplorer({
       {!selection ? (
         <div className="entity-explore-home">
           <Suspense fallback={<RouteMapLoading zh={zh} routes={homeModel!.fingerprint.routes} stats={homeStats} />}><LazyRouteEntityMap routes={homeModel!.fingerprint.routes} hubs={homeModel!.fingerprint.hubs} allianceTheme={alliance} fingerprint controls={mapControls} loadingPreview={<RouteLibraryMapPreview embedded zh={zh} routes={homeModel!.fingerprint.routes} stats={homeStats} />} onAirportSelect={(airport) => choose({ kind: 'airport', id: airport.iata })} onRouteSelect={(id) => choose({ kind: 'route', id })} stats={homeStats} /></Suspense>
+          {!networkComplete && onRequestFullNetwork && <div className="entity-shard-notice entity-shard-notice--action global-map-preview-notice" role="status"><span>{routeMapPreview ? copy.previewNotice : copy.previewUnavailable}</span><button type="button" className="entity-inline-button" onClick={fullNetworkError ? onRetryFullNetwork : onRequestFullNetwork} disabled={fullNetworkLoading}>{fullNetworkLoading ? copy.loadingFullNetwork : fullNetworkError ? copy.retryFullNetwork : copy.loadFullNetwork}</button></div>}
         </div>
       ) : entityContent}
       {selection?.kind==='route' && <OfficialRouteReferences pair={selection.id} zh={zh}/>}

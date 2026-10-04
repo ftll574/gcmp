@@ -93,7 +93,7 @@ afterEach(() => {
 test('fresh visits land on the editorial homepage before entering the planner', async () => {
   render(<SiteApp />);
   expect(await screen.findByRole('heading', { name: /把世界變成一條/ })).toBeInTheDocument();
-  await waitFor(() => expect(document.querySelector('[data-three-globe], [data-three-fallback]')).not.toBeNull());
+  await waitFor(() => expect(document.querySelector('[data-three-globe], [data-three-fallback]')).not.toBeNull(), { timeout: 4_000 });
   expect(await screen.findByText('BR184')).toBeInTheDocument();
   expect(screen.getAllByRole('button', { name: /Star Alliance 經典環球|oneworld 城市樞紐環球|SkyTeam 跨洲接力|台灣出發長程四段/ })).toHaveLength(4);
   expect(screen.queryByText('先選聯盟與開票方案')).not.toBeInTheDocument();
@@ -106,6 +106,7 @@ test('fresh visits land on the editorial homepage before entering the planner', 
   const startPlanning = screen.getByRole('link', { name: '開始規劃' });
   expect(startPlanning).toHaveAttribute('href', expect.stringContaining('view=planner'));
   expect(screen.getByRole('link', { name: '跳到主要內容' })).toHaveAttribute('href', '#main-content');
+  expect(document.querySelector('.landing-stats')).toBeNull();
   fireEvent.click(startPlanning);
   await waitFor(() => expect(document.querySelector('.rtw-gate')).not.toBeNull(), { timeout: 5_000 });
   expect(new URLSearchParams(window.location.search).get('view')).toBe('planner');
@@ -127,6 +128,7 @@ test('route library is a separate page and keeps the heavy catalog out of the ho
   fireEvent.click(screen.getByRole('link', { name: '瀏覽所有航線' }));
   expect(await screen.findByRole('heading', { name: '探索全球航網' })).toBeInTheDocument();
   expect(await screen.findByRole('region', { name: '航線地圖' }, { timeout: 5_000 })).toBeInTheDocument();
+  expect(document.querySelector('.entity-map-preview-stats')).toBeNull();
   expect(document.querySelector('.routes-alliance-tabs')).toBeNull();
   const map = document.querySelector('.entity-map-card');
   expect(map?.querySelector('[aria-label="Alliance filter"], [aria-label="航空聯盟篩選"]')).not.toBeNull();
@@ -173,7 +175,7 @@ test('route library falls back to canonical shard parsing when Web Crypto is una
 
   render(<SiteApp />);
   expect(await screen.findByRole('heading', { name: /TPE.*Taoyuan/ }, { timeout: 5_000 })).toBeInTheDocument();
-  expect(await screen.findByRole('combobox', { name: '載入完整航網後可使用完整搜尋' }, { timeout: 5_000 })).toBeDisabled();
+  expect(await screen.findByRole('combobox', { name: /搜尋機場、城市/ }, { timeout: 5_000 })).toBeEnabled();
   expect(screen.getByText(/已完整載入此機場的出發航線/)).toBeInTheDocument();
 });
 
@@ -212,6 +214,9 @@ test('route library searches a designator but cannot persist its unverified oper
 
   const search = await screen.findByRole('combobox', { name: /搜尋機場、城市、航空公司、航線或班號/ });
   fireEvent.change(search, { target: { value: 'BR198' } });
+  expect(await screen.findByText(/完整航網尚未搜尋/)).toBeInTheDocument();
+  expect(screen.queryByText('完整航網搜尋完成，沒有符合的結果。')).not.toBeInTheDocument();
+  fireEvent.click(document.querySelector('.entity-map-full-search')!);
   const result = await screen.findByRole('option', { name: /BR198 · TPE → NRT/ });
   fireEvent.click(result);
 
@@ -223,6 +228,118 @@ test('route library searches a designator but cannot persist its unverified oper
   expect(document.querySelector('[data-select-flight-number="BR198"]')).toBeNull();
   expect(new URLSearchParams(window.location.search).get('view')).toBe('routes');
   expect(window.location.hash).not.toContain('fn=198');
+
+  fireEvent.change(screen.getByRole('combobox', { name: /搜尋機場、城市、航空公司、航線或班號/ }), { target: { value: 'ZZ9999' } });
+  expect(await screen.findByText('完整航網搜尋完成，沒有符合的結果。')).toBeInTheDocument();
+});
+
+test('partial flight hits stay labeled partial and full search adds global matches', async () => {
+  window.history.replaceState({}, '', '/?lang=zh-TW&view=routes');
+  const originalFetch = vi.mocked(fetch).getMockImplementation();
+  let releaseRuntime!: (response: Response) => void;
+  const runtimeGate = new Promise<Response>((resolve) => { releaseRuntime = resolve; });
+  let runtimeRequested = false;
+  vi.mocked(fetch).mockImplementation(async (input: RequestInfo | URL) => {
+    const path = String(input).split('?')[0] ?? '';
+    if (path === '/data/route-network/runtime-current.json') {
+      runtimeRequested = true;
+      return runtimeGate;
+    }
+    return originalFetch!(input);
+  });
+
+  render(<SiteApp />);
+  const search = await screen.findByRole('combobox', { name: /搜尋機場、城市、航空公司、航線或班號/ });
+  fireEvent.change(search, { target: { value: 'BR1' } });
+  expect(await screen.findByRole('option', { name: /BR184 · TPE → NRT/ })).toBeInTheDocument();
+  expect(screen.getByText(/部分搜尋結果：1 筆/)).toBeInTheDocument();
+  expect(screen.getByText(/示例候選班號，尚未確認/)).toBeInTheDocument();
+  const previewCount = screen.getAllByRole('option').length;
+
+  const fullSearch = document.querySelector('.entity-map-full-search');
+  expect(fullSearch).toBeInTheDocument();
+  fireEvent.click(fullSearch!);
+  await waitFor(() => expect(runtimeRequested).toBe(true));
+  expect(screen.getByRole('combobox', { name: /搜尋機場、城市、航空公司、航線或班號/ })).toHaveValue('BR1');
+  expect(screen.getByText('正在搜尋完整航網…')).toBeInTheDocument();
+  expect(fullSearch).toBeDisabled();
+
+  const bytes = readFileSync(join(PUBLIC, 'data/route-network/runtime-current.json'));
+  releaseRuntime({ ok: true, status: 200, arrayBuffer: async () => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) } as Response);
+  expect(await screen.findByRole('option', { name: /BR1 · LAX → TPE/ })).toBeInTheDocument();
+  expect(screen.getAllByRole('option').length).toBeGreaterThan(previewCount);
+  expect(screen.queryByText(/部分搜尋結果/)).not.toBeInTheDocument();
+});
+
+test('empty partial BR198 search is not reported as a global no-match and can retry after failure', async () => {
+  window.history.replaceState({}, '', '/?lang=zh-TW&view=routes');
+  const originalFetch = vi.mocked(fetch).getMockImplementation();
+  let attempts = 0;
+  vi.mocked(fetch).mockImplementation(async (input: RequestInfo | URL) => {
+    const path = String(input).split('?')[0] ?? '';
+    if (path === '/data/route-network/runtime-current.json') {
+      attempts += 1;
+      if (attempts === 1) return { ok: false, status: 503, arrayBuffer: async () => new ArrayBuffer(0) } as Response;
+    }
+    return originalFetch!(input);
+  });
+
+  render(<SiteApp />);
+  const search = await screen.findByRole('combobox', { name: /搜尋機場、城市、航空公司、航線或班號/ });
+  fireEvent.change(search, { target: { value: 'BR198' } });
+  expect(await screen.findByText(/完整航網尚未搜尋/)).toBeInTheDocument();
+  expect(screen.queryByText('完整航網搜尋完成，沒有符合的結果。')).not.toBeInTheDocument();
+  expect(search).toHaveValue('BR198');
+
+  fireEvent.click(document.querySelector('.entity-map-full-search')!);
+  expect(await screen.findByRole('alert')).toHaveTextContent('完整航網搜尋失敗');
+  expect(screen.getByRole('combobox', { name: /搜尋機場、城市、航空公司、航線或班號/ })).toHaveValue('BR198');
+  expect(new URLSearchParams(window.location.search).get('q')).toBe('BR198');
+  expect(document.querySelector('.entity-map-full-search')).toHaveTextContent('重試完整搜尋');
+
+  fireEvent.click(document.querySelector('.entity-map-full-search')!);
+  expect(await screen.findByRole('option', { name: /BR198 · TPE → NRT/ })).toBeInTheDocument();
+  expect(attempts).toBe(2);
+  expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  expect(new URLSearchParams(window.location.search).get('q')).toBe('BR198');
+});
+
+test('late full-network response preserves newer URL query, alliance filter and selection', async () => {
+  window.history.replaceState({}, '', '/?lang=zh-TW&view=routes&alliance=star#share-state');
+  const originalFetch = vi.mocked(fetch).getMockImplementation();
+  let releaseRuntime!: (response: Response) => void;
+  const runtimeGate = new Promise<Response>((resolve) => { releaseRuntime = resolve; });
+  let runtimeRequested = false;
+  vi.mocked(fetch).mockImplementation(async (input: RequestInfo | URL) => {
+    const path = String(input).split('?')[0] ?? '';
+    if (path === '/data/route-network/runtime-current.json') {
+      runtimeRequested = true;
+      return runtimeGate;
+    }
+    return originalFetch!(input);
+  });
+
+  render(<SiteApp />);
+  const search = await screen.findByRole('combobox', { name: /搜尋機場、城市、航空公司、航線或班號/ });
+  fireEvent.change(search, { target: { value: 'TPE' } });
+  fireEvent.click(document.querySelector('.entity-map-full-search')!);
+  await waitFor(() => expect(runtimeRequested).toBe(true));
+
+  fireEvent.click(screen.getByRole('button', { name: 'oneworld' }));
+  fireEvent.click(await screen.findByRole('option', { name: /TPE · Taoyuan/ }));
+  expect(new URLSearchParams(window.location.search).get('entity')).toBe('airport');
+  expect(new URLSearchParams(window.location.search).get('alliance')).toBe('oneworld');
+  expect(window.location.hash).toBe('#share-state');
+
+  const bytes = readFileSync(join(PUBLIC, 'data/route-network/runtime-current.json'));
+  releaseRuntime({ ok: true, status: 200, arrayBuffer: async () => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) } as Response);
+  expect(await screen.findByText('抵達方向航線')).toBeInTheDocument();
+  expect(screen.getByRole('combobox', { name: /搜尋機場、城市、航空公司、航線或班號/ })).toHaveValue('TPE');
+  expect(new URLSearchParams(window.location.search).get('q')).toBe('TPE');
+  expect(new URLSearchParams(window.location.search).get('alliance')).toBe('oneworld');
+  expect(new URLSearchParams(window.location.search).get('entity')).toBe('airport');
+  expect(new URLSearchParams(window.location.search).get('id')).toBe('TPE');
+  expect(window.location.hash).toBe('#share-state');
 });
 
 test('route library keeps the searched airport selected while comparing alliances', async () => {
@@ -285,7 +402,7 @@ test('airport deep-links use an origin shard and load inbound statistics only on
   expect(requests).not.toContain('/data/route-network/runtime-current.json');
   expect(screen.getByText(/已完整載入此機場的出發航線/)).toBeInTheDocument();
   expect(screen.queryByText('抵達方向航線')).not.toBeInTheDocument();
-  expect(screen.getByRole('combobox', { name: '載入完整航網後可使用完整搜尋' })).toBeDisabled();
+  expect(screen.getByRole('combobox', { name: /搜尋機場、城市/ })).toBeEnabled();
 
   fireEvent.click(screen.getByRole('button', { name: '補上抵達統計' }));
   await waitFor(() => expect(requests).toContain('/data/route-network/runtime-current.json'), { timeout: 5_000 });
@@ -305,7 +422,7 @@ test('airport search works before the full route network finishes loading', asyn
   });
 
   render(<SiteApp />);
-  const search = await screen.findByRole('combobox', { name: '先找機場' }, { timeout: 5_000 });
+  const search = await screen.findByRole('combobox', { name: /搜尋機場、城市/ }, { timeout: 5_000 });
   fireEvent.change(search, { target: { value: 'TYO' } });
   const narita = await screen.findByRole('option', { name: /NRT.*Narita/ });
   fireEvent.click(narita);
@@ -350,9 +467,11 @@ test('route deep-links use an origin shard before requesting the full global gra
   expect(requests).toContain('/data/route-network/runtime-origins/T.json');
   expect(requests).not.toContain('/data/route-network/runtime-current.json');
   expect(screen.getByText(/已先載入這條航線/)).toBeInTheDocument();
-  expect(screen.getByRole('combobox', { name: '載入完整航網後可使用完整搜尋' })).toBeDisabled();
+  expect(screen.getByRole('combobox', { name: /搜尋機場、城市/ })).toBeEnabled();
 
   fireEvent.click(screen.getByRole('button', { name: /返回航網/ }));
+  expect(requests).not.toContain('/data/route-network/runtime-current.json');
+  fireEvent.click(screen.getByRole('button', { name: '搜尋全部航線與班號' }));
   await waitFor(() => expect(requests).toContain('/data/route-network/runtime-current.json'), { timeout: 5_000 });
 });
 
@@ -395,7 +514,7 @@ test('airline deep-links load a carrier shard before the full global graph', asy
   expect(requests).toContain('/data/route-network/runtime-carriers/BR.json');
   expect(requests).not.toContain('/data/route-network/runtime-current.json');
   expect(screen.getByText(/已完整載入此航空公司的航網/)).toBeInTheDocument();
-  expect(screen.getByRole('combobox', { name: '載入完整航網後可使用完整搜尋' })).toBeDisabled();
+  expect(screen.getByRole('combobox', { name: /搜尋機場、城市/ })).toBeEnabled();
 
   fireEvent.click(screen.getByRole('button', { name: '啟用完整搜尋' }));
   await waitFor(() => expect(requests).toContain('/data/route-network/runtime-current.json'), { timeout: 5_000 });
@@ -429,6 +548,8 @@ test('site navigation remains available after entering the planner and returns t
   await waitFor(() => expect(document.querySelector('.rtw-gate')).not.toBeNull(), { timeout: 5_000 });
 
   const plannerNav = screen.getByRole('navigation', { name: '主要導覽' });
+  expect(within(plannerNav).getAllByRole('link')).toHaveLength(3);
+  expect(within(plannerNav).queryByText(/資料進度|Data progress/)).not.toBeInTheDocument();
   expect(within(plannerNav).getByRole('link', { name: '規劃' })).toHaveAttribute('aria-current', 'page');
   fireEvent.click(within(plannerNav).getByRole('link', { name: '首頁' }));
   expect(await screen.findByRole('heading', { name: /把世界變成一條/ })).toBeInTheDocument();
@@ -438,6 +559,21 @@ test('site navigation remains available after entering the planner and returns t
   fireEvent.click(within(homeNav).getByRole('link', { name: '航線資料庫' }));
   await waitFor(() => expect(screen.getByRole('heading', { name: '探索全球航網' })).toBeInTheDocument(), { timeout: 5_000 });
   expect(new URLSearchParams(window.location.search).get('view')).toBe('routes');
+});
+
+test('legacy progress URLs open the planner, preserve share state and have no progress navigation entry', async () => {
+  window.history.replaceState({}, '', '/?view=progress&lang=zh-TW&entity=route&id=TPE-NRT#/r/v1/TPE-NRT?op=BR&p=BR&c=J');
+  render(<SiteApp />);
+
+  await waitFor(() => expect(new URLSearchParams(window.location.search).get('view')).toBe('planner'));
+  expect(new URLSearchParams(window.location.search).get('lang')).toBe('zh-TW');
+  expect(new URLSearchParams(window.location.search).get('entity')).toBe('route');
+  expect(new URLSearchParams(window.location.search).get('id')).toBe('TPE-NRT');
+  expect(window.location.hash).toBe('#/r/v1/TPE-NRT?op=BR&p=BR&c=J');
+  await waitFor(() => expect(document.querySelector('.route-plan-bar, .app-error, .rtw-gate')).not.toBeNull());
+  const nav = screen.getByRole('navigation', { name: '主要導覽' });
+  expect(within(nav).getAllByRole('link')).toHaveLength(3);
+  expect(within(nav).queryByText(/資料進度|Data progress/)).not.toBeInTheDocument();
 });
 
 test('legacy share hashes still bypass the homepage and open the planner', async () => {

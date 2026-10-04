@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { SiteHeader, type SiteView } from './SiteHeader.tsx';
 import { useLocaleState } from '../i18n/use-locale-state.ts';
 import { useLandingData } from '../state/use-landing-data.ts';
@@ -15,10 +15,24 @@ const LazyLandingGlobe = lazy(() =>
 export function LandingPage({ onNavigate }: Props): React.ReactElement {
   const { locale } = useLocaleState();
   const landing = useLandingData();
+  const [globeStarted, setGlobeStarted] = useState(false);
+  useEffect(() => {
+    if (landing.status !== 'ready' || globeStarted) return;
+    const idleWindow = window as Window & {
+      requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number;
+      cancelIdleCallback?: (handle: number) => void;
+    };
+    if (idleWindow.requestIdleCallback) {
+      const handle = idleWindow.requestIdleCallback(() => setGlobeStarted(true), { timeout: 1_500 });
+      return () => idleWindow.cancelIdleCallback?.(handle);
+    }
+    const handle = window.setTimeout(() => setGlobeStarted(true), 700);
+    return () => window.clearTimeout(handle);
+  }, [landing.status, globeStarted]);
   const copy = locale === 'zh-TW' ? {
     hero: <>把世界變成一條<br />看得懂的航線。</>,
     intro: '先讓世界在你眼前轉起來。從台灣出發，看懂三大航空聯盟如何跨越太平洋、大西洋與主要樞紐，再把它變成自己的環球路線。',
-    plan: '開始規劃', browse: '瀏覽所有航線', routes: '收錄方向航線', members: '三大聯盟成員', alliances: '航空聯盟',
+    plan: '開始規劃', browse: '瀏覽所有航線',
     sectionEyebrow: '從航網到行程', sectionTitle: '先理解航網，再開始規劃。',
     cards: [
       ['看世界航線', '從經典跨太平洋、跨大西洋與亞洲樞紐開始，理解一張環球票如何繞世界一圈。'],
@@ -31,7 +45,7 @@ export function LandingPage({ onNavigate }: Props): React.ReactElement {
   } : {
     hero: <>Turn the world into<br />a route you can read.</>,
     intro: 'Watch the world move first. Start from Taiwan, understand how the three global alliances cross the Pacific, Atlantic and major hubs, then turn that structure into your own RTW route.',
-    plan: 'Start planning', browse: 'Browse all routes', routes: 'directional routes', members: 'alliance members', alliances: 'global alliances',
+    plan: 'Start planning', browse: 'Browse all routes',
     sectionEyebrow: 'From network to itinerary', sectionTitle: 'Understand the network before you plan.',
     cards: [
       ['See the world network', 'Start with classic Pacific, Atlantic and Asian hub patterns to understand how one RTW journey connects.'],
@@ -42,9 +56,6 @@ export function LandingPage({ onNavigate }: Props): React.ReactElement {
     patternCta: 'Open route library',
     footer: 'Built for people who enjoy the long way around.',
   };
-  const routeCount = landing.data?.stats.publishedRoutes ?? 0;
-  const memberCount = landing.data?.stats.allianceMembers ?? 60;
-
   return (
     <div className="site-page landing-page">
       <SiteHeader active="home" onNavigate={onNavigate} />
@@ -66,17 +77,17 @@ export function LandingPage({ onNavigate }: Props): React.ReactElement {
                 onNavigate('routes');
               }}>{copy.browse}</a>
             </div>
-            <dl className="landing-stats">
-              <div><dt>{routeCount > 0 ? routeCount.toLocaleString() : '29k+'}</dt><dd>{copy.routes}</dd></div>
-              <div><dt>{memberCount}</dt><dd>{copy.members}</dd></div>
-              <div><dt>3</dt><dd>{copy.alliances}</dd></div>
-            </dl>
           </div>
           <div className="landing-globe-shell">
-            {landing.status === 'ready' ? (
+            {landing.status === 'ready' && globeStarted ? (
               <Suspense fallback={<div className="landing-three-loading" aria-label={locale === 'zh-TW' ? '正在載入 3D 地球' : 'Loading 3D globe'} />}>
                 <LazyLandingGlobe catalog={landing.data} onPlan={() => onNavigate('planner')} />
               </Suspense>
+            ) : landing.status === 'ready' ? (
+              <div className="landing-three-loading" data-status="deferred">
+                <span>{locale === 'zh-TW' ? '環球航線示例' : 'RTW route examples'}</span>
+                <strong>{locale === 'zh-TW' ? '互動地球即將載入…' : 'Interactive globe is loading…'}</strong>
+              </div>
             ) : (
               <div className="landing-three-loading" data-status={landing.status}>
                 <span>{locale === 'zh-TW' ? '世界航網' : 'World network'}</span>

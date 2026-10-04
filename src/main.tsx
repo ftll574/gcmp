@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { SiteApp } from './SiteApp.tsx';
 import './index.css';
 import './site-shell.css';
+import './design-overrides.css';
 
 const rootEl = document.getElementById('root');
 if (!rootEl) {

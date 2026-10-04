@@ -3,7 +3,7 @@ import {OFFICIAL_ROUTE_REFERENCES} from '../lib/official-route-references.ts';
 export function OfficialRouteReferences({pair=null,zh=true}:{readonly pair?:string|null;readonly zh?:boolean}):React.ReactElement|null {
  const rows=OFFICIAL_ROUTE_REFERENCES.filter(r=>pair===null||r.pair.join('-')===pair);
  if(rows.length===0)return null;
- return <section className="data-progress-card" data-official-route-references>
+ return <section className="route-evidence-panel" data-official-route-references>
   <h2>{zh?'官方方向與營運者參考（雲端核驗）':'Official direction and operator references (cloud verified)'}</h2>
   <p>{zh?'來源方向參考包含非聯盟會員，不等於實際已飛、可訂位或環球票適用，沒有新增日期航班選取。':'Direction references include nonmembers, without proving actual flights, bookability or RTW eligibility. They add no dated flight-selection controls.'}</p>
   <ul aria-label={zh?'官方方向參考':'Official route references'}>{rows.map(r=><li key={r.key} data-official-route-key={r.key}>
