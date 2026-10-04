@@ -52,7 +52,7 @@ jobs:
 
       - name: Validate program JSON schemas
         run: |
-          for f in $(find public/data/programs -name '*.json'); do
+          for f in $(find public/data/programs -name '*.json' ! -name '*.meta.json'); do
             npx tsx -e "
               import { ProgramSchema } from './src/lib/schemas/program.ts';
               import { readFileSync } from 'fs';
