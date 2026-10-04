@@ -1,5 +1,6 @@
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
 import {expect,it} from 'vitest';
 import {parseRouteNetworkCatalog,RouteNetworkCatalogSchema} from '../../src/lib/schemas/route-network.ts';
 import {carrierEntityLabel,carrierRouteKey,carrierShardName} from '../../src/lib/carrier-identity.ts';
@@ -17,6 +18,7 @@ it('keeps the six approved route-only directions source-backed and free of sched
 });
 
 it('serializes H8 and Azul Conecta into independent valid carrier shards',()=>{
+ execFileSync(process.execPath,['--import','tsx','scripts/build-route-library-carrier-shards.ts'],{stdio:'pipe'});
  const manifest=JSON.parse(readFileSync('public/data/route-network/runtime-carriers.meta.json','utf8')) as {carriers:Record<string,{routes:number}>};
  expect(manifest.carriers.H8?.routes).toBe(2);expect(manifest.carriers['BR+ACN+azul-conecta-ltda']?.routes).toBe(4);
  const acn=parseRouteNetworkCatalog(JSON.parse(readFileSync('public/data/route-network/runtime-carriers/BR%2BACN%2Bazul-conecta-ltda.json','utf8')),airports);
