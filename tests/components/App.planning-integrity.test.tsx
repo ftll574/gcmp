@@ -101,6 +101,23 @@ test('fresh sessions choose alliance and ticketing plan before the workbench, wi
   expect(document.querySelector('.rtw-gate')).toBeNull();
   expect(document.querySelector('.app-workbench')).not.toBeNull();
   expect(document.querySelector('.cabin-selector')).toBeNull();
+  expect(document.querySelector('[data-map-empty-state]')).not.toBeNull();
+  expect(document.querySelector('[data-map-empty-state] button')?.textContent).toMatch(/departure airport/i);
+});
+
+test('the compact itinerary summary shares validator results and opens full rule evidence', async () => {
+  await mount(DATED);
+  const summary = document.querySelector<HTMLElement>('.rtw-panel-compact');
+  expect(summary).not.toBeNull();
+  expect(summary?.getAttribute('data-verdict')).toBeTruthy();
+  expect(summary?.querySelector('.rtw-compact-data')).not.toBeNull();
+  expect(summary?.querySelector('.rtw-compact-data')?.textContent).toMatch(/segments/i);
+  expect(summary?.querySelector('.rtw-compact-data')?.textContent).toMatch(/miles/i);
+  const details = summary?.querySelector<HTMLButtonElement>('.rtw-compact-details-button');
+  expect(details).not.toBeNull();
+  fireEvent.click(details!);
+  expect(document.querySelector('#route-inspector')?.classList.contains('open')).toBe(true);
+  expect(document.querySelector('#route-inspector .rtw-panel')).not.toBeNull();
 });
 
 test('clearing the stopover marker preserves the departure date', async () => {
@@ -303,7 +320,7 @@ test('legacy global cabin becomes per-leg cabin, then mixed cabins survive shari
 
 test('unknown stopovers and missing dates do not receive a green verdict', async () => {
   await mount(`#/r/v1/TPE-HKG-HEL-LHR-JFK-HND-TPE?op=CX,AY,AY,BA,JL,JL&p=CX&c=J&rtw=${CX}`);
-  expect(document.querySelector('.rtw-status')?.getAttribute('data-verdict')).toBe('incomplete');
+  expect(document.querySelector('#route-inspector .rtw-status')?.getAttribute('data-verdict')).toBe('incomplete');
   expect(document.querySelector('.rtw-planning-note')?.textContent).toContain('6');
   expect(document.querySelector('.rtw-panel .rtw-scope-note')?.textContent).toContain('award seats are not confirmed');
 });

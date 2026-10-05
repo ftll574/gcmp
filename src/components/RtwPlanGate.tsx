@@ -177,6 +177,7 @@ export function RtwPlanGate({
   const [alliance, setAlliance] = useState<AllianceId | null>(initialProduct?.alliance ?? null);
   const [productId, setProductId] = useState<string | null>(initialProduct?.id ?? null);
   const [showKnownRoutes, setShowKnownRoutes] = useState(false);
+  const [networkDetailsOpen, setNetworkDetailsOpen] = useState(false);
   const [detailedRouteState, setDetailedRouteState] = useState<{ url: string; network: RouteNetworkCatalog } | null>(null);
   const cachedDetailedRouteNetwork = routeNetworkDetailsUrl ? routeDetailsCache.get(routeNetworkDetailsUrl) : undefined;
 
@@ -303,7 +304,7 @@ export function RtwPlanGate({
         <p>{t('rtw.onboarding.subtitle')}</p>
       </section>
 
-      <section className="rtw-gate-section" aria-labelledby="rtw-gate-alliance-title">
+      <section className="rtw-gate-section" data-gate-section="alliance" aria-labelledby="rtw-gate-alliance-title">
         <div className="rtw-gate-section-head">
           <span className="rtw-gate-step">1</span>
           <div>
@@ -332,6 +333,7 @@ export function RtwPlanGate({
                   setAlliance(id);
                   setProductId(null);
                   setShowKnownRoutes(false);
+                  setNetworkDetailsOpen(false);
                 }}
               >
                 <strong>{t(`alliance.${id}`)}</strong>
@@ -348,83 +350,9 @@ export function RtwPlanGate({
 
       {alliance !== null && (
         <>
-          <section className="rtw-gate-section" aria-labelledby="rtw-gate-network-title">
+          <section className="rtw-gate-section" data-gate-section="products" aria-labelledby="rtw-gate-product-title">
             <div className="rtw-gate-section-head">
               <span className="rtw-gate-step">2</span>
-              <div>
-                <h2 id="rtw-gate-network-title">{t('rtw.onboarding.networkTitle')}</h2>
-                <p>{t('rtw.onboarding.networkHint')}</p>
-              </div>
-            </div>
-            <div className="rtw-gate-network-summary">
-              <strong>{t('rtw.onboarding.knownRouteCount', { count: knownRouteCount })}</strong>
-              <span>{t('rtw.onboarding.networkCoverage', {
-                covered: coveredCarrierCount,
-                members: memberships.length,
-              })}</span>
-            </div>
-            <ul className="rtw-gate-carriers">
-              {featuredMemberships.map((membership) => {
-                const count = routeCountByCarrier.get(membership.airline) ?? 0;
-                const hasPlanner = plannerAirlines.has(membership.airline);
-                const hasReference = ticketingAirlines.has(membership.airline);
-                return (
-                  <li key={membership.airline}>
-                    <strong>{membership.airline}</strong>
-                    <span>{membership.airlineName}</span>
-                    <small>{t('rtw.onboarding.carrierRoutes', { count })}</small>
-                    <em className={hasPlanner ? 'has-product' : hasReference ? 'has-reference' : 'no-product'}>
-                      {t(hasPlanner
-                        ? 'rtw.onboarding.plannerReady'
-                        : hasReference
-                          ? 'rtw.onboarding.hasRuleReference'
-                          : 'rtw.onboarding.noRuleProduct')}
-                    </em>
-                  </li>
-                );
-              })}
-            </ul>
-            {memberships.length > featuredMemberships.length && (
-              <details className="rtw-gate-members">
-                <summary>{t('rtw.onboarding.showAllMembers', { count: memberships.length })}</summary>
-                <div className="rtw-gate-member-list">
-                  {memberships.map((membership) => (
-                    <span key={membership.airline}>
-                      <strong>{membership.airline}</strong>
-                      {membership.airlineName}
-                    </span>
-                  ))}
-                </div>
-              </details>
-            )}
-            <details
-              className="rtw-gate-routes"
-              open={showKnownRoutes}
-              onToggle={(event) => setShowKnownRoutes(event.currentTarget.open)}
-            >
-              <summary>{t('rtw.onboarding.showKnownRoutes')}</summary>
-              {showKnownRoutes && (
-                <Suspense fallback={null}>
-                  <LazyRouteCatalogBrowser
-                    routeNetwork={detailedRouteNetwork}
-                    schedules={schedules}
-                    officialSchedules={officialSchedules}
-                    memberCodes={memberCodes}
-                    airports={airportLookup}
-                    countryContinents={countryContinents}
-                    countrySubregions={countrySubregions}
-                    airportBrowseRegions={airportBrowseRegions}
-                    airportContinentOverrides={airportContinentOverrides}
-                    carrierNames={memberNames}
-                  />
-                </Suspense>
-              )}
-            </details>
-          </section>
-
-          <section className="rtw-gate-section" aria-labelledby="rtw-gate-product-title">
-            <div className="rtw-gate-section-head">
-              <span className="rtw-gate-step">3</span>
               <div>
                 <h2 id="rtw-gate-product-title">{t('rtw.onboarding.productTitle')}</h2>
                 <p>{t('rtw.onboarding.productHint')}</p>
@@ -463,14 +391,24 @@ export function RtwPlanGate({
                         {t(`rtw.onboarding.ticketingScope.${program.scope}`)} · {t('rtw.onboarding.plannerSupported')}
                         {relevance ? ` · ${t(`rtw.onboarding.relevance.${relevance}`)}` : ''}
                       </span>
-                      <ul className="rtw-gate-ticketing-rules">
-                        {program.keyRules.map((rule) => <li key={rule.en}>{locale === 'zh-TW' ? rule.zhTW : rule.en}</li>)}
-                      </ul>
-                      <ul className="rtw-gate-rule-list">
-                        {productRules(product, t).map((rule) => <li key={rule}>{rule}</li>)}
-                      </ul>
                       {product.bookingStatusNote && <span className="rtw-gate-product-note">{product.bookingStatusNote}</span>}
+                      {program.keyRules[0] && (
+                        <span className="rtw-gate-product-rule-preview">
+                          {locale === 'zh-TW' ? program.keyRules[0].zhTW : program.keyRules[0].en}
+                        </span>
+                      )}
                     </button>
+                    <details className="rtw-gate-product-details">
+                      <summary>{t('rtw.onboarding.productRuleDetails')}</summary>
+                      <div className="rtw-gate-product-details-body">
+                        <ul className="rtw-gate-ticketing-rules">
+                          {program.keyRules.map((rule) => <li key={rule.en}>{locale === 'zh-TW' ? rule.zhTW : rule.en}</li>)}
+                        </ul>
+                        <ul className="rtw-gate-rule-list">
+                          {productRules(product, t).map((rule) => <li key={rule}>{rule}</li>)}
+                        </ul>
+                      </div>
+                    </details>
                     <div className="rtw-gate-sources">
                       {program.sourceUrls.map((url, index) => (
                         <a key={url} href={url} target="_blank" rel="noreferrer">
@@ -508,6 +446,83 @@ export function RtwPlanGate({
               </details>
             )}
             <p className="rtw-gate-catalog-note">{t('rtw.onboarding.catalogNote')}</p>
+          </section>
+
+          <section className="rtw-gate-section" data-gate-section="network" aria-label={t('rtw.onboarding.networkTitle')}>
+              <details
+                className="rtw-gate-network-details"
+                open={networkDetailsOpen}
+                onToggle={(event) => setNetworkDetailsOpen(event.currentTarget.open)}
+              >
+              <summary>
+                <span>{t('rtw.onboarding.networkTitle')}</span>
+                <small>
+                  {t('rtw.onboarding.knownRouteCount', { count: knownRouteCount })}
+                  {' · '}
+                  {t('rtw.onboarding.networkCoverage', { covered: coveredCarrierCount, members: memberships.length })}
+                </small>
+              </summary>
+              <div className="rtw-gate-network-body">
+                <p>{t('rtw.onboarding.networkHint')}</p>
+                <ul className="rtw-gate-carriers">
+                  {featuredMemberships.map((membership) => {
+                    const count = routeCountByCarrier.get(membership.airline) ?? 0;
+                    const hasPlanner = plannerAirlines.has(membership.airline);
+                    const hasReference = ticketingAirlines.has(membership.airline);
+                    return (
+                      <li key={membership.airline}>
+                        <strong>{membership.airline}</strong>
+                        <span>{membership.airlineName}</span>
+                        <small>{t('rtw.onboarding.carrierRoutes', { count })}</small>
+                        <em className={hasPlanner ? 'has-product' : hasReference ? 'has-reference' : 'no-product'}>
+                          {t(hasPlanner
+                            ? 'rtw.onboarding.plannerReady'
+                            : hasReference
+                              ? 'rtw.onboarding.hasRuleReference'
+                              : 'rtw.onboarding.noRuleProduct')}
+                        </em>
+                      </li>
+                    );
+                  })}
+                </ul>
+                {memberships.length > featuredMemberships.length && (
+                  <details className="rtw-gate-members">
+                    <summary>{t('rtw.onboarding.showAllMembers', { count: memberships.length })}</summary>
+                    <div className="rtw-gate-member-list">
+                      {memberships.map((membership) => (
+                        <span key={membership.airline}>
+                          <strong>{membership.airline}</strong>
+                          {membership.airlineName}
+                        </span>
+                      ))}
+                    </div>
+                  </details>
+                )}
+                <details
+                  className="rtw-gate-routes"
+                  open={showKnownRoutes}
+                  onToggle={(event) => setShowKnownRoutes(event.currentTarget.open)}
+                >
+                  <summary>{t('rtw.onboarding.showKnownRoutes')}</summary>
+                  {showKnownRoutes && (
+                    <Suspense fallback={<p role="status">{t('loading')}</p>}>
+                      <LazyRouteCatalogBrowser
+                        routeNetwork={detailedRouteNetwork}
+                        schedules={schedules}
+                        officialSchedules={officialSchedules}
+                        memberCodes={memberCodes}
+                        airports={airportLookup}
+                        countryContinents={countryContinents}
+                        countrySubregions={countrySubregions}
+                        airportBrowseRegions={airportBrowseRegions}
+                        airportContinentOverrides={airportContinentOverrides}
+                        carrierNames={memberNames}
+                      />
+                    </Suspense>
+                  )}
+                </details>
+              </div>
+            </details>
           </section>
         </>
       )}

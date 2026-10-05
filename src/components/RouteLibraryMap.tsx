@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react';
 import { AttributionControl, Map as MapLibreRuntime, NavigationControl, setWorkerUrl } from 'maplibre-gl';
-import type { ExpressionSpecification, GeoJSONSource, Map as MapLibreMap, MapGeoJSONFeature, MapMouseEvent, Point } from 'maplibre-gl';
+import type { GeoJSONSource, Map as MapLibreMap, MapGeoJSONFeature, MapMouseEvent, Point } from 'maplibre-gl';
 import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import './RouteLibraryMapBase.css';
 import './RouteLibraryMap.css';
@@ -17,6 +17,7 @@ import {
 } from '../lib/rtw/route-library-map.ts';
 import type { RouteLibraryEntitySelection, RouteLibraryRouteCard, RouteLibrarySearchResult } from '../lib/rtw/route-library-entities.ts';
 import { useLocale } from '../i18n/use-locale.ts';
+import { routeLineWidthExpression } from '../lib/rtw/route-map-style.ts';
 
 const EMPTY_FEATURES: FeatureCollection<Geometry> = { type: 'FeatureCollection', features: [] };
 const BASEMAP_LIGHT_STYLE = 'https://tiles.openfreemap.org/styles/liberty';
@@ -268,10 +269,7 @@ function applyMapAppearance(
 ): void {
   const accent = dark ? ALLIANCE_ACCENTS[allianceTheme].dark : ALLIANCE_ACCENTS[allianceTheme].light;
   map.setPaintProperty(ROUTE_LAYER, 'line-color', accent);
-  const bundleScale: ExpressionSpecification = ['interpolate', ['linear'], ['coalesce', ['get', 'bundleCount'], 1], 1, 1, 4, 1.2, 12, 1.5, 40, 2.1];
-  map.setPaintProperty(ROUTE_LAYER, 'line-width', fingerprint
-    ? ['*', ['interpolate', ['linear'], ['zoom'], 0, 0.8, 3, 1.35, 8, 2.2], ['interpolate', ['linear'], ['get', 'importance'], 0, 0.55, 0.45, 1, 1, 2.05], bundleScale]
-    : ['*', ['interpolate', ['linear'], ['zoom'], 0, 0.7, 3, 1.2, 8, 2], bundleScale]);
+  map.setPaintProperty(ROUTE_LAYER, 'line-width', routeLineWidthExpression(fingerprint));
   map.setPaintProperty(ROUTE_LAYER, 'line-opacity', fingerprint
     ? ['interpolate', ['linear'], ['zoom'],
         0, ['interpolate', ['linear'], ['get', 'importance'], 0, 0.005, 0.45, 0.025, 0.7, 0.16, 1, 0.72],

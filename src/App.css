@@ -548,41 +548,13 @@
 
 /* Language picker */
 .lang-picker {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: var(--space-1);
-  background: var(--secondary-fill);
-  border: none;
-  border-radius: var(--radius-pill);
-  padding: 6px var(--space-3);
-  font-size: var(--type-footnote);
-  font-weight: 500;
-  color: var(--label);
-  transition: background var(--motion-fast) var(--ease-standard);
-}
-.lang-picker:hover {
-  background: var(--fill);
+  justify-self: end;
 }
 .lang-picker-icon {
-  font-size: 12px;
-  opacity: 0.6;
-}
-.lang-picker-select {
-  border: none;
-  background: transparent;
-  font-size: var(--type-footnote);
-  font-weight: 500;
-  cursor: pointer;
-  padding: 0;
-  color: var(--label);
-  font-family: var(--font-sans);
-  appearance: none;
-  -webkit-appearance: none;
-  padding-right: var(--space-3);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5' viewBox='0 0 8 5'%3E%3Cpath fill='%238e8e93' d='M0 0l4 5 4-5z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0 center;
-  background-size: 8px 5px;
+  display: block;
 }
 /* Sample routings */
 .sample-routings {

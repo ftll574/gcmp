@@ -1,7 +1,9 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { readFileSync } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { Airport } from '../../src/lib/types.ts';
 import type { RouteLibraryRouteCard } from '../../src/lib/rtw/route-library-entities.ts';
+import { routeLineWidthExpression } from '../../src/lib/rtw/route-map-style.ts';
 import { buildClusterBundledRoutes, buildRouteMapModel, nearestRouteIdByScreenDistance, routeMapBounds } from '../../src/lib/rtw/route-library-map.ts';
 
 vi.mock('../../src/state/use-world-map.ts', () => ({
@@ -29,6 +31,28 @@ function route(from: Airport, to: Airport, distanceNm: number): RouteLibraryRout
 }
 
 describe('RouteEntityMap MapLibre model', () => {
+  test('keeps zoom at the top level of route width expressions', () => {
+    const collectZoomPaths = (value: unknown, path = 'root'): string[] => {
+      if (!Array.isArray(value)) return [];
+      if (value.length === 1 && value[0] === 'zoom') return [path];
+      return value.flatMap((child, index) => collectZoomPaths(child, `${path}[${index}]`));
+    };
+
+    for (const fingerprint of [false, true]) {
+      const expression = routeLineWidthExpression(fingerprint);
+      expect(expression[0]).toBe('interpolate');
+      expect(expression[2]).toEqual(['zoom']);
+      expect(collectZoomPaths(expression)).toEqual(['root[2]']);
+    }
+  });
+
+  test('MapLibre canvas and controls fill the map when its parent initially measures zero height', () => {
+    const css = readFileSync('src/components/RouteLibraryMapBase.css', 'utf8');
+    expect(css).toMatch(/\.entity-map-maplibre\.maplibregl-map\s*\{[^}]*position:\s*absolute;[^}]*inset:\s*0;/s);
+    expect(css).toMatch(/\.maplibregl-canvas-container\s*\{[^}]*position:\s*absolute;[^}]*inset:\s*0;[^}]*width:\s*100%;[^}]*height:\s*100%;/s);
+    expect(css).toMatch(/\.maplibregl-control-container\s*\{[^}]*position:\s*absolute;[^}]*inset:\s*0;/s);
+  });
+
   test('keeps every route and airport in GeoJSON instead of truncating the network', () => {
     const routes = Array.from({ length: 180 }, (_, index) => route(TPE, {
       ...LAX,

@@ -60,9 +60,100 @@
 .rtw-gate-continue:hover:not(:disabled) { background: #0e5364; }
 .rtw-gate-continue:disabled { opacity: .58; }
 
+/* On the plan gate, rules lead the decision; network research stays available
+   as evidence without preceding the ticket products in the reading order. */
+.rtw-gate-section[data-gate-section="products"] { order: 2; }
+.rtw-gate-section[data-gate-section="network"] { order: 3; }
+.rtw-gate-network-details,
+.rtw-gate-product-details { border: 1px solid #c3cec8; border-radius: 7px; background: #f8f7f0; }
+.rtw-gate-network-details > summary,
+.rtw-gate-product-details > summary {
+  min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  padding: 10px 14px; color: #17343d; font-size: 14px; font-weight: 700; cursor: pointer; list-style: none;
+}
+.rtw-gate-network-details > summary::-webkit-details-marker,
+.rtw-gate-product-details > summary::-webkit-details-marker { display: none; }
+.rtw-gate-network-details > summary::after,
+.rtw-gate-product-details > summary::after { content: '+'; flex: none; color: #176478; font-size: 18px; font-weight: 500; }
+.rtw-gate-network-details[open] > summary::after,
+.rtw-gate-product-details[open] > summary::after { content: '−'; }
+.rtw-gate-network-details > summary small { color: #526a6d; font-size: 12px; font-weight: 500; text-align: right; }
+.rtw-gate-network-body { display: flex; flex-direction: column; gap: 12px; padding: 14px; border-top: 1px solid #c3cec8; }
+.rtw-gate-network-body > p { max-width: 76ch; margin: 0; color: #425e64; font-size: 13px; line-height: 1.55; }
+.rtw-gate-product { display: flex; flex-direction: column; }
+.rtw-gate-product-choice { flex: 1 1 auto; }
+.rtw-gate-product-choice:focus-visible { outline: 2px solid #a6532c; outline-offset: -3px; }
+.rtw-gate-product-rule-preview { color: #425e64; font-size: 13px; line-height: 1.5; }
+.rtw-gate-product-details { margin: 0 12px 10px; border-radius: 5px; }
+.rtw-gate-product-details > summary { min-height: 40px; padding: 7px 10px; color: #176478; font-size: 12px; }
+.rtw-gate-product-details-body { display: flex; flex-direction: column; gap: 9px; padding: 10px; border-top: 1px solid #c3cec8; }
+.rtw-gate-product-details-body .rtw-gate-ticketing-rules,
+.rtw-gate-product-details-body .rtw-gate-rule-list { margin: 0; padding-inline-start: 18px; }
+.rtw-gate-product-details-body .rtw-gate-rule-list { display: block; }
+.rtw-gate-product-details-body .rtw-gate-rule-list li { margin: 2px 0; padding: 0; border: 0; background: transparent; list-style: disc; }
+
+.map-start-guide {
+  position: absolute; z-index: 2; top: 50%; left: 50%; width: min(390px, calc(100% - 40px));
+  transform: translate(-50%, -42%); padding: 24px 26px 22px; border: 1px solid #aebfba;
+  border-radius: 8px; background: #f6f4ec; color: #17343d; text-align: center;
+}
+.map-start-guide h2 { margin: 0; font-size: 20px; line-height: 1.25; }
+.map-start-guide p { margin: 8px auto 16px; color: #425e64; font-size: 14px; line-height: 1.55; }
+.map-start-guide button,
+.rtw-compact-details-button {
+  min-height: 44px; padding: 0 16px; border: 1px solid #17343d; border-radius: 5px;
+  background: #17343d; color: #f5f3e9; font: 650 13px/1 var(--font-sans); cursor: pointer;
+}
+.map-start-guide button:hover,
+.rtw-compact-details-button:hover { background: #0e5364; }
+
+.rtw-panel-compact {
+  display: flex; flex-direction: column; gap: 9px; padding: 12px 14px;
+  border: 1px solid #aebfba; border-radius: 7px; background: #eef2e9;
+}
+.rtw-compact-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.rtw-compact-head > div { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.rtw-compact-head h2 { margin: 0; color: #17343d; font-size: 15px; line-height: 1.25; }
+.rtw-compact-head > div > span { overflow: hidden; color: #526a6d; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.rtw-compact-data { display: flex; flex-wrap: wrap; align-items: stretch; gap: 7px; }
+.rtw-compact-data > div { min-width: 88px; display: flex; flex-direction: column; gap: 4px; padding: 8px 10px; border: 1px solid #cad3cc; border-radius: 5px; background: #f8f7f0; }
+.rtw-compact-data span { color: #526a6d; font-size: 11px; }
+.rtw-compact-data strong { color: #17343d; font: 650 14px/1.2 var(--font-mono); }
+.rtw-compact-data .rtw-compact-award { min-width: 132px; flex: 1 1 150px; }
+.rtw-compact-award small { color: #526a6d; font-size: 11px; line-height: 1.35; }
+.rtw-compact-empty,
+.rtw-compact-note,
+.rtw-compact-scope { margin: 0; color: #425e64; font-size: 12px; line-height: 1.45; }
+.rtw-compact-note { padding: 7px 9px; border-radius: 4px; background: #f3e6c9; color: #513c22; }
+.rtw-compact-scope { padding-top: 8px; border-top: 1px solid #c0cdc5; }
+.rtw-compact-findings { display: flex; flex-direction: column; gap: 5px; margin: 0; padding: 0; list-style: none; }
+.rtw-compact-findings .rtw-finding {
+  display: block; margin: 0; padding: 7px 9px; border-radius: 4px; background: #f3e6c9;
+  color: #513c22; font-size: 12px; line-height: 1.45; overflow-wrap: anywhere;
+}
+.rtw-compact-details-button { align-self: flex-start; min-height: 38px; padding-inline: 12px; background: transparent; color: #17343d; }
+.rtw-compact-details-button:hover { color: #f5f3e9; }
+
 @media (min-width: 1150px) {
-  .rtw-gate:not(:has(.rtw-gate-network-summary)) .rtw-gate-section { grid-column: 1 / -1; }
-  .rtw-gate:not(:has(.rtw-gate-network-summary)) .rtw-gate-alliances { grid-template-columns: repeat(3, minmax(0,1fr)); }
+  .rtw-gate:has([data-gate-section="products"]) {
+    grid-template-areas: "intro intro" "alliance products" "network network";
+  }
+  .rtw-gate-intro { grid-area: intro; }
+  .rtw-gate-section[data-gate-section="alliance"] { grid-area: alliance; }
+  .rtw-gate-section[data-gate-section="products"] { grid-area: products; }
+  .rtw-gate-section[data-gate-section="network"] { grid-area: network; }
+  .rtw-gate:not(:has([data-gate-section="products"])) { grid-template-columns: 1fr; }
+  .rtw-gate:not(:has([data-gate-section="products"])) > .rtw-gate-section[data-gate-section="alliance"] { grid-column: 1 / -1; }
+  .rtw-gate:not(:has([data-gate-section="products"])) .rtw-gate-alliances { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 680px) {
+  .rtw-gate-section[data-gate-section="network"] { order: 3; }
+  .rtw-gate-section[data-gate-section="products"] { order: 2; }
+  .rtw-gate-network-details > summary { align-items: flex-start; flex-direction: column; gap: 3px; }
+  .rtw-gate-network-details > summary small { text-align: left; }
+  .rtw-compact-data { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rtw-compact-data .rtw-compact-award { grid-column: 1 / -1; }
+  .map-start-guide { top: 43%; padding: 18px; }
 }
 
 .planner-site-page .app-workbench { background: #e5e9e2; }

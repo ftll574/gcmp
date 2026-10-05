@@ -48,6 +48,12 @@ function setup(onContinue = vi.fn()) {
   return onContinue;
 }
 
+function openDetails(selector: string): void {
+  const details = document.querySelector<HTMLDetailsElement>(selector);
+  if (!details) throw new Error(`Missing disclosure: ${selector}`);
+  fireEvent.click(details.querySelector('summary')!);
+}
+
 test('starts with alliance choice and does not show product rules before an alliance is chosen', () => {
   setup();
   expect(screen.getByRole('button', { name: /Star Alliance/ })).toBeInTheDocument();
@@ -58,14 +64,19 @@ test('starts with alliance choice and does not show product rules before an alli
   expect(screen.queryByText('Cabin')).not.toBeInTheDocument();
 });
 
-test('choosing an alliance reveals member airlines, partial network coverage and its cataloged products', () => {
+test('choosing an alliance puts ticket products first and keeps partial network coverage available by disclosure', () => {
   setup();
   fireEvent.click(document.querySelector<HTMLButtonElement>('[data-alliance="oneworld"]')!);
-  expect(screen.getAllByText('Cathay Pacific').length).toBeGreaterThanOrEqual(1);
   expect(document.querySelector(`[data-product-id="${CX}"]`)).toBeInTheDocument();
+  const productsSection = document.querySelector('[data-gate-section="products"]')!;
+  const networkSection = document.querySelector('[data-gate-section="network"]')!;
+  expect(productsSection.compareDocumentPosition(networkSection) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  expect(document.querySelector<HTMLDetailsElement>('.rtw-gate-network-details')?.open).toBe(false);
+  openDetails('.rtw-gate-network-details');
+  expect(screen.getAllByText('Cathay Pacific').length).toBeGreaterThanOrEqual(1);
   expect(document.querySelector(`[data-product-id="${BR}"]`)).toBeNull();
   expect(document.querySelector('[data-ticketing-program-id="finnair-plus-partner-awards"]')).toBeInTheDocument();
-  expect(screen.getByText(/partial sourced catalog/i)).toBeInTheDocument();
+  expect(screen.getByText(/partial source coverage/i)).toBeInTheDocument();
   expect(screen.getByText(/directional nonstop routes cataloged/)).toBeInTheDocument();
   expect(screen.queryByText('no ticketing-plan data yet')).not.toBeInTheDocument();
   expect(screen.getByText(/members currently have route data/)).toBeInTheDocument();
@@ -74,6 +85,7 @@ test('choosing an alliance reveals member airlines, partial network coverage and
 test('planner-supported airlines are ordered ahead of reference-only members', () => {
   setup();
   fireEvent.click(document.querySelector<HTMLButtonElement>('[data-alliance="oneworld"]')!);
+  openDetails('.rtw-gate-network-details');
   const rows = [...document.querySelectorAll<HTMLLIElement>('.rtw-gate-carriers li')];
   const plannerIndexes = rows
     .map((row, index) => row.querySelector('em.has-product') ? index : -1)
@@ -90,10 +102,10 @@ test('planner-supported airlines are ordered ahead of reference-only members', (
 test('route-pair details are materialized only after the disclosure is opened', async () => {
   setup();
   fireEvent.click(document.querySelector<HTMLButtonElement>('[data-alliance="oneworld"]')!);
+  openDetails('.rtw-gate-network-details');
   expect(document.querySelector('.route-browser')).toBeNull();
   const details = document.querySelector<HTMLDetailsElement>('.rtw-gate-routes')!;
-  details.open = true;
-  fireEvent(details, new Event('toggle'));
+  fireEvent.click(details.querySelector('summary')!);
   await waitFor(() => expect(document.querySelector('.route-browser')).toBeInTheDocument());
   // The new browser exposes only the first grouping level initially; airport,
   // route, carrier and flight details mount progressively as each level opens.
@@ -109,19 +121,19 @@ test('SkyTeam exposes the cataloged CI plan with its RTW limitation instead of i
   expect(ci).toHaveTextContent(/not a true RTW candidate/i);
   const represented = new Set(network.routes.filter((route) => route.status === 'published').map((route) => route.carrier));
   const coveredMembers = alliances.memberships.filter((member) => member.alliance === 'skyteam' && member.status === 'member' && represented.has(member.airline)).length;
-  expect(screen.getByText(`${coveredMembers}/18 members currently have route data`)).toBeInTheDocument();
+  openDetails('.rtw-gate-network-details');
+  expect(document.querySelector('.rtw-gate-network-details summary')?.textContent).toContain(`${coveredMembers}/18 members currently have route data`);
   const details = document.querySelector<HTMLDetailsElement>('.rtw-gate-routes')!;
-  details.open = true;
-  fireEvent(details, new Event('toggle'));
+  fireEvent.click(details.querySelector('summary')!);
   await waitFor(() => expect(document.querySelector('.route-browser-continent')).toBeInTheDocument(), { timeout: 3_000 });
 });
 
 test('Star route browser exposes current cataloged EVA flight numbers only after drilling into the route', async () => {
   setup();
   fireEvent.click(document.querySelector<HTMLButtonElement>('[data-alliance="star"]')!);
+  openDetails('.rtw-gate-network-details');
   const details = document.querySelector<HTMLDetailsElement>('.rtw-gate-routes')!;
-  details.open = true;
-  fireEvent(details, new Event('toggle'));
+  fireEvent.click(details.querySelector('summary')!);
 
   await waitFor(() => expect(document.querySelector('.route-browser-continent')).toBeInTheDocument());
   const continent = document.querySelector<HTMLDetailsElement>('.route-browser-continent')!;
@@ -172,7 +184,8 @@ test('JAL, Thai and Asiana researched RTW products are selectable planner produc
   const jal = document.querySelector<HTMLButtonElement>('[data-product-id="jal-oneworld-award-ticket"]');
   expect(jal).toBeInTheDocument();
   expect(jal).toHaveTextContent(/8/);
-  expect(jal).toHaveTextContent(/origin country/i);
+  fireEvent.click(jal!.parentElement!.querySelector('.rtw-gate-product-details summary')!);
+  expect(jal!.parentElement).toHaveTextContent(/origin country/i);
   fireEvent.click(jal!);
   fireEvent.click(document.querySelector<HTMLButtonElement>('[data-enter-planner]')!);
   expect(onContinue).toHaveBeenCalledWith('jal-oneworld-award-ticket');
@@ -184,10 +197,12 @@ test('JAL, Thai and Asiana researched RTW products are selectable planner produc
   const thai = document.querySelector<HTMLButtonElement>('[data-product-id="thai-royal-orchid-plus-star-rtw-award"]');
   const asiana = document.querySelector<HTMLButtonElement>('[data-product-id="asiana-club-star-alliance-rtw-award"]');
   expect(thai).toBeInTheDocument();
-  expect(thai).toHaveTextContent(/network-required backtracking needs review/i);
+  fireEvent.click(thai!.parentElement!.querySelector('.rtw-gate-product-details summary')!);
+  expect(thai!.parentElement).toHaveTextContent(/network-required backtracking needs review/i);
   expect(asiana).toBeInTheDocument();
-  expect(asiana).toHaveTextContent(/IATA areas/i);
-  expect(asiana).toHaveTextContent('2026-12-16');
+  fireEvent.click(asiana!.parentElement!.querySelector('.rtw-gate-product-details summary')!);
+  expect(asiana!.parentElement).toHaveTextContent(/IATA areas/i);
+  expect(asiana!.parentElement).toHaveTextContent('2026-12-16');
 });
 
 test('newly researched Iberia and Miles & More products can enter the workbench', () => {

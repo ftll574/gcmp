@@ -253,6 +253,9 @@
 }
 
 @media (max-width: 700px) {
-  .entity-map-commandbar { right: 54px; }
+  /* Keep the stacked mobile filter/search clear of MapLibre's 52px zoom
+     control column (inset 12px). The previous 54px reserve let the search
+     edge run underneath those controls on 390px phones. */
+  .entity-map-commandbar { right: 76px; }
   .maplibre-route-map .entity-map-stats { top: 122px; }
 }

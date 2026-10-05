@@ -46,6 +46,8 @@ interface RtwValidationPanelProps {
    */
   readonly ciZones: CiZoneMap | null;
   readonly selectedProductId: string;
+  readonly compact?: boolean;
+  readonly onOpenDetails?: () => void;
 }
 
 function flattenLegs(routing: RoutingRequest) {
@@ -99,6 +101,8 @@ export function RtwValidationPanel({
   schedules,
   ciZones,
   selectedProductId,
+  compact = false,
+  onOpenDetails,
 }: RtwValidationPanelProps): React.ReactElement {
   const { locale, t } = useLocale();
   const products = useMemo(
@@ -227,6 +231,63 @@ export function RtwValidationPanel({
     : verdict === 'incomplete' ? 'rtw.integrity.incomplete'
       : verdict === 'review' ? 'rtw.integrity.review' : `rtw.status.${verdict}`;
   const pricingProduct = awardPricingCatalog.products.find((product) => product.productId === selectedProduct.id);
+
+  if (compact) {
+    const notableFindings = visibleFindings.filter((finding) => finding.severity !== 'pass').slice(0, 2);
+    return (
+      <section className="rtw-panel rtw-panel-compact" aria-label={locale === 'zh-TW' ? '即時行程摘要' : 'Live itinerary summary'} data-verdict={verdict}>
+        <div className="rtw-compact-head">
+          <div>
+            <h2>{t('rtw.workflow.liveSummary')}</h2>
+            <span>{selectedProduct.label}</span>
+          </div>
+          <span className={`rtw-status ${verdict}`} data-verdict={verdict}>{t(verdictKey)}</span>
+        </div>
+        {result ? (
+          <div className="rtw-compact-data">
+            <div>
+              <span>{t('rtw.summary.segments')}</span>
+              <strong>{result.summary.flightSegments}</strong>
+            </div>
+            <div>
+              <span>{t('rtw.summary.miles')}</span>
+              <strong>{result.summary.totalDistanceMiles.toLocaleString()}</strong>
+            </div>
+            {awardPrice && (
+              <div className="rtw-compact-award" data-award-confidence={awardPrice.confidence}>
+                <span>{t('rtw.award.estimate')}</span>
+                <strong>{t(awardPrice.currency === 'points' ? 'rtw.integrity.points' : 'rtw.award.miles', { count: awardPrice.miles.toLocaleString() })}</strong>
+                <small>{awardPrice.confidence === 'official-fixed'
+                  ? t('rtw.award.confidence.officialFixed')
+                  : awardPrice.confidence === 'published-chart'
+                    ? t('rtw.award.confidence.publishedChart')
+                    : t('rtw.award.confidence.recheck')}</small>
+              </div>
+            )}
+          </div>
+        ) : (
+          <p className="rtw-compact-empty">{t('rtw.workflow.summaryAfterFirstLeg')}</p>
+        )}
+        {missingDates > 0 && <p className="rtw-compact-note">{t('rtw.integrity.missingDates', { count: missingDates })}</p>}
+        {missingCabins > 0 && <p className="rtw-compact-note">{t('rtw.integrity.missingCabins', { count: missingCabins })}</p>}
+        {notableFindings.length > 0 && (
+          <ul className="rtw-compact-findings">
+            {notableFindings.map((finding) => (
+              <li key={`${finding.ruleId}-${finding.affectedLegIndexes?.join(',') ?? ''}`} className={`rtw-finding ${finding.severity}`}>
+                {findingMessage(finding, t)}
+              </li>
+            ))}
+          </ul>
+        )}
+        <p className="rtw-compact-scope">{t('rtw.integrity.scopeNote')}</p>
+        {onOpenDetails && (
+          <button type="button" className="rtw-compact-details-button" onClick={onOpenDetails}>
+            {t('rtw.workflow.reviewAllRules')}
+          </button>
+        )}
+      </section>
+    );
+  }
 
   return (
     <section className="rtw-panel" aria-label={locale === 'zh-TW' ? '環球票規則檢查' : 'RTW validation'}>

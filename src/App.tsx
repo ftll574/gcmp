@@ -901,6 +901,24 @@ function Ready({
                     onStopoverChange={changeStopover}
                     onSurfaceChange={changeSurface}
                   />
+                  {hasAnyLegs && (
+                    <RtwValidationPanel
+                      compact
+                      onOpenDetails={() => toggleInspector('rules')}
+                      routing={routing}
+                      airports={airportIndex.byIata}
+                      allianceCatalog={data.allianceCatalog}
+                      rtwRuleCatalog={data.rtwRuleCatalog}
+                      awardPricingCatalog={data.awardPricingCatalog}
+                      marketProfile={data.marketProfile}
+                      countryContinents={data.countryContinents}
+                      airportContinentOverrides={data.airportContinentOverrides}
+                      networkGaps={data.networkGaps}
+                      schedules={data.schedules}
+                      ciZones={data.ciZones}
+                      selectedProductId={selectedRtwProductId}
+                    />
+                  )}
                   <div className="route-editor-secondary">
                     {hasAnyLegs && (
                       <details className="route-editor-details route-flight-details">
@@ -1023,6 +1041,19 @@ function Ready({
               </button>
             ))}
           </div>
+          {activeChainAirports.length === 0 && (
+            <div className="map-start-guide" data-map-empty-state>
+              <h2>{t('rtw.workflow.emptyMapTitle')}</h2>
+              <p>{t('rtw.workflow.emptyMapCopy')}</p>
+              <button type="button" onClick={() => {
+                document.querySelector<HTMLInputElement>('.autocomplete-input')?.focus({ preventScroll: true });
+                document.getElementById('route-editor')?.scrollIntoView({
+                  behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+                  block: 'start',
+                });
+              }}>{t('rtw.workflow.emptyMapAction')}</button>
+            </div>
+          )}
           <MapErrorBoundary groups={routing.groups}>
             <Suspense fallback={<div className="app-map-loading" aria-hidden="true" />}>
               <LazyMapView

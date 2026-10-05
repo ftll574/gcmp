@@ -8,9 +8,32 @@
  */
 
 .maplibregl-map {
+  position: relative;
   overflow: hidden;
   font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* MapLibre adds its class to GCMP's absolute fill container. Preserve that
+   containing block's full map-card size after applying MapLibre's position. */
+.entity-map-maplibre.maplibregl-map {
+  position: absolute;
+  inset: 0;
+}
+
+.maplibregl-canvas-container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.maplibregl-control-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
 }
 
 .maplibregl-canvas {
