@@ -27,7 +27,7 @@
   --radius-control: 8px;
   --radius-card: 10px;
   --radius-sheet: 16px;
-  --focus-ring-color: #b34937;
+  --focus-ring-color: #a65f45;
   --shadow-popover: 0 9px 28px rgba(22, 52, 59, .13);
   --material-thin: rgba(243, 241, 232, .76);
   --material-regular: rgba(243, 241, 232, .92);
@@ -68,7 +68,7 @@
 html { scroll-behavior: smooth; }
 body { background: var(--system-background); color: var(--label); font-family: var(--font-sans); }
 ::selection { background: #b8d5cb; color: #173841; }
-:focus-visible { outline: 2px solid #b34937 !important; outline-offset: 3px; }
+:focus-visible { outline: 2px solid #a65f45 !important; outline-offset: 3px; }
 button, input, select, textarea { font: inherit; }
 button { -webkit-tap-highlight-color: transparent; }
 
@@ -88,11 +88,11 @@ button { -webkit-tap-highlight-color: transparent; }
 .site-header .lang-picker { background: rgba(230,240,235,.1); color: #e8efe9; }
 .site-header .lang-picker:hover { background: rgba(230,240,235,.17); }
 .site-header .lang-picker-icon { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.2; }
-.site-header .lang-picker-select { color: #f5f3e9; }
+.site-header .lang-picker-select { min-height: 30px; padding: 4px 25px 4px 8px; border: 1px solid rgba(230,240,235,.35); border-radius: 5px; background-color: #102b33; background-position: right 8px center; color: #f5f3e9; color-scheme: dark; }
 .site-header .lang-picker-select option { color: #18333c; background: #fbfaf5; }
 .skip-link:focus { background: #fffdf5; color: #18343c; }
 
-.landing-page { background: var(--system-background); }
+.landing-page { background: #f3f1e8; color: #18333c; }
 .landing-hero {
   width: min(1720px, 100%); min-height: min(860px, calc(100svh - 72px));
   grid-template-columns: minmax(400px, .9fr) minmax(580px, 1.1fr);
@@ -116,8 +116,9 @@ button { -webkit-tap-highlight-color: transparent; }
 .landing-three-copy { top: 28px; left: 30px; }
 .landing-three-copy h2 { letter-spacing: -.025em; }
 .landing-three-metrics span { border-radius: 4px; font-variant-numeric: tabular-nums; }
-.landing-showcase-switcher { right: 18px; width: 188px; }
+.landing-showcase-switcher { right: auto; width: 100%; transform: none; }
 .landing-showcase-switcher button { min-height: 46px; border-radius: 4px; }
+.landing-showcase-switcher button[aria-pressed="true"] { transform: none; }
 .landing-three-description a { border-radius: 5px; }
 .landing-section { margin-inline: clamp(24px, 5vw, 80px); border-color: #c5cec8; }
 .landing-section h2 { color: #17343d; letter-spacing: -.04em; }
@@ -158,4 +159,35 @@ button { -webkit-tap-highlight-color: transparent; }
   .landing-feature-grid { grid-template-columns: 1fr; }
   .landing-feature-grid article { min-height: 0; }
   .text-link { grid-column: 1; }
+}
+
+/* At laptop widths the hero previously forced two large minimum columns. Keep
+   the route globe readable and let its copy use enough width for CJK titles. */
+@media (min-width: 1081px) and (max-width: 1320px) {
+  .landing-hero {
+    grid-template-columns: minmax(320px, .74fr) minmax(570px, 1.26fr);
+    gap: clamp(26px, 3vw, 38px);
+    padding-inline: clamp(28px, 4vw, 52px);
+  }
+  .landing-three-card,
+  .landing-three-loading { min-height: clamp(560px, 68vh, 650px); }
+  .landing-three-copy { max-width: min(430px, calc(100% - 190px)); }
+  .landing-three-copy h2 { max-width: 100%; font-size: clamp(32px, 2.8vw, 38px); line-height: 1.08; text-wrap: balance; }
+}
+
+@media (max-width: 620px) {
+  .landing-three-card,
+  .landing-three-loading { min-height: 680px; }
+  .landing-three-copy { max-width: calc(100% - 36px); }
+  .landing-three-copy h2 { max-width: 100%; font-size: clamp(27px, 7.2vw, 30px); line-height: 1.12; }
+  .landing-three-copy p { max-width: 100%; }
+  .landing-three-metrics { top: 198px; left: 18px; right: auto; flex-direction: row; align-items: center; }
+  .landing-flight-strip { bottom: 150px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; overflow: visible; padding: 0; }
+  .landing-flight-strip button { min-width: 0; min-height: 64px; padding: 7px 8px; }
+  .landing-flight-strip button small { font-size: 9px; line-height: 1.25; }
+  .landing-showcase-switcher { position: relative; inset: auto; width: 100%; margin-top: 10px; transform: none; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 421px) and (max-width: 620px) {
+  .landing-flight-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }

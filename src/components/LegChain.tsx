@@ -233,7 +233,7 @@ export function LegChain({
                   </span>
                   <span className="leg-chip-summary-meta">
                     {flight
-                      ? `${flight.cabin ? t(`cabin.${flight.cabin === 'premium-economy' ? 'premiumEconomyShort' : `${flight.cabin}Short`}`) : t('rtw.legChip.cabinUnset')} · ${timingSummary}${flight.fareClass ? ` · ${flight.fareClass}` : ''}`
+                      ? `${flight.carrierAssumed ? t('rtw.legChip.assumedCarrier') + ' · ' : ''}${flight.cabin ? t(`cabin.${flight.cabin === 'premium-economy' ? 'premiumEconomyShort' : `${flight.cabin}Short`}`) : t('rtw.legChip.cabinUnset')} · ${timingSummary}${flight.fareClass ? ` · ${flight.fareClass}` : ''}`
                       : timingSummary}
                   </span>
                   <span className="leg-chip-summary-toggle" aria-hidden="true">{isEditingLeg ? '−' : '+'}</span>
@@ -261,6 +261,7 @@ export function LegChain({
                       {flight.operatingCarrier}{flight.flightNumber}
                     </span>
                   )}
+                  {flight?.carrierAssumed && <span className="leg-chip-assumed-carrier">{t('rtw.legChip.assumedCarrier')}</span>}
                   {flight && <select
                     className={`leg-chip-cabin${flight.cabin ? ' is-set' : ''}`}
                     value={flight.cabin ?? ''}

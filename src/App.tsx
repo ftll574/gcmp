@@ -267,6 +267,8 @@ function Ready({
   const [editorWidth, setEditorWidth] = useState(460);
   const [resizing, setResizing] = useState<ResizeHandle | null>(null);
   const [plannerEntered, setPlannerEntered] = useState(hasAnyLegs);
+  const [gateEnteredPlanner, setGateEnteredPlanner] = useState(false);
+  const previousPlannerEntered = useRef(plannerEntered);
   const [catalogRequested, setCatalogRequested] = useState(false);
   const [nextLegMapGuide, setNextLegMapGuide] = useState<NextLegMapGuide | null>(null);
   const [nextLegSelection, setNextLegSelection] = useState<{ origin: string; to: string } | null>(null);
@@ -320,8 +322,24 @@ function Ready({
     if (!rtwProducts.some((product) => product.id === productId && product.status === 'active')) return;
     setRouting({ ...routing, rtwProductId: productId });
     setCatalogRequested(false);
+    setGateEnteredPlanner(true);
     setPlannerEntered(true);
   }
+
+  useEffect(() => {
+    const enteredNow = gateEnteredPlanner && !previousPlannerEntered.current && plannerEntered;
+    previousPlannerEntered.current = plannerEntered;
+    if (!enteredNow) return;
+    setGateEnteredPlanner(false);
+    // The gate can be several screens tall on mobile. Entering the editor is
+    // an explicit forward transition, so place its first controls in view.
+    // Back/Forward and in-editor edits never trigger this reset.
+    window.requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+      document.getElementById('route-editor')?.scrollIntoView?.({ block: 'start', behavior: 'auto' });
+      document.querySelector<HTMLInputElement>('.autocomplete-input')?.focus({ preventScroll: true });
+    });
+  }, [gateEnteredPlanner, plannerEntered]);
 
   useEffect(() => {
     if (resizing === null) return;
@@ -493,6 +511,7 @@ function Ready({
     cabin?: CabinId;
     stopover?: boolean;
     manual?: boolean;
+    carrierAssumed?: boolean;
   }): void {
     // Validate attachment here as well as disabling incompatible UI chips.
     const chainEnd = activeGroup.legs.at(-1)?.to ?? pendingAirport?.iata;
@@ -631,7 +650,7 @@ function Ready({
     if (!isCarrierEligibleForProduct(flight.carrier, selectedRtwProduct, data.allianceCatalog)) return;
     updateActiveGroup((group) => ({ legs: group.legs.map((leg, i) =>
       i === legIndex && isFlightLeg(leg) && leg.from === flight.from && leg.to === flight.to
-        ? (() => { const rest = { ...leg }; delete rest.operatingCarrierEntityKey; return { ...rest, operatingCarrier: flight.carrier, ...(flight.carrierEntityKey ? { operatingCarrierEntityKey: flight.carrierEntityKey } : {}), departsOn: selectedDepartureDate(flight), flightNumber: flight.flightNumber }; })()
+        ? (() => { const rest = { ...leg }; delete rest.operatingCarrierEntityKey; delete rest.carrierAssumed; return { ...rest, operatingCarrier: flight.carrier, ...(flight.carrierEntityKey ? { operatingCarrierEntityKey: flight.carrierEntityKey } : {}), departsOn: selectedDepartureDate(flight), flightNumber: flight.flightNumber }; })()
         : leg) }));
   }
 

@@ -1836,6 +1836,7 @@
   font-size: var(--type-caption);
   font-weight: 700;
 }
+.leg-chip-assumed-carrier { display:inline-flex; align-items:center; min-height:24px; padding:2px 6px; border:1px solid #785126; border-radius:4px; background:#fff2d9; color:#593810; font-size:11px; font-weight:700; white-space:nowrap; }
 @media (max-width: 520px) {
   .rtw-next-selected-route-head {
     flex-direction: column;
@@ -3516,14 +3517,16 @@
 }
 /* Action row */
 .action-row {
-  display: inline-flex;
+  display: grid;
+  grid-template-columns: repeat(3, max-content);
+  justify-content: end;
   align-items: center;
   gap: var(--space-2);
 }
 .action-button {
-  background: var(--secondary-fill);
-  border: none;
-  color: var(--label);
+  background: #17343d;
+  border: 1px solid #17343d;
+  color: #ffffff;
   padding: 7px var(--space-4);
   font-size: var(--type-footnote);
   font-weight: 600;
@@ -3535,23 +3538,36 @@
     transform var(--motion-fast) var(--ease-standard),
     color var(--motion-fast) var(--ease-standard);
 }
-.action-button:hover:not(:disabled) {
-  background: var(--fill);
+.action-button:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: #24515b;
+  border-color: #24515b;
+  color: #ffffff;
 }
-.action-button:active:not(:disabled) {
+.action-button:active:not(:disabled):not([aria-disabled="true"]) {
   transform: scale(0.97);
 }
 .action-button.primary {
-  background: var(--tint);
-  color: var(--system-background);
+  background: #176478;
+  border-color: #176478;
+  color: #ffffff;
 }
 .action-button.primary:hover:not(:disabled) {
-  background: var(--tint-pressed);
+  background: #104e60;
+  border-color: #104e60;
+  color: #ffffff;
 }
-.action-button:disabled {
-  background: var(--tertiary-fill);
-  color: var(--tertiary-label);
+.action-button:focus-visible { outline:3px solid #a65f45 !important; outline-offset:3px; }
+.action-button[aria-disabled="true"] {
+  border: 1px solid #718782;
+  background: #dfe7e2;
+  color: #405953;
+  cursor: not-allowed;
+  opacity: 1;
 }
+.action-button[aria-disabled="true"]:focus-visible { outline-color: #7b382e !important; }
+.action-row-disabled-reason { grid-column: 1 / -1; justify-self: end; max-width: 100%; padding: 4px 7px; border-radius: 4px; background: #f3f1e8; color: #334d47; font-size: 11px; line-height: 1.35; text-align: right; }
+.action-save { grid-column: 1 / -1; }
+.sr-only { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip:rect(0,0,0,0)!important; white-space:nowrap!important; border:0!important; }
 .action-save {
   display: inline-flex;
   gap: var(--space-2);

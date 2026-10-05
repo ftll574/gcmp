@@ -119,7 +119,7 @@ describe('DestinationsPanel · nonblocking next-leg workflow', () => {
     selectPair('TPE', 'SEA'); fireEvent.click(flight('BR024'));
     fireEvent.change(document.querySelector('[data-next-leg-cabin="TPE-SEA"]')!, { target: { value: 'business' } });
     fireEvent.click(document.querySelector('[data-add-selected-flight="BR024:TPE-SEA"]')!);
-    expect(onAddPair).toHaveBeenCalledWith('TPE', 'SEA', 'BR', { flightNumber: '024', cabin: 'business' });
+    expect(onAddPair).toHaveBeenCalledWith('TPE', 'SEA', 'BR', { flightNumber: '024', cabin: 'business', carrierAssumed: true });
   });
 
   test('choose another airport returns to sourced candidates', () => {
@@ -203,7 +203,7 @@ describe('DestinationsPanel · nonblocking next-leg workflow', () => {
     fireEvent.change(timing, { target: { value: 'transfer' } });
     expect(document.querySelector('[data-next-leg-cabin="TPE-LHR"]')).toBeInTheDocument();
     fireEvent.click(document.querySelector('[data-add-draft="CX:TPE-LHR"]')!);
-    expect(onAddPair).toHaveBeenCalledWith('TPE', 'LHR', 'CX', { stopover: false });
+    expect(onAddPair).toHaveBeenCalledWith('TPE', 'LHR', 'CX', { stopover: false, carrierAssumed: true });
   });
 
   test('known schedules still allow choosing airline now and flight number later', () => {
@@ -213,7 +213,7 @@ describe('DestinationsPanel · nonblocking next-leg workflow', () => {
     fireEvent.click(document.querySelector('[data-select-flight-later="BR:TPE-SEA"]')!);
     expect(document.querySelector('[data-next-leg-timing="TPE-SEA"]')).toBeInTheDocument();
     fireEvent.click(document.querySelector('[data-add-draft="BR:TPE-SEA"]')!);
-    expect(onAddPair).toHaveBeenCalledWith('TPE', 'SEA', 'BR', {});
+    expect(onAddPair).toHaveBeenCalledWith('TPE', 'SEA', 'BR', { carrierAssumed: true });
   });
 
   test('metropolitan airport changes use TYO grouping even when airport city strings differ', () => {
@@ -287,7 +287,7 @@ describe('DestinationsPanel · nonblocking next-leg workflow', () => {
   });
 });
 
-test('unknown route identity exposes verification, never an operating-carrier draft', () => {
+test('unknown route identity exposes verification and labels an undated carrier assumption', () => {
   const onAddPair = vi.fn();
   const network = RouteNetworkCatalogSchema.parse({
     version: '2026.3', coverage: 'curated-not-complete',
@@ -297,7 +297,7 @@ test('unknown route identity exposes verification, never an operating-carrier dr
   render(<DestinationsPanel {...baseProps} onAddPair={onAddPair} schedules={[]} network={network} pendingIata="TPE" />);
   selectPair('TPE', 'LHR');
   expect(document.querySelector('[data-select-flight-number="CX250:TPE-LHR"]')).toBeNull();
-  expect(document.querySelector('[data-select-flight-later="CX:TPE-LHR"]')).toBeNull();
+  expect(document.querySelector('[data-select-flight-later="CX:TPE-LHR"]')).toHaveTextContent('This draft assumes this airline');
   expect(document.querySelector('[data-candidate-flight-number="CX250:TPE-LHR"]')).toBeInTheDocument();
   expect(document.querySelector('[data-verify-live-carrier="CX:TPE-LHR"]')).toBeInTheDocument();
   expect(onAddPair).not.toHaveBeenCalled();

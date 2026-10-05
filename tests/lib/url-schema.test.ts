@@ -316,6 +316,7 @@ describe('per-leg cabin (mixed-cabin planner)', () => {
     expect(parsed.ok).toBe(true);
     if (parsed.ok) {
       expect(parsed.request.groups[0]?.legs.map((leg) => leg.cabin)).toEqual(['business', 'business']);
+      expect(parsed.request.groups[0]?.legs.every((leg) => !('carrierAssumed' in leg))).toBe(true);
     }
   });
 
@@ -701,6 +702,22 @@ describe('per-leg departure dates (d=, flight-schedule-model S1)', () => {
     if (parsed.ok) {
       expect(parsed.request.groups).toEqual(req.groups);
     }
+  });
+
+  test('round-trips assumed carrier provenance separately from confirmed operator metadata', () => {
+    const req: RoutingRequest = {
+      groups: [{ legs: [
+        { from: 'TPE', to: 'NRT', operatingCarrier: 'BR', carrierAssumed: true },
+        { from: 'NRT', to: 'KIX', operatingCarrier: 'BR' },
+      ] }],
+      cabin: 'business',
+      programs: ['br-infinity'],
+    };
+    const url = encodeShareUrl(req);
+    expect(url).toContain('assume=1%2C');
+    const parsed = parseShareUrl(url);
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) expect(parsed.request.groups).toEqual(req.groups);
   });
 
   test('parses hand-written d= with partial dating inside a present param', () => {

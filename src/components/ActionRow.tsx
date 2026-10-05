@@ -7,7 +7,7 @@
  * single-button feature.
  */
 
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { useLocale } from '../i18n/use-locale.ts';
 import { formatForumPost } from '../lib/forum-post.ts';
 import type { RoutingRequest, RoutingResult } from '../lib/types.ts';
@@ -34,6 +34,8 @@ export function ActionRow({
   const [saveName, setSaveName] = useState('');
   const [shareCopied, setShareCopied] = useState(false);
   const [textCopied, setTextCopied] = useState(false);
+  const helpId = useId().replaceAll(':', '');
+  const copyTextDisabled = !shareUrl || !result;
 
   function fullShareUrl(): string | null {
     if (!shareUrl) return null;
@@ -106,31 +108,40 @@ export function ActionRow({
         <>
           <button
             type="button"
-            className="action-button"
-            onClick={() => setSaving(true)}
-            disabled={!canSave}
+            className={`action-button${canSave ? '' : ' is-unavailable'}`}
+            onClick={() => { if (canSave) setSaving(true); }}
+            aria-disabled={!canSave}
+            aria-describedby={!canSave ? `${helpId}-save` : undefined}
+            title={!canSave ? t('header.saveDisabledReason') : undefined}
           >
             {t('header.save')}
           </button>
           <button
             type="button"
-            className="action-button"
-            onClick={copyShareUrl}
-            disabled={!shareUrl}
+            className={`action-button${shareUrl ? '' : ' is-unavailable'}`}
+            onClick={() => { if (shareUrl) copyShareUrl(); }}
+            aria-disabled={!shareUrl}
+            aria-describedby={!shareUrl ? `${helpId}-share` : undefined}
+            title={!shareUrl ? t('header.shareDisabledReason') : undefined}
           >
             {shareCopied ? t('header.copied') : t('header.shareUrl')}
           </button>
           <button
             type="button"
-            className="action-button"
-            onClick={copyText}
-            disabled={!shareUrl || !result}
-            title={t('header.copyTextTitle')}
+            className={`action-button${copyTextDisabled ? ' is-unavailable' : ''}`}
+            onClick={() => { if (!copyTextDisabled) copyText(); }}
+            aria-disabled={copyTextDisabled}
+            aria-describedby={copyTextDisabled ? `${helpId}-copy` : undefined}
+            title={copyTextDisabled ? t('header.copyTextDisabledReason') : t('header.copyTextTitle')}
           >
             {textCopied ? t('header.copied') : t('header.copyText')}
           </button>
+          {!canSave && <span className="action-row-disabled-reason">{t('header.actionsUnavailable')}</span>}
         </>
       )}
+      <span id={`${helpId}-save`} className="sr-only">{t('header.saveDisabledReason')}</span>
+      <span id={`${helpId}-share`} className="sr-only">{t('header.shareDisabledReason')}</span>
+      <span id={`${helpId}-copy`} className="sr-only">{t('header.copyTextDisabledReason')}</span>
     </div>
   );
 }

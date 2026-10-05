@@ -182,6 +182,7 @@ export function parseShareUrl(input: string): UrlParseResult {
   const stopoverRaw = params.get('stp');
   const surfaceRaw = params.get('surf');
   const manualRaw = params.get('man');
+  const assumedCarrierRaw = params.get('assume');
   const rvRaw = params.get('rv');
   const sdRaw = params.get('sd');
   const edRaw = params.get('ed');
@@ -254,7 +255,7 @@ export function parseShareUrl(input: string): UrlParseResult {
     }
   }
 
-  function parseBooleanShape(raw: string | null, param: 'stp' | 'surf' | 'man'): string[] | null {
+  function parseBooleanShape(raw: string | null, param: 'stp' | 'surf' | 'man' | 'assume'): string[] | null {
     if (!raw) return null;
     const byGroup = raw.split(';');
     if (byGroup.length !== iataByGroup.length) {
@@ -268,10 +269,12 @@ export function parseShareUrl(input: string): UrlParseResult {
   let stopoverByGroupStr: string[] | null;
   let surfaceByGroupStr: string[] | null;
   let manualByGroupStr: string[] | null;
+  let assumedCarrierByGroupStr: string[] | null;
   try {
     stopoverByGroupStr = parseBooleanShape(stopoverRaw, 'stp');
     surfaceByGroupStr = parseBooleanShape(surfaceRaw, 'surf');
     manualByGroupStr = parseBooleanShape(manualRaw, 'man');
+    assumedCarrierByGroupStr = parseBooleanShape(assumedCarrierRaw, 'assume');
   } catch (e) {
     return err('mismatched-op-length', e instanceof Error ? e.message : String(e));
   }
@@ -280,7 +283,7 @@ export function parseShareUrl(input: string): UrlParseResult {
     rawGroup: string,
     expectedCount: number,
     groupIndex: number,
-    param: 'stp' | 'surf' | 'man',
+    param: 'stp' | 'surf' | 'man' | 'assume',
   ): Array<boolean | undefined> | UrlParseError {
     const rawCells = rawGroup === '' ? [] : rawGroup.split(',');
     if (rawCells.length > 0 && rawCells.length !== expectedCount) {
@@ -432,6 +435,13 @@ export function parseShareUrl(input: string): UrlParseResult {
       manuals = decoded;
     }
 
+    let assumedCarriers: ReadonlyArray<boolean | undefined> | null = null;
+    if (assumedCarrierByGroupStr) {
+      const decoded = decodeBooleanCells(assumedCarrierByGroupStr[gi] ?? '', expectedOpCount, gi, 'assume');
+      if (!Array.isArray(decoded)) return decoded;
+      assumedCarriers = decoded;
+    }
+
     const legs: Leg[] = [];
     const flightNumbers = flightNumbersByGroup?.[gi]?.split(',');
     if (flightNumbers && flightNumbers.length !== expectedOpCount) {
@@ -449,6 +459,7 @@ export function parseShareUrl(input: string): UrlParseResult {
       const stopover = stopovers?.[i];
       const surface = surfaces?.[i];
       const manual = manuals?.[i];
+      const carrierAssumed = assumedCarriers?.[i];
       const departsOn = departures?.[i];
       const flightNumber = flightNumbers?.[i];
       const operatingCarrierEntityKey = operatorEntities?.[i];
@@ -460,7 +471,7 @@ export function parseShareUrl(input: string): UrlParseResult {
         if (operatingCarrier !== '' && !/^[A-Z0-9]{2,3}$/.test(operatingCarrier)) {
           return err('malformed-path', `Invalid operating carrier code: "${operatingCarrier}"`);
         }
-        if (flightNumber || operatingCarrierEntityKey) {
+        if (flightNumber || operatingCarrierEntityKey || carrierAssumed === true) {
           return err('malformed-path', 'Flight-only metadata requires a flown leg.');
         }
         legs.push({
@@ -487,6 +498,7 @@ export function parseShareUrl(input: string): UrlParseResult {
         ...(stopover !== undefined ? { stopover } : {}),
         ...(surface === false ? { surface: false as const } : {}),
         ...(manual === true ? { manual: true } : {}),
+        ...(carrierAssumed === true ? { carrierAssumed: true } : {}),
         ...(departsOn !== undefined ? { departsOn } : {}),
         ...(flightNumber ? { flightNumber } : {}),
       });
@@ -624,6 +636,10 @@ export function encodeShareUrl(req: RoutingRequest): string {
   const manualByGroup = anyManual
     ? req.groups.map((group) => group.legs.map((leg) => isFlightLeg(leg) && leg.manual === true ? '1' : '').join(','))
     : null;
+  const anyAssumedCarrier = req.groups.some((g) => g.legs.some((leg) => isFlightLeg(leg) && leg.carrierAssumed === true));
+  const assumedCarrierByGroup = anyAssumedCarrier
+    ? req.groups.map((group) => group.legs.map((leg) => isFlightLeg(leg) && leg.carrierAssumed === true ? '1' : '').join(','))
+    : null;
   // Per-leg departure dates. Encode as `d=2026-09-01,,2026-09-05` mirroring
   // `op` shape. Empty cell for undated legs. Skip the whole param when no
   // leg is dated — preserves URL compatibility with every pre-dating link.
@@ -661,6 +677,7 @@ export function encodeShareUrl(req: RoutingRequest): string {
   if (manualByGroup) {
     params.set('man', manualByGroup.join(';'));
   }
+  if (assumedCarrierByGroup) params.set('assume', assumedCarrierByGroup.join(';'));
   if (datesByGroup) {
     params.set('d', datesByGroup.join(';'));
   }

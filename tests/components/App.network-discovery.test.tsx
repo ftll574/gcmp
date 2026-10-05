@@ -190,7 +190,7 @@ test('BR: blank planner → Pacific → Atlantic → Europe → Taiwan, then sha
   setCabins('business');
   enterTiming(['2026-11-02', '2026-11-07', '2026-11-12', '2026-11-17'], [true, true, true, false]);
   expect(document.querySelectorAll('.rtw-finding.fail')).toHaveLength(0);
-  expect(required('.rtw-status').getAttribute('data-verdict')).not.toBe('incomplete');
+  expect(required('.rtw-status').getAttribute('data-verdict')).toBe('incomplete'); // route-only carrier choices remain conditional
   expect(required('.rtw-award-price')).toHaveTextContent('325,000');
   const expected = request();
   cleanup();
@@ -212,7 +212,7 @@ test('CX: blank planner can continue across four oneworld operators and retain t
   setCabins('business');
   enterTiming(['2026-11-02', '2026-11-03', '2026-11-07', '2026-11-10', '2026-11-13', '2026-11-17', '2026-11-22'], [false, true, true, true, true, true, false]);
   expect(document.querySelectorAll('.rtw-finding.fail')).toHaveLength(0);
-  expect(required('.rtw-status').getAttribute('data-verdict')).not.toBe('incomplete');
+  expect(required('.rtw-status').getAttribute('data-verdict')).toBe('incomplete'); // route-only carrier choices remain conditional
   expect(required('.rtw-panel .rtw-scope-note')).toHaveTextContent('award seats are not confirmed');
   const expected = request();
   cleanup();

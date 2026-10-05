@@ -26,6 +26,7 @@ import { buildAirportIndex } from '../lib/airport-index.ts';
 import { useLocale } from '../i18n/use-locale.ts';
 
 import { FlightDatesPanel } from './FlightDatesPanel.tsx';
+import { defaultScheduleServiceBase } from '../lib/schedule-service-base.ts';
 
 export interface ExplorerCarrier {
   readonly code: string;
@@ -54,6 +55,7 @@ interface DestinationsPanelProps {
     cabin?: CabinId;
     stopover?: boolean;
     manual?: boolean;
+    carrierAssumed?: boolean;
   }) => void;
   readonly onAddSurface: (from: string, to: string, stopover?: boolean) => void;
   readonly onMapGuideChange?: (guide: NextLegMapGuide | null) => void;
@@ -180,7 +182,9 @@ export function DestinationsPanel({
       })
       .sort((a, b) => a.iata.localeCompare(b.iata));
   }, [activeOrigin, airports, airportsByIata, lookupAirport]);
-  const liveBase = liveApiBase === undefined ? '/api' : liveApiBase;
+  const liveBase = liveApiBase === undefined
+    ? defaultScheduleServiceBase(import.meta.env.VITE_SCHEDULE_API_BASE, window.location.hostname)
+    : liveApiBase;
   const [liveRouteState, setLiveRouteState] = useState<{ origin: string; response: LiveRouteResponse | null }>({ origin: '', response: null });
   useEffect(() => {
     if (!liveBase || !activeOrigin || !attachable) return;
@@ -613,6 +617,23 @@ export function DestinationsPanel({
                       <small>{liveCarrierNote}</small>
                       <em>{locale === 'zh-TW' ? '查日期與實際航班' : 'Check dates & actual flights'}</em>
                     </button>
+                  ), (
+                    <button
+                      key={`${option.carrier}-route-only`}
+                      type="button"
+                      className={`rtw-next-flight-unknown${activeDraft?.carrier === option.carrier && !activeDraft.flightNumber ? ' selected' : ''}`}
+                      data-select-flight-later={`${option.carrier}:${activeOrigin}-${destination.iata}`}
+                      aria-pressed={activeDraft?.carrier === option.carrier && !activeDraft.flightNumber}
+                      onClick={() => {
+                        setFlightDraft({ origin: activeOrigin, to: destination.iata, carrier: option.carrier });
+                        setFlightTarget(null);
+                      }}
+                    >
+                      <strong>{option.carrier}</strong>
+                      <span>{carrierName(option.carrier)}</span>
+                      <small>{t('rtw.discovery.providerListedRouteNote')}</small>
+                      <em>{t('rtw.discovery.addUndatedRoute')}</em>
+                    </button>
                   )];
                 }
                 return [...candidateCards, ...candidateOverflow, (
@@ -757,6 +778,7 @@ export function DestinationsPanel({
                       ...(activeDraft.flightNumber ? { flightNumber: activeDraft.flightNumber } : {}),
                       ...(activeDraft.cabin ? { cabin: activeDraft.cabin } : {}),
                       ...(activeDraft.stopover !== undefined ? { stopover: activeDraft.stopover } : {}),
+                      carrierAssumed: true,
                     });
                     chooseDestination(null);
                     setQueryState({ origin: activeOrigin, value: '' });

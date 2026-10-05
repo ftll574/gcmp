@@ -8,7 +8,7 @@ import { App } from '../../src/App.tsx';
 import { parseShareUrl } from '../../src/lib/url-schema.ts';
 import { OfficialScheduleCatalogSchema } from '../../src/lib/schemas/published-schedules.ts';
 
-const NOW = Date.parse('2026-09-05T14:00:00Z');
+const NOW = Date.parse('2026-09-10T14:00:00Z');
 const NH = new Set(['NH']);
 const BR = 'br-infinity-star-alliance-world-travel-award';
 const officialSchedules = OfficialScheduleCatalogSchema.parse(
@@ -23,22 +23,27 @@ afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.unstubAllGlobals(); vi.uns
 
 function mountPanel(from = 'NRT', to = 'BRU') {
   const onChoose = vi.fn();
-  render(<FlightDatesPanel from={from} to={to} initialDate="2026-09-07" carriers={NH} schedules={[]} officialSchedules={officialSchedules} onChoose={onChoose} onClose={vi.fn()} />);
+  const carriers = from === 'TPE' && to === 'NRT' ? new Set(['BR']) : NH;
+  render(<FlightDatesPanel from={from} to={to} initialDate={from === 'TPE' ? '2026-10-31' : '2026-09-07'} carriers={carriers} schedules={[]} officialSchedules={officialSchedules} onChoose={onChoose} onClose={vi.fn()} />);
   return onChoose;
 }
 function control(selector: string): HTMLElement {
   const element = document.querySelector<HTMLElement>(selector); if (!element) throw new Error(selector); return element;
 }
-test('a real official timetable supplies date-only flights without a gateway, key or synthetic payload', async () => {
+test('static deployment explains date lookup is unavailable and official fallback preserves unknown dates', async () => {
   const fetchImpl = vi.fn(); vi.stubGlobal('fetch', fetchImpl);
-  const onChoose = mountPanel();
+  const onChoose = mountPanel('TPE', 'NRT');
+  expect(screen.getByText(/This static site has no date lookup service/)).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: 'Next month' }));
   fireEvent.click(screen.getByRole('button', { name: 'Query this month' }));
-  await waitFor(() => expect(control('[data-flight-date="2026-09-07"]')).toHaveAttribute('data-state', 'published'));
-  fireEvent.click(control('[data-flight-date="2026-09-07"]'));
-  expect(control('[data-published-flight="NH231"]')).toHaveTextContent('Time not published');
-  expect(control('[data-published-flight="NH231"]')).not.toHaveTextContent('00:00');
-  fireEvent.click(control('[data-choose-flight="NH231:2026-09-07"]'));
-  expect(onChoose).toHaveBeenCalledWith(expect.objectContaining({ carrier: 'NH', flightNumber: '231', date: '2026-09-07' }));
+  await waitFor(() => expect(control('[data-flight-date="2026-11-02"]')).toHaveAttribute('data-state', 'published'));
+  expect(control('[data-published-flight="BR198"]')).toHaveTextContent('2026-11-02 08:50 → 2026-11-02 12:55');
+  expect(within(control('[data-published-flight="BR198"]')).getByRole('link')).toHaveAttribute('href', expect.stringContaining('flight.info/BR198'));
+  expect(onChoose).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole('button', { name: 'Previous month' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Query this month' }));
+  await waitFor(() => expect(control('[data-flight-date="2026-10-31"]')).toHaveAttribute('data-state', 'unknown'));
+  expect(document.querySelectorAll('[data-flight-date][data-state="none"]')).toHaveLength(0);
   expect(fetchImpl).not.toHaveBeenCalled();
 });
 test('unlisted weekday remains unknown, not route-wide no-flight', async () => {

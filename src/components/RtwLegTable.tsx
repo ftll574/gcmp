@@ -92,6 +92,7 @@ export function RtwLegTable({
                     <span className="rtw-leg-route">
                       {from.iata} → {to.iata}
                     </span>
+                    {flight?.carrierAssumed && <small className="rtw-flight-reference is-assumed">{t('rtw.legChip.assumedCarrier')}</small>}
                     {flight?.flightNumber && <small className="rtw-flight-reference" data-flight-number={`${flight.operatingCarrier}${flight.flightNumber}`}>
                       {flight.operatingCarrier}{flight.flightNumber} · {t('flights.savedReference')}
                     </small>}

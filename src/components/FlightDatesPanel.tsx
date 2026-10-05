@@ -200,7 +200,7 @@ export function FlightDatesPanel({
       )}
       <p className="flight-dates-note">{t('flights.disclaimer')}</p>
       <p className="flight-dates-note">{t('flights.scope')}</p>
-      {!base && <p className="flight-dates-notice" role="status">{t(hasOfficialPair ? 'flights.publicationOnly' : 'flights.unconfigured')}</p>}
+      {!base && <p className="flight-dates-notice" role="status">{t(hasOfficialPair ? 'flights.publicationOnly' : 'flights.staticUnavailable')}</p>}
       <div className="flight-dates-month">
         <button type="button" aria-label={t('rtw.schedule.prevMonth')} onClick={() => changeMonth(-1)}>‹</button>
         <strong>{monthLabel}</strong>

@@ -156,6 +156,28 @@ describe('validateRtwRoute', () => {
     expect(result.summary.ineligibleLegIndexes).toEqual([1]);
   });
 
+  test('keeps assumed itinerary carrier eligibility conditional until operator verification', () => {
+    const result = validate('br-infinity-star-alliance-world-travel-award', [
+      { from: 'TPE', to: 'NRT', operatingCarrier: 'BR', carrierAssumed: true },
+    ]);
+    expect(result.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({ ruleId: 'airline-eligibility', severity: 'unknown', messageKey: 'rtw.findings.airlineEligibilityConditional' }),
+    ]));
+    expect(result.summary.assumedCarrierLegIndexes).toEqual([0]);
+    expect(result.summary.ineligibleLegIndexes).toEqual([]);
+  });
+
+  test('does not pass a multi-carrier requirement using assumed operators alone', () => {
+    const result = validate('cx-asia-miles-oneworld-multi-carrier-award', [
+      { from: 'TPE', to: 'HKG', operatingCarrier: 'CX', carrierAssumed: true },
+      { from: 'HKG', to: 'SIN', operatingCarrier: 'AY', carrierAssumed: true },
+      { from: 'SIN', to: 'KUL', operatingCarrier: 'BA', carrierAssumed: true },
+    ]);
+    expect(result.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({ ruleId: 'carrier-combination', severity: 'unknown', messageKey: 'rtw.findings.carrierCombinationConditional' }),
+    ]));
+  });
+
   test('fails RTW product when required Atlantic crossing is missing', () => {
     const legs: Leg[] = [
       { from: 'TPE', to: 'NRT', operatingCarrier: 'JL' },
@@ -1442,6 +1464,7 @@ describe('schedule-day-mismatch (flight-schedule-model S4)', () => {
       schedules: scheduleEntries,
     });
     expect(Object.keys(result.summary).sort()).toEqual([
+      'assumedCarrierLegIndexes',
       'continentsVisited',
       'direction',
       'flightSegments',

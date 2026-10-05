@@ -38,6 +38,8 @@ export interface RtwValidationSummary {
   readonly unknownStopovers: number;
   readonly totalDistanceMiles: number;
   readonly ineligibleLegIndexes: ReadonlyArray<number>;
+  /** Legs whose itinerary carrier is provisional and must be verified. */
+  readonly assumedCarrierLegIndexes: ReadonlyArray<number>;
   /**
    * Unique continents in first-visit itinerary order (docs/decisions/
    * continents-visited.md). Surface sectors count at both endpoints;
@@ -751,32 +753,51 @@ export function validateRtwRoute(
   }
 
   const members = activeAllianceMembers(ruleSet, inputs.allianceCatalog);
+  const assumedCarrierLegIndexes = legs
+    .map((leg, index) => ({ leg, index }))
+    .filter((item): item is { leg: FlightLeg; index: number } => isFlightLeg(item.leg))
+    .filter(({ leg }) => leg.carrierAssumed === true)
+    .map(({ index }) => index);
   const ineligibleLegIndexes = legs
     .map((leg, index) => ({ leg, index }))
     .filter((item): item is { leg: FlightLeg; index: number } => isFlightLeg(item.leg))
-    .filter(({ leg }) => !members.has(leg.operatingCarrier))
+    .filter(({ leg }) => leg.carrierAssumed !== true && !members.has(leg.operatingCarrier))
     .map(({ index }) => index);
 
-  const flownCarriers = new Set(
+  const confirmedFlownCarriers = new Set(
     legs
       .filter(isFlightLeg)
+      .filter((leg) => leg.carrierAssumed !== true)
       .map((leg) => leg.operatingCarrier),
   );
+  const assumedFlownCarriers = new Set(
+    legs
+      .filter(isFlightLeg)
+      .filter((leg) => leg.carrierAssumed === true)
+      .map((leg) => leg.operatingCarrier),
+  );
+  const flownCarriers = new Set([...confirmedFlownCarriers, ...assumedFlownCarriers]);
 
   findings.push(localizedFinding(
     {
       ruleId: 'airline-eligibility',
-      severity: ineligibleLegIndexes.length === 0 ? 'pass' : 'fail',
+      severity: ineligibleLegIndexes.length > 0 ? 'fail' : assumedCarrierLegIndexes.length > 0 ? 'unknown' : 'pass',
       message:
-        ineligibleLegIndexes.length === 0
-          ? 'All operating carriers match this product eligibility rule.'
-          : 'One or more operating carriers are not eligible for this product.',
-      ...(ineligibleLegIndexes.length > 0 ? { affectedLegIndexes: ineligibleLegIndexes } : {}),
+        ineligibleLegIndexes.length > 0
+          ? 'One or more operating carriers are not eligible for this product.'
+          : assumedCarrierLegIndexes.length > 0
+            ? 'Carrier eligibility is conditional until assumed itinerary carriers are verified.'
+            : 'All operating carriers match this product eligibility rule.',
+      ...((ineligibleLegIndexes.length > 0 || assumedCarrierLegIndexes.length > 0)
+        ? { affectedLegIndexes: [...ineligibleLegIndexes, ...assumedCarrierLegIndexes] }
+        : {}),
       ...(sourceUrl ? { sourceUrl } : {}),
     },
-    ineligibleLegIndexes.length === 0
-      ? 'rtw.findings.airlineEligibilityPass'
-      : 'rtw.findings.airlineEligibilityFail',
+    ineligibleLegIndexes.length > 0
+      ? 'rtw.findings.airlineEligibilityFail'
+      : assumedCarrierLegIndexes.length > 0
+        ? 'rtw.findings.airlineEligibilityConditional'
+        : 'rtw.findings.airlineEligibilityPass',
   ));
 
   // Network-gap watchlist warnings (docs/calibration-set.md addendum A2):
@@ -1254,22 +1275,39 @@ export function validateRtwRoute(
 
   if (ruleSet.carrierCombination) {
     const { triggerCarrier, minCarriersWithTrigger, minCarriersWithoutTrigger } = ruleSet.carrierCombination;
-    const required = flownCarriers.has(triggerCarrier)
+    const knownTrigger = confirmedFlownCarriers.has(triggerCarrier);
+    const possibleTrigger = knownTrigger || assumedFlownCarriers.size > 0;
+    const required = knownTrigger
       ? minCarriersWithTrigger
       : minCarriersWithoutTrigger;
+    const maximumRequired = possibleTrigger ? minCarriersWithTrigger : required;
+    const definitePass = confirmedFlownCarriers.size >= maximumRequired;
+    const possiblePass = flownCarriers.size >= required;
+    const carrierCombinationSeverity = definitePass
+      ? 'pass'
+      : possiblePass && assumedCarrierLegIndexes.length > 0
+        ? 'unknown'
+        : 'fail';
     findings.push(localizedFinding(
       {
         ruleId: 'carrier-combination',
-        severity: flownCarriers.size >= required ? 'pass' : 'fail',
+        severity: carrierCombinationSeverity,
         message:
-          flownCarriers.size >= required
-            ? `Route uses ${flownCarriers.size} eligible carrier(s), satisfying this multi-carrier rule.`
-            : `Route uses ${flownCarriers.size} carrier(s); this product requires at least ${required}.`,
+          carrierCombinationSeverity === 'pass'
+            ? `Route uses ${confirmedFlownCarriers.size} verified carrier(s), satisfying this multi-carrier rule.`
+            : carrierCombinationSeverity === 'unknown'
+              ? 'Multi-carrier eligibility depends on assumed carriers; verify the operators to complete this check.'
+              : `Route uses ${flownCarriers.size} carrier(s); this product requires at least ${required}.`,
+        ...(carrierCombinationSeverity === 'unknown' && assumedCarrierLegIndexes.length > 0
+          ? { affectedLegIndexes: assumedCarrierLegIndexes }
+          : {}),
         ...(sourceUrl ? { sourceUrl } : {}),
       },
-      flownCarriers.size >= required
+      carrierCombinationSeverity === 'pass'
         ? 'rtw.findings.carrierCombinationPass'
-        : 'rtw.findings.carrierCombinationFail',
+        : carrierCombinationSeverity === 'unknown'
+          ? 'rtw.findings.carrierCombinationConditional'
+          : 'rtw.findings.carrierCombinationFail',
       { count: flownCarriers.size, required },
     ));
   }
@@ -1407,6 +1445,7 @@ export function validateRtwRoute(
       unknownStopovers: unknownStops,
       totalDistanceMiles: miles,
       ineligibleLegIndexes,
+      assumedCarrierLegIndexes,
       continentsVisited: visitedContinents,
       oceansCrossed: crossedOceans,
       direction,

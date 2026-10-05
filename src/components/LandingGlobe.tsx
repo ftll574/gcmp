@@ -664,6 +664,7 @@ export function LandingGlobe({ catalog, onPlan }: Props): React.ReactElement {
   const description = locale === 'zh-TW' ? active.descriptionZh : active.descriptionEn;
 
   return (
+    <>
     <div
       ref={containerRef}
       className={`landing-three-card alliance-${active.alliance}${hovered ? ' has-hover' : ''}${dragging ? ' is-dragging' : ''}`}
@@ -725,19 +726,6 @@ export function LandingGlobe({ catalog, onPlan }: Props): React.ReactElement {
         ))}
       </div>
 
-      <div className="landing-showcase-switcher" role="group" aria-label={locale === 'zh-TW' ? '經典航線切換' : 'Route showcase switcher'}>
-        {catalog.showcases.map((showcase, index) => (
-          <button
-            type="button"
-            key={showcase.id}
-            aria-pressed={index === activeIndex}
-            onClick={() => setActiveIndex(index)}
-          >
-            {locale === 'zh-TW' ? showcase.titleZh : showcase.titleEn}
-          </button>
-        ))}
-      </div>
-
       <div className="landing-three-description">
         <p>{description}</p>
         <a href={siteViewHref('planner')} onClick={(event) => {
@@ -747,5 +735,18 @@ export function LandingGlobe({ catalog, onPlan }: Props): React.ReactElement {
         }}>{locale === 'zh-TW' ? '用這條路線開始規劃' : 'Plan from this route'}</a>
       </div>
     </div>
+    <div className={`landing-showcase-switcher alliance-${active.alliance}`} role="group" aria-label={locale === 'zh-TW' ? '經典航線切換' : 'Route showcase switcher'}>
+      {catalog.showcases.map((showcase, index) => (
+        <button
+          type="button"
+          key={showcase.id}
+          aria-pressed={index === activeIndex}
+          onClick={() => setActiveIndex(index)}
+        >
+          {locale === 'zh-TW' ? showcase.titleZh : showcase.titleEn}
+        </button>
+      ))}
+    </div>
+    </>
   );
 }

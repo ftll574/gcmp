@@ -146,6 +146,8 @@ export interface FlightLeg extends BaseLeg {
   readonly operatingCarrier: AirlineIata;
   /** Optional qualified operator identity where an IATA code is shared. */
   readonly operatingCarrierEntityKey?: string;
+  /** The selected carrier is a planning assumption, not verified operator evidence. */
+  readonly carrierAssumed?: boolean;
   /** Operating flight-number suffix, e.g. 473 for CX473. A saved reference,
    * not a persistent claim of current schedule/seat availability. */
   readonly flightNumber?: string;

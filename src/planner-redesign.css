@@ -152,7 +152,7 @@
     cursor: pointer;
   }
   .app.mobile .mobile-planner-nav button:hover { background: #e8eee7; }
-  .app.mobile .mobile-planner-nav button:focus-visible { outline: 3px solid #b34937; outline-offset: 2px; }
+  .app.mobile .mobile-planner-nav button:focus-visible { outline: 3px solid #a65f45; outline-offset: 2px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

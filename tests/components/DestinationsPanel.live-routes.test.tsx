@@ -85,7 +85,7 @@ test('current EVA TPE-BKK route is upgraded by official evidence and exposes rea
   expect(fetchImpl).toHaveBeenCalledTimes(2);
 });
 
-test('a genuinely live-only BR route still cannot be persisted before operating identity is verified', async () => {
+test('a provider-listed route can be drafted without a date while operator uncertainty remains visible', async () => {
   const fetchImpl = vi.fn(async (input: RequestInfo | URL) => {
     const url = new URL(String(input), 'http://localhost');
     if (url.pathname === '/api/schedules/routes') {
@@ -120,9 +120,16 @@ test('a genuinely live-only BR route still cannot be persisted before operating 
   await waitFor(() => expect(document.querySelector('[data-select-route="BKK-TPE"]')).toBeInTheDocument());
   fireEvent.click(document.querySelector('[data-select-route="BKK-TPE"]')!);
   expect(document.querySelector('[data-verify-live-carrier="BR:BKK-TPE"]')).toBeInTheDocument();
-  expect(document.querySelector('[data-select-flight-later="BR:BKK-TPE"]')).toBeNull();
-  expect(document.querySelector('[data-add-draft="BR:BKK-TPE"]')).toBeNull();
-  expect(onAddPair).not.toHaveBeenCalled();
+  const routeOnly = document.querySelector<HTMLButtonElement>('[data-select-flight-later="BR:BKK-TPE"]');
+  expect(routeOnly).toBeInTheDocument();
+  expect(routeOnly).toHaveTextContent('This draft assumes this airline');
+  expect(routeOnly).toHaveTextContent('Use this airline for an undated draft');
+  fireEvent.click(routeOnly!);
+  const addDraft = document.querySelector<HTMLButtonElement>('[data-add-draft="BR:BKK-TPE"]');
+  expect(addDraft).toBeInTheDocument();
+  fireEvent.click(addDraft!);
+  expect(onAddPair).toHaveBeenLastCalledWith('BKK', 'TPE', 'BR', { carrierAssumed: true });
+  expect(document.querySelector('[data-add-selected-flight]')).toBeNull();
 });
 
 test('static confirmed routes remain available when live discovery is unavailable', async () => {

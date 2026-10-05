@@ -112,6 +112,23 @@ test('fresh visits land on the editorial homepage before entering the planner', 
   expect(new URLSearchParams(window.location.search).get('view')).toBe('planner');
 });
 
+test('entering the planner from a long mobile gate resets the document scroll to the editor', async () => {
+  Object.defineProperty(window, 'innerWidth', { configurable: true, value: 500 });
+  render(<SiteApp />);
+  fireEvent.click(screen.getByRole('link', { name: '開始規劃' }));
+  await waitFor(() => expect(document.querySelector('.rtw-gate')).not.toBeNull(), { timeout: 5_000 });
+  const scrollTo = vi.mocked(window.scrollTo);
+  scrollTo.mockClear();
+  fireEvent.click(document.querySelector<HTMLButtonElement>('[data-alliance="star"]')!);
+  await waitFor(() => expect(document.querySelector('[data-product-id="br-infinity-star-alliance-world-travel-award"]')).toBeInTheDocument());
+  const plan = document.querySelector<HTMLButtonElement>('[data-product-id="br-infinity-star-alliance-world-travel-award"]')!;
+  fireEvent.click(plan);
+  fireEvent.click(screen.getByRole('button', { name: /使用這個方案進入主控台/ }));
+  await waitFor(() => expect(document.querySelector('#route-editor')).toBeInTheDocument(), { timeout: 5_000 });
+  await waitFor(() => expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'auto' }));
+  await waitFor(() => expect(document.activeElement).toBe(document.querySelector('.autocomplete-input')));
+});
+
 test('homepage showcases can rotate without loading planner data', async () => {
   render(<SiteApp />);
   await screen.findByText('BR184');
