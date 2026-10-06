@@ -49,6 +49,8 @@ const CURATED_INPUTS = new Set([
   'route-network/validated-static-current.json',
   'route-network/current-corrections.json',
   'route-network/flight-numbers-current.json',
+  'route-network/avinor-osl-public-20261006.json',
+  'route-network/avinor-osl-public-20261006.xml',
   'route-network/flightsfrom-flight-numbers-20260909.json',
   'route-network/mrairspace-flight-number-candidates.json',
   'route-network/mrairspace-flight-number-candidates-2026-Q2.json',
@@ -76,6 +78,12 @@ const PRODUCERS: Record<string, string> = {
 /** License / source descriptor by directory family. */
 function describe(path: string): { source: string; license: DataLicense } {
   if (path.startsWith('route-network/')) {
+    if (path.startsWith('route-network/avinor-osl-public-20261006.')) {
+      return {
+        source: 'Avinor XML Public OSL snapshot; one 144-hour response with original bytes and exact source/freshness metadata bundled alongside the accepted rows',
+        license: 'site-terms',
+      };
+    }
     if (path === 'route-network/caa-weekly-schedule-tier-20261006.json') {
       return {
         source: 'Taiwan Civil Aviation Administration 2026 domestic/international published scheduled timetables (datasets 6066 and 9973)',
@@ -84,7 +92,7 @@ function describe(path: string): { source: string; license: DataLicense } {
     }
     if (path.includes('runtime')) {
       return {
-        source: 'curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)',
+        source: 'curated + provider-listed route-network layers and a dated Avinor public snapshot (see THIRD_PARTY_NOTICES.md)',
         license: 'ODbL-1.0',
       };
     }
@@ -240,6 +248,10 @@ function build(): void {
       inputs = ['route-network/runtime-current.json'];
     }
     const isCaaWeeklyTier = path === 'route-network/caa-weekly-schedule-tier-20261006.json';
+    const isAvinorSnapshot = path === 'route-network/avinor-osl-public-20261006.json';
+    const isAvinorXml = path === 'route-network/avinor-osl-public-20261006.xml';
+    const isRuntimeNetwork = path === 'route-network/runtime-current.json';
+    const isRuntimeMeta = path === 'route-network/runtime-current.meta.json';
     const previous = existingByPath.get(path);
     datasets.push({
       id: path.replace(/\.json$/, '').replace(/\//g, '.'),
@@ -247,16 +259,26 @@ function build(): void {
       kind: isCaaWeeklyTier ? kind : previous?.kind ?? kind,
       producer: isCaaWeeklyTier ? producer : previous?.producer ?? producer,
       inputs: isCaaWeeklyTier ? inputs : previous?.inputs ?? inputs,
-      source: isCaaWeeklyTier ? source : previous?.source ?? source,
-      license: isCaaWeeklyTier ? license : previous?.license ?? license,
+      source: isCaaWeeklyTier || isAvinorSnapshot || isAvinorXml || isRuntimeNetwork || isRuntimeMeta ? source : previous?.source ?? source,
+      license: isCaaWeeklyTier || isAvinorSnapshot || isAvinorXml || isRuntimeNetwork || isRuntimeMeta ? license : previous?.license ?? license,
       attribution: isCaaWeeklyTier
         ? 'Taiwan Civil Aviation Administration (交通部民用航空局)'
-        : previous?.attribution ?? null,
-      schema: isCaaWeeklyTier ? 'src/lib/schemas/caa-weekly-schedule-tier.ts' : previous?.schema ?? null,
+        : isAvinorSnapshot || isAvinorXml ? 'Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app' : previous?.attribution ?? null,
+      schema: isCaaWeeklyTier ? 'src/lib/schemas/caa-weekly-schedule-tier.ts'
+        : isAvinorSnapshot ? 'src/lib/schemas/avinor-xml-public.ts'
+          : isAvinorXml ? null : previous?.schema ?? null,
       bytes,
       sha256,
       notes: isCaaWeeklyTier
         ? '488 schedule-listed carrier-number-direction associations as of 2026-10-06; operator identity unknown; no actual-operation, bookability, nonstop, selectable-flight or award-eligibility claim. Source SHA-256 values are included in the asset.'
+        : isAvinorSnapshot
+          ? '412 exact candidate-key matches for 130 directed routes using Avinor OperatingAirlineIata, full FlightId and direction fields. One OSL request retrieved 2026-10-06; six-day scope expires at 2026-10-12T19:47:47Z. Full original XML is bundled; visible linked attribution is required by source terms. Blank via_airport means no intermediate airport was reported; it does not prove physical nonstop service. A schedule row is not actual-operation, recurrence, award-seat or bookability evidence.'
+          : isAvinorXml
+            ? 'Original 849,172-byte Avinor XML Public response. The full SHA-256 and retrieval timestamp are in the matching JSON provenance asset.'
+            : isRuntimeNetwork
+              ? 'Runtime route graph includes 412 time-bound Avinor designator/direction associations; freshness is guarded in the UI until 2026-10-12T19:47:47Z. The separate CAA schedule tier remains unchanged.'
+              : isRuntimeMeta
+                ? 'Build metadata pins the Avinor source JSON, original XML, route-network inputs, and output hash.'
         : previous?.notes ?? '',
     });
   }

@@ -1,8 +1,9 @@
 import { airportIdentityKey } from '../airport-identity.ts';
 import type { ContinentId } from '../schemas/country-continent.ts';
-import type { RouteNetworkCatalog, RouteNetworkEntry } from '../schemas/route-network.ts';
+import type { RouteNetworkCatalog } from '../schemas/route-network.ts';
 import type { Airport } from '../types.ts';
 import { carrierIdentityKey, carrierEntityLabel, carrierRouteKey } from '../carrier-identity.ts';
+import { routeFlightNumberFreshness } from './time-bound-flight-numbers.ts';
 
 export type RouteLibraryContinent = ContinentId | 'unmapped';
 
@@ -58,14 +59,12 @@ export interface BuildRouteLibraryOverviewInput {
   readonly carrierNames?: ReadonlyMap<string, string> | null | undefined;
   readonly countryContinents?: ReadonlyMap<string, ContinentId> | null | undefined;
   readonly airportContinentOverrides?: ReadonlyMap<string, ContinentId> | null | undefined;
-}
-
-function routeIsConfirmed(route: RouteNetworkEntry): boolean {
-  return (route.flightNumbers?.length ?? 0) > 0;
+  readonly evidenceNow?: number | undefined;
 }
 
 export function buildRouteLibraryOverview(input: BuildRouteLibraryOverviewInput): RouteLibraryOverviewModel {
   const routes = [...new Map(input.network.routes.filter((route) => route.status === 'published' && input.memberCodes.has(route.carrier)).map(route => [carrierRouteKey(route, ...route.pair), route])).values()];
+  const sourceById = new Map(input.network.sources.map((source) => [source.id, source] as const));
   const airportsUsed = new Set<string>();
   const carrierCounts = new Map<string, { routes: number; confirmed: number; displayCarrier: string; displayName: string }>();
   const hubDegree = new Map<string, number>();
@@ -92,13 +91,14 @@ export function buildRouteLibraryOverview(input: BuildRouteLibraryOverviewInput)
     const key = carrierIdentityKey(route);
     const carrier = carrierCounts.get(key) ?? { routes: 0, confirmed: 0, displayCarrier: route.carrier, displayName: carrierEntityLabel(route) };
     carrier.routes += 1;
-    if (routeIsConfirmed(route)) carrier.confirmed += 1;
+    const freshNumbers = routeFlightNumberFreshness(route, sourceById, input.evidenceNow).current;
+    if (freshNumbers.length > 0) carrier.confirmed += 1;
     carrierCounts.set(key, carrier);
     if (route.carrierIdentity === 'provider-listed') providerListedCount += 1;
     else if (route.carrierIdentity === 'operating') operatingCount += 1;
     else unknownIdentityCount += 1;
-    if (routeIsConfirmed(route)) confirmedNumberCount += 1;
-    else if ((route.flightNumberCandidates?.length ?? 0) > 0) candidateOnlyCount += 1;
+    if (freshNumbers.length > 0) confirmedNumberCount += 1;
+    else if (routeFlightNumberFreshness(route, sourceById, input.evidenceNow).candidates.length > 0) candidateOnlyCount += 1;
     const continent = continentOf(from);
     continentCounts.set(continent, (continentCounts.get(continent) ?? 0) + 1);
   }

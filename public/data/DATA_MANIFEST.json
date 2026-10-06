@@ -4902,6 +4902,34 @@
       "notes": ""
     },
     {
+      "id": "route-network.avinor-osl-public-20261006",
+      "path": "route-network/avinor-osl-public-20261006.json",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Avinor XML Public OSL snapshot; one 144-hour response with original bytes and exact source/freshness metadata bundled alongside the accepted rows",
+      "license": "site-terms",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app",
+      "schema": "src/lib/schemas/avinor-xml-public.ts",
+      "bytes": 1374361,
+      "sha256": "215338835fe04829",
+      "notes": "412 exact candidate-key matches for 130 directed routes using Avinor OperatingAirlineIata, full FlightId and direction fields. One OSL request retrieved 2026-10-06; six-day scope expires at 2026-10-12T19:47:47Z. Full original XML is bundled; visible linked attribution is required by source terms. Blank via_airport means no intermediate airport was reported; it does not prove physical nonstop service. A schedule row is not actual-operation, recurrence, award-seat or bookability evidence."
+    },
+    {
+      "id": "route-network.avinor-osl-public-20261006.xml",
+      "path": "route-network/avinor-osl-public-20261006.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Avinor XML Public OSL snapshot; one 144-hour response with original bytes and exact source/freshness metadata bundled alongside the accepted rows",
+      "license": "site-terms",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app",
+      "schema": null,
+      "bytes": 849172,
+      "sha256": "78403435f3c31ae8",
+      "notes": "Original 849,172-byte Avinor XML Public response. The full SHA-256 and retrieval timestamp are in the matching JSON provenance asset."
+    },
+    {
       "id": "route-network.bts-marketing-current",
       "path": "route-network/bts-marketing-current.json",
       "kind": "input",
@@ -5084,8 +5112,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 18156,
-      "sha256": "ee30729c62ec21ec",
+      "bytes": 18157,
+      "sha256": "e8b88e01a1659b25",
       "notes": ""
     },
     {
@@ -5228,8 +5256,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 256293,
-      "sha256": "5c52db741d7636b7",
+      "bytes": 257575,
+      "sha256": "192f5a3d86f79c28",
       "notes": ""
     },
     {
@@ -5308,8 +5336,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 572379,
-      "sha256": "363f8a8435df1d43",
+      "bytes": 574952,
+      "sha256": "5e32a722748c8429",
       "notes": ""
     },
     {
@@ -5436,8 +5464,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 146612,
-      "sha256": "6ae46a70a5e433c1",
+      "bytes": 148032,
+      "sha256": "077fbd0d31f6b0b9",
       "notes": ""
     },
     {
@@ -5484,8 +5512,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 375460,
-      "sha256": "9ecd3a3a58abf027",
+      "bytes": 377634,
+      "sha256": "724c45d3a9fa2c56",
       "notes": ""
     },
     {
@@ -5708,8 +5736,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 2977,
-      "sha256": "70d36be0adfd77d3",
+      "bytes": 5681,
+      "sha256": "35f1c6712c7e1074",
       "notes": ""
     },
     {
@@ -5724,8 +5752,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1602,
-      "sha256": "7bca064586fa670a",
+      "bytes": 2462,
+      "sha256": "92e2e48c0334bd3b",
       "notes": ""
     },
     {
@@ -5740,8 +5768,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 11395,
-      "sha256": "858466e64f68cea5",
+      "bytes": 12301,
+      "sha256": "6d062af15a07376c",
       "notes": ""
     },
     {
@@ -6044,8 +6072,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 357000,
-      "sha256": "0fc01114a8ae4934",
+      "bytes": 358007,
+      "sha256": "d4d0e1b2ead0106d",
       "notes": ""
     },
     {
@@ -6156,8 +6184,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 268882,
-      "sha256": "d591cebd635284dd",
+      "bytes": 273548,
+      "sha256": "2ffed06a4196be31",
       "notes": ""
     },
     {
@@ -6204,8 +6232,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 948,
-      "sha256": "97c0d17fc02c4e09",
+      "bytes": 1763,
+      "sha256": "6f4a607668d90634",
       "notes": ""
     },
     {
@@ -6220,8 +6248,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 623230,
-      "sha256": "535c423cb052a39f",
+      "bytes": 629445,
+      "sha256": "58111c97fa184e48",
       "notes": ""
     },
     {
@@ -6252,8 +6280,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 192915,
-      "sha256": "950883adce53ad05",
+      "bytes": 194583,
+      "sha256": "094b49d6d65065bf",
       "notes": ""
     },
     {
@@ -6284,8 +6312,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 212755,
-      "sha256": "a6301fa67f69f459",
+      "bytes": 214177,
+      "sha256": "41f984235c47ca5c",
       "notes": ""
     },
     {
@@ -6476,8 +6504,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 183777,
-      "sha256": "c4b187c00820d836",
+      "bytes": 185197,
+      "sha256": "9d9b201039584e65",
       "notes": ""
     },
     {
@@ -6492,8 +6520,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 83938,
-      "sha256": "de7a0f28954d0baf",
+      "bytes": 84753,
+      "sha256": "39a16c5b90888ee1",
       "notes": ""
     },
     {
@@ -6588,8 +6616,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 275312,
-      "sha256": "98170d09d9245466",
+      "bytes": 277112,
+      "sha256": "4ceeba5a7ec15881",
       "notes": ""
     },
     {
@@ -6684,8 +6712,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 429075,
-      "sha256": "890d574cde07c43a",
+      "bytes": 518455,
+      "sha256": "2db274e932fee8c6",
       "notes": ""
     },
     {
@@ -6716,8 +6744,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 151297,
-      "sha256": "4f68751c8b18e0df",
+      "bytes": 153079,
+      "sha256": "3adb749f6a21fa5c",
       "notes": ""
     },
     {
@@ -6764,8 +6792,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 91371,
-      "sha256": "c2bf88cb3a8ec792",
+      "bytes": 92509,
+      "sha256": "bec4234611caf8fb",
       "notes": ""
     },
     {
@@ -6780,8 +6808,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 586358,
-      "sha256": "00f61dc4198b032a",
+      "bytes": 587642,
+      "sha256": "4e09084201715bd1",
       "notes": ""
     },
     {
@@ -6796,8 +6824,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 749603,
-      "sha256": "0de7c8ff02c3675e",
+      "bytes": 751449,
+      "sha256": "18b787f6ef2f386b",
       "notes": ""
     },
     {
@@ -6988,8 +7016,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 3114,
-      "sha256": "feb1ab0179675a89",
+      "bytes": 5451,
+      "sha256": "0f0570c278e0d236",
       "notes": ""
     },
     {
@@ -7109,13 +7137,13 @@
         "route-network/standing-current.json",
         "route-network/validated-static-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers and a dated Avinor public snapshot (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 16211157,
-      "sha256": "2bd353350db6d871",
-      "notes": ""
+      "bytes": 16326517,
+      "sha256": "fe8c3105e8c822b3",
+      "notes": "Runtime route graph includes 412 time-bound Avinor designator/direction associations; freshness is guarded in the UI until 2026-10-12T19:47:47Z. The separate CAA schedule tier remains unchanged."
     },
     {
       "id": "route-network.runtime-current.meta",
@@ -7138,13 +7166,13 @@
         "route-network/standing-current.json",
         "route-network/validated-static-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers and a dated Avinor public snapshot (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 9989,
-      "sha256": "9dcf5349e4c86d91",
-      "notes": ""
+      "bytes": 10389,
+      "sha256": "67b6ffadd84cb04d",
+      "notes": "Build metadata pins the Avinor source JSON, original XML, route-network inputs, and output hash."
     },
     {
       "id": "route-network.runtime-generated-2026-09",
@@ -7189,8 +7217,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1107493,
-      "sha256": "eba8f8504f45af1c",
+      "bytes": 1118915,
+      "sha256": "c89af7495d058cb8",
       "notes": ""
     },
     {
@@ -7205,8 +7233,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1097163,
-      "sha256": "173564d727a1f6c6",
+      "bytes": 1106108,
+      "sha256": "954709b4cc8106d4",
       "notes": ""
     },
     {
@@ -7221,8 +7249,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1406183,
-      "sha256": "275aa79426ff6098",
+      "bytes": 1412989,
+      "sha256": "4db8798d92d89943",
       "notes": ""
     },
     {
@@ -7237,8 +7265,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 977795,
-      "sha256": "1aa6cb24baa9a86f",
+      "bytes": 979733,
+      "sha256": "7bdc2a7b3f72d7f6",
       "notes": ""
     },
     {
@@ -7253,8 +7281,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 297531,
-      "sha256": "a6cca27e0153766a",
+      "bytes": 299736,
+      "sha256": "9802ff1d048675cf",
       "notes": ""
     },
     {
@@ -7269,8 +7297,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 569772,
-      "sha256": "d49ad40094b7c4a8",
+      "bytes": 572436,
+      "sha256": "011cf1403589472d",
       "notes": ""
     },
     {
@@ -7285,8 +7313,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 800740,
-      "sha256": "9d791f9076309e47",
+      "bytes": 801673,
+      "sha256": "228ef23afe677891",
       "notes": ""
     },
     {
@@ -7301,8 +7329,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 743093,
-      "sha256": "1a3234280016c0ff",
+      "bytes": 745267,
+      "sha256": "b885e6545cf22d62",
       "notes": ""
     },
     {
@@ -7317,8 +7345,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 710392,
-      "sha256": "1f2db0287628b6f7",
+      "bytes": 711371,
+      "sha256": "59c768070a0bee2e",
       "notes": ""
     },
     {
@@ -7333,8 +7361,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 377117,
-      "sha256": "03581f076499c064",
+      "bytes": 377954,
+      "sha256": "d079d51f3c92c294",
       "notes": ""
     },
     {
@@ -7349,8 +7377,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 469880,
-      "sha256": "6991b1ebcf8dbf52",
+      "bytes": 473816,
+      "sha256": "9277463fa380f40f",
       "notes": ""
     },
     {
@@ -7365,8 +7393,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1102594,
-      "sha256": "cb60a77df08adeb2",
+      "bytes": 1107666,
+      "sha256": "37ebd112ab8d40a7",
       "notes": ""
     },
     {
@@ -7381,8 +7409,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1266053,
-      "sha256": "1ad47223bd057f65",
+      "bytes": 1268994,
+      "sha256": "c8ace4c013ff8468",
       "notes": ""
     },
     {
@@ -7397,8 +7425,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 461537,
-      "sha256": "d30861cc69ddb446",
+      "bytes": 462539,
+      "sha256": "81fe9824b0c540ae",
       "notes": ""
     },
     {
@@ -7413,8 +7441,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 631019,
-      "sha256": "8f0d9555d739f8e8",
+      "bytes": 690917,
+      "sha256": "eef0e9c9104f325d",
       "notes": ""
     },
     {
@@ -7429,8 +7457,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1039156,
-      "sha256": "7152ea9d785fe330",
+      "bytes": 1040089,
+      "sha256": "3c5d689c3bad8099",
       "notes": ""
     },
     {
@@ -7461,8 +7489,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 382572,
-      "sha256": "0dd519ed6ee0161f",
+      "bytes": 383505,
+      "sha256": "0834cfb568bff0ee",
       "notes": ""
     },
     {
@@ -7477,8 +7505,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1325858,
-      "sha256": "a7cb74ccbe80f017",
+      "bytes": 1330255,
+      "sha256": "11315fe0e533e061",
       "notes": ""
     },
     {
@@ -7493,8 +7521,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 680486,
-      "sha256": "d5deef5fc4587dce",
+      "bytes": 688245,
+      "sha256": "f30e5bad0a3ad0db",
       "notes": ""
     },
     {
@@ -7525,8 +7553,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 243004,
-      "sha256": "076149eb43a617ae",
+      "bytes": 244051,
+      "sha256": "2bbec4a8ede1018b",
       "notes": ""
     },
     {
@@ -7541,8 +7569,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 212924,
-      "sha256": "95f9faac855dd391",
+      "bytes": 214219,
+      "sha256": "838cc7d9cde40745",
       "notes": ""
     },
     {
@@ -7589,8 +7617,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 192593,
-      "sha256": "9a957bdbbe186ec0",
+      "bytes": 193991,
+      "sha256": "ebf86da1295c9b35",
       "notes": ""
     },
     {
@@ -7730,7 +7758,7 @@
       "attribution": null,
       "schema": null,
       "bytes": 24356,
-      "sha256": "3223aaf5248dba8e",
+      "sha256": "4efa9f29877e66a1",
       "notes": ""
     },
     {

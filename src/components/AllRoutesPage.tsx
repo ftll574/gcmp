@@ -16,6 +16,7 @@ import type { Airport } from '../lib/types.ts';
 import type { RouteLibraryData } from '../state/use-route-library-data.ts';
 import { RouteLibraryExplorer } from './RouteLibraryExplorer.tsx';
 import { CaaWeeklyScheduleTierDirectory } from './CaaWeeklyScheduleTierDirectory.tsx';
+import { AvinorPublicSnapshotDirectory } from './AvinorPublicSnapshotDirectory.tsx';
 import { SiteHeader, type SiteView } from './SiteHeader.tsx';
 import { useLocale } from '../i18n/use-locale.ts';
 
@@ -33,7 +34,7 @@ const LazyRouteCatalogBrowserLoader = lazy(() =>
 interface Props {
   readonly data: RouteLibraryData;
   readonly onNavigate: (view: SiteView) => void;
-  readonly onPlanRoute: (route: { from: string; to: string; carrier: string; flightNumber?: string | undefined }) => void;
+  readonly onPlanRoute: (route: { from: string; to: string; carrier: string; flightNumber?: string | undefined; departsOn?: string | undefined }) => void;
 }
 
 function RouteNetworkLoading({
@@ -562,6 +563,7 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
               </section>}
             </section>
             <CaaWeeklyScheduleTierDirectory />
+            <AvinorPublicSnapshotDirectory />
           </>
         )}
       </main>

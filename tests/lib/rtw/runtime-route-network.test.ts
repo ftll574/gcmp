@@ -24,7 +24,14 @@ test('premerged runtime route network is current with every source layer', () =>
 
   expect(meta.version).toBe(1);
   expect(meta.confirmedOperatingRoutes + meta.providerListedRoutes + meta.unknownIdentityRoutes).toBe(meta.publishedRoutes);
-  const runtime = JSON.parse(readFileSync(`${ROOT}/runtime-current.json`, 'utf8')).routes as Array<{ status: string; carrierIdentity?: string; flightNumbers?: string[]; flightNumberCandidates?: string[] }>;
+  const runtime = JSON.parse(readFileSync(`${ROOT}/runtime-current.json`, 'utf8')).routes as Array<{
+    status: string;
+    carrierIdentity?: string;
+    flightNumbers?: string[];
+    flightNumberCandidates?: string[];
+    flightNumberSourceIds?: string[];
+    timeBoundFlightNumbers?: Array<{ flightNumber: string; sourceId: string }>;
+  }>;
   const published = runtime.filter((route) => route.status === 'published');
   expect(meta.confirmedOperatingRoutes).toBe(published.filter((route) => route.carrierIdentity === 'operating').length);
   expect(meta.providerListedRoutes).toBe(published.filter((route) => route.carrierIdentity === 'provider-listed').length);
@@ -48,7 +55,11 @@ test('premerged runtime route network is current with every source layer', () =>
     expect(shard.routes).toHaveLength(meta.originShards[letter]!.routes);
     expect(shard.routes.every((route) => route.pair[0].startsWith(letter))).toBe(true);
     for (const route of shard.routes) {
-      if ((route.flightNumbers?.length ?? 0) > 0) expect(route.flightNumberSourceIds?.length).toBeGreaterThan(0);
+      for (const number of route.flightNumbers ?? []) {
+        const timed = route.timeBoundFlightNumbers?.find((evidence) => evidence.flightNumber === number);
+        if (timed) expect(timed.sourceId).toBe('avinor-xml-public-osl-20261006');
+        else expect(route.flightNumberSourceIds?.length).toBeGreaterThan(0);
+      }
       if ((route.flightNumberCandidates?.length ?? 0) > 0) expect(route.flightNumberCandidateSourceIds?.length).toBeGreaterThan(0);
       if (route.status === 'published' && route.carrierIdentity !== 'operating' && route.routeEvidence !== 'official-directed') {
         expect((route.flightNumbers?.length ?? 0) + (route.flightNumberCandidates?.length ?? 0)).toBeGreaterThan(0);

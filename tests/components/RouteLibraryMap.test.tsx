@@ -26,7 +26,7 @@ function route(from: Airport, to: Airport, distanceNm: number): RouteLibraryRout
     from,
     to,
     distanceNm,
-    carriers: [{ carrier: 'BR', name: 'EVA Air', identity: 'operating', confirmedNumbers: ['BR001'], candidateNumbers: [], sources: [] }],
+    carriers: [{ carrier: 'BR', name: 'EVA Air', identity: 'operating', confirmedNumbers: ['BR001'], datedFlightNumbers: [], candidateNumbers: [], staleNumbers: [], sources: [], sourcePairs: [], registeredPlans: [] }],
   };
 }
 

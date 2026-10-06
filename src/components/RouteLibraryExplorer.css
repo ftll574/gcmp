@@ -39,6 +39,17 @@
 .route-carrier-card>header>span{border-radius:var(--radius-chip);font-size:11px}
 .route-carrier-numbers>span,.route-carrier-candidates>span{font-size:12px}
 .route-carrier-actions button{min-height:42px;border-radius:var(--radius-button);font-size:12px}
+.route-carrier-actions{display:grid;justify-items:start;gap:7px;min-width:0}
+.route-carrier-actions small,.route-avinor-attribution,.route-carrier-dated-flights{overflow-wrap:anywhere;word-break:break-word}
+.route-carrier-dated-flights{display:grid;gap:9px;min-width:0;padding:12px;border:1px solid var(--separator);border-radius:var(--radius-control);background:color-mix(in srgb,var(--secondary-system-background) 72%,transparent)}
+.route-carrier-dated-flights h4{margin:0;color:var(--label);font-size:12px}
+.route-carrier-dated-flights>ul,.route-carrier-dated-flights li>ul{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.route-carrier-dated-flights>ul>li{display:grid;gap:6px;min-width:0;padding:10px;border:1px solid var(--separator);border-radius:var(--radius-control);background:var(--system-background)}
+.route-carrier-dated-flights li>ul>li{display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-width:0;padding-top:6px;border-top:1px solid var(--separator)}
+.route-carrier-dated-flights time{min-width:0;color:var(--secondary-label);font:11px/1.4 var(--font-mono);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.route-carrier-dated-flights button{min-height:40px;max-width:100%;padding:8px 11px;border:1px solid var(--separator);border-radius:var(--radius-button);background:var(--secondary-system-background);color:var(--label);font:inherit;font-size:11px;text-align:left;white-space:normal;overflow-wrap:anywhere;cursor:pointer}
+.route-carrier-dated-flights small,.route-avinor-attribution{color:var(--secondary-label);font-size:11px;line-height:1.55}
+.route-avinor-attribution{min-width:0;max-width:100%}
 .entity-map-loading{display:block;color:var(--secondary-label);font-size:12px;text-align:center}
 .entity-map-preview{position:absolute;inset:0;width:100%;height:100%;min-height:0!important;cursor:default!important;touch-action:auto!important;user-select:none;background:radial-gradient(circle at 58% 42%,color-mix(in srgb,var(--tint) 10%,transparent),transparent 28%)}
 .entity-map-preview-layer{position:absolute;z-index:20;inset:0;overflow:hidden;border-radius:inherit;background:radial-gradient(circle at 55% 45%,rgba(58,131,109,.11),transparent 24%),linear-gradient(150deg,#edf2ee,#e2e9e4);pointer-events:none}

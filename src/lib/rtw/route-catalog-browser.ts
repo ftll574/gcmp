@@ -77,12 +77,13 @@ export interface RouteCatalogSourceView {
   readonly label: string;
   readonly note?: string | undefined;
   readonly checkedOn?: string | undefined;
+  readonly freshUntilUTC?: string | undefined;
 }
 
 export interface RouteCatalogEvidenceView {
   readonly sourceReview?:SourceReviewWindow & {readonly state:SourceReviewState};
   readonly id: string;
-  readonly kind: 'route' | 'weekly-schedule' | 'official-service' | 'flight-number-reference' | 'flight-number-candidate';
+  readonly kind: 'route' | 'weekly-schedule' | 'official-service' | 'flight-number-reference' | 'flight-number-candidate' | 'time-bound-flight-number' | 'passed-flight-number' | 'expired-flight-number';
   readonly flightNumbers: ReadonlyArray<string>;
   readonly candidateFlightNumbers: ReadonlyArray<string>;
   readonly daysOfWeek: ReadonlyArray<number>;
@@ -92,6 +93,8 @@ export interface RouteCatalogEvidenceView {
   readonly departureTime?: string | undefined;
   readonly arrivalTime?: string | undefined;
   readonly arrivalDayOffset?: number | undefined;
+  readonly observedScheduleTimesUTC?: ReadonlyArray<string> | undefined;
+  readonly freshUntilUTC?: string | undefined;
   readonly source: RouteCatalogSourceView | null;
 }
 
@@ -300,15 +303,41 @@ export function buildRouteCatalogPairs(input: BuildRouteCatalogPairsInput): Read
         } : null,
       });
     }
+    const datedNumbers = new Set((route.timeBoundFlightNumbers ?? []).map((evidence) => evidence.flightNumber));
     for (const sourceId of route.flightNumberSourceIds ?? []) {
       const source = routeSources.get(sourceId);
+      const numbers = (route.flightNumbers ?? []).filter((number) => !datedNumbers.has(number));
+      if (numbers.length === 0) continue;
       pushEvidence(carrier, {
         id: `route-number:${route.carrier}:${route.pair[0]}-${route.pair[1]}:${sourceId}`,
         kind: 'flight-number-reference',
-        flightNumbers: route.flightNumbers ?? [],
+        flightNumbers: numbers,
         candidateFlightNumbers: [],
         daysOfWeek: [], addedDates: [],
-        source: source ? { url: source.url, label: source.note, note: source.note, checkedOn: source.checkedOn } : null,
+        source: source ? { url: source.url, label: source.note, note: source.note, checkedOn: source.checkedOn, freshUntilUTC: source.freshUntilUTC } : null,
+      });
+    }
+    for (const evidence of route.timeBoundFlightNumbers ?? []) {
+      const source = routeSources.get(evidence.sourceId);
+      const freshUntilUTC = source?.freshUntilUTC;
+      const now = input.evidenceNow ?? Date.now();
+      const cutoff = Date.parse(freshUntilUTC ?? '');
+      const sourceFresh = Number.isFinite(cutoff) && now < cutoff;
+      const futureOccurrence = evidence.occurrencesUTC.some((value) => now < Date.parse(value) && Date.parse(value) <= cutoff);
+      const fresh = sourceFresh && futureOccurrence;
+      const kind = fresh ? 'time-bound-flight-number' : sourceFresh ? 'passed-flight-number' : 'expired-flight-number';
+      const evidenceCarrier = carrierBucket(pair, carrierIdentityKey(route), route.carrierIdentity ?? 'unknown');
+      evidenceCarrier.entityKey = route.carrierEntityKey;
+      evidenceCarrier.name = route.carrierEntityName ?? route.carrier;
+      pushEvidence(evidenceCarrier, {
+        id: `time-bound-number:${route.carrier}:${route.pair[0]}-${route.pair[1]}:${evidence.sourceId}:${evidence.flightNumber}`,
+        kind,
+        flightNumbers: fresh ? [evidence.flightNumber] : [],
+        candidateFlightNumbers: fresh ? [] : [evidence.flightNumber],
+        daysOfWeek: [], addedDates: [],
+        observedScheduleTimesUTC: evidence.occurrencesUTC,
+        freshUntilUTC,
+        source: source ? { url: source.url, label: source.note, note: source.note, checkedOn: source.checkedOn, freshUntilUTC: source.freshUntilUTC } : null,
       });
     }
     for (const sourceId of route.flightNumberCandidateSourceIds ?? []) {

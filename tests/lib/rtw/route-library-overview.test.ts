@@ -7,6 +7,7 @@ import { CountryContinentCatalogSchema } from '../../../src/lib/schemas/country-
 import { parseRouteNetworkCatalog } from '../../../src/lib/schemas/route-network.ts';
 import { buildRouteLibraryOverview } from '../../../src/lib/rtw/route-library-overview.ts';
 import { buildRouteLibraryFingerprint } from '../../../src/lib/rtw/route-library-entities.ts';
+import { routeFlightNumberFreshness } from '../../../src/lib/rtw/time-bound-flight-numbers.ts';
 
 const airports = parseAirportCatalog(JSON.parse(readFileSync('public/data/airports.json', 'utf8')));
 const airportIndex = buildAirportIndex(airports).byIata;
@@ -32,13 +33,19 @@ describe('route library overview model', () => {
       airportContinentOverrides: airportOverrides,
     });
     const represented = network.routes.filter((route) => route.status === 'published' && memberCodes.has(route.carrier));
+    const sourceById = new Map(network.sources.map((source) => [source.id, source] as const));
+    const freshNumberRoutes = represented.filter((route) => routeFlightNumberFreshness(route, sourceById).current.length > 0);
+    const candidateOnlyRoutes = represented.filter((route) => {
+      const numbers = routeFlightNumberFreshness(route, sourceById);
+      return numbers.current.length === 0 && numbers.candidates.length > 0;
+    });
     expect(model.routeCount).toBe(represented.length);
     expect(model.carrierCount).toBe(60);
     expect(model.operatingCount).toBe(represented.filter((route) => route.carrierIdentity === 'operating').length);
     expect(model.providerListedCount).toBe(represented.filter((route) => route.carrierIdentity === 'provider-listed').length);
     expect(model.unknownIdentityCount).toBe(represented.filter((route) => !route.carrierIdentity).length);
-    expect(model.confirmedNumberCount).toBe(represented.filter((route) => (route.flightNumbers?.length ?? 0) > 0).length);
-    expect(model.candidateOnlyCount).toBe(represented.filter((route) => !route.flightNumbers?.length && (route.flightNumberCandidates?.length ?? 0) > 0).length);
+    expect(model.confirmedNumberCount).toBe(freshNumberRoutes.length);
+    expect(model.candidateOnlyCount).toBe(candidateOnlyRoutes.length);
     expect(model.operatingCount + model.providerListedCount + model.unknownIdentityCount).toBe(model.routeCount);
     expect(model.airportCount).toBeGreaterThan(1_000);
     expect(model.hubs).toHaveLength(model.airportCount);

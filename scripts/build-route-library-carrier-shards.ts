@@ -50,6 +50,7 @@ for (const carrier of carriers) {
       ...route.sourceIds,
       ...(route.flightNumberSourceIds ?? []),
       ...(route.flightNumberCandidateSourceIds ?? []),
+      ...(route.timeBoundFlightNumbers ?? []).flatMap((evidence) => [evidence.sourceId, ...evidence.candidateSourceIds]),
     ]),
     ...carrierUniverses.flatMap((universe) => universe.sourceIds),
   ]);

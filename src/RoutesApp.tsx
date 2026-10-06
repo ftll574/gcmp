@@ -94,12 +94,13 @@ export function RoutesApp({ onNavigateSite }: Props): React.ReactElement {
     <AllRoutesPage
       data={load.data}
       onNavigate={onNavigateSite}
-      onPlanRoute={({ from, to, carrier, flightNumber }) => {
+      onPlanRoute={({ from, to, carrier, flightNumber, departsOn }) => {
         const leg: FlightLeg = {
           from,
           to,
           operatingCarrier: carrier,
           ...(flightNumber ? { flightNumber } : {}),
+          ...(departsOn ? { departsOn } : {}),
         };
         void routeToPlanner(leg, onNavigateSite);
       }}

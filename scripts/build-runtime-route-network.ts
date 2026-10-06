@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, statSync, unlinkSync, writeFileSync } from 'node:fs';
 import { parseRouteNetworkCatalog, type RouteNetworkCatalog } from '../src/lib/schemas/route-network.ts';
+import { parseAvinorXmlPublicSnapshot } from '../src/lib/schemas/avinor-xml-public.ts';
 import { carrierRouteKey } from '../src/lib/carrier-identity.ts';
 import { mergeRouteNetworkCatalogs, mergeRouteNumberEvidence, preserveRuntimeRoutesThenQuarantine } from '../src/lib/rtw/route-network-merge.ts';
 
@@ -20,6 +21,9 @@ const NUMBER_INPUT = 'flight-numbers-current.json';
 const CORRECTIONS_INPUT = 'current-corrections.json';
 const QUARANTINES_INPUT = 'flight-number-quarantines.json';
 const PRESERVATION_INPUT = 'scripts/data/accepted-runtime-preservation.json';
+const AVINOR_SNAPSHOT_INPUT = 'avinor-osl-public-20261006.json';
+const AVINOR_XML_INPUT = 'avinor-osl-public-20261006.xml';
+const BASELINE_RUNTIME_SHA256 = '2bd353350db6d871099a2c2aa2aee23b63b0a7e65cccbbc502d9234eeb017c8a';
 
 const root = 'public/data/route-network';
 const airportCodes = new Set<string>(
@@ -28,6 +32,10 @@ const airportCodes = new Set<string>(
 
 function sha256(text: string): string {
   return createHash('sha256').update(text.replace(/\r\n/g, '\n')).digest('hex');
+}
+
+function sha256Bytes(bytes: Buffer): string {
+  return createHash('sha256').update(bytes).digest('hex');
 }
 
 function normalizedBytes(text: string): number {
@@ -86,11 +94,79 @@ const preservationRaw = readFileSync(PRESERVATION_INPUT, 'utf8');
 rawByFile.set(PRESERVATION_INPUT, preservationRaw);
 const quarantineRaw = readFileSync(`${root}/${QUARANTINES_INPUT}`, 'utf8');
 rawByFile.set(QUARANTINES_INPUT, quarantineRaw);
-const acceptedRuntime = preserveRuntimeRoutesThenQuarantine(
+const baseAcceptedRuntime = preserveRuntimeRoutesThenQuarantine(
   gatedRuntime,
   JSON.parse(preservationRaw),
   JSON.parse(quarantineRaw),
 );
+const avinorRaw = readFileSync(`${root}/${AVINOR_SNAPSHOT_INPUT}`, 'utf8');
+rawByFile.set(AVINOR_SNAPSHOT_INPUT, avinorRaw);
+const avinor = parseAvinorXmlPublicSnapshot(JSON.parse(avinorRaw));
+const avinorXmlBytes = readFileSync(`${root}/${AVINOR_XML_INPUT}`);
+if (avinorXmlBytes.byteLength !== avinor.snapshot.responseBytes || sha256Bytes(avinorXmlBytes) !== avinor.snapshot.responseSHA256) {
+  throw new Error('Avinor original XML bytes do not match pinned size/hash in its provenance asset');
+}
+if (sha256(`${JSON.stringify(baseAcceptedRuntime)}\n`) !== BASELINE_RUNTIME_SHA256) {
+  throw new Error('The runtime base changed since the reviewed Avinor keys were accepted; refusing to apply this release packet');
+}
+
+const avinorSource = {
+  id: avinor.sourceId,
+  url: avinor.snapshot.requestUrl,
+  checkedOn: avinor.snapshot.retrievedAtUTC.slice(0, 10),
+  freshUntilUTC: avinor.snapshot.validUntilUTC,
+  note: `Avinor XML Public OSL snapshot retrieved ${avinor.snapshot.retrievedAtUTC}; exact matches to its OperatingAirlineIata, full FlightId and direction fields for upcoming schedule rows inside the one-request TimeFrom=1, TimeTo=144 hour window only. Blank via_airport means no intermediate airport was reported by this source; it does not prove physical nonstop service. Schedule rows do not prove actual operation, recurrence, award-seat or bookability; stale after ${avinor.snapshot.validUntilUTC}.`,
+};
+if (baseAcceptedRuntime.sources.some((source) => source.id === avinorSource.id)) throw new Error('Avinor source ID already exists in baseline runtime');
+
+const avinorByRoute = new Map<string, typeof avinor.associations>();
+for (const association of avinor.associations) {
+  const [carrier, identityKey, pairText, flightNumber] = association.candidateKey.split('|');
+  const [from, to] = pairText?.split('>') ?? [];
+  if (!carrier || !identityKey || !from || !to || !flightNumber) throw new Error(`Malformed reviewed key: ${association.candidateKey}`);
+  const routeKey = carrierRouteKey({ carrier, ...(identityKey !== carrier ? { carrierEntityKey: identityKey } : {}) }, from, to);
+  const matches = baseAcceptedRuntime.routes.filter((route) => carrierRouteKey(route, ...route.pair) === routeKey);
+  if (matches.length !== 1) throw new Error(`Expected exactly one runtime route for ${association.candidateKey}; found ${matches.length}`);
+  const route = matches[0]!;
+  if ((route.flightNumbers ?? []).includes(flightNumber)) throw new Error(`Reviewed candidate overlaps baseline confirmed data: ${association.candidateKey}`);
+  if (!(route.flightNumberCandidates ?? []).includes(flightNumber)) throw new Error(`Reviewed key is no longer a runtime candidate: ${association.candidateKey}`);
+  if (!association.candidateSourceIds.every((sourceId) => (route.flightNumberCandidateSourceIds ?? []).includes(sourceId))) {
+    throw new Error(`Reviewed candidate source provenance changed for ${association.candidateKey}`);
+  }
+  const routeKeyBucket = avinorByRoute.get(routeKey) ?? [];
+  routeKeyBucket.push(association);
+  avinorByRoute.set(routeKey, routeKeyBucket);
+}
+
+const acceptedRuntime = parseRouteNetworkCatalog({
+  ...baseAcceptedRuntime,
+  sources: [...baseAcceptedRuntime.sources, avinorSource],
+  routes: baseAcceptedRuntime.routes.map((route) => {
+    const routeKey = carrierRouteKey(route, ...route.pair);
+    const additions = avinorByRoute.get(routeKey);
+    if (!additions) return route;
+    const newNumbers = additions.map((association) => association.candidateKey.split('|')[3]!);
+    const candidateNumbers = (route.flightNumberCandidates ?? []).filter((number) => !newNumbers.includes(number));
+    const datedEvidence = additions.map((association) => ({
+      flightNumber: association.candidateKey.split('|')[3]!,
+      sourceId: avinor.sourceId,
+      candidateSourceIds: association.candidateSourceIds,
+      occurrencesUTC: [...new Set(association.supportingSourceRows
+        .filter((row) => row.observationClass === 'upcoming-scheduled-row')
+        .map((row) => row.scheduleTimeUTC)
+        .filter((time) => Date.parse(time) > Date.parse(avinor.snapshot.retrievedAtUTC)
+          && Date.parse(time) <= Date.parse(avinor.snapshot.validUntilUTC)))].sort(),
+    }));
+    return {
+      ...route,
+      flightNumbers: [...new Set([...(route.flightNumbers ?? []), ...newNumbers])].sort(),
+      ...(candidateNumbers.length ? { flightNumberCandidates: candidateNumbers } : { flightNumberCandidates: undefined }),
+      ...(candidateNumbers.length ? {} : { flightNumberCandidateSourceIds: undefined }),
+      timeBoundFlightNumbers: [...(route.timeBoundFlightNumbers ?? []), ...datedEvidence],
+    };
+  }),
+}, airportCodes);
+rawByFile.set(AVINOR_XML_INPUT, '');
 
 // This artifact is fetched on every app startup. Keep it compact; the source
 // layers remain human-reviewable and the tiny meta file carries diagnostics.
@@ -145,6 +221,7 @@ for (const letter of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') {
     ...route.sourceIds,
     ...(route.flightNumberSourceIds ?? []),
     ...(route.flightNumberCandidateSourceIds ?? []),
+    ...(route.timeBoundFlightNumbers ?? []).flatMap((evidence) => [evidence.sourceId, ...evidence.candidateSourceIds]),
   ]));
   const shard: RouteNetworkCatalog = {
     version: runtime.version,
@@ -164,7 +241,7 @@ for (const letter of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') {
 // produces byte-identical output, which keeps generated artifacts diffable.
 const builtOn = new Date(
   Math.max(
-    ...[...INPUTS, ...OPTIONAL_INPUTS, CORRECTIONS_INPUT, NUMBER_INPUT, QUARANTINES_INPUT, PRESERVATION_INPUT]
+    ...[...INPUTS, ...OPTIONAL_INPUTS, CORRECTIONS_INPUT, NUMBER_INPUT, QUARANTINES_INPUT, PRESERVATION_INPUT, AVINOR_SNAPSHOT_INPUT, AVINOR_XML_INPUT]
       .map((file) => `${root}/${file}`)
       .filter((path) => existsSync(path))
       .map((path) => statSync(path).mtimeMs),
@@ -177,12 +254,12 @@ const meta = {
   // Data-license provenance. The route-network layers aggregate ODbL
   // sources (MrAirspace, ADSBiq) whose share-alike terms govern the
   // derived database; see DATA_LICENSE and THIRD_PARTY_NOTICES.md.
-  source: 'curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)',
+  source: 'curated + provider-listed route-network layers, including a six-day Avinor XML Public snapshot (see THIRD_PARTY_NOTICES.md and its exact freshness metadata)',
   license: 'ODbL-1.0',
-  licenseNote: 'Derived database of ODbL-licensed ADS-B route sources; share-alike applies.',
+  licenseNote: 'Derived database of ODbL-licensed ADS-B route sources; share-alike applies. Avinor snapshot evidence carries separate attribution terms and is stale after its recorded UTC deadline.',
   mergeStrategy: 'curated + generated',
-  inputs: Object.fromEntries([...INPUTS, ...OPTIONAL_INPUTS.filter((file) => rawByFile.has(file)), CORRECTIONS_INPUT, NUMBER_INPUT, QUARANTINES_INPUT, PRESERVATION_INPUT]
-    .map((file) => [file, sha256(rawByFile.get(file)!)])),
+  inputs: Object.fromEntries([...INPUTS, ...OPTIONAL_INPUTS.filter((file) => rawByFile.has(file)), CORRECTIONS_INPUT, NUMBER_INPUT, QUARANTINES_INPUT, PRESERVATION_INPUT, AVINOR_SNAPSHOT_INPUT, AVINOR_XML_INPUT]
+    .map((file) => [file, file === AVINOR_XML_INPUT ? sha256Bytes(avinorXmlBytes) : sha256(rawByFile.get(file)!)])),
   outputSha256: sha256(runtimeText),
   routes: runtime.routes.length,
   publishedRoutes: publishedRoutes.length,

@@ -89,7 +89,7 @@ test('mounts route and flight details progressively instead of printing the full
 
   toggle(document.querySelector<HTMLDetailsElement>('[data-carrier="BR"]')!);
   expect(screen.getByText('BR67')).toBeInTheDocument();
-  expect(screen.getByText('Known flight numbers')).toBeInTheDocument();
+  expect(screen.getByText('General flight-number references')).toBeInTheDocument();
   expect(screen.getByText('BR75')).toBeInTheDocument();
   expect(screen.getByText('Candidate flight numbers')).toBeInTheDocument();
   expect(screen.queryByText('08:15 → 11:20')).not.toBeInTheDocument();

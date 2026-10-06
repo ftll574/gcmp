@@ -32,6 +32,7 @@
     "routes:build-runtime": "tsx scripts/build-runtime-route-network.ts",
     "routes:build-carrier-shards": "tsx scripts/build-route-library-carrier-shards.ts",
     "routes:verify-runtime": "tsx scripts/verify-runtime-route-network.ts",
+    "routes:verify-avinor": "tsx scripts/verify-avinor-xml-public-release.ts",
     "routes:ingest-mrairspace": "tsx scripts/ingest-mrairspace.ts",
     "routes:build-generated": "tsx scripts/build-runtime-generated.ts",
     "routes:verify-generated": "tsx scripts/verify-runtime-generated.ts",

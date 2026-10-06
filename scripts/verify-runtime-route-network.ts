@@ -14,10 +14,16 @@ const INPUTS = [
   'flight-numbers-current.json',
   'flight-number-quarantines.json',
   'scripts/data/accepted-runtime-preservation.json',
+  'avinor-osl-public-20261006.json',
+  'avinor-osl-public-20261006.xml',
 ] as const;
 
 function sha256(text: string): string {
   return createHash('sha256').update(text.replace(/\r\n/g, '\n')).digest('hex');
+}
+
+function sha256Bytes(bytes: Buffer): string {
+  return createHash('sha256').update(bytes).digest('hex');
 }
 
 function normalizedBytes(text: string): number {
@@ -33,7 +39,7 @@ const meta = JSON.parse(readFileSync(`${ROOT}/runtime-current.meta.json`, 'utf8'
 
 for (const file of INPUTS) {
   const path = file.startsWith('scripts/') ? file : `${ROOT}/${file}`;
-  const actual = sha256(readFileSync(path, 'utf8'));
+  const actual = file.endsWith('.xml') ? sha256Bytes(readFileSync(path)) : sha256(readFileSync(path, 'utf8'));
   if (meta.inputs[file] !== actual) throw new Error(`Stale runtime input hash: ${file}`);
 }
 const runtimeText = readFileSync(`${ROOT}/runtime-current.json`, 'utf8');

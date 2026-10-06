@@ -18,6 +18,8 @@ export const RouteNetworkSourceSchema = z.object({
   url: SourceUrlSchema,
   checkedOn: DateSchema,
   publishedOn: DateSchema.optional(),
+  /** Exact source cutoff for short-lived snapshot evidence; after this UTC instant it is stale. */
+  freshUntilUTC: z.iso.datetime({ offset: true }).refine((value) => value.endsWith('Z'), 'Freshness deadline must be UTC').optional(),
   /** Generator review policy, never a passenger service period. */
   routeReviewWindow: z.object({from:DateSchema,until:DateSchema,basis:z.literal('generated-freshness-policy')}).strict().refine(w=>w.from<=w.until,'Inverted source review window').optional(),
   note: z.string().min(1),
@@ -77,6 +79,15 @@ export const RouteNetworkEntrySchema = z.object({
    * do not assert a weekday, time, award seat, or date-specific operation. */
   flightNumbers: z.array(FlightDesignatorSchema).optional(),
   flightNumberSourceIds: z.array(SourceIdSchema).optional(),
+  /** Source-specific dated scheduled operating-carrier observations. These
+   * designators are current only while the source is fresh and at least one
+   * recorded schedule occurrence remains in the future. */
+  timeBoundFlightNumbers: z.array(z.object({
+    flightNumber: FlightDesignatorSchema,
+    sourceId: SourceIdSchema,
+    candidateSourceIds: z.array(SourceIdSchema).min(1),
+    occurrencesUTC: z.array(z.iso.datetime({ offset: true }).refine((value) => value.endsWith('Z'), 'Occurrence timestamp must be UTC')).min(1),
+  }).strict()).optional(),
   /** Useful designators from standing/marketing/reference layers that need a
    * date/operator recheck before itinerary persistence. */
   flightNumberCandidates: z.array(FlightDesignatorSchema).optional(),
@@ -120,7 +131,7 @@ export const RouteNetworkEntrySchema = z.object({
     ctx.addIssue({ code: 'custom', path: ['flightNumberCandidates'], message: 'Confirmed and candidate flight designators must not overlap' });
   }
   for (const [numbersField, sourceField, numbers, sourceIds] of [
-    ['flightNumbers', 'flightNumberSourceIds', entry.flightNumbers ?? [], entry.flightNumberSourceIds ?? []],
+    ['flightNumbers', 'flightNumberSourceIds', (entry.flightNumbers ?? []).filter((number) => !(entry.timeBoundFlightNumbers ?? []).some((evidence) => evidence.flightNumber === number)), entry.flightNumberSourceIds ?? []],
     ['flightNumberCandidates', 'flightNumberCandidateSourceIds', entry.flightNumberCandidates ?? [], entry.flightNumberCandidateSourceIds ?? []],
   ] as const) {
     if (numbers.length > 0 && sourceIds.length === 0) {
@@ -171,7 +182,33 @@ export const RouteNetworkCatalogSchema = z.object({
   });
   const routeSources = new Map(catalog.sources.map(source => [source.id, source]));
   const identityByCode = new Map<string, Set<string>>();
-  for (const route of catalog.routes) {
+  for (const [routeIndex, route] of catalog.routes.entries()) {
+    const datedNumbers = new Set<string>();
+    for (const [evidenceIndex, evidence] of (route.timeBoundFlightNumbers ?? []).entries()) {
+      const source = routeSources.get(evidence.sourceId);
+      if (!source || !source.freshUntilUTC) {
+        ctx.addIssue({ code: 'custom', path: ['routes', routeIndex, 'timeBoundFlightNumbers', evidenceIndex, 'sourceId'], message: 'Time-bound flight number requires a source with an explicit freshness deadline' });
+      }
+      if (!(route.flightNumbers ?? []).includes(evidence.flightNumber)) {
+        ctx.addIssue({ code: 'custom', path: ['routes', routeIndex, 'timeBoundFlightNumbers', evidenceIndex, 'flightNumber'], message: 'Time-bound evidence must refer to a confirmed flight number' });
+      }
+      if (datedNumbers.has(evidence.flightNumber)) {
+        ctx.addIssue({ code: 'custom', path: ['routes', routeIndex, 'timeBoundFlightNumbers', evidenceIndex], message: 'Duplicate time-bound flight number evidence' });
+      }
+      datedNumbers.add(evidence.flightNumber);
+      if (!(route.flightNumberCandidates ?? []).every((number) => number !== evidence.flightNumber)) {
+        ctx.addIssue({ code: 'custom', path: ['routes', routeIndex, 'timeBoundFlightNumbers', evidenceIndex], message: 'Time-bound confirmed numbers may not remain in the candidate list' });
+      }
+      if (new Set(evidence.candidateSourceIds).size !== evidence.candidateSourceIds.length) {
+        ctx.addIssue({ code: 'custom', path: ['routes', routeIndex, 'timeBoundFlightNumbers', evidenceIndex, 'candidateSourceIds'], message: 'Duplicate pre-promotion candidate source reference' });
+      }
+      for (const sourceId of evidence.candidateSourceIds) {
+        if (!sources.has(sourceId)) ctx.addIssue({ code: 'custom', path: ['routes', routeIndex, 'timeBoundFlightNumbers', evidenceIndex, 'candidateSourceIds'], message: `Unknown pre-promotion candidate source ${sourceId}` });
+      }
+      if (new Set(evidence.occurrencesUTC).size !== evidence.occurrencesUTC.length) {
+        ctx.addIssue({ code: 'custom', path: ['routes', routeIndex, 'timeBoundFlightNumbers', evidenceIndex, 'occurrencesUTC'], message: 'Duplicate observed flight time' });
+      }
+    }
     const identities = identityByCode.get(route.carrier) ?? new Set<string>();
     identities.add(carrierIdentityKey(route));
     identityByCode.set(route.carrier, identities);

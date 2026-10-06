@@ -193,12 +193,13 @@ function LoadedSiteApp({ siteView, onNavigateSite }: LoadedSiteAppProps): React.
         <LazyAllRoutesPage
           data={load.data}
           onNavigate={onNavigateSite}
-          onPlanRoute={({ from, to, carrier, flightNumber }) => {
+          onPlanRoute={({ from, to, carrier, flightNumber, departsOn }) => {
             const leg: FlightLeg = {
               from,
               to,
               operatingCarrier: carrier,
               ...(flightNumber ? { flightNumber } : {}),
+              ...(departsOn ? { departsOn } : {}),
             };
             setRouting({ ...routing.request, groups: [{ legs: [leg] }] });
             onNavigateSite('planner');

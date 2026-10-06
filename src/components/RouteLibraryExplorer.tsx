@@ -4,6 +4,7 @@ import { CaaWeeklyScheduleRouteEvidence } from './CaaWeeklyScheduleRouteEvidence
 import { useCaaPublishedTimetables } from '../lib/use-caa-published-timetables.ts';
 import { CaaPublishedTimetableEvidence } from './CaaPublishedTimetableEvidence.tsx';
 import { useEvidenceClock } from '../lib/use-evidence-clock.ts';
+import { avinorOslDepartureDate, nextEvidenceDeadline } from '../lib/rtw/time-bound-flight-numbers.ts';
 import { sourceReviewState, sourceReviewStatusLabel } from '../lib/rtw/route-date-semantics.ts';
 import { airportIdentityLabel } from '../lib/airport-identity.ts';
 import { buildAirportIndex } from '../lib/airport-index.ts';
@@ -48,6 +49,7 @@ interface PlanRouteInput {
   readonly to: string;
   readonly carrier: string;
   readonly flightNumber?: string | undefined;
+  readonly departsOn?: string | undefined;
 }
 
 interface Props {
@@ -114,7 +116,10 @@ export function RouteLibraryExplorer({
   onRetryFullNetwork,
 }: Props): React.ReactElement {
   const { locale, t } = useLocale();
-  const evidenceNow = useEvidenceClock();
+  const evidenceNow = useEvidenceClock(nextEvidenceDeadline(
+    network.sources,
+    network.routes.flatMap(route => (route.timeBoundFlightNumbers ?? []).flatMap(evidence => evidence.occurrencesUTC)),
+  ));
   const caaPair = selection?.kind === 'route' && selection.id.split('-').some(code => airports.get(code)?.country === 'TW') ? selection.id : null;
   const caaReferences = useCaaPublishedTimetables(caaPair);
   const zh = locale === 'zh-TW';
@@ -126,7 +131,7 @@ export function RouteLibraryExplorer({
     const carrier = network.routes.find(route => route.carrierEntityKey === selection.id)?.carrier;
     return carrier ? new Set([...memberCodes, carrier]) : memberCodes;
   }, [memberCodes, network, selection]);
-  const entityInput = useMemo(() => ({ network, airports, carrierNames, memberCodes: entityMemberCodes }), [network, airports, carrierNames, entityMemberCodes]);
+  const entityInput = useMemo(() => ({ network, airports, carrierNames, memberCodes: entityMemberCodes, evidenceNow }), [network, airports, carrierNames, entityMemberCodes, evidenceNow]);
   const searchResults = useMemo(
     () => {
       const locale = zh ? 'zh-TW' : 'en';
@@ -241,8 +246,13 @@ export function RouteLibraryExplorer({
     outbound: '直飛目的地', countries: '國家／地區', inbound: '抵達方向航線',
     destinations: '目的地', routeMap: '航線地圖', airportNetwork: '機場航網',
     airlineNetwork: '航空公司航網', hubs: '主要樞紐', operating: '營運者確認航線', routeIndex: '航線列表', destinationIndex: '目的地列表',
-    routeDetail: '航線詳情', distance: '大圓距離', operatingCarrier: '已確認營運者', provider: '供應商列示', unknownIdentity: '營運身份未知',
-    confirmedNumbers: '已確認班號', candidateNumbers: '候選班號', source: '資料來源', noNumber: '尚未確認班號',
+    routeDetail: '航線詳情', distance: '大圓距離', operatingCarrier: '營運航空公司身份已核對', provider: '供應商列示的航線身份', unknownIdentity: '營運身份未知',
+    confirmedNumbers: '一般班號參考', candidateNumbers: '候選班號', source: '資料來源', noNumber: '目前沒有一般班號參考',
+    avinorDatedFlights: 'Avinor 日期班表列', avinorScheduledIdentity: 'Avinor 在所列日期以營運航空公司欄位列示此完整班號；時間為 UTC。',
+    avinorScope: 'Avinor 在下列日期列出完全相符的 OperatingAirlineIata、完整 FlightId 與航線方向。空白 via_airport 只表示來源未列中停機場，不證明實際營運或實體直飛，也不代表固定班表、獎勵座位或可訂位。',
+    avinorStale: 'Avinor 快照已過期；這些班號不再是目前有效的日期班表證據。',
+    schedulePassed: '班表時間已過；未核對實際運航。', planDatedDeparture: '將此 OSL 出發日加入 Planner', planArrivalReference: '加入班號參考（不設定出發日期）',
+    genericPlanDisabled: '一般 Planner 操作需要不受此日期快照限制的營運者身份。若有未來日期列，請使用上方該日期的班表項目。',
     planCarrier: '用這家航空公司加入 Planner', planFlight: '用這個班號加入 Planner', reverse: '查看反方向',
     back: '返回航網', noEntity: '目前沒有符合條件的航線。',
     airportLabel: '機場', airlineLabel: '航空公司', routeLabel: '航線',
@@ -265,8 +275,13 @@ export function RouteLibraryExplorer({
     outbound: 'nonstop destinations', countries: 'countries/regions', inbound: 'inbound directional routes',
     destinations: 'Destinations', routeMap: 'Route map', airportNetwork: 'Airport network',
     airlineNetwork: 'Airline network', hubs: 'Primary hubs', operating: 'operator-confirmed routes', routeIndex: 'Route list', destinationIndex: 'Destination list',
-    routeDetail: 'Route detail', distance: 'great-circle distance', operatingCarrier: 'Operating carrier confirmed', provider: 'Provider-listed', unknownIdentity: 'Operating identity unknown',
-    confirmedNumbers: 'Confirmed flight numbers', candidateNumbers: 'Candidate flight numbers', source: 'Sources', noNumber: 'No confirmed flight number yet',
+    routeDetail: 'Route detail', distance: 'great-circle distance', operatingCarrier: 'Operating carrier identity verified', provider: 'Provider-listed route identity', unknownIdentity: 'Operating identity unknown',
+    confirmedNumbers: 'General flight-number references', candidateNumbers: 'Candidate flight numbers', source: 'Sources', noNumber: 'No general flight-number reference yet',
+    avinorDatedFlights: 'Avinor dated schedule rows', avinorScheduledIdentity: 'Avinor lists this carrier as operating this full flight ID on the date shown; the time is UTC.',
+    avinorScope: 'Avinor lists this exact OperatingAirlineIata, full FlightId and route direction for the dated rows below. A blank via_airport means this source reported no intermediate airport; it does not prove actual operation or physical nonstop service, recurring service, award seats or bookability.',
+    avinorStale: 'The Avinor snapshot expired; these numbers are no longer current dated schedule evidence.',
+    schedulePassed: 'Scheduled time passed; actual operation was not checked.', planDatedDeparture: 'Plan this OSL departure', planArrivalReference: 'Add flight-number reference (departure date not set)',
+    genericPlanDisabled: 'The general Planner action needs a carrier identity that is not limited to this dated snapshot. Use a dated row above when available.',
     planCarrier: 'Use this airline in Planner', planFlight: 'Use this flight in Planner', reverse: 'View reverse route',
     back: 'Back to network', noEntity: 'No current route matches this selection.',
     airportLabel: 'Airport', airlineLabel: 'Airline', routeLabel: 'Route',
@@ -354,7 +369,28 @@ export function RouteLibraryExplorer({
               <header><div><code>{carrier.carrier}</code><strong>{carrier.name}</strong></div><span className={carrier.identity}>{carrier.identity === 'operating' ? copy.operatingCarrier : carrier.identity === 'provider-listed' ? copy.provider : copy.unknownIdentity}</span></header>
               <div className="route-carrier-numbers"><span>{copy.confirmedNumbers}</span>{carrier.confirmedNumbers.length > 0 ? <div>{carrier.confirmedNumbers.map((number) => <button type="button" key={number} disabled={carrier.identity !== 'operating' || Boolean(carrier.carrierEntityKey)} onClick={() => onPlanRoute({ from: route.from.iata, to: route.to.iata, carrier: carrier.carrier, flightNumber: number.slice(carrier.carrier.length) })}>{number}</button>)}</div> : <small>{copy.noNumber}</small>}</div>
               {carrier.candidateNumbers.length > 0 && <div className="route-carrier-candidates"><span>{copy.candidateNumbers}</span><div>{carrier.candidateNumbers.slice(0, 14).map((number) => <code key={number}>{number}</code>)}</div></div>}
-              <div className="route-carrier-actions"><button type="button" disabled={carrier.identity !== 'operating' || Boolean(carrier.carrierEntityKey)} onClick={() => onPlanRoute({ from: route.from.iata, to: route.to.iata, carrier: carrier.carrier })}>{copy.planCarrier}</button></div>
+              {carrier.datedFlightNumbers.length > 0 && <section className="route-carrier-dated-flights" aria-label={copy.avinorDatedFlights}>
+                <h4>{copy.avinorDatedFlights}</h4>
+                <ul>{carrier.datedFlightNumbers.map((evidence) => <li key={evidence.flightNumber}>
+                  <strong><code>{evidence.flightNumber}</code></strong>
+                  <small>{copy.avinorScheduledIdentity}</small>
+                  <ul>{evidence.occurrencesUTC.map((occurrence) => {
+                    const upcoming = Date.parse(occurrence) > evidenceNow && Date.parse(occurrence) < Date.parse(evidence.freshUntilUTC);
+                    const localDepartureDate = route.from.iata === 'OSL' ? avinorOslDepartureDate(occurrence) : null;
+                    return <li key={occurrence}>
+                      <time dateTime={occurrence}>{occurrence.replace('T', ' ').replace('Z', ' UTC')}</time>
+                      {upcoming && localDepartureDate
+                        ? <button type="button" aria-label={`${copy.planDatedDeparture}: ${evidence.flightNumber} · ${localDepartureDate} · ${occurrence}`} onClick={() => onPlanRoute({ from: route.from.iata, to: route.to.iata, carrier: carrier.carrier, flightNumber: evidence.flightNumber.slice(carrier.carrier.length), departsOn: localDepartureDate })}>{copy.planDatedDeparture} · {localDepartureDate}</button>
+                        : upcoming
+                          ? <button type="button" aria-label={`${copy.planArrivalReference}: ${evidence.flightNumber} · ${occurrence}`} onClick={() => onPlanRoute({ from: route.from.iata, to: route.to.iata, carrier: carrier.carrier, flightNumber: evidence.flightNumber.slice(carrier.carrier.length) })}>{copy.planArrivalReference}</button>
+                          : <small>{copy.schedulePassed}</small>}
+                    </li>;
+                  })}</ul>
+                  <small>{zh ? '快照有效至（UTC）' : 'Snapshot valid until (UTC)'}: {evidence.freshUntilUTC}</small>
+                </li>)}</ul>
+              </section>}
+              {carrier.sources.some(source => source.id === 'avinor-xml-public-osl-20261006') && <aside className="route-avinor-attribution"><a href="https://www.avinor.no/" target="_blank" rel="noreferrer">Flight data from Avinor</a> · <a href="https://partner.avinor.no/en/services/flight-data/" target="_blank" rel="noreferrer">{zh ? 'Avinor 航班資料條款' : 'Avinor flight-data terms'}</a><p>{copy.avinorScope}</p>{carrier.sources.find(source => source.id === 'avinor-xml-public-osl-20261006')?.freshUntilUTC && <small>{zh ? '快照有效至（UTC）' : 'Snapshot valid until (UTC)'}: {carrier.sources.find(source => source.id === 'avinor-xml-public-osl-20261006')!.freshUntilUTC}</small>}{carrier.staleNumbers.length > 0 && <p role="status">{copy.avinorStale} {carrier.staleNumbers.join(' · ')}</p>}</aside>}
+              <div className="route-carrier-actions"><button type="button" disabled={carrier.identity !== 'operating' || Boolean(carrier.carrierEntityKey)} onClick={() => onPlanRoute({ from: route.from.iata, to: route.to.iata, carrier: carrier.carrier })}>{copy.planCarrier}</button>{(carrier.identity !== 'operating' || Boolean(carrier.carrierEntityKey)) && <small>{copy.genericPlanDisabled}</small>}</div>
               {carrier.sourcePairs.some(([from, to]) => from !== route.from.iata || to !== route.to.iata) && <p>{zh ? '原始來源代碼' : 'Original source codes'}: {carrier.sourcePairs.map(pair => pair.join(' → ')).join(', ')} · {[route.from.iata, route.to.iata].map(airportIdentityLabel).filter(Boolean).join(' · ')}</p>}
               <RegisteredPlansEvidence plans={carrier.registeredPlans} sources={carrier.sources} zh={zh} />
 

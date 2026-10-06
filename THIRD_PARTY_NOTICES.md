@@ -13,6 +13,7 @@
 | ADSBiq (github.com/Sky-Power-Services/adsbiq-data) | 航線/航班號候選 overlay | ODbL 1.0 | 同上 |
 | 交通部 TDX 運輸資料流通服務 (tdx.transportdata.tw) | 台灣班表 dated 管道 | 政府資料開放授權條款 第1版 (OGDL) | 顯名聲明(見下)+ 可再轉授權;無 share-alike |
 | Taiwan Civil Aviation Administration (交通部民用航空局), datasets 6066 and 9973 | 488 筆 CAA 列示週班表班號／方向參考 | Taiwan Open Government Data License 1.0 (OGDL-Taiwan-1.0) | 顯名「Taiwan Civil Aviation Administration (交通部民用航空局)」+ 授權連結;來源 SHA-256、版本日期及原始列號隨資料提供 |
+| Avinor XML Public | OSL 單次 144 小時快照中的來源列示營運航空公司 IATA、完整班號、方向與 UTC 日期，保留失效時間 | Avinor flight data service terms | 介面需在資料附近以可見連結顯示「Flight data from Avinor」，連結至 www.avinor.no；大量負載前先聯絡 Avinor |
 | STARLUX 官方班表 API (ecapi.starlux-airlines.com) | JX 班表(78 筆 chart-verified) | 站方 API 條款 | 依 API 使用條款;harvest 腳本引用查詢 URL |
 | AeroRoutes 官方公告 | BR 班表(28 筆) | 站方條款 | 新聞稿類資料,標註出處 |
 | China Airlines 官方時刻表 PDF | CI 班表(32 筆) | 華航文件 | 標註版本與有效期 |
@@ -38,6 +39,12 @@ TDX 實務要求:應用服務中揭露「資料介接『交通部TDX平臺』」
 `public/data/route-network/caa-weekly-schedule-tier-20261006.json` is derived from the original CAA 2026 domestic (dataset 6066) and international/two-strait (dataset 9973) passenger timetable CSV files. Display attribution: **Taiwan Civil Aviation Administration (交通部民用航空局)**. License: [Taiwan Open Government Data License 1.0](https://data.gov.tw/license). The published data asset includes both source file SHA-256 values, official hash-page links, retrieval timestamps, and source CSV row numbers.
 
 This reference tier describes only source-listed carrier/designator/direction recurring weekday schedules within the published validity windows. It does not establish the physical operating carrier, actual operation or cancellation, nonstop service, bookability, or award eligibility. It is not used as a selectable flight or to promote entries into the operator-confirmed flight-number layer.
+
+## Avinor XML Public notice
+
+`public/data/route-network/avinor-osl-public-20261006.xml` preserves the exact 849,172 response bytes (SHA-256 `78403435f3c31ae82d9b45249267cf5e843a7db76bf81bd1f39bb856a65adf7f`). Its companion JSON records the single request URL, retrieval time (`2026-10-06T19:47:47Z`), feed update time, six-day request window, accepted-association digest, and UTC validity cutoff (`2026-10-12T19:47:47Z`). The release includes 412 exact matches between candidate keys and Avinor's listed `OperatingAirlineIata`, full `FlightId`, and direction, each with at least one upcoming schedule row and no reported via-airport or cancellation field. A blank `via_airport` means this source reported no intermediate airport; it is not independent proof of physical nonstop service. A listed schedule does not prove that a flight actually operated. The independently reviewed source packet and raw XML remain available for audit; scheduled rows and their UTC times are retained in the user-facing directory.
+
+Required visible nearby attribution: [Flight data from Avinor](https://www.avinor.no/). The [flight-data terms](https://partner.avinor.no/en/services/flight-data/) require that exact text to link to www.avinor.no and remain clearly visible near the data. This OSL capture is a short-lived snapshot, not recurring timetable evidence, proof of actual departure for every row, award inventory, or bookability. At the UTC cutoff, the UI marks these designators stale and removes them from current dated-schedule counts. The public endpoint is `https://asrv.avinor.no/XmlFeed/v1.0`; use only the one-shot, fixed-scope XML Public refresh command documented in [`docs/avinor-xml-public-refresh.md`](docs/avinor-xml-public-refresh.md). Reuse cached responses, leave at least three minutes between manual requests, do not retry automatically, and contact Avinor before heavy load. The contact-required `XmlFeedScheduled` endpoint is not part of this release.
 
 ## ODbL notice 範例(§4.3(a) 建議文字)
 

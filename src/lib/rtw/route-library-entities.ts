@@ -5,6 +5,7 @@ import type { RouteNetworkCatalog, RouteNetworkEntry, RouteNetworkSource } from 
 import type { Airport } from '../types.ts';
 import type { LandingShowcaseCatalog } from '../schemas/landing-showcase.ts';
 import { carrierIdentityKey } from '../carrier-identity.ts';
+import { routeFlightNumberFreshness } from './time-bound-flight-numbers.ts';
 
 export type RouteLibraryEntitySelection =
   | { readonly kind: 'airport'; readonly id: string }
@@ -17,7 +18,13 @@ export interface RouteLibraryCarrierRoute {
   readonly name: string;
   readonly identity: 'operating' | 'provider-listed' | 'unknown';
   readonly confirmedNumbers: ReadonlyArray<string>;
+  readonly datedFlightNumbers: ReadonlyArray<{
+    readonly flightNumber: string;
+    readonly occurrencesUTC: ReadonlyArray<string>;
+    readonly freshUntilUTC: string;
+  }>;
   readonly candidateNumbers: ReadonlyArray<string>;
+  readonly staleNumbers: ReadonlyArray<string>;
   readonly sources: ReadonlyArray<RouteNetworkSource>;
   readonly sourcePairs: ReadonlyArray<readonly [string, string]>;
   readonly registeredPlans: NonNullable<RouteNetworkEntry['registeredPlans']>;
@@ -88,7 +95,9 @@ export function buildLandingShowcaseFingerprint(
             name: leg.carrierName,
             identity: leg.carrierIdentity,
             confirmedNumbers: [],
+            datedFlightNumbers: [],
             candidateNumbers: [leg.flightNumber],
+            staleNumbers: [],
             sources: [],
             sourcePairs: [[from.iata, to.iata]],
             registeredPlans: [],
@@ -197,6 +206,7 @@ export interface BuildRouteLibraryEntityInput {
   readonly airports: ReadonlyMap<string, Airport>;
   readonly carrierNames: ReadonlyMap<string, string>;
   readonly memberCodes?: ReadonlySet<string> | null | undefined;
+  readonly evidenceNow?: number | undefined;
 }
 
 function publishedRows(input: BuildRouteLibraryEntityInput): ReadonlyArray<RouteNetworkEntry> {
@@ -208,6 +218,7 @@ function carriersForPair(
   rows: ReadonlyArray<RouteNetworkEntry>,
   sourceById: ReadonlyMap<string, RouteNetworkSource>,
   carrierNames: ReadonlyMap<string, string>,
+  evidenceNow = Date.now(),
 ): ReadonlyArray<RouteLibraryCarrierRoute> {
   const groups = new Map<string, RouteNetworkEntry[]>();
   for (const row of rows) { const key = carrierIdentityKey(row); groups.set(key, [...(groups.get(key) ?? []), row]); }
@@ -217,14 +228,32 @@ function carriersForPair(
       ...group.flatMap(row => row.sourceIds),
       ...group.flatMap(row => row.flightNumberSourceIds ?? []),
       ...group.flatMap(row => row.flightNumberCandidateSourceIds ?? []),
+      ...group.flatMap(row => (row.timeBoundFlightNumbers ?? []).map(evidence => evidence.sourceId)),
     ]);
+    const numberStates = group.map(row => routeFlightNumberFreshness(row, sourceById, evidenceNow));
+    const datedByNumber = new Map<string, { flightNumber: string; occurrencesUTC: string[]; freshUntilUTC: string }>();
+    for (const route of group) {
+      for (const evidence of route.timeBoundFlightNumbers ?? []) {
+        const freshUntilUTC = sourceById.get(evidence.sourceId)?.freshUntilUTC;
+        if (!freshUntilUTC || evidenceNow >= Date.parse(freshUntilUTC)) continue;
+        const previous = datedByNumber.get(evidence.flightNumber);
+        datedByNumber.set(evidence.flightNumber, {
+          flightNumber: evidence.flightNumber,
+          occurrencesUTC: [...new Set([...(previous?.occurrencesUTC ?? []), ...evidence.occurrencesUTC])].sort(),
+          freshUntilUTC,
+        });
+      }
+    }
+    const datedNumbers = new Set(datedByNumber.keys());
     return {
       carrier: row.carrier,
       ...(row.carrierEntityKey ? { carrierEntityKey: row.carrierEntityKey } : {}),
       name: row.carrierEntityName ?? carrierNames.get(row.carrier) ?? row.carrier,
       identity: row.carrierIdentity ?? 'unknown',
-      confirmedNumbers: [...new Set(group.flatMap(row => row.flightNumbers ?? []))],
-      candidateNumbers: [...new Set(group.flatMap(row => row.flightNumberCandidates ?? []))],
+      confirmedNumbers: [...new Set(numberStates.flatMap(state => state.current))].filter(number => !datedNumbers.has(number)),
+      datedFlightNumbers: [...datedByNumber.values()],
+      candidateNumbers: [...new Set(numberStates.flatMap(state => state.candidates))],
+      staleNumbers: [...new Set(numberStates.flatMap(state => state.stale))],
       sourcePairs: group.map(row => row.pair),
       registeredPlans: group.flatMap(row => row.registeredPlans ?? []),
       sources: [...sourceIds].map((id) => sourceById.get(id)).filter((source): source is RouteNetworkSource => source !== undefined),
@@ -253,7 +282,7 @@ function buildPairCards(input: BuildRouteLibraryEntityInput, rows: ReadonlyArray
     return [{
       from,
       to,
-      carriers: carriersForPair(pairRows, sourceById, input.carrierNames),
+      carriers: carriersForPair(pairRows, sourceById, input.carrierNames, input.evidenceNow),
       distanceNm: Math.round(distanceNm(from, to)),
     }];
   });
@@ -269,6 +298,7 @@ export function buildRouteLibraryFingerprint(
   limit = 120,
 ): RouteLibraryFingerprint {
   const rows = publishedRows(input);
+  const sourceById = new Map(input.network.sources.map(source => [source.id, source] as const));
   const directedPairs = new Map<string, RouteNetworkEntry[]>();
   for (const row of rows) {
     const key = airportIdentityPairKey(row.pair[0], row.pair[1]);
@@ -304,8 +334,8 @@ export function buildRouteLibraryFingerprint(
       bestDirection.set(key, candidate);
       continue;
     }
-    const candidateConfirmed = pairRows.some((row) => (row.flightNumbers?.length ?? 0) > 0) ? 1 : 0;
-    const previousConfirmed = previous.rows.some((row) => (row.flightNumbers?.length ?? 0) > 0) ? 1 : 0;
+    const candidateConfirmed = pairRows.some((row) => routeFlightNumberFreshness(row, sourceById, input.evidenceNow).current.length > 0) ? 1 : 0;
+    const previousConfirmed = previous.rows.some((row) => routeFlightNumberFreshness(row, sourceById, input.evidenceNow).current.length > 0) ? 1 : 0;
     if (candidateConfirmed > previousConfirmed || (candidateConfirmed === previousConfirmed && pairRows.length > previous.rows.length)) {
       bestDirection.set(key, candidate);
     }
@@ -378,6 +408,7 @@ export function buildAirlineEntityProfile(input: BuildRouteLibraryEntityInput, c
   if (identities.size > 1 && !matches.some(row => row.carrierEntityKey === selection)) return null;
   const rows = matches.filter(row => carrierIdentityKey(row) === selection);
   if (rows.length === 0) return null;
+  const sourceById = new Map(input.network.sources.map(source => [source.id, source] as const));
   const code = rows[0]!.carrier;
   const entityKey = rows[0]!.carrierEntityKey;
   const routes = buildPairCards(input, rows).map((route) => ({
@@ -407,7 +438,7 @@ export function buildAirlineEntityProfile(input: BuildRouteLibraryEntityInput, c
     routes,
     airportCount: airportsUsed.size,
     countryCount: countries.size,
-    confirmedRouteCount: rows.filter((row) => (row.flightNumbers?.length ?? 0) > 0).length,
+    confirmedRouteCount: rows.filter((row) => routeFlightNumberFreshness(row, sourceById, input.evidenceNow).current.length > 0).length,
     operatingRouteCount: rows.filter((row) => (row.carrierIdentity ?? 'unknown') === 'operating').length,
     topHubs,
   };
@@ -438,6 +469,7 @@ export function searchRouteLibraryEntities(
   if (!query) return [];
   const upper = query.toUpperCase().replace(/\s+/g, ' ');
   const results: RouteLibrarySearchResult[] = [];
+  const sourceById = new Map(input.network.sources.map(source => [source.id, source] as const));
   const seen = new Set<string>();
   const add = (row: RouteLibrarySearchResult): void => {
     if (seen.has(row.key) || results.length >= 12) return;
@@ -488,18 +520,29 @@ export function searchRouteLibraryEntities(
   if (/^[A-Z0-9]{2,3}\d{1,4}[A-Z]?$/.test(upper)) {
     const flightResults: RouteLibrarySearchResult[] = [];
     for (const row of publishedRows(input)) {
-      const confirmed = (row.flightNumbers ?? []).filter(number => number.startsWith(upper));
-      const candidates = (row.flightNumberCandidates ?? []).filter(number => number.startsWith(upper));
+      const numberState = routeFlightNumberFreshness(row, sourceById, input.evidenceNow);
+      const confirmed = numberState.current.filter(number => number.startsWith(upper));
+      const candidates = numberState.candidates.filter(number => number.startsWith(upper));
+      const stale = numberState.stale;
+      const datedByNumber = new Map((row.timeBoundFlightNumbers ?? []).map(evidence => [evidence.flightNumber, evidence] as const));
       for (const number of [...new Set([...confirmed, ...candidates])]) {
         const id = row.pair.join('-');
         const isConfirmed = confirmed.includes(number);
+        const dated = datedByNumber.get(number);
+        const datedTimes = dated?.occurrencesUTC.join(', ');
         flightResults.push({
           key: `flight:${number}:${id}`,
           selection: { kind: 'route', id },
           kind: 'flight',
           title: `${number} · ${row.pair[0]} → ${row.pair[1]}`,
-          subtitle: `${input.carrierNames.get(row.carrier) ?? row.carrier} · ${isConfirmed
+          subtitle: `${input.carrierNames.get(row.carrier) ?? row.carrier} · ${stale.includes(number)
+            ? (input.locale === 'zh-TW' ? 'Avinor 快照已過期；不列為目前已確認班號' : 'Avinor snapshot expired; excluded from current confirmed numbers')
+            : isConfirmed && dated
+            ? (input.locale === 'zh-TW' ? `Avinor 列示營運航空公司班表 · ${datedTimes} UTC · 未核對實際運航` : `Avinor-listed scheduled operator row · ${datedTimes} UTC · actual operation not checked`)
+            : isConfirmed
             ? (input.locale === 'zh-TW' ? '已確認班號' : 'Confirmed flight number')
+            : numberState.passed.includes(number)
+            ? (input.locale === 'zh-TW' ? 'Avinor 班表時間已過；未核對實際運航' : 'Avinor schedule time passed; actual operation not checked')
             : (input.locale === 'zh-TW' ? '候選班號' : 'Candidate flight number')}`,
         });
       }

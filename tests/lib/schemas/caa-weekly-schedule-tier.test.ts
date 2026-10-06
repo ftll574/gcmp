@@ -11,12 +11,16 @@ const runtime = JSON.parse(readFileSync('public/data/route-network/runtime-curre
     pair: [string, string];
     flightNumbers?: string[];
     flightNumberCandidates?: string[];
+    timeBoundFlightNumbers?: Array<{ flightNumber: string }>;
   }>;
 };
 const candidateKeys = new Set(runtime.routes.flatMap(route => {
   const [from, to] = route.pair;
   const entity = route.carrierEntityKey ?? route.carrier;
-  return (route.flightNumberCandidates ?? []).map(designator => `${entity}|${route.carrier}|${from}>${to}|${designator}`);
+  return [
+    ...(route.flightNumberCandidates ?? []),
+    ...(route.timeBoundFlightNumbers ?? []).map(row => row.flightNumber),
+  ].map(designator => `${entity}|${route.carrier}|${from}>${to}|${designator}`);
 }));
 const candidateKeySetSha256 = createHash('sha256')
   .update([...candidateKeys].sort().map(key => `${key}\n`).join(''))
@@ -31,7 +35,9 @@ describe('CAA weekly schedule reference tier', () => {
     for (const route of runtime.routes) {
       const entity = route.carrierEntityKey ?? route.carrier;
       const [from, to] = route.pair;
+      const timeBound = new Set((route.timeBoundFlightNumbers ?? []).map(row => row.flightNumber));
       for (const designator of route.flightNumbers ?? []) {
+        if (timeBound.has(designator)) continue;
         confirmedKeys.add(`${entity}|${route.carrier}|${from}>${to}|${designator}`);
         confirmedDesignators.add(designator);
         confirmedRoutes.add(`${entity}|${route.carrier}|${from}>${to}`);
