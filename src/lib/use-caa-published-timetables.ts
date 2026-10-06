@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { CaaPublishedTimetableShardSchema, type CaaPublishedTimetableShard } from './schemas/caa-published-timetables.ts';
+import { siteAssetHref } from './site-navigation.ts';
 const cache=new Map<string,CaaPublishedTimetableShard|null>();
 type State={readonly url:string;readonly status:'ready';readonly shard:CaaPublishedTimetableShard}|{readonly url:string;readonly status:'missing'|'failed'};
 /** Route-detail-only pair shards. This reference layer cannot change the graph. */
 export function useCaaPublishedTimetables(pairKey:string|null):{readonly status:'idle'|'loading'|'ready'|'missing'|'failed';readonly shard:CaaPublishedTimetableShard|null} {
-  const url=pairKey&&/^[A-Z]{3}-[A-Z]{3}$/.test(pairKey)?`/data/published-timetables/caa/${pairKey}.json`:'';
+  const url=pairKey&&/^[A-Z]{3}-[A-Z]{3}$/.test(pairKey)?siteAssetHref(`data/published-timetables/caa/${pairKey}.json`):'';
   const [state,setState]=useState<State|null>(null);
   useEffect(()=>{
     if(!url||cache.has(url))return;
