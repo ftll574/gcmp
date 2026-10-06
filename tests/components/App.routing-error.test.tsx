@@ -13,7 +13,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import '@testing-library/jest-dom/vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { App } from '../../src/App.tsx';
 import { PROGRAM_REGISTRY } from '../../src/lib/types.ts';
@@ -49,6 +49,10 @@ function serveFromPublic(url: string): { ok: boolean; status: number; json: () =
 }
 
 afterEach(() => {
+  // Vitest's globals are disabled, so Testing Library cannot register its
+  // automatic afterEach cleanup hook. Unmount App before restoring globals;
+  // otherwise pending React scheduler work can outlive this jsdom environment.
+  cleanup();
   vi.unstubAllGlobals();
   window.localStorage.clear();
   window.history.replaceState({}, '', '/');
