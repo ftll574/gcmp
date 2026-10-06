@@ -1,5 +1,8 @@
 import type { ExpressionSpecification } from 'maplibre-gl';
 
+/** The route explorer presents one geographic world, even on ultrawide views. */
+export const ROUTE_MAP_RENDER_WORLD_COPIES = false;
+
 /**
  * Build line width without wrapping a zoom expression in a multiplication.
  * MapLibre requires `zoom` to be the input of a top-level step/interpolate.

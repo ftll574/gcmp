@@ -48,6 +48,8 @@ vi.mock('maplibre-gl', () => {
     }
     setPaintProperty() {}
     setLayoutProperty() {}
+    setRenderWorldCopies() { return this; }
+    setMinZoom() { return this; }
     fitBounds() {}
     easeTo() {}
     remove() {}

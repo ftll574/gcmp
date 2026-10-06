@@ -17,7 +17,7 @@ import {
 } from '../lib/rtw/route-library-map.ts';
 import type { RouteLibraryEntitySelection, RouteLibraryRouteCard, RouteLibrarySearchResult } from '../lib/rtw/route-library-entities.ts';
 import { useLocale } from '../i18n/use-locale.ts';
-import { routeLineWidthExpression } from '../lib/rtw/route-map-style.ts';
+import { ROUTE_MAP_RENDER_WORLD_COPIES, routeLineWidthExpression } from '../lib/rtw/route-map-style.ts';
 
 const EMPTY_FEATURES: FeatureCollection<Geometry> = { type: 'FeatureCollection', features: [] };
 const BASEMAP_LIGHT_STYLE = 'https://tiles.openfreemap.org/styles/liberty';
@@ -35,6 +35,8 @@ const AIRPORT_LAYER = 'gcmp-airports';
 const FOCUS_AIRPORT_LAYER = 'gcmp-airport-focus';
 const HIT_SEARCH_RADIUS_PX = 10;
 const ROUTE_SELECT_RADIUS_PX = 18;
+const ROUTE_MAP_MIN_ZOOM = -1.5;
+const MAPLIBRE_TILE_SIZE = 512;
 const ROUTE_MAP_LABEL_FONT = ['Noto Sans Regular'];
 
 function applyAtlasBasemap(map: MapLibreMap, dark: boolean): void {
@@ -350,13 +352,43 @@ function focusPadding(container: HTMLElement): { top: number; right: number; bot
     : { top: 76, right: 390, bottom: 48, left: 48 };
 }
 
-function fitModel(map: MapLibreMap, container: HTMLElement, model: RouteMapModel, routes: ReadonlyArray<RouteLibraryRouteCard>, selectedAirport?: Airport): void {
+function fitSingleWorld(map: MapLibreMap, container: HTMLElement, duration: number): void {
+  map.setRenderWorldCopies(false);
+  map.setMinZoom(ROUTE_MAP_MIN_ZOOM);
+  map.fitBounds([[-180, -80], [180, 80]], {
+    padding: container.clientWidth < 720
+      ? { top: 20, right: 24, bottom: 20, left: 24 }
+      : { top: 28, right: 36, bottom: 28, left: 36 },
+    maxZoom: 1.2,
+    duration,
+  });
+}
+
+function fitModel(
+  map: MapLibreMap,
+  container: HTMLElement,
+  model: RouteMapModel,
+  routes: ReadonlyArray<RouteLibraryRouteCard>,
+  selectedAirport?: Airport,
+  fingerprint = false,
+): void {
+  if (fingerprint) {
+    fitSingleWorld(map, container, 420);
+    return;
+  }
   if (routes.length === 0) {
+    map.setRenderWorldCopies(false);
+    map.setMinZoom(ROUTE_MAP_MIN_ZOOM);
     map.easeTo({ center: [0, 18], zoom: 0.55, duration: 420 });
     return;
   }
   const bounds = routeMapBounds(model, null, null, selectedAirport?.lon ?? routes[0]?.from.lon);
   if (!bounds) return;
+  const crossesWorldEdge = bounds[0][0] < -180 || bounds[1][0] > 180;
+  map.setRenderWorldCopies(crossesWorldEdge);
+  map.setMinZoom(crossesWorldEdge
+    ? Math.log2((container.clientWidth + 8) / MAPLIBRE_TILE_SIZE)
+    : ROUTE_MAP_MIN_ZOOM);
   const maxZoom = routes.length === 1
     ? routes[0]!.distanceNm <= 30 ? 10.5 : routes[0]!.distanceNm <= 150 ? 8.5 : routes[0]!.distanceNm <= 800 ? 6.5 : 4.5
     : routes.length <= 12 ? 5.5 : routes.length <= 120 ? 3.6 : 2.2;
@@ -441,20 +473,36 @@ export function RouteEntityMap({
       const routeIds = new Set([next.routeId]);
       const airportIds = new Set([route.from.iata, route.to.iata]);
       const bounds = routeMapBounds(model, routeIds, airportIds, route.from.lon);
-      if (bounds) map.fitBounds(boundsToMapLibre(bounds), { padding: focusPadding(container), maxZoom: route.distanceNm <= 30 ? 10.5 : 7.5, duration: animate ? 480 : 0 });
+      if (bounds) {
+        const crossesWorldEdge = bounds[0][0] < -180 || bounds[1][0] > 180;
+        map.setRenderWorldCopies(crossesWorldEdge);
+        map.setMinZoom(crossesWorldEdge
+          ? Math.log2((container.clientWidth + 8) / MAPLIBRE_TILE_SIZE)
+          : ROUTE_MAP_MIN_ZOOM);
+        map.fitBounds(boundsToMapLibre(bounds), { padding: focusPadding(container), maxZoom: route.distanceNm <= 30 ? 10.5 : 7.5, duration: animate ? 480 : 0 });
+      }
       return;
     }
     const airport = model.airportByIata.get(next.iata);
     const related = model.routesByAirport.get(next.iata) ?? [];
     if (!airport) return;
     if (related.length === 0) {
+      map.setRenderWorldCopies(false);
+      map.setMinZoom(ROUTE_MAP_MIN_ZOOM);
       map.easeTo({ center: [airport.lon, airport.lat], zoom: Math.max(map.getZoom(), 4), duration: animate ? 420 : 0 });
       return;
     }
     const routeIds = new Set(related.map((route) => `${route.from.iata}-${route.to.iata}`));
     const airportIds = new Set([next.iata, ...related.flatMap((route) => [route.from.iata, route.to.iata])]);
     const bounds = routeMapBounds(model, routeIds, airportIds, airport.lon);
-    if (bounds) map.fitBounds(boundsToMapLibre(bounds), { padding: focusPadding(container), maxZoom: related.length <= 3 ? 7 : 5.4, duration: animate ? 480 : 0 });
+    if (bounds) {
+      const crossesWorldEdge = bounds[0][0] < -180 || bounds[1][0] > 180;
+      map.setRenderWorldCopies(crossesWorldEdge);
+      map.setMinZoom(crossesWorldEdge
+        ? Math.log2((container.clientWidth + 8) / MAPLIBRE_TILE_SIZE)
+        : ROUTE_MAP_MIN_ZOOM);
+      map.fitBounds(boundsToMapLibre(bounds), { padding: focusPadding(container), maxZoom: related.length <= 3 ? 7 : 5.4, duration: animate ? 480 : 0 });
+    }
   }, [model]);
 
   const refreshClusterAwareRoutes = useCallback(async (map: MapLibreMap, activeSelection: InspectorSelection): Promise<void> => {
@@ -512,10 +560,10 @@ export function RouteEntityMap({
       style: mapStyle(dark),
       center: camera.center,
       zoom: camera.zoom,
-      minZoom: 0,
+      minZoom: -1.5,
       maxZoom: 12,
       attributionControl: false,
-      renderWorldCopies: true,
+      renderWorldCopies: ROUTE_MAP_RENDER_WORLD_COPIES,
       dragRotate: false,
       pitchWithRotate: false,
       touchPitch: false,
@@ -603,12 +651,46 @@ export function RouteEntityMap({
     if (initial && shouldMoveCamera) {
       window.requestAnimationFrame(() => focusSelection(initial, false));
     } else if (!initial && shouldMoveCamera) {
-      fitModel(map, container, model, routes, selectedAirport);
+      fitModel(map, container, model, routes, selectedAirport, fingerprint);
     }
     didInitialFitRef.current = true;
     lastSelectionKeyRef.current = selectionKey;
     map.once('idle', () => { void refreshClusterAwareRoutes(map, initial); });
-  }, [focusSelection, model, ready, refreshClusterAwareRoutes, routes, selectedAirport, selectedRouteId]);
+  }, [fingerprint, focusSelection, model, ready, refreshClusterAwareRoutes, routes, selectedAirport, selectedRouteId]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    const container = containerRef.current;
+    const card = cardRef.current;
+    if (!ready || !map || !container || !card) return;
+
+    let userMovedMap = false;
+    let resizeFrame = 0;
+    const markUserMovement = (): void => { userMovedMap = true; };
+    const observer = new ResizeObserver(() => {
+      // MapLibre listens for window resizes, but the explorer card can change
+      // size independently when its layout, viewport, or surrounding content changes.
+      map.resize();
+      if (userMovedMap || (!fingerprint && !selection)) return;
+      window.cancelAnimationFrame(resizeFrame);
+      resizeFrame = window.requestAnimationFrame(() => {
+        if (userMovedMap) return;
+        if (selection) focusSelection(selection, false);
+        else fitSingleWorld(map, container, 0);
+      });
+    });
+    container.addEventListener('pointerdown', markUserMovement, true);
+    container.addEventListener('wheel', markUserMovement, { capture: true, passive: true });
+    container.addEventListener('keydown', markUserMovement, true);
+    observer.observe(card);
+    return () => {
+      observer.disconnect();
+      window.cancelAnimationFrame(resizeFrame);
+      container.removeEventListener('pointerdown', markUserMovement, true);
+      container.removeEventListener('wheel', markUserMovement, true);
+      container.removeEventListener('keydown', markUserMovement, true);
+    };
+  }, [fingerprint, focusSelection, ready, selection]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -842,7 +924,7 @@ export function RouteEntityMap({
         if (!map || !container) return;
         setSelection(null);
         setFocusSources(map, model, null);
-        fitModel(map, container, model, routes, selectedAirport);
+        fitModel(map, container, model, routes, selectedAirport, fingerprint);
       }} aria-label={fitLabel} title={fitLabel}>⌖</button>}
       {hover && <div className="entity-map-hover" style={{ left: hover.x, top: hover.y }}><strong>{hover.title}</strong><span>{hover.subtitle}</span></div>}
       {selection && <aside className="entity-map-inspector" aria-live="polite">

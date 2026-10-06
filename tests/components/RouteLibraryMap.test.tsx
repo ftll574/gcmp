@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { Airport } from '../../src/lib/types.ts';
 import type { RouteLibraryRouteCard } from '../../src/lib/rtw/route-library-entities.ts';
-import { routeLineWidthExpression } from '../../src/lib/rtw/route-map-style.ts';
+import { ROUTE_MAP_RENDER_WORLD_COPIES, routeLineWidthExpression } from '../../src/lib/rtw/route-map-style.ts';
 import { buildClusterBundledRoutes, buildRouteMapModel, nearestRouteIdByScreenDistance, routeMapBounds } from '../../src/lib/rtw/route-library-map.ts';
 
 vi.mock('../../src/state/use-world-map.ts', () => ({
@@ -46,11 +46,22 @@ describe('RouteEntityMap MapLibre model', () => {
     }
   });
 
+  test('renders a single world and keeps date-line route bounds tight', () => {
+    expect(ROUTE_MAP_RENDER_WORLD_COPIES).toBe(false);
+    const west: Airport = { ...TPE, iata: 'WST', lon: 179, lat: 20 };
+    const east: Airport = { ...TSA, iata: 'EST', lon: -179, lat: 21 };
+    const model = buildRouteMapModel([route(west, east, 120)], []);
+    const bounds = routeMapBounds(model, new Set(['WST-EST']), new Set(['WST', 'EST']), west.lon)!;
+    expect(bounds[1][0] - bounds[0][0]).toBeLessThan(3);
+  });
+
   test('MapLibre canvas and controls fill the map when its parent initially measures zero height', () => {
     const css = readFileSync('src/components/RouteLibraryMapBase.css', 'utf8');
     expect(css).toMatch(/\.entity-map-maplibre\.maplibregl-map\s*\{[^}]*position:\s*absolute;[^}]*inset:\s*0;/s);
     expect(css).toMatch(/\.maplibregl-canvas-container\s*\{[^}]*position:\s*absolute;[^}]*inset:\s*0;[^}]*width:\s*100%;[^}]*height:\s*100%;/s);
     expect(css).toMatch(/\.maplibregl-control-container\s*\{[^}]*position:\s*absolute;[^}]*inset:\s*0;/s);
+    expect(css).toMatch(/\.entity-map-maplibre\.maplibregl-map\s*\{[^}]*overflow:\s*hidden;[^}]*border-radius:\s*inherit;/s);
+    expect(css).toMatch(/\.maplibregl-canvas-container\s*\{[^}]*overflow:\s*hidden;[^}]*border-radius:\s*inherit;/s);
   });
 
   test('keeps every route and airport in GeoJSON instead of truncating the network', () => {
@@ -81,6 +92,14 @@ describe('RouteEntityMap MapLibre model', () => {
     const east: Airport = { ...TSA, iata: 'EST', lon: -179, lat: 21 };
     const model = buildRouteMapModel([route(west, east, 120)], []);
     expect(model.routes.features[0]?.geometry.type).toBe('MultiLineString');
+  });
+
+  test('keeps TPE–LAX route bounds unwrapped so both sides of the Pacific remain in the fit', () => {
+    const model = buildRouteMapModel([route(TPE, LAX, 5898)], []);
+    const bounds = routeMapBounds(model, new Set(['TPE-LAX']), new Set(['TPE', 'LAX']), TPE.lon)!;
+    expect(bounds[0][0]).toBeCloseTo(TPE.lon, 1);
+    expect(bounds[1][0]).toBeCloseTo(LAX.lon + 360, 1);
+    expect(bounds[1][0] - bounds[0][0]).toBeLessThan(130);
   });
 
   test('snaps route endpoints to cluster centers and bundles duplicate cluster corridors', () => {
