@@ -60,7 +60,7 @@ describe('RouteEntityMap MapLibre model', () => {
     expect(css).toMatch(/\.entity-map-maplibre\.maplibregl-map\s*\{[^}]*position:\s*absolute;[^}]*inset:\s*0;/s);
     expect(css).toMatch(/\.maplibregl-canvas-container\s*\{[^}]*position:\s*absolute;[^}]*inset:\s*0;[^}]*width:\s*100%;[^}]*height:\s*100%;/s);
     expect(css).toMatch(/\.maplibregl-control-container\s*\{[^}]*position:\s*absolute;[^}]*inset:\s*0;/s);
-    expect(css).toMatch(/\.entity-map-maplibre\.maplibregl-map\s*\{[^}]*overflow:\s*hidden;[^}]*border-radius:\s*inherit;/s);
+    expect(css).toMatch(/\.entity-map-maplibre\.maplibregl-map\s*\{[^}]*overflow:\s*hidden;[^}]*border-radius:\s*25px;/s);
     expect(css).toMatch(/\.maplibregl-canvas-container\s*\{[^}]*overflow:\s*hidden;[^}]*border-radius:\s*inherit;/s);
   });
 

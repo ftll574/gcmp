@@ -47,7 +47,10 @@ function applyAtlasBasemap(map: MapLibreMap, dark: boolean): void {
     const id = layer.id.toLowerCase();
     try {
       if (layer.type === 'background') {
-        map.setPaintProperty(layer.id, 'background-color', palette.water);
+        // The background is the landmass beneath OpenMapTiles' ocean polygons.
+        // Coloring it as water makes glacier polygons look like displaced
+        // coastlines and erases the land silhouette between vector features.
+        map.setPaintProperty(layer.id, 'background-color', palette.land);
       } else if (id.includes('water')) {
         if (layer.type === 'fill') map.setPaintProperty(layer.id, 'fill-color', palette.water);
         if (layer.type === 'line') map.setPaintProperty(layer.id, 'line-color', palette.water);
@@ -354,14 +357,31 @@ function focusPadding(container: HTMLElement): { top: number; right: number; bot
 
 function fitSingleWorld(map: MapLibreMap, container: HTMLElement, duration: number): void {
   map.setRenderWorldCopies(false);
-  map.setMinZoom(ROUTE_MAP_MIN_ZOOM);
+  map.setMinZoom(Math.max(ROUTE_MAP_MIN_ZOOM, Math.log2((container.clientWidth + 8) / MAPLIBRE_TILE_SIZE)));
   map.fitBounds([[-180, -80], [180, 80]], {
     padding: container.clientWidth < 720
       ? { top: 20, right: 24, bottom: 20, left: 24 }
       : { top: 28, right: 36, bottom: 28, left: 36 },
-    maxZoom: 1.2,
+    maxZoom: 12,
     duration,
   });
+}
+
+function fitsInsideSingleWorld(
+  map: MapLibreMap,
+  container: HTMLElement,
+  bounds: RouteMapBounds,
+  padding: { top: number; right: number; bottom: number; left: number },
+  maxZoom: number,
+): boolean {
+  const camera = map.cameraForBounds(boundsToMapLibre(bounds), { padding, maxZoom });
+  if (!camera || camera.zoom === undefined || !camera.center) return false;
+  const longitude = Array.isArray(camera.center)
+    ? camera.center[0]!
+    : 'lng' in camera.center ? camera.center.lng : camera.center.lon;
+  const halfVisibleLongitude = 180 * container.clientWidth / (MAPLIBRE_TILE_SIZE * 2 ** camera.zoom);
+  return longitude - halfVisibleLongitude >= -180
+    && longitude + halfVisibleLongitude <= 180;
 }
 
 function fitModel(
@@ -377,22 +397,23 @@ function fitModel(
     return;
   }
   if (routes.length === 0) {
-    map.setRenderWorldCopies(false);
-    map.setMinZoom(ROUTE_MAP_MIN_ZOOM);
-    map.easeTo({ center: [0, 18], zoom: 0.55, duration: 420 });
+    fitSingleWorld(map, container, 420);
     return;
   }
   const bounds = routeMapBounds(model, null, null, selectedAirport?.lon ?? routes[0]?.from.lon);
   if (!bounds) return;
   const crossesWorldEdge = bounds[0][0] < -180 || bounds[1][0] > 180;
-  map.setRenderWorldCopies(crossesWorldEdge);
-  map.setMinZoom(crossesWorldEdge
-    ? Math.log2((container.clientWidth + 8) / MAPLIBRE_TILE_SIZE)
-    : ROUTE_MAP_MIN_ZOOM);
+  map.setRenderWorldCopies(false);
+  map.setMinZoom(Math.max(ROUTE_MAP_MIN_ZOOM, Math.log2((container.clientWidth + 8) / MAPLIBRE_TILE_SIZE)));
   const maxZoom = routes.length === 1
     ? routes[0]!.distanceNm <= 30 ? 10.5 : routes[0]!.distanceNm <= 150 ? 8.5 : routes[0]!.distanceNm <= 800 ? 6.5 : 4.5
     : routes.length <= 12 ? 5.5 : routes.length <= 120 ? 3.6 : 2.2;
-  map.fitBounds(boundsToMapLibre(bounds), { padding: focusPadding(container), maxZoom, duration: 520 });
+  const padding = focusPadding(container);
+  if (crossesWorldEdge || !fitsInsideSingleWorld(map, container, bounds, padding, maxZoom)) {
+    fitSingleWorld(map, container, 520);
+    return;
+  }
+  map.fitBounds(boundsToMapLibre(bounds), { padding, maxZoom, duration: 520 });
 }
 
 function setFocusSources(map: MapLibreMap, model: RouteMapModel, selection: InspectorSelection): void {
@@ -475,11 +496,15 @@ export function RouteEntityMap({
       const bounds = routeMapBounds(model, routeIds, airportIds, route.from.lon);
       if (bounds) {
         const crossesWorldEdge = bounds[0][0] < -180 || bounds[1][0] > 180;
-        map.setRenderWorldCopies(crossesWorldEdge);
-        map.setMinZoom(crossesWorldEdge
-          ? Math.log2((container.clientWidth + 8) / MAPLIBRE_TILE_SIZE)
-          : ROUTE_MAP_MIN_ZOOM);
-        map.fitBounds(boundsToMapLibre(bounds), { padding: focusPadding(container), maxZoom: route.distanceNm <= 30 ? 10.5 : 7.5, duration: animate ? 480 : 0 });
+        const maxZoom = route.distanceNm <= 30 ? 10.5 : 7.5;
+        const padding = focusPadding(container);
+        map.setRenderWorldCopies(false);
+        map.setMinZoom(Math.max(ROUTE_MAP_MIN_ZOOM, Math.log2((container.clientWidth + 8) / MAPLIBRE_TILE_SIZE)));
+        if (crossesWorldEdge || !fitsInsideSingleWorld(map, container, bounds, padding, maxZoom)) {
+          fitSingleWorld(map, container, animate ? 480 : 0);
+        } else {
+          map.fitBounds(boundsToMapLibre(bounds), { padding, maxZoom, duration: animate ? 480 : 0 });
+        }
       }
       return;
     }
@@ -488,7 +513,7 @@ export function RouteEntityMap({
     if (!airport) return;
     if (related.length === 0) {
       map.setRenderWorldCopies(false);
-      map.setMinZoom(ROUTE_MAP_MIN_ZOOM);
+      map.setMinZoom(Math.max(ROUTE_MAP_MIN_ZOOM, Math.log2((container.clientWidth + 8) / MAPLIBRE_TILE_SIZE)));
       map.easeTo({ center: [airport.lon, airport.lat], zoom: Math.max(map.getZoom(), 4), duration: animate ? 420 : 0 });
       return;
     }
@@ -497,11 +522,15 @@ export function RouteEntityMap({
     const bounds = routeMapBounds(model, routeIds, airportIds, airport.lon);
     if (bounds) {
       const crossesWorldEdge = bounds[0][0] < -180 || bounds[1][0] > 180;
-      map.setRenderWorldCopies(crossesWorldEdge);
-      map.setMinZoom(crossesWorldEdge
-        ? Math.log2((container.clientWidth + 8) / MAPLIBRE_TILE_SIZE)
-        : ROUTE_MAP_MIN_ZOOM);
-      map.fitBounds(boundsToMapLibre(bounds), { padding: focusPadding(container), maxZoom: related.length <= 3 ? 7 : 5.4, duration: animate ? 480 : 0 });
+      const maxZoom = related.length <= 3 ? 7 : 5.4;
+      const padding = focusPadding(container);
+      map.setRenderWorldCopies(false);
+      map.setMinZoom(Math.max(ROUTE_MAP_MIN_ZOOM, Math.log2((container.clientWidth + 8) / MAPLIBRE_TILE_SIZE)));
+      if (crossesWorldEdge || !fitsInsideSingleWorld(map, container, bounds, padding, maxZoom)) {
+        fitSingleWorld(map, container, animate ? 480 : 0);
+      } else {
+        map.fitBounds(boundsToMapLibre(bounds), { padding, maxZoom, duration: animate ? 480 : 0 });
+      }
     }
   }, [model]);
 

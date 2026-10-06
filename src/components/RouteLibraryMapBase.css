@@ -20,7 +20,9 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
-  border-radius: inherit;
+  /* The card has a 1px border, so its 26px outer radius becomes 25px on the
+     inner content edge where MapLibre's canvas is positioned. */
+  border-radius: 25px;
 }
 
 .maplibregl-canvas-container {
