@@ -73,6 +73,9 @@
 .flight-dates-month { margin-block: 12px; }
 .flight-dates-month button { min-width: 40px; }
 .flight-dates-query { width: 100%; }
+.flight-dates-planned-action { margin-top: 14px; padding: 12px; border: 1px solid var(--rule); background: color-mix(in srgb, var(--bg-map-land) 38%, var(--bg-page)); }
+.flight-dates-planned-action p { margin: 0 0 10px; font-size: 13px; line-height: 1.5; }
+.flight-dates-planned-action button { min-height: 40px; width: 100%; }
 .flight-dates-query:not(:disabled), .flight-dates-actions button:first-child {
   background: var(--accent);
   color: var(--bg-page);

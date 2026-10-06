@@ -81,6 +81,7 @@ test('TPE–NRT assumed BR route stays undated and unconfirmed through save/shar
   fireEvent.change(start, { target: { value: 'TPE' } });
   await waitFor(() => expect(document.querySelector('.autocomplete-row')).not.toBeNull());
   fireEvent.keyDown(start, { key: 'Enter' });
+  fireEvent.change(control('.rtw-next-search input'), { target: { value: 'NRT' } });
   await waitFor(() => expect(document.querySelector('[data-select-route="TPE-NRT"]')).not.toBeNull());
   fireEvent.click(control('[data-select-route="TPE-NRT"]'));
   const assume = '[data-select-flight-later="BR:TPE-NRT"]';

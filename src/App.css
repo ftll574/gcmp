@@ -1239,6 +1239,9 @@
 .rtw-next-destination.selected {
   border-color: var(--tint);
 }
+.rtw-next-list-actions { display: grid; gap: 8px; justify-items: start; padding-top: 8px; }
+.rtw-next-list-actions p { margin: 0; color: var(--secondary-label); font-size: var(--type-detail); line-height: 1.45; }
+.rtw-next-list-actions button { min-height: 40px; padding: 0 14px; border: 1px solid var(--separator); border-radius: var(--radius-control); background: var(--secondary-grouped-background); color: var(--tint); font: inherit; font-weight: 650; cursor: pointer; }
 .rtw-next-pair {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
@@ -2608,13 +2611,25 @@
   bottom: 0;
   z-index: 60;
   width: 100%;
+  height: min(72dvh, 680px);
   max-height: 72vh;
+  max-height: 72dvh;
+  overflow: hidden;
+  overscroll-behavior: contain;
   border-left: none;
   border-top: 1px solid var(--separator);
   transform: translateY(100%);
 }
 .app.mobile .app-panel.open {
   transform: translateY(0);
+}
+.app.mobile .inspector-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 }
 .app.mobile .route-editor {
   min-width: 0;

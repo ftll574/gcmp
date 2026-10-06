@@ -741,6 +741,36 @@ function Ready({
     nextStep?.scrollIntoView?.({ block: 'start' });
   }, [guidedFocusVersion]);
 
+  function focusRtwLegField(flatIndex: number, field: 'date' | 'cabin' | 'timing' | 'carrier'): void {
+    let remaining = flatIndex;
+    const groupIndex = routing.groups.findIndex((group) => {
+      if (remaining < group.legs.length) return true;
+      remaining -= group.legs.length;
+      return false;
+    });
+    if (groupIndex < 0) return;
+    const leg = routing.groups[groupIndex]?.legs[remaining];
+    if (!leg) return;
+    setActiveGroupIndex(groupIndex);
+    setRouteSetupExpanded(true);
+    window.setTimeout(() => {
+      if (field === 'date') {
+        const details = document.querySelector<HTMLDetailsElement>('.route-flight-details');
+        if (details) details.open = true;
+      } else {
+        const row = document.querySelector<HTMLElement>('[data-leg-route="' + leg.from + '-' + leg.to + '"]');
+        const summary = row?.querySelector<HTMLButtonElement>('.leg-chip-summary');
+        if (summary?.getAttribute('aria-expanded') !== 'true') summary?.click();
+      }
+      window.setTimeout(() => {
+        const target = document.querySelector<HTMLElement>('[data-rtw-field="' + field + ':' + remaining + '"]');
+        target?.focus({ preventScroll: true });
+        const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+        target?.scrollIntoView?.({ block: 'center', behavior: reduceMotion ? 'auto' : 'smooth' });
+      }, 60);
+    }, 0);
+  }
+
   function toggleInspector(panel: InspectorPanel): void {
     if (inspectorOpen && activeInspector === panel) {
       setInspectorOpen(false);
@@ -749,6 +779,24 @@ function Ready({
     setActiveInspector(panel);
     setInspectorOpen(true);
   }
+
+  useEffect(() => {
+    if (!isMobile || !inspectorOpen) return;
+    const scrollY = window.scrollY;
+    const body = document.body;
+    const previous = { position: body.style.position, top: body.style.top, width: body.style.width, overflow: body.style.overflow };
+    body.style.position = 'fixed';
+    body.style.top = '-' + scrollY + 'px';
+    body.style.width = '100%';
+    body.style.overflow = 'hidden';
+    return () => {
+      body.style.position = previous.position;
+      body.style.top = previous.top;
+      body.style.width = previous.width;
+      body.style.overflow = previous.overflow;
+      window.scrollTo(0, scrollY);
+    };
+  }, [isMobile, inspectorOpen]);
 
   const showPlanner = plannerEntered || (hasAnyLegs && !catalogRequested);
 
@@ -905,6 +953,7 @@ function Ready({
                     <RtwValidationPanel
                       compact
                       onOpenDetails={() => toggleInspector('rules')}
+                      onFocusLegField={focusRtwLegField}
                       routing={routing}
                       airports={airportIndex.byIata}
                       allianceCatalog={data.allianceCatalog}

@@ -22,6 +22,7 @@ interface Props {
    * exact designator instead of mixing every flight on the city pair. */
   readonly flightNumber?: string | undefined;
   readonly onChoose: (flight: FlightSelection) => void;
+  readonly onUsePlannedDate?: (date: string) => void;
   readonly onClose: () => void;
   /** Override for integration tests/local embedding; contains NO credentials. */
   readonly apiBase?: string;
@@ -47,7 +48,7 @@ function filterDayByFlightNumber(
 /** An explicit query, never one request per route card/render. Network and
  * weekly reference catalogs cannot populate the verified calendar states. */
 export function FlightDatesPanel({
-  from, to, initialDate, carriers, schedules, officialSchedules = null, flightNumber, onChoose, onClose, apiBase,
+  from, to, initialDate, carriers, schedules, officialSchedules = null, flightNumber, onChoose, onUsePlannedDate, onClose, apiBase,
 }: Props): React.ReactElement {
   const { locale, t } = useLocale();
   const base = apiBase ?? import.meta.env.VITE_SCHEDULE_API_BASE ?? '';
@@ -278,6 +279,10 @@ export function FlightDatesPanel({
         </article>)}
         {copyState !== 'idle' && <p role="status">{t(`flights.${copyState}`)}</p>}
       </div>
+      {!base && onUsePlannedDate && <div className="flight-dates-planned-action" data-planned-date-only>
+        <p>{t('flights.plannedDateOnly')}</p>
+        <button type="button" onClick={() => { onUsePlannedDate(selectedDate); onClose(); }}>{t('flights.usePlannedDate', { date: selectedDate })}</button>
+      </div>}
       {referenceRows.length > 0 && <details className="flight-dates-reference">
         <summary>{t('flights.reference')}</summary>
         <p>{t('flights.referenceWarning')}</p>

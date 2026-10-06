@@ -30,6 +30,16 @@ describe('buildAirportIndex', () => {
     expect(results[0]?.match).toBe('exact-iata');
   });
 
+  test('an exact airport code excludes incidental name-substring matches while city names remain searchable', () => {
+    const airportIndex = buildAirportIndex([
+      { iata: 'TPE', name: 'Taiwan Taoyuan International Airport', city: 'Taoyuan', country: 'TW', lat: 25.08, lon: 121.23 },
+      { iata: 'MPL', name: 'Montpellier-Méditerranée Airport', city: 'Montpellier/Méditerranée', country: 'FR', lat: 43.58, lon: 3.96 },
+    ]);
+
+    expect(airportIndex.search('TPE').map((result) => result.airport.iata)).toEqual(['TPE']);
+    expect(airportIndex.search('Montpellier').map((result) => result.airport.iata)).toEqual(['MPL']);
+  });
+
   test('search("LON") resolves to city-code (LHR/LGW/STN)', () => {
     const results = idx.search('LON');
     const iatas = results.map((r) => r.airport.iata);

@@ -72,6 +72,7 @@ interface FlightDraft {
   readonly to: string;
   readonly carrier: string;
   readonly flightNumber?: string;
+  readonly departsOn?: string;
   readonly cabin?: CabinId;
   readonly stopover?: boolean;
 }
@@ -107,6 +108,7 @@ export function DestinationsPanel({
   const activeOrigin = chainEnd ?? pendingIata ?? '';
   const attachable = activeOrigin !== '' && (chainEnd === activeOrigin || pendingIata === activeOrigin);
   const [queryState, setQueryState] = useState<{ origin: string; value: string }>({ origin: '', value: '' });
+  const [expandedOrigin, setExpandedOrigin] = useState<string | null>(null);
   const [referenceDate, setReferenceDate] = useState(todayIso);
   const evidenceNow = useEvidenceClock();
   const [flightTarget, setFlightTarget] = useState<{
@@ -230,6 +232,8 @@ export function DestinationsPanel({
     });
   }, [originDestinations, query, lookupAirport, locale, t]);
   const optionCount = destinations.reduce((sum, destination) => sum + destination.options.length, 0);
+  const showAllDestinations = expandedOrigin === activeOrigin;
+  const visibleDestinations = query.trim() || showAllDestinations ? destinations : destinations.slice(0, 12);
   const selectedDestination = controlledDestination !== undefined
     ? controlledDestination
     : localDestination?.origin === activeOrigin ? localDestination.iata : null;
@@ -533,7 +537,8 @@ export function DestinationsPanel({
 
   function renderDestination(destination: NextLegDestination): React.ReactElement {
     const airport = lookupAirport(destination.iata);
-    const city = airport?.city ?? '';
+    const cityCode = cityCodeForAirport(destination.iata);
+    const city = (cityCode ? cityCodeLabel(cityCode) : null) ?? airport?.city ?? '';
     return (
       <div key={destination.iata} className="rtw-next-destination" data-destination={destination.iata}>
         <button
@@ -776,6 +781,7 @@ export function DestinationsPanel({
                   onClick={() => {
                     onAddPair(activeOrigin, destination.iata, activeDraft.carrier, {
                       ...(activeDraft.flightNumber ? { flightNumber: activeDraft.flightNumber } : {}),
+                      ...(activeDraft.departsOn ? { departsOn: activeDraft.departsOn } : {}),
                       ...(activeDraft.cabin ? { cabin: activeDraft.cabin } : {}),
                       ...(activeDraft.stopover !== undefined ? { stopover: activeDraft.stopover } : {}),
                       carrierAssumed: true,
@@ -868,7 +874,13 @@ export function DestinationsPanel({
                 : t('rtw.discovery.noMatch', { origin: activeOrigin })}</p>
               {query !== '' && <button type="button" onClick={() => setQueryState({ origin: activeOrigin, value: '' })}>{t('rtw.discovery.clearFilters')}</button>}
             </div>
-          ) : <div className="rtw-next-list">{destinations.map(renderDestination)}</div>}
+          ) : <>
+            <div className="rtw-next-list">{visibleDestinations.map(renderDestination)}</div>
+            {!query.trim() && destinations.length > 12 && <div className="rtw-next-list-actions">
+              <p>{t("rtw.discovery.destinationSlice", { shown: visibleDestinations.length, total: destinations.length })}</p>
+              <button type="button" onClick={() => setExpandedOrigin(showAllDestinations ? null : activeOrigin)}>{t(showAllDestinations ? "rtw.discovery.showFewerDestinations" : "rtw.discovery.showAllDestinations")}</button>
+            </div>}
+          </>}
           {renderManualPlanner()}
         </>
       )}
@@ -878,6 +890,18 @@ export function DestinationsPanel({
         officialSchedules={officialSchedules}
         {...(liveBase ? { apiBase: liveBase } : {})}
         flightNumber={flightTarget.flightNumber}
+        onUsePlannedDate={(date) => {
+          setFlightDraft({
+            origin: flightTarget.from,
+            to: flightTarget.to,
+            carrier: flightTarget.carrier,
+            ...(flightTarget.flightNumber ? { flightNumber: flightTarget.flightNumber } : {}),
+            ...(activeDraft?.cabin ? { cabin: activeDraft.cabin } : {}),
+            ...(activeDraft?.stopover !== undefined ? { stopover: activeDraft.stopover } : {}),
+            departsOn: date,
+          });
+          setFlightTarget(null);
+        }}
         onClose={() => setFlightTarget(null)} onChoose={(flight) => {
           if (sameAirport(flight.from, flight.to)) return;
           if (!canUsePassengerRoute(flight.carrier, flight.from, flight.to, selectedDepartureDate(flight), productId, flight.carrierEntityKey)) return;

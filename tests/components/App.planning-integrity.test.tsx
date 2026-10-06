@@ -120,6 +120,31 @@ test('the compact itinerary summary shares validator results and opens full rule
   expect(document.querySelector('#route-inspector .rtw-panel')).not.toBeNull();
 });
 
+test('compact checklist preserves unknown and assumed status and focuses the requested leg field', async () => {
+  const originalWidth = window.innerWidth;
+  Object.defineProperty(window, 'innerWidth', { configurable: true, value: 390 });
+  const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+  try {
+    await mount('#/r/v1/TPE-NRT-LAX?op=BR,UA&p=BR&c=J&cab=,&assume=1,0&rtw=' + BR);
+    expect(document.querySelector('[data-checklist-state="unknown"]')).not.toBeNull();
+    expect(document.querySelector('[data-focus-leg-field="0:carrier"]')?.textContent).toContain('TPE');
+    expect(document.querySelector('[data-checklist-state="assumed"]')?.textContent).toContain('Assumed');
+    fireEvent.click(document.querySelector('[data-focus-leg-field="0:cabin"]')!);
+    await waitFor(() => expect(document.activeElement).toBe(document.querySelector('[data-rtw-field="cabin:0"]')));
+    expect(request().groups[0]?.legs[0]).not.toHaveProperty('cabin');
+    expect(request().groups[0]?.legs[0]).toMatchObject({ carrierAssumed: true });
+    fireEvent.click(document.querySelector('.route-review-button')!);
+    await waitFor(() => expect(document.body.style.position).toBe('fixed'));
+    expect(document.querySelector('.app.mobile .app-panel.open .inspector-content')).not.toBeNull();
+    fireEvent.click(document.querySelector('.inspector-close')!);
+    await waitFor(() => expect(document.body.style.position).not.toBe('fixed'));
+    expect(scrollTo).toHaveBeenCalled();
+  } finally {
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: originalWidth });
+    scrollTo.mockRestore();
+  }
+});
+
 test('clearing the stopover marker preserves the departure date', async () => {
   await mount(DATED);
   expect(request().groups[0]?.legs[0]?.departsOn).toBe('2026-11-02');
@@ -176,6 +201,10 @@ test('switching the redemption product does not silently replace flight operator
 test('the explorer passes its selected operator through to the added leg', async () => {
   injectExplorerFixture = true;
   await mount(`#/r/v1/TPE-NRT?op=BR&p=BR&c=J&rtw=${BR}`);
+  const search = document.querySelector<HTMLInputElement>('.rtw-next-search input');
+  if (!search) throw new Error('Explorer destination search missing');
+  fireEvent.change(search, { target: { value: 'LAX' } });
+  await waitFor(() => expect(document.querySelector('[data-select-route="NRT-LAX"]')).not.toBeNull());
   const pair = document.querySelector<HTMLButtonElement>('[data-select-route="NRT-LAX"]');
   if (!pair) throw new Error('Controlled explorer airport pair missing');
   fireEvent.click(pair);

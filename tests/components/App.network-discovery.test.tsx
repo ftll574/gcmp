@@ -85,6 +85,8 @@ function request() {
 }
 async function add(carrier: string, from: string, to: string): Promise<void> {
   await ensureOrigin(from);
+  const search = required<HTMLInputElement>('.rtw-next-search input');
+  fireEvent.change(search, { target: { value: to } });
   // Choose the physical airport pair first. A known designator can be selected,
   // but an airline-only draft must remain a first-class way to continue.
   await waitFor(() => expect(document.querySelector(`[data-select-route="${from}-${to}"]`)).not.toBeNull(), { timeout: 5000 });
@@ -249,6 +251,7 @@ test('network observations never introduce fake weekdays into the date picker', 
 test('route can still be added without choosing a flight number and keeps transfer metadata', async () => {
   await mount(CX);
   await ensureOrigin('TPE');
+  fireEvent.change(required<HTMLInputElement>('.rtw-next-search input'), { target: { value: 'HKG' } });
   await waitFor(() => expect(document.querySelector('[data-select-route="TPE-HKG"]')).not.toBeNull());
   fireEvent.click(required<HTMLButtonElement>('[data-select-route="TPE-HKG"]'));
   const later = required<HTMLButtonElement>('[data-select-flight-later="CX:TPE-HKG"]');
@@ -302,6 +305,7 @@ test('a route absent from the sourced catalog can still be planned manually with
 test('real catalog: TPE → SEA keeps TPE on the map and exposes BR024 / BR026 before cabin or date', async () => {
   await mount();
   await ensureOrigin('TPE');
+  fireEvent.change(required<HTMLInputElement>('.rtw-next-search input'), { target: { value: 'SEA' } });
   await waitFor(() => expect(document.querySelector('[data-next-leg-origin="TPE"]')).not.toBeNull());
   const pair = required<HTMLButtonElement>('[data-select-route="TPE-SEA"]');
   fireEvent.click(pair);

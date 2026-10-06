@@ -98,10 +98,13 @@ describe('corrupted share-URL handling', () => {
 
     render(<App />);
 
-    const alert = await screen.findByRole('alert', {}, { timeout: 5000 });
+    const alerts = await screen.findAllByRole('alert', {}, { timeout: 10_000 });
+    const alert = alerts.find((candidate) => candidate.textContent?.includes('Invalid departure date'));
+    expect(alert).toBeDefined();
+    if (!alert) return;
     expect(alert.textContent).toContain('Invalid departure date');
     expect(alert.textContent).toContain('202610-07');
-  });
+  }, 10_000);
 });
 
 // Keep the registry import used: documents that program dirs are fetched

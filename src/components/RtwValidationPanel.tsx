@@ -48,6 +48,7 @@ interface RtwValidationPanelProps {
   readonly selectedProductId: string;
   readonly compact?: boolean;
   readonly onOpenDetails?: () => void;
+  readonly onFocusLegField?: (index: number, field: 'date' | 'cabin' | 'timing' | 'carrier') => void;
 }
 
 function flattenLegs(routing: RoutingRequest) {
@@ -103,6 +104,7 @@ export function RtwValidationPanel({
   selectedProductId,
   compact = false,
   onOpenDetails,
+  onFocusLegField,
 }: RtwValidationPanelProps): React.ReactElement {
   const { locale, t } = useLocale();
   const products = useMemo(
@@ -141,6 +143,14 @@ export function RtwValidationPanel({
     }, routing);
   }, [selectedProduct, legs, airports, allianceCatalog, countryContinents, airportContinentOverrides, networkGaps, schedules, openJawSectors, routing]);
   const missingCabins = legs.filter((leg) => isFlightLeg(leg) && leg.cabin === undefined).length;
+  const completionItems = legs.flatMap((leg, index) => {
+    const items: Array<{ index: number; from: string; to: string; field: 'date' | 'cabin' | 'timing' | 'carrier'; state: 'unknown' | 'assumed' }> = [];
+    if (isFlightLeg(leg) && leg.departsOn === undefined) items.push({ index, from: leg.from, to: leg.to, field: 'date', state: 'unknown' });
+    if (isFlightLeg(leg) && leg.cabin === undefined) items.push({ index, from: leg.from, to: leg.to, field: 'cabin', state: 'unknown' });
+    if (leg.stopover === undefined) items.push({ index, from: leg.from, to: leg.to, field: 'timing', state: 'unknown' });
+    if (isFlightLeg(leg) && leg.carrierAssumed) items.push({ index, from: leg.from, to: leg.to, field: 'carrier', state: 'assumed' });
+    return items;
+  });
   const awardPrice = useMemo(() => {
     if (!selectedProduct || !result || missingCabins > 0) return null;
     return priceRtwItinerary(
@@ -270,6 +280,15 @@ export function RtwValidationPanel({
         )}
         {missingDates > 0 && <p className="rtw-compact-note">{t('rtw.integrity.missingDates', { count: missingDates })}</p>}
         {missingCabins > 0 && <p className="rtw-compact-note">{t('rtw.integrity.missingCabins', { count: missingCabins })}</p>}
+        {completionItems.length > 0 && <section className="rtw-compact-checklist" aria-label={t('rtw.integrity.checklistTitle')} data-completion-items={completionItems.length}>
+          <h3>{t('rtw.integrity.checklistTitle')}</h3>
+          <ul>{completionItems.map((item) => <li key={item.index + ':' + item.field}>
+            <button type="button" data-focus-leg-field={item.index + ':' + item.field} onClick={() => onFocusLegField?.(item.index, item.field)}>
+              <strong>{item.from} → {item.to}</strong><span>{t('rtw.integrity.checklistField.' + item.field)}</span>
+            </button>
+            <small data-checklist-state={item.state}>{t('rtw.integrity.checklistState.' + item.state)}</small>
+          </li>)}</ul>
+        </section>}
         {notableFindings.length > 0 && (
           <ul className="rtw-compact-findings">
             {notableFindings.map((finding) => (

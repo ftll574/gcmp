@@ -245,6 +245,7 @@ export function LegChain({
                     value={flight.operatingCarrier}
                     onChange={(e) => onCarrierChange(legIndex, e.target.value.toUpperCase())}
                     aria-label={t('leg.carrierLabel', { n: legIndex + 1 })}
+                    data-rtw-field={'carrier:' + legIndex}
                     aria-invalid={!airlines.some((airline) => airline.iata === flight.operatingCarrier)}
                   >
                     {!airlines.some((airline) => airline.iata === flight.operatingCarrier) && (
@@ -270,6 +271,7 @@ export function LegChain({
                       onCabinChange(legIndex, value === '' ? undefined : value);
                     }}
                     aria-label={t('rtw.legChip.cabinLabel', { n: legIndex + 1 })}
+                    data-rtw-field={'cabin:' + legIndex}
                   >
                     <option value="">{t('rtw.legChip.cabinUnset')}</option>
                     <option value="economy">{t('cabin.economy')}</option>
@@ -312,6 +314,7 @@ export function LegChain({
                       onStopoverChange(legIndex, v === '' ? undefined : v === 'stopover');
                     }}
                     aria-label={t('rtw.legChip.stopoverLabel', { n: legIndex + 1 })}
+                    data-rtw-field={'timing:' + legIndex}
                     title={t('rtw.legChip.stopoverTitle')}
                   >
                     <option value="">{t('rtw.timing.unknownShort')}</option>

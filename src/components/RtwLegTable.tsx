@@ -128,6 +128,7 @@ export function RtwLegTable({
                       type="button"
                       className={`rtw-leg-date-btn${flight?.departsOn !== undefined ? ' has-date' : ''}`}
                       aria-label={t('rtw.schedule.dateLabel', { index: index + 1 })}
+                      data-rtw-field={'date:' + index}
                       disabled={!flight}
                       onClick={() =>
                         setOpenDateLeg((prev) => (prev === index ? null : index))
@@ -204,7 +205,7 @@ export function RtwLegTable({
           flightNumber={scheduleLeg.flightNumber}
           schedules={[]}
           {...(officialSchedules !== undefined ? { officialSchedules } : {})}
-          onClose={() => setScheduleTarget(null)} onChoose={(flight) => { onFlightSelect(scheduleTarget.index, flight); setScheduleTarget(null); }} />
+          onClose={() => setScheduleTarget(null)} onUsePlannedDate={(date) => { onDateChange(scheduleTarget.index, date); setScheduleTarget(null); }} onChoose={(flight) => { onFlightSelect(scheduleTarget.index, flight); setScheduleTarget(null); }} />
       )}
     </section>
   );

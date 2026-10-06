@@ -6,8 +6,8 @@ import { FlightDatesPanel } from '../../src/components/FlightDatesPanel.tsx';
 import type { FlightQuery } from '../../src/lib/schemas/dated-schedules.ts';
 import { CLOCK, fixtureResponse } from '../fixtures/dated-schedules.ts';
 
-const props = { from: 'TPE', to: 'HKG', initialDate: '2026-09-07', carriers: new Set(['CX']), schedules: [], onChoose: vi.fn(), onClose: vi.fn() };
-beforeEach(() => { vi.useFakeTimers({ toFake: ['Date'] }); vi.setSystemTime(CLOCK); props.onChoose.mockClear(); });
+const props = { from: 'TPE', to: 'HKG', initialDate: '2026-09-07', carriers: new Set(['CX']), schedules: [], onChoose: vi.fn(), onUsePlannedDate: vi.fn(), onClose: vi.fn() };
+beforeEach(() => { vi.useFakeTimers({ toFake: ['Date'] }); vi.setSystemTime(CLOCK); props.onChoose.mockClear(); props.onUsePlannedDate.mockClear(); props.onClose.mockClear(); });
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); vi.unstubAllEnvs(); vi.useRealTimers(); });
 function request(input: RequestInfo | URL): FlightQuery {
   return Object.fromEntries(new URL(String(input)).searchParams) as unknown as FlightQuery;
@@ -30,6 +30,17 @@ test('unconfigured mode performs no requests and never upgrades legacy weekly ro
   expect(document.querySelector('[data-flight-date="2026-09-07"]')).toHaveAttribute('data-state', 'unknown');
   expect(screen.getByText('Legacy weekly schedule references')).toBeInTheDocument();
   expect(fetchMock).not.toHaveBeenCalled();
+});
+
+test('a static calendar lets users save an unknown date as a planning date without calling it a flight', () => {
+  render(<FlightDatesPanel {...props} apiBase="" />);
+  fireEvent.click(document.querySelector('[data-flight-date="2026-09-12"]')!);
+  expect(document.querySelector('[data-flight-date="2026-09-12"]')).toHaveAttribute('data-state', 'unknown');
+  expect(screen.getByText('This is a planning date only. It does not verify the timetable, operating carrier, flight, or award availability.')).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: 'Use 2026-09-12 as the planned date' }));
+  expect(props.onUsePlannedDate).toHaveBeenCalledWith('2026-09-12');
+  expect(props.onChoose).not.toHaveBeenCalled();
+  expect(props.onClose).toHaveBeenCalled();
 });
 
 test('queries explicitly, renders positive and negative dates, selects the actual flight and local date', async () => {

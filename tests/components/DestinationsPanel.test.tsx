@@ -143,6 +143,32 @@ describe('DestinationsPanel · nonblocking next-leg workflow', () => {
     });
   });
 
+  test('limits the initial source-backed airport list and retains search and full-list access', () => {
+    const extra = Array.from({ length: 14 }, (_, i) => ({
+      iata: 'X' + String.fromCharCode(65 + Math.floor(i / 26)) + String.fromCharCode(65 + i % 26),
+      name: 'Airport ' + (i + 1),
+      city: 'City ' + (i + 1),
+      country: 'US',
+      lat: 10 + i,
+      lon: -100 + i,
+    }));
+    const airportRows = [...airports.values(), ...extra];
+    const byIata = new Map(airportRows.map((airport) => [airport.iata, airport]));
+    const network = RouteNetworkCatalogSchema.parse({
+      version: '2026.3', coverage: 'curated-not-complete',
+      sources: [{ id: 'fixture', url: 'https://example.com/route', checkedOn: '2026-09-05', note: 'Fixture.' }],
+      routes: extra.map((airport) => ({ carrier: 'BR', pair: ['TPE', airport.iata], service: 'nonstop', status: 'published', carrierIdentity: 'operating', sourceIds: ['fixture'] })),
+    });
+    render(<DestinationsPanel {...baseProps} airports={airportRows} schedules={[]} network={network} liveApiBase={null} pendingIata="TPE" lookupAirport={(iata) => byIata.get(iata)} />);
+    expect(document.querySelectorAll('[data-destination]')).toHaveLength(12);
+    expect(screen.getByText('Showing 12 of 14 sourced airports. Search by airport or city, or expand the full list.')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Show all airports' }));
+    expect(document.querySelectorAll('[data-destination]')).toHaveLength(14);
+    fireEvent.change(screen.getByLabelText('Find a destination'), { target: { value: 'City 14' } });
+    expect(document.querySelectorAll('[data-destination]')).toHaveLength(1);
+    expect(document.querySelector('[data-destination]')).toHaveAttribute('data-destination', extra[13]?.iata);
+  });
+
   test('network-only exact route is honest when no flight number is cataloged', () => {
     const network = RouteNetworkCatalogSchema.parse({
       version: '2026.3', coverage: 'curated-not-complete',

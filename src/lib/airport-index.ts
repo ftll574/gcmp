@@ -80,9 +80,11 @@ export function buildAirportIndex(airports: ReadonlyArray<Airport>): AirportInde
       return results.length >= limit;
     }
 
-    // 1. Exact IATA match (single airport, top-ranked).
+    // 1. Exact IATA match is unambiguous. Do not append incidental matches
+    // from airport names (e.g. TPE appears inside Montpellier).
     if (query.length === 3 && byIata.has(query)) {
-      if (addIfAirport(query, 'exact-iata')) return results;
+      addIfAirport(query, 'exact-iata');
+      return results;
     }
 
     // 2. Localized alias (e.g. "東京" → HND + NRT + TYO under zh-TW).
