@@ -1,14 +1,26 @@
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { describe, expect, test } from 'vitest';
 import { caaScheduleDateState, parseCaaWeeklyScheduleTier } from '../../../src/lib/schemas/caa-weekly-schedule-tier.ts';
 
 const tier = parseCaaWeeklyScheduleTier(JSON.parse(readFileSync('public/data/route-network/caa-weekly-schedule-tier-20261006.json', 'utf8')));
 const runtime = JSON.parse(readFileSync('public/data/route-network/runtime-current.json', 'utf8')) as {
-  routes: Array<{ carrier: string; carrierEntityKey?: string; pair: [string, string]; flightNumbers?: string[] }>;
+  routes: Array<{
+    carrier: string;
+    carrierEntityKey?: string;
+    pair: [string, string];
+    flightNumbers?: string[];
+    flightNumberCandidates?: string[];
+  }>;
 };
-const candidateRows = readFileSync('artifacts/flight-evidence-verifier/full-run-20261006/candidate-key-manifest.jsonl', 'utf8')
-  .trim().split('\n').map(line => JSON.parse(line) as { key: string });
-const candidateKeys = new Set(candidateRows.map(row => row.key));
+const candidateKeys = new Set(runtime.routes.flatMap(route => {
+  const [from, to] = route.pair;
+  const entity = route.carrierEntityKey ?? route.carrier;
+  return (route.flightNumberCandidates ?? []).map(designator => `${entity}|${route.carrier}|${from}>${to}|${designator}`);
+}));
+const candidateKeySetSha256 = createHash('sha256')
+  .update([...candidateKeys].sort().map(key => `${key}\n`).join(''))
+  .digest('hex');
 
 describe('CAA weekly schedule reference tier', () => {
   test('keeps a disjoint 488-association schedule tier separate from the 839 operator-confirmed associations', () => {
@@ -31,6 +43,8 @@ describe('CAA weekly schedule reference tier', () => {
     expect(confirmedKeys.size).toBe(839);
     expect(confirmedDesignators.size).toBe(829);
     expect(confirmedRoutes.size).toBe(295);
+    expect(candidateKeys.size).toBe(132_996);
+    expect(candidateKeySetSha256).toBe(tier.candidateAssociationKeysSha256);
     expect([...scheduleKeys].filter(key => confirmedKeys.has(key))).toEqual([]);
     expect([...scheduleKeys].every(key => candidateKeys.has(key))).toBe(true);
     expect(tier.operatorIdentity).toBe('unknown');
