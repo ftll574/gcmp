@@ -1,6 +1,6 @@
 # Third-Party Notices & Data Provenance
 
-更新時間:2026-09-20 · 用途:記錄 public/data/ 每個資料來源的授權與義務。
+更新時間:2026-10-06 · 用途:記錄 public/data/ 每個資料來源的授權與義務。
 單一檔案內有自帶 source/license 欄位者,以該欄位為準。
 
 ## 資料來源清單
@@ -12,6 +12,7 @@
 | MrAirspace aircraft-flight-schedules (github.com/MrAirspace/aircraft-flight-schedules) | 航線/航班號候選 overlay | ODbL 1.0 | notice(4.3)+ share-alike(4.4)+ 機器可讀提供衍生庫(4.6) |
 | ADSBiq (github.com/Sky-Power-Services/adsbiq-data) | 航線/航班號候選 overlay | ODbL 1.0 | 同上 |
 | 交通部 TDX 運輸資料流通服務 (tdx.transportdata.tw) | 台灣班表 dated 管道 | 政府資料開放授權條款 第1版 (OGDL) | 顯名聲明(見下)+ 可再轉授權;無 share-alike |
+| Taiwan Civil Aviation Administration (交通部民用航空局), datasets 6066 and 9973 | 488 筆 CAA 列示週班表班號／方向參考 | Taiwan Open Government Data License 1.0 (OGDL-Taiwan-1.0) | 顯名「Taiwan Civil Aviation Administration (交通部民用航空局)」+ 授權連結;來源 SHA-256、版本日期及原始列號隨資料提供 |
 | STARLUX 官方班表 API (ecapi.starlux-airlines.com) | JX 班表(78 筆 chart-verified) | 站方 API 條款 | 依 API 使用條款;harvest 腳本引用查詢 URL |
 | AeroRoutes 官方公告 | BR 班表(28 筆) | 站方條款 | 新聞稿類資料,標註出處 |
 | China Airlines 官方時刻表 PDF | CI 班表(32 筆) | 華航文件 | 標註版本與有效期 |
@@ -31,6 +32,12 @@
 > 政府資料開放授權條款:https://data.gov.tw/license
 
 TDX 實務要求:應用服務中揭露「資料介接『交通部TDX平臺』」並加入平臺標章。
+
+## Taiwan CAA timetable notice
+
+`public/data/route-network/caa-weekly-schedule-tier-20261006.json` is derived from the original CAA 2026 domestic (dataset 6066) and international/two-strait (dataset 9973) passenger timetable CSV files. Display attribution: **Taiwan Civil Aviation Administration (交通部民用航空局)**. License: [Taiwan Open Government Data License 1.0](https://data.gov.tw/license). The published data asset includes both source file SHA-256 values, official hash-page links, retrieval timestamps, and source CSV row numbers.
+
+This reference tier describes only source-listed carrier/designator/direction recurring weekday schedules within the published validity windows. It does not establish the physical operating carrier, actual operation or cancellation, nonstop service, bookability, or award eligibility. It is not used as a selectable flight or to promote entries into the operator-confirmed flight-number layer.
 
 ## ODbL notice 範例(§4.3(a) 建議文字)
 

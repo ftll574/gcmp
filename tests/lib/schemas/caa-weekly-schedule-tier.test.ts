@@ -1,0 +1,70 @@
+import { readFileSync } from 'node:fs';
+import { describe, expect, test } from 'vitest';
+import { caaScheduleDateState, parseCaaWeeklyScheduleTier } from '../../../src/lib/schemas/caa-weekly-schedule-tier.ts';
+
+const tier = parseCaaWeeklyScheduleTier(JSON.parse(readFileSync('public/data/route-network/caa-weekly-schedule-tier-20261006.json', 'utf8')));
+const runtime = JSON.parse(readFileSync('public/data/route-network/runtime-current.json', 'utf8')) as {
+  routes: Array<{ carrier: string; carrierEntityKey?: string; pair: [string, string]; flightNumbers?: string[] }>;
+};
+const candidateRows = readFileSync('artifacts/flight-evidence-verifier/full-run-20261006/candidate-key-manifest.jsonl', 'utf8')
+  .trim().split('\n').map(line => JSON.parse(line) as { key: string });
+const candidateKeys = new Set(candidateRows.map(row => row.key));
+
+describe('CAA weekly schedule reference tier', () => {
+  test('keeps a disjoint 488-association schedule tier separate from the 839 operator-confirmed associations', () => {
+    const scheduleKeys = new Set(tier.associations.map(row => row.key));
+    const confirmedKeys = new Set<string>();
+    const confirmedDesignators = new Set<string>();
+    const confirmedRoutes = new Set<string>();
+    for (const route of runtime.routes) {
+      const entity = route.carrierEntityKey ?? route.carrier;
+      const [from, to] = route.pair;
+      for (const designator of route.flightNumbers ?? []) {
+        confirmedKeys.add(`${entity}|${route.carrier}|${from}>${to}|${designator}`);
+        confirmedDesignators.add(designator);
+        confirmedRoutes.add(`${entity}|${route.carrier}|${from}>${to}`);
+      }
+    }
+    expect(scheduleKeys.size).toBe(488);
+    expect(new Set(tier.associations.map(row => row.flightDesignator)).size).toBe(483);
+    expect(new Set(tier.associations.map(row => `${row.carrier}|${row.from}>${row.to}`)).size).toBe(253);
+    expect(confirmedKeys.size).toBe(839);
+    expect(confirmedDesignators.size).toBe(829);
+    expect(confirmedRoutes.size).toBe(295);
+    expect([...scheduleKeys].filter(key => confirmedKeys.has(key))).toEqual([]);
+    expect([...scheduleKeys].every(key => candidateKeys.has(key))).toBe(true);
+    expect(tier.operatorIdentity).toBe('unknown');
+    expect(tier.associations.every(row => row.operatingCarrier === null && !row.actualOperationConfirmed
+      && row.bookability === 'unknown' && !row.selectableOperatingService)).toBe(true);
+  });
+
+  test('preserves direction, weekly days, source validity and explicit time-zone uncertainty', () => {
+    const outbound = tier.associations.find(row => row.key === '5J|5J|KHH>MNL|5J345')!;
+    const inbound = tier.associations.find(row => row.key === '5J|5J|MNL>KHH|5J344')!;
+    expect(outbound.from).toBe('KHH');
+    expect(outbound.to).toBe('MNL');
+    expect(inbound.from).toBe('MNL');
+    expect(inbound.to).toBe('KHH');
+    expect(outbound.weeklyWindows[0]).toMatchObject({
+      weekdaysISO: [1, 3, 5, 6, 7],
+      validity: { from: '2026-10-06', until: '2026-10-18' },
+      departureTimeRaw: '2000',
+      departureTimeDisplay: '20:00',
+      timezone: 'not-defined-by-source',
+      nonstopConfirmed: false,
+    });
+    expect(caaScheduleDateState(outbound, '2026-10-06')).toBe('not-listed-weekday');
+    expect(caaScheduleDateState(outbound, '2026-10-07')).toBe('listed');
+    expect(caaScheduleDateState(outbound, '2026-10-21')).toBe('listed');
+    expect(caaScheduleDateState(outbound, '2026-10-25')).toBe('outside-published-window');
+    expect(caaScheduleDateState(outbound, 'not-a-date')).toBe('invalid-date');
+  });
+
+  test('rejects accidental promotion to operating service or bookable flight', () => {
+    const raw = JSON.parse(readFileSync('public/data/route-network/caa-weekly-schedule-tier-20261006.json', 'utf8')) as {
+      associations: Array<Record<string, unknown>>;
+    };
+    raw.associations[0] = { ...raw.associations[0], selectableOperatingService: true };
+    expect(() => parseCaaWeeklyScheduleTier(raw)).toThrow();
+  });
+});

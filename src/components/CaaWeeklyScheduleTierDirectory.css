@@ -1,0 +1,185 @@
+.caa-weekly-schedule-directory,
+.caa-weekly-schedule-route {
+  margin: 22px 0;
+  border: 1px solid #d7dfdc;
+  border-radius: 14px;
+  background: #fff;
+  color: #20312e;
+}
+
+.caa-weekly-schedule-directory > details > summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 7px 14px;
+  padding: 16px 18px;
+  cursor: pointer;
+  list-style-position: inside;
+}
+
+.caa-weekly-schedule-directory > details > summary strong,
+.caa-weekly-schedule-route h3 {
+  color: #194a43;
+}
+
+.caa-weekly-schedule-directory > details > summary span,
+.caa-weekly-schedule-directory__body,
+.caa-weekly-schedule-route {
+  font-size: .92rem;
+  line-height: 1.55;
+}
+
+.caa-weekly-schedule-directory__body {
+  padding: 0 18px 18px;
+}
+
+.caa-weekly-schedule-directory__filters {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(170px, 230px);
+  gap: 12px;
+  margin: 14px 0;
+}
+
+.caa-weekly-schedule-directory__filters label,
+.caa-weekly-schedule-date {
+  display: grid;
+  gap: 5px;
+  font-weight: 650;
+}
+
+.caa-weekly-schedule-directory input,
+.caa-weekly-schedule-date input {
+  min-width: 0;
+  min-height: 42px;
+  padding: 8px 10px;
+  border: 1px solid #bbc9c5;
+  border-radius: 9px;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+}
+
+.caa-weekly-schedule-directory__count {
+  color: #51645f;
+  font-weight: 650;
+}
+
+.caa-weekly-schedule-directory__body > ul,
+.caa-weekly-schedule-route > ul {
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.caa-weekly-schedule-directory__body > ul > li {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  border: 1px solid #e1e8e5;
+  border-radius: 10px;
+  background: #fbfcfb;
+}
+
+.caa-weekly-schedule-directory__body > ul > li > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+}
+
+.caa-weekly-schedule-directory__body > ul > li > div strong {
+  font-variant-numeric: tabular-nums;
+}
+
+.caa-weekly-schedule-directory a,
+.caa-weekly-schedule-route a {
+  color: #126a60;
+  text-underline-offset: 2px;
+}
+
+.caa-weekly-schedule-directory button {
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid #a7c3bd;
+  border-radius: 8px;
+  background: #f1f8f6;
+  color: #194a43;
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.caa-weekly-schedule-directory__sources {
+  margin-top: 16px;
+  border-top: 1px solid #e1e8e5;
+  padding-top: 10px;
+}
+
+.caa-weekly-schedule-route {
+  padding: 16px;
+}
+
+.caa-weekly-schedule-route h3 {
+  margin: 0 0 8px;
+}
+
+.caa-weekly-schedule-route > p {
+  max-width: 78ch;
+}
+
+.caa-weekly-schedule-route > ul > li {
+  padding: 12px;
+  border: 1px solid #dfe8e4;
+  border-radius: 10px;
+}
+
+.caa-weekly-schedule-route h4 {
+  margin: 0 0 8px;
+}
+
+.caa-weekly-schedule-route h4 small {
+  display: inline-block;
+  color: #52645e;
+  font-size: .8em;
+  font-weight: 550;
+}
+
+.caa-weekly-schedule-route .caa-weekly-schedule-window {
+  padding: 8px 0;
+  border-top: 1px solid #e5ebe8;
+}
+
+.caa-weekly-schedule-route .caa-weekly-schedule-window p {
+  margin: 4px 0;
+}
+
+.caa-weekly-schedule-route .caa-weekly-schedule-window details {
+  margin-top: 8px;
+  overflow-wrap: anywhere;
+}
+
+.caa-weekly-schedule-date-state.is-listed {
+  color: #12634d;
+  font-weight: 700;
+}
+
+.caa-weekly-schedule-date-state.is-not-listed {
+  color: #72551c;
+}
+
+.caa-weekly-schedule-loading,
+.caa-weekly-schedule-error {
+  color: #51645f;
+}
+
+@media (max-width: 640px) {
+  .caa-weekly-schedule-directory__filters {
+    grid-template-columns: 1fr;
+  }
+
+  .caa-weekly-schedule-directory__body,
+  .caa-weekly-schedule-route {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}

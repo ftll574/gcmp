@@ -1,0 +1,42 @@
+{
+  "activeWeeklyAssociationsBeforeConflictHold": 490,
+  "asOfDate": "2026-10-06",
+  "associationCount": 488,
+  "baselineRuntimeSha256": "2bd353350db6d871099a2c2aa2aee23b63b0a7e65cccbbc502d9234eeb017c8a",
+  "candidateAssociationDenominator": 132996,
+  "candidateAssociationKeysSha256": "1b337e0fee9c5159675a7f91b57ca1b796bde1fb7eb85e2afa2ab8fecef5fdaa",
+  "candidateAssociationsOutsideScheduleTier": 132508,
+  "candidateManifestSha256": "cac4e065b0e7d663aa321c1b9b4a0204d44f42758e0ed92dae5a3446ce81b66a",
+  "currentScheduleConflictsHeld": 2,
+  "directedRouteCount": 253,
+  "distinctDesignatorCount": 483,
+  "exactCaaAssociationKeys": 540,
+  "exactCaaSourceRows": 2523,
+  "kind": "caa-weekly-schedule-tier-build",
+  "operatorConfirmedAssociationsAfter": 839,
+  "operatorConfirmedAssociationsBefore": 839,
+  "operatorConfirmedDistinctDesignatorsAfter": 829,
+  "operatorConfirmedDistinctDesignatorsBefore": 829,
+  "runtimeAsset": {
+    "bytes": 829490,
+    "path": "public/data/route-network/caa-weekly-schedule-tier-20261006.json",
+    "sha256": "ec4dff75180c21e82b2fe4ea374c801dfd31f1f846f341464be58e6dfd71d99e"
+  },
+  "scheduleConfirmedAssociationOverlap": 0,
+  "scheduleConfirmedRouteOverlap": 0,
+  "sources": [
+    {
+      "bytes": 130505,
+      "datasetId": "6066",
+      "sha256": "5690304d65a8a0a62df920d8cf16227654674b34fff2a44f064f79d587286ea2"
+    },
+    {
+      "bytes": 133668,
+      "datasetId": "9973",
+      "sha256": "ebfd2e8f207a46f250fe48c53b53770d10a1fec342a18a73e19f349574bb0f35"
+    }
+  ],
+  "unionAssociationKeys": 1327,
+  "unionDirectedRouteIdentities": 548,
+  "unionDistinctDesignators": 1311
+}

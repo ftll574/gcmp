@@ -18,6 +18,7 @@ const LICENSE_VALUES = [
   'ODbL-1.0',
   'Public-Domain',
   'OGDL-1.0',
+  'OGDL-Taiwan-1.0',
   'pending-confirmation',
   'site-terms', // standing terms of a vendor/portal (STARLUX API, AeroRoutes, 華航 PDF …)
   'commercial-contract', // paid data feeds (Aviation Edge, OAG/Cirium, AeroDataBox)

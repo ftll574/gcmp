@@ -15,6 +15,7 @@ import { parseRouteLibrarySelection } from '../lib/rtw/route-library-selection.t
 import type { Airport } from '../lib/types.ts';
 import type { RouteLibraryData } from '../state/use-route-library-data.ts';
 import { RouteLibraryExplorer } from './RouteLibraryExplorer.tsx';
+import { CaaWeeklyScheduleTierDirectory } from './CaaWeeklyScheduleTierDirectory.tsx';
 import { SiteHeader, type SiteView } from './SiteHeader.tsx';
 import { useLocale } from '../i18n/use-locale.ts';
 
@@ -560,6 +561,7 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
                 </Suspense>
               </section>}
             </section>
+            <CaaWeeklyScheduleTierDirectory />
           </>
         )}
       </main>

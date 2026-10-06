@@ -1,0 +1,53 @@
+{
+  "attribution": "Data provided by Taiwan Civil Aviation Administration (交通部民用航空局), 2026 domestic and international/Two-Strait scheduled timetables, Government Open Data License 1.0.",
+  "hashMismatchNote": "A prior web-search cache showed a stale international hash 58b970dc…; direct live retrieval of the official CAA hash page returned ebfd2e8f… and the complete downloaded CSV matches that current value. No mismatch remains.",
+  "items": [
+    {
+      "actualBytes": 130505,
+      "actualSha256": "5690304d65a8a0a62df920d8cf16227654674b34fff2a44f064f79d587286ea2",
+      "contentLength": 130505,
+      "datasetId": "6066",
+      "downloadCompletedAt": "2026-10-06T17:26:20+00:00",
+      "etag": null,
+      "expectedBytes": 130505,
+      "expectedSha256": "5690304d65a8a0a62df920d8cf16227654674b34fff2a44f064f79d587286ea2",
+      "filename": "GET_SCHE_PUB_DOM_294_104211.csv",
+      "hashPage": "https://www.caa.gov.tw/FileHashValue.aspx?a=294&fn=%E5%9C%8B%E5%85%A7%E5%AE%9A%E6%9C%9F%E8%88%AA%E7%B7%9A%E7%8F%AD%E6%A9%9F%E6%99%82%E5%88%BB%E8%A1%A8&lang=1",
+      "httpStatus": 200,
+      "kind": "domestic",
+      "lastModified": null,
+      "localPath": "artifacts/flight-evidence-verifier/caa-source-bytes-20261006/GET_SCHE_PUB_DOM_294_104211.csv",
+      "requestStartedAt": "2026-10-06T17:26:20+00:00",
+      "url": "https://www.caa.gov.tw/FileAtt.ashx?id=16680&lang=1"
+    },
+    {
+      "actualBytes": 133668,
+      "actualSha256": "ebfd2e8f207a46f250fe48c53b53770d10a1fec342a18a73e19f349574bb0f35",
+      "contentLength": 133668,
+      "datasetId": "9973",
+      "downloadCompletedAt": "2026-10-06T17:26:20+00:00",
+      "etag": null,
+      "expectedBytes": 133668,
+      "expectedSha256": "ebfd2e8f207a46f250fe48c53b53770d10a1fec342a18a73e19f349574bb0f35",
+      "filename": "GET_SCHE_PUBLIC_294_103521.csv",
+      "hashPage": "https://www.caa.gov.tw/FileHashValue.aspx?a=294&fn=%E5%9C%8B%E9%9A%9B%E5%8F%8A%E5%85%A9%E5%B2%B8%E5%AE%9A%E6%9C%9F%E5%AE%A2%E9%81%8B%E7%8F%AD%E8%A1%A8&lang=1",
+      "httpStatus": 200,
+      "kind": "international",
+      "lastModified": null,
+      "localPath": "artifacts/flight-evidence-verifier/caa-source-bytes-20261006/GET_SCHE_PUBLIC_294_103521.csv",
+      "requestStartedAt": "2026-10-06T17:26:20+00:00",
+      "url": "https://www.caa.gov.tw/FileAtt.ashx?id=16679&lang=1"
+    }
+  ],
+  "kind": "caa-official-timetable-source-byte-audit",
+  "license": "OGDL-Taiwan-1.0",
+  "manifestWrittenAt": "2026-10-06T17:26:20+00:00",
+  "policyCheck": {
+    "downloadMethod": "Full complete bounded HTTPS GET; no Range/resume; reject redirects and partial responses; validate HTTP 200, Content-Length, byte count, SHA-256.",
+    "httpStatus": 404,
+    "result": "robots.txt request returned HTTP 404 via generic CAA error page; no robots directives published. CSVs are linked by CAA official open-data page.",
+    "robotsUrl": "https://www.caa.gov.tw/robots.txt"
+  },
+  "sourcePage": "https://www.caa.gov.tw/article.aspx?a=294&lang=1",
+  "sourcePageObservedLastUpdated": "2026-10-01T09:46:00+08:00"
+}

@@ -1,5 +1,6 @@
 import {CaliPrimaryReferences} from './CaliPrimaryReferences.tsx';
 import {OfficialRouteReferences} from './OfficialRouteReferences.tsx';
+import { CaaWeeklyScheduleRouteEvidence } from './CaaWeeklyScheduleRouteEvidence.tsx';
 import { useCaaPublishedTimetables } from '../lib/use-caa-published-timetables.ts';
 import { CaaPublishedTimetableEvidence } from './CaaPublishedTimetableEvidence.tsx';
 import { useEvidenceClock } from '../lib/use-evidence-clock.ts';
@@ -379,6 +380,10 @@ export function RouteLibraryExplorer({
       ) : entityContent}
       {selection?.kind==='route' && <OfficialRouteReferences pair={selection.id} zh={zh}/>}
       {selection?.kind==='route' && <CaliPrimaryReferences pair={selection.id} zh={zh}/>}
+      {selection?.kind==='route' && (() => {
+        const [from, to] = selection.id.split('-');
+        return from && to ? <CaaWeeklyScheduleRouteEvidence from={from} to={to} /> : null;
+      })()}
       {caaReferences.shard && <section className="entity-section caa-route-references" data-caa-pair={caaReferences.shard.pair.join('-')}>
         <h3>{zh ? '此方向的 CAA 發布時刻參考' : 'CAA published timetable references for this direction'} · {caaReferences.shard.pair.join(' → ')}</h3>
         <p>{zh ? '這是獨立唯讀參考，包含非聯盟會員列示；不會增加聯盟航線、可用航空公司或選班選項。' : 'This independent read-only reference includes non-member listings. It adds no alliance route, eligible carrier or flight-selection option.'}</p>

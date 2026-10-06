@@ -13,9 +13,10 @@
  * which re-checks existence, bytes, sha256 and the schema.
  */
 import { createHash } from 'node:crypto';
-import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { isCarrierShardPath } from './lib/runtime-shard-paths.ts';
 import { join, relative, resolve } from 'node:path';
+import type { DataManifestEntry } from '../src/lib/schemas/data-manifest.ts';
 
 const ROOT = resolve(process.cwd());
 const DATA_ROOT = join(ROOT, 'public', 'data');
@@ -69,11 +70,18 @@ const PRODUCERS: Record<string, string> = {
   'route-network/runtime-generated-2026-09.json': 'scripts/build-runtime-generated.ts',
   'route-network/runtime-generated.meta.json': 'scripts/build-runtime-generated.ts',
   'route-network/mrairspace-flight-number-candidates-2026-Q2.json': 'scripts/ingest-mrairspace.ts',
+  'route-network/caa-weekly-schedule-tier-20261006.json': 'scripts/build-caa-weekly-schedule-tier.py',
 };
 
 /** License / source descriptor by directory family. */
 function describe(path: string): { source: string; license: DataLicense } {
   if (path.startsWith('route-network/')) {
+    if (path === 'route-network/caa-weekly-schedule-tier-20261006.json') {
+      return {
+        source: 'Taiwan Civil Aviation Administration 2026 domestic/international published scheduled timetables (datasets 6066 and 9973)',
+        license: 'OGDL-Taiwan-1.0',
+      };
+    }
     if (path.includes('runtime')) {
       return {
         source: 'curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)',
@@ -186,6 +194,10 @@ const ORIGIN_SHARD_RE = /^route-network\/runtime-origins\/[A-Z]\.json$/;
 function build(): void {
   const files = allFiles().filter((p) => p !== 'DATA_MANIFEST.json'); // never list the manifest itself
   const datasets = [];
+  const existingManifest = existsSync(OUT_FILE)
+    ? JSON.parse(readFileSync(OUT_FILE, 'utf8')) as { datasets?: DataManifestEntry[] }
+    : undefined;
+  const existingByPath = new Map((existingManifest?.datasets ?? []).map((entry) => [entry.path, entry]));
 
   for (const path of files) {
     // Rule-based entries for shards (avoid 86 hand-written rows).
@@ -205,6 +217,14 @@ function build(): void {
     const sha256 = createHash('sha256').update(readFileSync(abs)).digest('hex').slice(0, 16);
 
     let inputs: string[] = [];
+    if (path === 'route-network/caa-weekly-schedule-tier-20261006.json') {
+      inputs = [
+        'artifacts/flight-evidence-verifier/caa-source-bytes-20261006/GET_SCHE_PUB_DOM_294_104211.csv',
+        'artifacts/flight-evidence-verifier/caa-source-bytes-20261006/GET_SCHE_PUBLIC_294_103521.csv',
+        'artifacts/flight-evidence-verifier/caa-source-bytes-20261006/manifest.json',
+        'public/data/route-network/runtime-current.json',
+      ];
+    }
     if (path === 'route-network/runtime-current.json' || path === 'route-network/runtime-current.meta.json') {
       inputs = CURATED_INPUTS.size
         ? [...CURATED_INPUTS].filter((p) => p.startsWith('route-network/') && !p.includes('runtime')).sort()
@@ -219,19 +239,25 @@ function build(): void {
     if (kind === 'shard') {
       inputs = ['route-network/runtime-current.json'];
     }
+    const isCaaWeeklyTier = path === 'route-network/caa-weekly-schedule-tier-20261006.json';
+    const previous = existingByPath.get(path);
     datasets.push({
       id: path.replace(/\.json$/, '').replace(/\//g, '.'),
       path,
-      kind,
-      producer,
-      inputs,
-      source,
-      license,
-      attribution: null,
-      schema: null,
+      kind: isCaaWeeklyTier ? kind : previous?.kind ?? kind,
+      producer: isCaaWeeklyTier ? producer : previous?.producer ?? producer,
+      inputs: isCaaWeeklyTier ? inputs : previous?.inputs ?? inputs,
+      source: isCaaWeeklyTier ? source : previous?.source ?? source,
+      license: isCaaWeeklyTier ? license : previous?.license ?? license,
+      attribution: isCaaWeeklyTier
+        ? 'Taiwan Civil Aviation Administration (交通部民用航空局)'
+        : previous?.attribution ?? null,
+      schema: isCaaWeeklyTier ? 'src/lib/schemas/caa-weekly-schedule-tier.ts' : previous?.schema ?? null,
       bytes,
       sha256,
-      notes: '',
+      notes: isCaaWeeklyTier
+        ? '488 schedule-listed carrier-number-direction associations as of 2026-10-06; operator identity unknown; no actual-operation, bookability, nonstop, selectable-flight or award-eligibility claim. Source SHA-256 values are included in the asset.'
+        : previous?.notes ?? '',
     });
   }
 

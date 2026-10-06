@@ -1,6 +1,6 @@
 {
   "version": "2026.3",
-  "generatedAt": "2026-10-04",
+  "generatedAt": "2026-10-06",
   "datasets": [
     {
       "id": "VERSION",
@@ -4914,6 +4914,25 @@
       "bytes": 1383371,
       "sha256": "f749b64957f572df",
       "notes": ""
+    },
+    {
+      "id": "route-network.caa-weekly-schedule-tier-20261006",
+      "path": "route-network/caa-weekly-schedule-tier-20261006.json",
+      "kind": "derived",
+      "producer": "scripts/build-caa-weekly-schedule-tier.py",
+      "inputs": [
+        "artifacts/flight-evidence-verifier/caa-source-bytes-20261006/GET_SCHE_PUB_DOM_294_104211.csv",
+        "artifacts/flight-evidence-verifier/caa-source-bytes-20261006/GET_SCHE_PUBLIC_294_103521.csv",
+        "artifacts/flight-evidence-verifier/caa-source-bytes-20261006/manifest.json",
+        "public/data/route-network/runtime-current.json"
+      ],
+      "source": "Taiwan Civil Aviation Administration 2026 domestic/international published scheduled timetables (datasets 6066 and 9973)",
+      "license": "OGDL-Taiwan-1.0",
+      "attribution": "Taiwan Civil Aviation Administration (交通部民用航空局)",
+      "schema": "src/lib/schemas/caa-weekly-schedule-tier.ts",
+      "bytes": 829490,
+      "sha256": "ec4dff75180c21e8",
+      "notes": "488 schedule-listed carrier-number-direction associations as of 2026-10-06; operator identity unknown; no actual-operation, bookability, nonstop, selectable-flight or award-eligibility claim. Source SHA-256 values are included in the asset."
     },
     {
       "id": "route-network.carrier-specific-flight-number-candidates",
