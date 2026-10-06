@@ -138,10 +138,10 @@
   .rtw-gate:has([data-gate-section="products"]) {
     grid-template-areas: "intro intro" "alliance products" "network network";
   }
-  .rtw-gate-intro { grid-area: intro; }
-  .rtw-gate-section[data-gate-section="alliance"] { grid-area: alliance; }
-  .rtw-gate-section[data-gate-section="products"] { grid-area: products; }
-  .rtw-gate-section[data-gate-section="network"] { grid-area: network; }
+  .rtw-gate:has([data-gate-section="products"]) > .rtw-gate-intro { grid-area: intro; }
+  .rtw-gate:has([data-gate-section="products"]) > .rtw-gate-section[data-gate-section="alliance"] { grid-area: alliance; }
+  .rtw-gate:has([data-gate-section="products"]) > .rtw-gate-section[data-gate-section="products"] { grid-area: products; }
+  .rtw-gate:has([data-gate-section="products"]) > .rtw-gate-section[data-gate-section="network"] { grid-area: network; }
   .rtw-gate:not(:has([data-gate-section="products"])) { grid-template-columns: 1fr; }
   .rtw-gate:not(:has([data-gate-section="products"])) > .rtw-gate-section[data-gate-section="alliance"] { grid-column: 1 / -1; }
   .rtw-gate:not(:has([data-gate-section="products"])) .rtw-gate-alliances { grid-template-columns: repeat(3, minmax(0, 1fr)); }
