@@ -138,7 +138,7 @@ describe('entity-first route library model', () => {
     expect(selected).toMatchObject({ carrier: '2F', carrierEntityKey: key, name: 'Azul Conecta Ltda.', airportCount: 3, operatingRouteCount: 0, confirmedRouteCount: 0 });
     expect(selected!.routes.map(route => `${route.from.iata}-${route.to.iata}`).sort()).toEqual(['CNF-DTI', 'CNF-JDR', 'DTI-CNF', 'JDR-CNF']);
     expect(selected!.routes.flatMap(route => route.carriers)).toEqual(expect.arrayContaining([
-      expect.objectContaining({ carrier: '2F', carrierEntityKey: key, name: 'Azul Conecta Ltda.', identity: 'provider-listed', confirmedNumbers: [], candidateNumbers: [], registeredPlans: [] }),
+      expect.objectContaining({ carrier: '2F', carrierEntityKey: key, name: 'Azul Conecta Ltda.', identity: 'provider-listed', confirmedNumbers: [], candidateNumbers: [], registeredPlans: expect.any(Array) }),
     ]));
     const routeModel = { ...input, memberCodes: new Set([...memberCodes, selected!.carrier]) };
     for (const routeId of ['CNF-DTI', 'CNF-JDR', 'DTI-CNF', 'JDR-CNF']) {

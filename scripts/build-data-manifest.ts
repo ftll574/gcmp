@@ -58,6 +58,8 @@ const CURATED_INPUTS = new Set([
   'route-network/avinor-remaining-airports-accepted-20261007.jsonl',
   'route-network/avinor-remaining-airports-release-20261007.json',
   ...['alf', 'anx', 'bjf', 'bnn', 'bvg', 'haa', 'hft', 'hov', 'hvg', 'kkn', 'ksu', 'lkn', 'meh', 'mjf', 'mqn', 'osy', 'ret', 'sdn', 'skn', 'sog', 'ssj', 'svj', 'vaw', 'vds'].map((airport) => `route-network/avinor-remaining-xml-public-${airport}-20261007.xml`),
+  'route-network/siros-registered-plan-proposal-20261007.jsonl.gz',
+  'route-network/siros-registered-plan-raw-rows-20261007.jsonl.gz',
   'route-network/flightsfrom-flight-numbers-20260909.json',
   'route-network/mrairspace-flight-number-candidates.json',
   'route-network/mrairspace-flight-number-candidates-2026-Q2.json',
@@ -80,11 +82,30 @@ const PRODUCERS: Record<string, string> = {
   'route-network/runtime-generated.meta.json': 'scripts/build-runtime-generated.ts',
   'route-network/mrairspace-flight-number-candidates-2026-Q2.json': 'scripts/ingest-mrairspace.ts',
   'route-network/caa-weekly-schedule-tier-20261006.json': 'scripts/build-caa-weekly-schedule-tier.py',
+  'route-network/siros-registered-plan-release-20261007.json': 'scripts/build-siros-registered-plan-release.ts',
 };
 
 /** License / source descriptor by directory family. */
 function describe(path: string): { source: string; license: DataLicense } {
   if (path.startsWith('route-network/')) {
+    if (path === 'route-network/siros-registered-plan-proposal-20261007.jsonl.gz') {
+      return {
+        source: 'Independently reviewed ANAC SIROS registered-schedule handoff; preserves the accepted proposal, exclusions, route identity matches and review report hashes',
+        license: 'government-open-data',
+      };
+    }
+    if (path === 'route-network/siros-registered-plan-release-20261007.json') {
+      return {
+        source: 'ANAC SIROS snapshot release manifest; pins the captured source hash, accepted proposal/raw rows, prior independently reviewed report hashes and evidence-only scope',
+        license: 'government-open-data',
+      };
+    }
+    if (path === 'route-network/siros-registered-plan-raw-rows-20261007.jsonl.gz') {
+      return {
+        source: 'ANAC SIROS captured CSV accepted rows; each retained UTF-8 source row has its exact per-row SHA-256 and points to the pinned captured source-body hash',
+        license: 'government-open-data',
+      };
+    }
     if (path === 'route-network/avinor-follow-on-evidence-20261006.jsonl'
       || path === 'route-network/avinor-follow-on-release-20261006.json') {
       return {
@@ -120,8 +141,8 @@ function describe(path: string): { source: string; license: DataLicense } {
     }
     if (path.includes('runtime')) {
       return {
-        source: 'curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)',
-        license: 'ODbL-1.0',
+        source: 'Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)',
+        license: 'mixed-source-terms',
       };
     }
     if (path.includes('mrairspace')) {
@@ -265,6 +286,16 @@ function build(): void {
       inputs = CURATED_INPUTS.size
         ? [...CURATED_INPUTS].filter((p) => p.startsWith('route-network/') && !p.includes('runtime')).sort()
         : [];
+      inputs.push('route-network/siros-registered-plan-release-20261007.json');
+    }
+    if (path === 'route-network/siros-registered-plan-release-20261007.json') {
+      inputs = [
+        'route-network/siros-registered-plan-proposal-20261007.jsonl.gz',
+        'route-network/siros-registered-plan-raw-rows-20261007.jsonl.gz',
+        'scripts/build-siros-registered-plan-release.ts',
+        'scripts/lib/siros-registered-plan-input.ts',
+        'src/lib/schemas/siros-registered-plan-release.ts',
+      ];
     }
     if (path === 'route-network/runtime-generated-2026-09.json') {
       inputs = [
@@ -282,28 +313,36 @@ function build(): void {
     const isAvinorBatchXml = /^route-network\/avinor-xml-public-(aes|bdu|bgo|boo|eve|krs|mol|svg|tos|trd)-20261006\.xml$/.test(path);
     const isAvinorFollowOn = path === 'route-network/avinor-follow-on-evidence-20261006.jsonl'
       || path === 'route-network/avinor-follow-on-release-20261006.json';
+    const isSiroArtifact = path === 'route-network/siros-registered-plan-proposal-20261007.jsonl.gz'
+      || path === 'route-network/siros-registered-plan-raw-rows-20261007.jsonl.gz'
+      || path === 'route-network/siros-registered-plan-release-20261007.json';
+    const isSiroRelease = path === 'route-network/siros-registered-plan-release-20261007.json';
     const isRuntimeNetwork = path === 'route-network/runtime-current.json';
     const isRuntimeMeta = path === 'route-network/runtime-current.meta.json';
     const previous = existingByPath.get(path);
     datasets.push({
       id: path.replace(/\.json$/, '').replace(/\//g, '.'),
       path,
-      kind: isCaaWeeklyTier ? kind : previous?.kind ?? kind,
-      producer: isCaaWeeklyTier ? producer : previous?.producer ?? producer,
-      inputs: isCaaWeeklyTier ? inputs : previous?.inputs ?? inputs,
-      source: isCaaWeeklyTier || isAvinorSnapshot || isAvinorXml || isAvinorBatchSnapshot || isAvinorBatchXml || isAvinorFollowOn || isRuntimeNetwork || isRuntimeMeta ? source : previous?.source ?? source,
-      license: isCaaWeeklyTier || isAvinorSnapshot || isAvinorXml || isAvinorBatchSnapshot || isAvinorBatchXml || isAvinorFollowOn || isRuntimeNetwork || isRuntimeMeta ? license : previous?.license ?? license,
-      attribution: isCaaWeeklyTier
+      kind: isCaaWeeklyTier || isSiroArtifact ? kind : previous?.kind ?? kind,
+      producer: isCaaWeeklyTier || isSiroArtifact ? producer : previous?.producer ?? producer,
+      inputs: isCaaWeeklyTier || isSiroArtifact || isRuntimeNetwork || isRuntimeMeta ? inputs : previous?.inputs ?? inputs,
+      source: isCaaWeeklyTier || isAvinorSnapshot || isAvinorXml || isAvinorBatchSnapshot || isAvinorBatchXml || isAvinorFollowOn || isSiroArtifact || isRuntimeNetwork || isRuntimeMeta ? source : previous?.source ?? source,
+      license: isCaaWeeklyTier || isSiroArtifact || isRuntimeNetwork || isRuntimeMeta ? license : previous?.license ?? license,
+      attribution: isSiroArtifact ? 'ANAC — Registro de Serviços Aéreos (SIROS); federal open-data reuse basis with attribution, subject to resource-specific terms'
+        : isCaaWeeklyTier
         ? 'Taiwan Civil Aviation Administration (交通部民用航空局)'
         : isAvinorSnapshot || isAvinorXml || isAvinorBatchSnapshot || isAvinorBatchXml || isAvinorFollowOn ? 'Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; link the flight-data terms separately' : previous?.attribution ?? null,
-      schema: isCaaWeeklyTier ? 'src/lib/schemas/caa-weekly-schedule-tier.ts'
+      schema: isSiroRelease ? 'src/lib/schemas/siros-registered-plan-release.ts'
+        : isCaaWeeklyTier ? 'src/lib/schemas/caa-weekly-schedule-tier.ts'
         : isAvinorSnapshot ? 'src/lib/schemas/avinor-xml-public.ts'
           : isAvinorBatchSnapshot ? 'src/lib/schemas/avinor-xml-public-batch.ts'
             : isAvinorFollowOn ? 'src/lib/schemas/avinor-follow-on.ts'
               : isAvinorXml || isAvinorBatchXml ? null : previous?.schema ?? null,
       bytes,
       sha256,
-      notes: isCaaWeeklyTier
+      notes: path === 'route-network/siros-registered-plan-release-20261007.json'
+        ? 'Pins the captured 2026-10-07 SIROS CSV source body and accepted 14,997-row existing-route proposal. The proposal has 57 exact candidate matches and 1,390 designator identities absent from candidate/confirmed layers; it overlaps zero of 2,767 confirmed associations. The archive preserves exact accepted raw source rows. Held, expired, Z-prefixed schema-incompatible and new-route cases are outside this release.'
+        : isCaaWeeklyTier
         ? '488 schedule-listed carrier-number-direction associations as of 2026-10-06; operator identity unknown; no actual-operation, bookability, nonstop, selectable-flight or award-eligibility claim. Source SHA-256 values are included in the asset.'
         : isAvinorSnapshot
           ? '412 exact candidate-key matches for 130 directed routes using Avinor OperatingAirlineIata, full FlightId and direction fields. One OSL request retrieved 2026-10-06; six-day scope expires at 2026-10-12T19:47:47Z. Full original XML is bundled; visible linked attribution is required by source terms. Blank via_airport means no intermediate airport was reported; it does not prove physical nonstop service. A schedule row is not actual-operation, recurrence, award-seat or bookability evidence.'

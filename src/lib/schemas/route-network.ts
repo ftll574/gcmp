@@ -18,6 +18,10 @@ export const RouteNetworkSourceSchema = z.object({
   url: SourceUrlSchema,
   checkedOn: DateSchema,
   publishedOn: DateSchema.optional(),
+  /** Exact snapshot retrieval time and source-body digest when supplied. */
+  retrievedAtUTC: z.iso.datetime({ offset: true }).refine((value) => value.endsWith('Z'), 'Retrieval time must be UTC').optional(),
+  contentSHA256: z.string().regex(/^[a-f0-9]{64}$/).optional(),
+  attribution: z.string().min(1).optional(),
   /** Exact source cutoff for short-lived snapshot evidence; after this UTC instant it is stale. */
   freshUntilUTC: z.iso.datetime({ offset: true }).refine((value) => value.endsWith('Z'), 'Freshness deadline must be UTC').optional(),
   /** Cached response path relative to the public data root. */
@@ -27,6 +31,45 @@ export const RouteNetworkSourceSchema = z.object({
   note: z.string().min(1),
 }).strict();
 export type RouteNetworkSource = z.infer<typeof RouteNetworkSourceSchema>;
+
+/** Compact reference from a registered plan to its exact source-row bytes. */
+export const RegisteredPlanSourceRowSchema = z.object({
+  sourceId: SourceIdSchema,
+  sourceRow: z.number().int().positive(),
+  registeredOperator: z.string().regex(/^[A-Z0-9]{2,3}$/),
+  registeredOperatorICAO: z.string().regex(/^[A-Z]{3}$/),
+  carrierEntityKey: CarrierEntityKeySchema.optional(),
+  sourceRowSHA256: z.string().regex(/^[a-f0-9]{64}$/),
+  sourceBodySHA256: z.string().regex(/^[a-f0-9]{64}$/),
+  captureRetrievedAtUTC: z.iso.datetime({ offset: true }).refine((value) => value.endsWith('Z'), 'Capture time must be UTC'),
+  statusRaw: z.string().min(1),
+  disposition: z.literal('accepted'),
+  actualOperation: z.literal('unverified'),
+  bookable: z.literal(false),
+}).strict();
+export type RegisteredPlanSourceRow = z.infer<typeof RegisteredPlanSourceRowSchema>;
+
+export const RegisteredPlanSchema = z.object({
+  registrationId: z.string().min(1),
+  registeredOperator: z.string().regex(/^[A-Z0-9]{2,3}$/),
+  registeredOperatorICAO: z.string().regex(/^[A-Z]{3}$/).optional(),
+  carrierEntityKey: CarrierEntityKeySchema.optional(),
+  flightNumberRaw: z.string().regex(/^\d{1,4}$/),
+  effectiveFrom: DateSchema,
+  effectiveUntil: DateSchema,
+  weekdays: z.array(z.number().int().min(1).max(7)).min(1),
+  departureUTC: z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/),
+  arrivalUTC: z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/),
+  arrivalDayOffset: z.null(),
+  codeshareRaw: z.string().optional(),
+  codeshareCompleteness: z.literal('unknown').optional(),
+  stageNumber: z.number().int().positive().optional(),
+  versionConflict: z.boolean().optional(),
+  confidence: z.literal('high-confidence-schema-inference'),
+  sourceId: SourceIdSchema,
+  sourceRowLineage: z.array(RegisteredPlanSourceRowSchema).min(1).optional(),
+}).strict();
+export type RegisteredPlan = z.infer<typeof RegisteredPlanSchema>;
 
 /** Carrier-level denominator readiness is intentionally separate from route
  * rows. `complete` is a strong claim: every directional nonstop route in the
@@ -63,7 +106,7 @@ export const RouteNetworkEntrySchema = z.object({
   /** A scheduled endpoint pair is date-scoped and does not claim physical nonstop service. */
   service: z.enum(['nonstop', 'scheduled-endpoint-pair']),
   /** Registered plans are evidence only; never upgrade carrier identity, confirmed designators or dated selectable services. */
-  registeredPlans: z.array(z.object({registrationId:z.string().min(1),registeredOperator:z.string().regex(/^[A-Z0-9]{2,3}$/),registeredOperatorICAO:z.string().regex(/^[A-Z]{3}$/).optional(),carrierEntityKey:CarrierEntityKeySchema.optional(),flightNumberRaw:z.string().regex(/^\d{1,4}$/),effectiveFrom:DateSchema,effectiveUntil:DateSchema,weekdays:z.array(z.number().int().min(1).max(7)).min(1),departureUTC:z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/),arrivalUTC:z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/),arrivalDayOffset:z.null(),codeshareRaw:z.string().optional(),codeshareCompleteness:z.literal('unknown').optional(),stageNumber:z.number().int().positive().optional(),versionConflict:z.boolean().optional(),confidence:z.literal('high-confidence-schema-inference'),sourceId:SourceIdSchema}).strict()).optional(),
+  registeredPlans: z.array(RegisteredPlanSchema).optional(),
   /** `identity-unresolved` preserves a sourced route relationship that is no
    * longer safe to present as a current plannable carrier-route because no
    * same-carrier commercial designator can be corroborated. */
@@ -76,7 +119,7 @@ export const RouteNetworkEntrySchema = z.object({
    * Allows listed-carrier discovery without a designator; never proves the
    * actual operator or a dated flight. Unmarked provider graphs stay gated. */
   routeEvidence: z.literal('official-directed').optional(),
-  /** Route-level admission; registered-plan enrichment must never attach to this row. */
+  /** Route-level admission. Separate registered-schedule evidence may be shown but cannot promote a flight identity or date-specific service. */
   routeEvidenceScope: z.literal('route-only').optional(),
   /** Exact designators backed strongly enough for route planning. They still
    * do not assert a weekday, time, award seat, or date-specific operation. */
@@ -135,8 +178,8 @@ export const RouteNetworkEntrySchema = z.object({
   if (entry.pair[0] === entry.pair[1]) {
     ctx.addIssue({ code: 'custom', path: ['pair'], message: 'Endpoints must differ' });
   }
-  if (entry.routeEvidenceScope === 'route-only' && (entry.carrierIdentity !== 'provider-listed' || entry.routeEvidence !== 'official-directed' || entry.registeredPlans !== undefined || entry.flightNumbers !== undefined || entry.flightNumberCandidates !== undefined || entry.effectiveFrom !== undefined || entry.effectiveUntil !== undefined)) {
-    ctx.addIssue({ code: 'custom', path: ['routeEvidenceScope'], message: 'Route-only evidence must remain an undated provider-listed relationship without plan or flight-number promotion' });
+  if (entry.routeEvidenceScope === 'route-only' && (entry.carrierIdentity !== 'provider-listed' || entry.routeEvidence !== 'official-directed' || entry.flightNumbers !== undefined || entry.flightNumberCandidates !== undefined || entry.timeBoundFlightNumbers !== undefined || entry.effectiveFrom !== undefined || entry.effectiveUntil !== undefined)) {
+    ctx.addIssue({ code: 'custom', path: ['routeEvidenceScope'], message: 'Route-only evidence must remain an undated provider-listed relationship without flight-number or date-specific schedule promotion' });
   }
   if (entry.service === 'scheduled-endpoint-pair'
     && (entry.status !== 'published' || entry.carrierIdentity !== 'provider-listed' || !(entry.timeBoundFlightNumbers?.length))) {
@@ -150,6 +193,10 @@ export const RouteNetworkEntrySchema = z.object({
   }
   for (const plan of entry.registeredPlans ?? []) {
     if ((plan.registeredOperator !== entry.carrier && !(entry.carrierEntityKey && plan.registeredOperatorICAO === entry.carrierEntityKey.split('+')[1])) || (entry.carrierEntityKey && (plan.carrierEntityKey !== entry.carrierEntityKey || plan.registeredOperatorICAO !== entry.carrierEntityKey.split('+')[1])) || (plan.carrierEntityKey !== undefined && plan.carrierEntityKey !== entry.carrierEntityKey) || plan.effectiveFrom > plan.effectiveUntil || new Set(plan.weekdays).size !== plan.weekdays.length) ctx.addIssue({code:'custom',path:['registeredPlans'],message:'Invalid registered plan operator, entity, interval or weekdays'});
+    const lineageRows = plan.sourceRowLineage ?? [];
+    if (new Set(lineageRows.map((row) => `${row.sourceId}:${row.sourceRow}`)).size !== lineageRows.length) {
+      ctx.addIssue({ code: 'custom', path: ['registeredPlans'], message: 'Duplicate registered-plan source-row lineage' });
+    }
   }
   const expectedPrefix = entry.carrier.toUpperCase();
   for (const [field, numbers] of [
@@ -206,7 +253,16 @@ export const RouteNetworkCatalogSchema = z.object({
     const key = carrierRouteKey(route, ...route.pair);
     if (routes.has(key)) ctx.addIssue({ code: 'custom', path: ['routes', index], message: 'Duplicate directional route' });
     routes.add(key);
-    for(const plan of route.registeredPlans ?? []) if(!route.sourceIds.includes(plan.sourceId)) ctx.addIssue({code:'custom',path:['routes',index,'registeredPlans'],message:'Registered plan requires route source reference'});
+    for (const plan of route.registeredPlans ?? []) {
+      if (!route.sourceIds.includes(plan.sourceId)) ctx.addIssue({ code: 'custom', path: ['routes', index, 'registeredPlans'], message: 'Registered plan requires route source reference' });
+      for (const lineage of plan.sourceRowLineage ?? []) {
+        if (!route.sourceIds.includes(lineage.sourceId)) ctx.addIssue({ code: 'custom', path: ['routes', index, 'registeredPlans'], message: 'Registered-plan source-row lineage requires route source reference' });
+        const source = catalog.sources.find((row) => row.id === lineage.sourceId);
+        if (source?.contentSHA256 && source.contentSHA256 !== lineage.sourceBodySHA256) {
+          ctx.addIssue({ code: 'custom', path: ['routes', index, 'registeredPlans'], message: 'Registered-plan source-row body hash does not match its source record' });
+        }
+      }
+    }
     route.sourceIds.forEach((id) => {
       if (!sources.has(id)) ctx.addIssue({ code: 'custom', path: ['routes', index, 'sourceIds'], message: `Unknown source ${id}` });
     });

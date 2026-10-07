@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "releaseId": "anac-siros-registered-plans-20261007",
+  "source": {
+    "id": "anac-siros-registrations-20261007",
+    "url": "https://siros.anac.gov.br/siros/registros/registros/registros.csv",
+    "checkedOn": "2026-10-07",
+    "retrievedAtUTC": "2026-10-07T07:14:26.504894Z",
+    "bodyBytes": 27270017,
+    "bodySHA256": "24e500b6ca5c2af6d843c7b12dd9fecad4104667de6bcdfdac894d79e6b3cbf4",
+    "attributionText": "Source: ANAC, Registro de Serviços Aéreos (SIROS), https://siros.anac.gov.br/siros/registros/registros/registros.csv; snapshot retrieved 2026-10-07 UTC; transformed by schema validation, dated registered-stage classification, exact-code identity mapping, and route-key comparison. Not endorsed by ANAC.",
+    "rightsBasis": "Federal open-data reuse terms under Decree 8.777/2016 and federal portal terms permit reuse with attribution, subject to resource-specific terms. No Creative Commons variant or separate resource-specific license is asserted."
+  },
+  "baselineRuntime": {
+    "commit": "f472092b0324df7b2d744596709c69f27cbbad55",
+    "runtimeSHA256": "aa90283d52015b1b418c3840252cb34152f9ed577a3e0766291935b92b151537"
+  },
+  "inputs": {
+    "proposal": {
+      "path": "route-network/siros-registered-plan-proposal-20261007.jsonl.gz",
+      "bytes": 480636,
+      "sha256": "ce774d7c850fd041ba9ab13284e0e03269387e9bf117873fca4df9a251abd2e5"
+    },
+    "acceptedRawRows": {
+      "path": "route-network/siros-registered-plan-raw-rows-20261007.jsonl.gz",
+      "bytes": 1026024,
+      "sha256": "c6983abcee68e1eedf585dc1662e1b41d542e7d58b65227e96e01545030dff7b"
+    },
+    "independentReview": {
+      "handoffSummarySHA256": "8cda2be8f76644125ef35e3c743c8f57247fda6f71ecb8bb0fbbd5d159ffbae8",
+      "reviewSummarySHA256": "5da55c3c12a55aa88ad324b36ac7a4b6913d64e448f5752a0d82cb9b52909765",
+      "reviewReportSHA256": "215e0070d3d6de1c4af3985eb8eda1d951a438da3dcd0009cb43a3ae9b539a21",
+      "reviewManifestSHA256": "f34e8982f94f03b37906f48ea86f2586899bdda0e84c15a2dcf51c632ef14c7b"
+    }
+  },
+  "accepted": {
+    "sourceRows": 14997,
+    "existingRouteKeys": 386,
+    "uniqueDesignatorAssociations": 1447,
+    "existingCandidateRows": 276,
+    "existingCandidateAssociations": 57,
+    "confirmedFlightOverlaps": 0,
+    "newIdentityRowsOnExistingRoutes": 14721,
+    "newIdentityAssociationsOnExistingRoutes": 1390,
+    "registeredPlanIdentityMatchRows": 2592,
+    "sameRegistrationAndProfileRows": 2575,
+    "designatorIdentitiesAbsentFromCandidateAndConfirmedLayers": 1390,
+    "baselineConfirmedFlightAssociations": 2767
+  },
+  "excluded": {
+    "allHeldExpiredAndOutOfScopeRowsOmitted": true,
+    "clockConflictRowsHeld": 308,
+    "expiredRows": 2146,
+    "schemaIncompatibleZRows": 316,
+    "newRouteAdmissionRows": 108
+  },
+  "boundaries": [
+    "Registered schedule evidence is not proof of actual operation, bookability, physical nonstop service, or award eligibility.",
+    "SIROS does not supply an arrival-day offset; validity dates and source weekday columns are retained, and schedule clocks are UTC.",
+    "Raw flight-number strings preserve leading zeroes; qualified carrier identity is retained where required.",
+    "Codeshare marketing identities remain raw source fields and do not establish the registered or operating carrier.",
+    "No SIROS rows are promoted into flightNumbers or timeBoundFlightNumbers; all out-of-scope held, expired, schema-incompatible, and new-route cases remain omitted."
+  ]
+}

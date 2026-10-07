@@ -1,9 +1,9 @@
 {
   "version": 1,
   "builtOn": "2026-10-07",
-  "source": "curated + provider-listed route-network layers, the first OSL snapshot, the ten-airport Avinor batch, the 11-snapshot follow-on ledger, and the independently reviewed 143-identity Avinor remaining-airports release (see THIRD_PARTY_NOTICES.md and exact occurrence/source expiry metadata)",
-  "license": "ODbL-1.0",
-  "licenseNote": "Derived database of ODbL-licensed ADS-B route sources; share-alike applies. Avinor is date-scoped schedule evidence with separate attribution terms; every occurrence expires at its scheduled UTC time, and each snapshot has its own source-window cutoff.",
+  "source": "Curated + provider-listed route-network layers, ODbL route sources, the first OSL snapshot, the ten-airport Avinor batch, the 11-snapshot follow-on ledger, the independently reviewed 143-identity Avinor remaining-airports release, and the exact reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md and per-source provenance)",
+  "license": "mixed-source-terms",
+  "licenseNote": "ODbL share-alike applies to the database derived from the ODbL route sources. Avinor, CAA, and ANAC SIROS evidence retain separate source-specific attribution and reuse conditions; see THIRD_PARTY_NOTICES.md. Registered schedules remain distinct from operation and dated-schedule evidence.",
   "mergeStrategy": "curated + generated",
   "inputs": {
     "current.json": "51fa9f42008daa852af9a4142d3da9ed40b68c4be83ea354b603f1c1dbb40bc5",
@@ -61,9 +61,19 @@
     "avinor-remaining-xml-public-vaw-20261007.xml": "eac3bfe354a52d153d10bebb7f90b565226617943eb3ddf2a230d58124cba144",
     "avinor-remaining-xml-public-vds-20261007.xml": "a842916844a1e77e5468058b14d31e7ac398885967e51be944f7cbacf7060235",
     "docs/avinor-follow-on-release-20261007/validation-report.json": "91b292773261ff86d15246b415495dc0c85477c3b8a2ea73ecf9f6bebafe8d79",
-    "docs/avinor-follow-on-release-20261007/avinor-flight-data-terms-20261002.html": "fd1116c4eb6e714e43a8c537556fe24148a781e75cae997c3dfaf0149f1c3084"
+    "docs/avinor-follow-on-release-20261007/avinor-flight-data-terms-20261002.html": "fd1116c4eb6e714e43a8c537556fe24148a781e75cae997c3dfaf0149f1c3084",
+    "siros-registered-plan-proposal-20261007.jsonl.gz": "ce774d7c850fd041ba9ab13284e0e03269387e9bf117873fca4df9a251abd2e5",
+    "siros-registered-plan-raw-rows-20261007.jsonl.gz": "c6983abcee68e1eedf585dc1662e1b41d542e7d58b65227e96e01545030dff7b",
+    "siros-registered-plan-release-20261007.json": "90690b9dee91e7b22c89ee2b8903cce500530aacbb89564162b87bd6bf4aa8b3",
+    "scripts/build-runtime-route-network.ts": "54412d4660c1bbdc26f3dce75931db95b3049e61f739a6f67193fe3cdf762663",
+    "scripts/lib/siros-registered-plan-input.ts": "b47200fa9a2f9d1a5b364e2dc77ed68862ef214b7bafa3f298947a60a3a31fb8",
+    "scripts/build-siros-registered-plan-release.ts": "a2bd95c9adec5cfc87f73c801564283c00c9a522fe26f5df1f574d07b5c64fc8",
+    "src/lib/rtw/siros-registered-plan-adapter.ts": "a7c674b1bc19d838371584e300f3da34ee10ba546984f832227e71c8b32de11c",
+    "src/lib/schemas/siros-registered-plan-overlay.ts": "401cd9ed8ddd267403a3d0db89c08483273be0625dd80f296dd3cf18901d3f5f",
+    "src/lib/schemas/siros-registered-plan-release.ts": "a9f02599bb3068acde0d1bb4bab1363aa52b87d52fd5c2fee5ff3bec2429c80e",
+    "src/lib/schemas/route-network.ts": "d6a59bddaa99fac783a80a31fab16e2673567ae13e6ced0e5f120a8b06a6e08e"
   },
-  "outputSha256": "aa90283d52015b1b418c3840252cb34152f9ed577a3e0766291935b92b151537",
+  "outputSha256": "34c465081e6835721abf95bd6ca9e132f3afad6386977b4ca6ca797b528c37e9",
   "routes": 32216,
   "publishedRoutes": 31626,
   "carriers": 141,
@@ -420,38 +430,38 @@
   "originShards": {
     "A": {
       "routes": 2337,
-      "bytes": 1508154,
-      "sha256": "079325fe4a1b0ae8a9cd387a19f25fb47612022d8a3f5dfe3997bb00dd3e692f"
+      "bytes": 1724922,
+      "sha256": "23045a4ae137b7770abcc613bd664d80b13558a8bf9b799c547e82896a899ae7"
     },
     "B": {
       "routes": 2214,
-      "bytes": 2274770,
-      "sha256": "642221c760f99677a0f40e6b0e6f4c369a066b3053f2f1e1b02bad5d283d4b88"
+      "bytes": 3177326,
+      "sha256": "88477afe260885b98da8a511ce47b5e7d133c37aec5fbdc869b7a9ab7bb6268e"
     },
     "C": {
       "routes": 2628,
-      "bytes": 1586018,
-      "sha256": "f5e298bfc7e6a4e7dc711623ffe7c79261c0a74bbc2472e723cfb524eb6c7a2f"
+      "bytes": 6719112,
+      "sha256": "9834561ad4fc1d2e822c1c2f6c38fae7e750b9e1a3b2ba7e032597d9d5e59360"
     },
     "D": {
       "routes": 2012,
-      "bytes": 997808,
-      "sha256": "0c9a0fdb52923f12de3672e776e425fb0537f4e59956cc3141f6761a99b61b14"
+      "bytes": 1026037,
+      "sha256": "33beb2c5eea64fb3be9cf1c77decbb1deb8d5c019589f87428b1c0de10acaa2e"
     },
     "E": {
       "routes": 567,
-      "bytes": 387280,
-      "sha256": "1a41d58f6aa436137f31385220238aa15d1f971f8cb1a1b0b06d4351f980c0ac"
+      "bytes": 472304,
+      "sha256": "a8b632396afbda680bec45e0f1e83c9a9f092cd08856d125c9c62cecb070296b"
     },
     "F": {
       "routes": 965,
-      "bytes": 677169,
-      "sha256": "4e01d0817d7f23af7c81d3b1f2fef8bb1c60a576c1e4052945c4080065f4ecf0"
+      "bytes": 1035515,
+      "sha256": "96a9156c644184a5835dcff9ece49bfac415ee91392341d6ce03008696f7d0a3"
     },
     "G": {
       "routes": 681,
-      "bytes": 852191,
-      "sha256": "c946dc6158fafe4b5e93e68c55216e1e1a63d18cd001f99ec923e02a72d3b534"
+      "bytes": 3703928,
+      "sha256": "f4b0c20aa363964ef48f9df2633d7639794805cd64d0fd595aa542091ece6c3b"
     },
     "H": {
       "routes": 1607,
@@ -460,13 +470,13 @@
     },
     "I": {
       "routes": 1357,
-      "bytes": 721761,
-      "sha256": "733ef53dd8a1b90f339f056618ace36a1b455ce3e23103e42e2abd51bbe23171"
+      "bytes": 861576,
+      "sha256": "bde12fbe5cc4afd135546b5ef08e7e0506838518d55820921ba97627b9c89a75"
     },
     "J": {
       "routes": 783,
-      "bytes": 378016,
-      "sha256": "426bac4338e33c7fabcb504917290d9835ad3cf2497eb727f9216fb588ae34c6"
+      "bytes": 466779,
+      "sha256": "521b571dca9ec7a8d6bb9c74511d0373dbab62488b4d4989ccdc4415372b33d4"
     },
     "K": {
       "routes": 994,
@@ -475,28 +485,28 @@
     },
     "L": {
       "routes": 2002,
-      "bytes": 1265695,
-      "sha256": "bebad3e9e8307447a8624385b98a8bf43079df9e82c80223110f0540d9df49cb"
+      "bytes": 1389991,
+      "sha256": "801bc3fd793db5fdee4ab1c4410ac70d5af6104b5a7262ba528f8d3985d10cbf"
     },
     "M": {
       "routes": 2358,
-      "bytes": 1436524,
-      "sha256": "43e8224f691396d24ca35c9ab0c500e5802976cc92787bc15b89b50f5cb75d5d"
+      "bytes": 1652479,
+      "sha256": "9f8b94ba57880961bb8cbb188acfd31689cadd4c15e1d28953337207d13c3ac9"
     },
     "N": {
       "routes": 869,
-      "bytes": 476941,
-      "sha256": "c44bad925a442db062fb0c33ef82c94f5b3684d5ff5471f6a508669530b9fc27"
+      "bytes": 707000,
+      "sha256": "194db3a24934b4998374bf3ab6cae0412ed883e8824a3db63fecff47f61aa4dd"
     },
     "O": {
       "routes": 1366,
-      "bytes": 1923434,
-      "sha256": "34c15ec94287b89a9355bfea6e549ac9da6477011459cb7b22cbcb7f001623cd"
+      "bytes": 1946829,
+      "sha256": "df8781e68426d2af3838bc10c532cf42dc66377735d8b922727d99d2ec8949a1"
     },
     "P": {
       "routes": 1947,
-      "bytes": 1084296,
-      "sha256": "5beff4493a0c8f2080d104a5de4d3565e9aa7830c9dc56b521fa2b364701ca30"
+      "bytes": 1247453,
+      "sha256": "920c4436abba5a566f6c8a60b55a424b4863c741a7ab06b1b6930a7eeee71e20"
     },
     "Q": {
       "routes": 3,
@@ -505,28 +515,28 @@
     },
     "R": {
       "routes": 673,
-      "bytes": 450665,
-      "sha256": "7a87cb41ac2a6d8640696fedc7e8b4a034b71bc4e336545e7f534943bb320299"
+      "bytes": 2376110,
+      "sha256": "87fd8b5903033cebccad7b3820098126c30b8efb1e490707c160234045ac6046"
     },
     "S": {
       "routes": 2714,
-      "bytes": 1846573,
-      "sha256": "9b6d7026eb6fbd985d69bc48b634b8246eb22b293eb6febc1609462c27e76542"
+      "bytes": 2242971,
+      "sha256": "d5c273c0d685a1a0b1e407937946ebd13238f5829a5b84b708f2a47172966d5a"
     },
     "T": {
       "routes": 1431,
-      "bytes": 1479487,
-      "sha256": "d70b89eaa704078829deb9c27cc8bf572605b93b25533c43a42ee1e03fcbfb0f"
+      "bytes": 1505162,
+      "sha256": "0eaff7022a97d609d1a3df12223a064028fd2b1831bdab14783886b46d08bb2e"
     },
     "U": {
       "routes": 140,
-      "bytes": 79895,
-      "sha256": "be417524db5892dd7ba17c60ccd39e72e028c5be032bea3abed230fb7b89f84a"
+      "bytes": 89652,
+      "sha256": "7af52df3e56a28a3c2e2418f196cf2eb777b1dc1320925bc21ed7dfdd4e011b7"
     },
     "V": {
       "routes": 487,
-      "bytes": 318389,
-      "sha256": "f41afd76964b9335b9e6a472f94373b832a8b1ddbdd874a35e6ea70869d42b52"
+      "bytes": 453987,
+      "sha256": "0e07e5190c1f377492752ad15bbc4a69643c4c508d3e9378739bc337560b8f60"
     },
     "W": {
       "routes": 468,
@@ -540,13 +550,13 @@
     },
     "Y": {
       "routes": 926,
-      "bytes": 483180,
-      "sha256": "e8fdaa18975586a8dd54343864654d2c892fa96c95e6901920a874e9968784cd"
+      "bytes": 498152,
+      "sha256": "cf50eafa9b919e3250672a2fad4d11924c5af58a6d8f466a2b950963a0d57a03"
     },
     "Z": {
       "routes": 375,
-      "bytes": 199090,
-      "sha256": "dd4ada10553276336e5a510020713fbc1810fa282ac3a2226777289b0a0aacb4"
+      "bytes": 201928,
+      "sha256": "9b3132fd22bb793972597352101a565d1248e3898e3b70e9e3152ba513ddadec"
     }
   },
   "avinorFollowOnCarrierCodes": [
@@ -600,5 +610,23 @@
     },
     "independentlyReviewedCurrentOccurrences": 513,
     "independentlyReviewedExpiredOccurrences": 4
+  },
+  "registeredScheduleEvidence": {
+    "sourceId": "anac-siros-registrations-20261007",
+    "capturedSourceBodySHA256": "24e500b6ca5c2af6d843c7b12dd9fecad4104667de6bcdfdac894d79e6b3cbf4",
+    "sourceRetrievedAtUTC": "2026-10-07T07:14:26.504894Z",
+    "acceptedSourceRows": 14997,
+    "existingRouteKeysEnriched": 386,
+    "registeredPlanProfilesAdded": 12422,
+    "registeredPlanProfilesMatchedAndLineaged": 2575,
+    "totalRegisteredPlanProfilesAfterMerge": 15304,
+    "storedFlightDesignatorRouteAssociations": 2767,
+    "storedTimeBoundScheduleAssociations": 2274,
+    "eligibleDatedDepartureAssociationsAtCapture": 1104,
+    "eligibleDatedDepartureOccurrencesAtCapture": 3581,
+    "datedEligibilityReferenceUTC": "2026-10-07T07:14:26.504894Z",
+    "routeEntriesAdded": 0,
+    "flightNumbersPromoted": 0,
+    "timeBoundFlightNumbersPromoted": 0
   }
 }

@@ -23,8 +23,8 @@ const meta = JSON.parse(readFileSync(`${ROOT}/runtime-current.meta.json`, 'utf8'
 };
 
 for (const [file, expected] of Object.entries(meta.inputs)) {
-  const path = /^(?:scripts|docs|public)\//.test(file) ? file : `${ROOT}/${file}`;
-  const actual = file.endsWith('.xml') ? sha256Bytes(readFileSync(path)) : sha256(readFileSync(path, 'utf8'));
+  const path = /^(?:scripts|docs|public|src)\//.test(file) ? file : `${ROOT}/${file}`;
+  const actual = file.endsWith('.xml') || file.endsWith('.gz') ? sha256Bytes(readFileSync(path)) : sha256(readFileSync(path, 'utf8'));
   if (expected !== actual) throw new Error(`Stale runtime input hash: ${file}`);
 }
 const runtimeText = readFileSync(`${ROOT}/runtime-current.json`, 'utf8');

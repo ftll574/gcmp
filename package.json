@@ -32,6 +32,8 @@
     "routes:build-runtime": "tsx scripts/build-runtime-route-network.ts",
     "routes:build-carrier-shards": "tsx scripts/build-route-library-carrier-shards.ts",
     "routes:verify-runtime": "tsx scripts/verify-runtime-route-network.ts",
+    "routes:build-siros-release": "tsx scripts/build-siros-registered-plan-release.ts",
+    "routes:verify-siros": "tsx scripts/verify-siros-registered-plan-release.ts",
     "routes:verify-avinor": "tsx scripts/verify-avinor-xml-public-release.ts && tsx scripts/verify-avinor-follow-on-release.ts && tsx scripts/verify-avinor-remaining-airports-release.ts",
     "routes:verify-avinor-follow-on": "tsx scripts/verify-avinor-follow-on-release.ts",
     "routes:verify-avinor-remaining": "tsx scripts/verify-avinor-remaining-airports-release.ts",

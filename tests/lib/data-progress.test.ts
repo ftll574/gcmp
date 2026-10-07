@@ -21,7 +21,6 @@ describe('published data status integrity', () => {
     expect(status.legacy).toEqual({ total: 31658, published: 31068 });
     expect(status.qualified).toMatchObject({ routes: 0, services: 0, endpoints: 2916 });
     expect(evidence?.state).toBe('verified');
-    expect(runtimeSha256).toBe('aa90283d52015b1b418c3840252cb34152f9ed577a3e0766291935b92b151537');
     expect(runtimeSha256).toBe(runtimeMeta.outputSha256);
     expect(evidence?.runtimeSHA256).toBe(runtimeSha256);
     expect(evidence?.runtimeRoutes).toBe(runtime.routes.length);

@@ -6,7 +6,13 @@ import { parseAvinorXmlPublicBatch } from '../src/lib/schemas/avinor-xml-public-
 import { parseAvinorFollowOnLedgerJsonl, parseAvinorFollowOnRelease } from '../src/lib/schemas/avinor-follow-on.ts';
 import { parseAvinorRemainingAirportsLedgerJsonl, parseAvinorRemainingAirportsRelease } from '../src/lib/schemas/avinor-remaining-airports.ts';
 import { CaaWeeklyScheduleTierSchema } from '../src/lib/schemas/caa-weekly-schedule-tier.ts';
+import { SiroRegisteredPlanReleaseSchema } from '../src/lib/schemas/siros-registered-plan-release.ts';
 import { carrierRouteKey } from '../src/lib/carrier-identity.ts';
+import { applySiroRegisteredPlanOverlay } from '../src/lib/rtw/siros-registered-plan-adapter.ts';
+import {
+  SIROS_RETRIEVED_AT_UTC,
+  buildSiroRegisteredPlanOverlay,
+} from './lib/siros-registered-plan-input.ts';
 import { mergeRouteNetworkCatalogs, mergeRouteNumberEvidence, preserveRuntimeRoutesThenQuarantine } from '../src/lib/rtw/route-network-merge.ts';
 
 const INPUTS = [
@@ -41,6 +47,9 @@ const AVINOR_REMAINING_HELD_KEYS = new Set([
   'LTR|LTR|VRY>BOO|LTR002',
   'LTR|LTR|VRY>BOO|LTR004',
 ]);
+const SIROS_PROPOSAL_INPUT = 'siros-registered-plan-proposal-20261007.jsonl.gz';
+const SIROS_RAW_ROWS_INPUT = 'siros-registered-plan-raw-rows-20261007.jsonl.gz';
+const SIROS_RELEASE_INPUT = 'siros-registered-plan-release-20261007.json';
 
 const root = 'public/data/route-network';
 const airportCodes = new Set<string>(
@@ -761,7 +770,58 @@ if (remainingRuntime.routes.length !== followOnRuntime.routes.length + 45
   || remainingRuntimeRoutesWithNewFlight.length !== remainingByRoute.size) {
   throw new Error('Remaining-airports runtime route, published-route or confirmed-identity projection changed');
 }
-const finalRuntime = remainingRuntime;
+const sirosProposalBytes = readFileSync(`${root}/${SIROS_PROPOSAL_INPUT}`);
+const sirosRawRowsBytes = readFileSync(`${root}/${SIROS_RAW_ROWS_INPUT}`);
+const sirosReleaseRaw = readFileSync(`${root}/${SIROS_RELEASE_INPUT}`, 'utf8');
+const sirosRelease = SiroRegisteredPlanReleaseSchema.parse(JSON.parse(sirosReleaseRaw));
+const sirosOverlay = buildSiroRegisteredPlanOverlay(sirosProposalBytes, sirosRawRowsBytes);
+if (sirosRelease.inputs.proposal.sha256 !== sirosOverlay.artifacts.proposal.sha256
+  || sirosRelease.inputs.proposal.bytes !== sirosOverlay.artifacts.proposal.bytes
+  || sirosRelease.inputs.acceptedRawRows.sha256 !== sirosOverlay.artifacts.acceptedRawRows.sha256
+  || sirosRelease.inputs.acceptedRawRows.bytes !== sirosOverlay.artifacts.acceptedRawRows.bytes
+  || sirosRelease.source.bodySHA256 !== sirosOverlay.source.contentSHA256
+  || sirosRelease.source.id !== sirosOverlay.source.id
+  || sirosRelease.source.retrievedAtUTC !== sirosOverlay.source.retrievedAtUTC) {
+  throw new Error('SIROS release manifest does not pin the exact source, proposal, and accepted raw-row artifacts');
+}
+const sirosApplied = applySiroRegisteredPlanOverlay(remainingRuntime, sirosOverlay);
+const finalRuntime = sirosApplied.catalog;
+const countRouteFlightNumbers = (catalog: RouteNetworkCatalog): number => catalog.routes.reduce((total, route) => total + (route.flightNumbers?.length ?? 0), 0);
+const countRegisteredPlanRows = (catalog: RouteNetworkCatalog): number => catalog.routes.reduce((total, route) => total + (route.registeredPlans?.length ?? 0), 0);
+if (countRouteFlightNumbers(finalRuntime) !== countRouteFlightNumbers(remainingRuntime)
+  || finalRuntime.routes.length !== remainingRuntime.routes.length
+  || sirosApplied.stats.sourceRows !== 14997
+  || sirosApplied.stats.candidateAssociations !== 57
+  || sirosApplied.stats.confirmedOverlaps !== 0) {
+  throw new Error('SIROS registered-plan overlay changed route/flight layers or its reviewed release counts');
+}
+
+const sirosReferenceTime = Date.parse(SIROS_RETRIEVED_AT_UTC);
+const sirosSourceById = new Map(finalRuntime.sources.map((source) => [source.id, source] as const));
+const eligibleDatedAssociations = new Set<string>();
+const eligibleDatedOccurrences = new Set<string>();
+for (const route of finalRuntime.routes) {
+  if (route.status !== 'published') continue;
+  const routeKey = carrierRouteKey(route, ...route.pair);
+  for (const evidence of route.timeBoundFlightNumbers ?? []) {
+    const cutoff = Date.parse(sirosSourceById.get(evidence.sourceId)?.freshUntilUTC ?? '');
+    if (!Number.isFinite(cutoff) || sirosReferenceTime >= cutoff) continue;
+    const sourceAirportFromId = /^avinor-xml-public-(?:batch-)?([a-z]{3})-\d{8}$/.exec(evidence.sourceId)?.[1]?.toUpperCase();
+    for (const time of evidence.occurrencesUTC) {
+      const schedule = Date.parse(time);
+      if (!Number.isFinite(schedule) || schedule <= sirosReferenceTime || schedule > cutoff) continue;
+      const details = evidence.occurrenceDetails?.filter((detail) => detail.scheduleTimeUTC === time) ?? [];
+      const sourceAirport = details[0]?.sourceAirport ?? sourceAirportFromId;
+      const direction = details[0]?.arrDepRaw ?? (sourceAirport === route.pair[0] ? 'D' : sourceAirport === route.pair[1] ? 'A' : undefined);
+      const isEligibleDeparture = direction === 'D' && sourceAirport === route.pair[0]
+        && (evidence.plannerUse !== 'display-only' || details.some((detail) => Boolean(detail.candidateKey)));
+      if (!isEligibleDeparture) continue;
+      const associationKey = `${routeKey}|${evidence.flightNumber}|${evidence.sourceId}`;
+      eligibleDatedAssociations.add(associationKey);
+      eligibleDatedOccurrences.add(`${associationKey}|${time}`);
+    }
+  }
+}
 
 rawByFile.set(AVINOR_XML_INPUT, '');
 
@@ -838,7 +898,7 @@ for (const letter of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') {
 // produces byte-identical output, which keeps generated artifacts diffable.
 const builtOn = new Date(
   Math.max(
-    ...[...INPUTS, ...OPTIONAL_INPUTS, CORRECTIONS_INPUT, NUMBER_INPUT, QUARANTINES_INPUT, PRESERVATION_INPUT, AVINOR_SNAPSHOT_INPUT, AVINOR_XML_INPUT, AVINOR_BATCH_INPUT, ...[...batchXmlBytes.keys()].map((path) => path.split('/').at(-1)!), AVINOR_REMAINING_LEDGER_INPUT, AVINOR_REMAINING_RELEASE_INPUT, ...[...remainingXmlBytes.keys()].map((path) => path.split('/').at(-1)!)]
+    ...[...INPUTS, ...OPTIONAL_INPUTS, CORRECTIONS_INPUT, NUMBER_INPUT, QUARANTINES_INPUT, PRESERVATION_INPUT, AVINOR_SNAPSHOT_INPUT, AVINOR_XML_INPUT, AVINOR_BATCH_INPUT, ...[...batchXmlBytes.keys()].map((path) => path.split('/').at(-1)!), AVINOR_REMAINING_LEDGER_INPUT, AVINOR_REMAINING_RELEASE_INPUT, ...[...remainingXmlBytes.keys()].map((path) => path.split('/').at(-1)!), SIROS_PROPOSAL_INPUT, SIROS_RAW_ROWS_INPUT, SIROS_RELEASE_INPUT]
       .map((file) => `${root}/${file}`)
       .filter((path) => existsSync(path))
       .map((path) => statSync(path).mtimeMs),
@@ -851,9 +911,9 @@ const meta = {
   // Data-license provenance. The route-network layers aggregate ODbL
   // sources (MrAirspace, ADSBiq) whose share-alike terms govern the
   // derived database; see DATA_LICENSE and THIRD_PARTY_NOTICES.md.
-  source: 'curated + provider-listed route-network layers, the first OSL snapshot, the ten-airport Avinor batch, the 11-snapshot follow-on ledger, and the independently reviewed 143-identity Avinor remaining-airports release (see THIRD_PARTY_NOTICES.md and exact occurrence/source expiry metadata)',
-  license: 'ODbL-1.0',
-  licenseNote: 'Derived database of ODbL-licensed ADS-B route sources; share-alike applies. Avinor is date-scoped schedule evidence with separate attribution terms; every occurrence expires at its scheduled UTC time, and each snapshot has its own source-window cutoff.',
+  source: 'Curated + provider-listed route-network layers, ODbL route sources, the first OSL snapshot, the ten-airport Avinor batch, the 11-snapshot follow-on ledger, the independently reviewed 143-identity Avinor remaining-airports release, and the exact reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md and per-source provenance)',
+  license: 'mixed-source-terms',
+  licenseNote: 'ODbL share-alike applies to the database derived from the ODbL route sources. Avinor, CAA, and ANAC SIROS evidence retain separate source-specific attribution and reuse conditions; see THIRD_PARTY_NOTICES.md. Registered schedules remain distinct from operation and dated-schedule evidence.',
   mergeStrategy: 'curated + generated',
   inputs: Object.fromEntries([
     ...INPUTS,
@@ -875,12 +935,25 @@ const meta = {
     ...remainingRelease.sourceSnapshots.map((snapshot) => snapshot.rawAssetPath.split('/').at(-1)!),
     followOnRelease.assets.validationReportPath,
     followOnRelease.assets.cachedTermsSnapshotPath,
+    SIROS_PROPOSAL_INPUT,
+    SIROS_RAW_ROWS_INPUT,
+    SIROS_RELEASE_INPUT,
+    'scripts/build-runtime-route-network.ts',
+    'scripts/lib/siros-registered-plan-input.ts',
+    'scripts/build-siros-registered-plan-release.ts',
+    'src/lib/rtw/siros-registered-plan-adapter.ts',
+    'src/lib/schemas/siros-registered-plan-overlay.ts',
+    'src/lib/schemas/siros-registered-plan-release.ts',
+    'src/lib/schemas/route-network.ts',
   ].map((file) => {
-    const docOrRootPath = /^(?:docs|scripts|public)\//.test(file) ? file : `${root}/${file}`;
-    const bytes = file.endsWith('.xml')
+    const docOrRootPath = /^(?:docs|scripts|public|src)\//.test(file) ? file : `${root}/${file}`;
+    const bytes = file.endsWith('.xml') || file.endsWith('.gz')
       ? batchXmlBytes.get(`route-network/${file}`) ?? remainingXmlBytes.get(`route-network/${file}`) ?? avinorXmlBytes
       : undefined;
-    return [file, bytes ? sha256Bytes(bytes) : sha256(readFileSync(docOrRootPath, 'utf8'))];
+    const contentHash = file.endsWith('.gz')
+      ? sha256Bytes(readFileSync(docOrRootPath))
+      : bytes ? sha256Bytes(bytes) : sha256(readFileSync(docOrRootPath, 'utf8'));
+    return [file, contentHash];
   })),
   outputSha256: sha256(runtimeText),
   routes: runtime.routes.length,
@@ -914,6 +987,24 @@ const meta = {
     sourceCodes: remainingRelease.accepted.sourceOperatingCodeCounts,
     independentlyReviewedCurrentOccurrences: remainingRelease.accepted.currentOccurrenceEvidenceAtReviewAsOf,
     independentlyReviewedExpiredOccurrences: remainingRelease.accepted.expiredOccurrenceEvidenceAtReviewAsOf,
+  },
+  registeredScheduleEvidence: {
+    sourceId: sirosOverlay.source.id,
+    capturedSourceBodySHA256: sirosOverlay.source.contentSHA256,
+    sourceRetrievedAtUTC: sirosOverlay.source.retrievedAtUTC,
+    acceptedSourceRows: sirosApplied.stats.sourceRows,
+    existingRouteKeysEnriched: sirosApplied.stats.existingRouteKeys,
+    registeredPlanProfilesAdded: sirosApplied.stats.planProfilesAdded,
+    registeredPlanProfilesMatchedAndLineaged: sirosApplied.stats.planProfilesMatched,
+    totalRegisteredPlanProfilesAfterMerge: countRegisteredPlanRows(finalRuntime),
+    storedFlightDesignatorRouteAssociations: countRouteFlightNumbers(finalRuntime),
+    storedTimeBoundScheduleAssociations: finalRuntime.routes.reduce((total, route) => total + (route.timeBoundFlightNumbers?.length ?? 0), 0),
+    eligibleDatedDepartureAssociationsAtCapture: eligibleDatedAssociations.size,
+    eligibleDatedDepartureOccurrencesAtCapture: eligibleDatedOccurrences.size,
+    datedEligibilityReferenceUTC: SIROS_RETRIEVED_AT_UTC,
+    routeEntriesAdded: 0,
+    flightNumbersPromoted: 0,
+    timeBoundFlightNumbersPromoted: 0,
   },
 };
 writeFileSync(`${root}/runtime-current.meta.json`, `${JSON.stringify(meta, null, 2)}\n`);
