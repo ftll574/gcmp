@@ -13,6 +13,7 @@ export const DgcaScheduleSourceRowSchema = z.object({
   printedRowRaw: z.string().nullable(),
   sourceSide: z.enum(['arrival', 'departure']).nullable(),
   sourceRowSha256: Sha256.nullable(),
+  sourceRowTextSha256: Sha256.nullable().optional(),
 }).strict();
 
 export const DgcaScheduleEvidenceVariantSchema = z.object({
@@ -21,6 +22,7 @@ export const DgcaScheduleEvidenceVariantSchema = z.object({
   effectiveUntil: CalendarDate,
   effectiveFromRaw: z.string().min(1),
   effectiveUntilRaw: z.string().min(1),
+  sourceStatusAsOf: z.enum(['current', 'future', 'expired']).optional(),
   frequencyRaw: z.string(),
   frequencyQualification: z.string().min(1),
   frequencyWeekdaysCorroborated: z.array(z.string()),
@@ -37,6 +39,14 @@ export const DgcaScheduleEvidenceVariantSchema = z.object({
   conflictIds: z.array(z.string()),
   conflictKinds: z.array(z.string()),
   conflictFields: z.array(z.enum(['frequency', 'departureClock', 'arrivalClock', 'aircraftType', 'rawClock'])),
+  conflictEvidence: z.array(z.object({
+    id: z.string().min(1),
+    peerVariantId: z.string().min(1),
+    overlapFrom: CalendarDate,
+    overlapUntil: CalendarDate,
+    differingRawFields: z.array(z.enum(['frequency', 'departureClock', 'arrivalClock', 'aircraftType', 'rawClock'])).min(1),
+    interpretation: z.string().min(1),
+  }).strict()).default([]),
   hasVariantConflict: z.boolean(),
   timeConflict: z.boolean(),
   notes: z.array(z.string()),
@@ -46,6 +56,13 @@ export const DgcaScheduleEvidenceVariantSchema = z.object({
   }
   if (variant.hasVariantConflict !== (variant.conflictIds.length > 0 || variant.conflictFields.length > 0)) {
     ctx.addIssue({ code: 'custom', message: 'Conflict flag does not match preserved conflict evidence' });
+  }
+  if (variant.conflictEvidence.some(evidence => evidence.overlapFrom > evidence.overlapUntil
+    || evidence.peerVariantId === variant.id)) {
+    ctx.addIssue({ code: 'custom', message: 'Variant overlap evidence has an invalid window or self-reference' });
+  }
+  if (new Set(variant.conflictEvidence.map(evidence => evidence.id)).size !== variant.conflictEvidence.length) {
+    ctx.addIssue({ code: 'custom', message: 'Variant overlap evidence contains duplicate pair IDs' });
   }
   if (variant.sourceCounterpartStatus === 'paired' && new Set(variant.sourceMovementSides).size < 2) {
     ctx.addIssue({ code: 'custom', message: 'Paired source status requires arrival and departure source rows' });

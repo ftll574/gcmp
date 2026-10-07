@@ -141,4 +141,20 @@ describe('DGCA schedule evidence schema', () => {
     invalid.sources[0]!.references[0]!.variants[0]!.hasVariantConflict = true;
     expect(() => DgcaScheduleEvidenceCatalogSchema.parse(invalid)).toThrow();
   });
+
+  it('retains overlap timing evidence without classifying it as an identity conflict', () => {
+    const fixture = catalogFixture();
+    const evidenceVariant = fixture.sources[0]!.references[0]!.variants[0]!;
+    evidenceVariant.conflictIds = ['pair-example'];
+    evidenceVariant.conflictFields = ['departureClock'];
+    evidenceVariant.hasVariantConflict = true;
+    fixture.sources[0]!.references[0]!.hasVariantConflict = true;
+    fixture.sources[0]!.references[0]!.conflictReferences = ['pair-example'];
+    evidenceVariant.conflictEvidence = [{
+      id: 'pair-example', peerVariantId: 'dgca-6e-peer-variant', overlapFrom: '2026-08-03', overlapUntil: '2026-10-15',
+      differingRawFields: ['departureClock'], interpretation: 'Overlapping raw metadata timing flag; not an identity conflict.',
+    }];
+    const parsed = DgcaScheduleEvidenceCatalogSchema.parse(fixture);
+    expect(parsed.sources[0]!.references[0]!.variants[0]!.conflictEvidence[0]!.peerVariantId).toBe('dgca-6e-peer-variant');
+  });
 });

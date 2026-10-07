@@ -64,16 +64,18 @@ export function DgcaScheduleEvidenceDirectory({ zh }: Props): React.ReactElement
     sourceWindow: '來源身份有效期間（起訖日均包含）', inside: '日期落在至少一個來源身份有效期間內；該日班次及實際運航仍未知。',
     outside: '日期不在來源身份有效期間內；不代表沒有航班。',
     details: '來源變體、原始欄位與頁列依據',
+    sourceStatus: '來源截至快照狀態',
     sourceRows: '來源頁／列', frequency: '來源頻率原文', clocks: '來源時刻原文', aircraft: '來源機型原文',
-    rowRelation: '來源列關係', oneSided: '來源列出單一方向；未推測反向航段', paired: '來源有相符的到達與出發列',
+    rowTextHash: '來源列文字 SHA-256',
+    rowRelation: '來源列關係', oneSided: '來源列出單一方向；未推測反向航段', paired: '同一來源變體同時列有到達與出發移動列',
     airportUnmapped: '來源機場代碼尚未匹配目前 GCMP 機場目錄；保留為來源參考，不加入可用航線。這不代表沒有航班。',
-    unknownTime: '時區未定義；不作轉換', conflict: '來源變體有差異，保留各原始值及衝突標記。',
+    unknownTime: '時區未定義；不作轉換', conflict: '來源變體有差異；保留原始值與標記。時刻標記不代表航班身份矛盾。',
     metadata: '來源、身份說明與顯名', pdfHash: 'PDF SHA-256', sourceLink: '開啟 DGCA 原始 PDF',
     checked: '核驗', reviewBy: '覆核期限', snapshotOnly: '僅保留核驗快照日期，未設定期限',
     currentReview: '覆核期限仍有效', expiredReview: '覆核期限已過', futureReview: '核驗時間尚未到達',
     unknownCarrier: '營運者身份未由來源確認', mappedCarrier: '來源歸屬身份獨立交叉核對',
     excluded: '排除項目', conflicts: '變體重疊／衝突摘要', showMore: '顯示更多', empty: '沒有符合的來源身份參考。',
-    asOf: '快照截至', pages: '頁', bytes: '位元組', unloadedSummary: 'SpiceJet、IndiGo、Air India',
+    asOf: '快照截至', pages: '頁', bytes: '位元組', unloadedSummary: 'SpiceJet、IndiGo、Air India、Air India Express',
   } : {
     title: 'DGCA approved-schedule identity evidence',
     intro: 'Read-only identity evidence from DGCA-approved schedules. The published designators, directions, raw frequencies, clocks, and each source validity window are retained. These records do not establish a flight on the selected date or actual operation, and they add no selectable service, weekday schedule, UTC occurrence, or connection timing. A reference omitted or absent here does not prove that no flight exists.',
@@ -83,16 +85,18 @@ export function DgcaScheduleEvidenceDirectory({ zh }: Props): React.ReactElement
     sourceWindow: 'Source identity windows (inclusive dates)', inside: 'The date falls within at least one source identity window; service on that date and actual operation remain unknown.',
     outside: 'The date is outside the source identity windows; this does not prove no flight exists.',
     details: 'Source variants, raw fields and page/row evidence',
+    sourceStatus: 'Source status as of snapshot',
     sourceRows: 'Source page/row', frequency: 'Raw source frequency', clocks: 'Raw source clocks', aircraft: 'Raw source aircraft',
-    rowRelation: 'Source-row relation', oneSided: 'The source lists one direction; no reverse leg is inferred', paired: 'The source has matching arrival and departure rows',
+    rowTextHash: 'Source-row text SHA-256',
+    rowRelation: 'Source-row relation', oneSided: 'The source lists one direction; no reverse leg is inferred', paired: 'The same source variant lists arrival and departure movement rows',
     airportUnmapped: 'A source endpoint code is not matched in the current GCMP airport catalog. It stays as source evidence and is not added as a route; this does not mean there is no flight.',
-    unknownTime: 'Timezone unspecified; no conversion', conflict: 'Source variants differ; raw values and conflict flags are preserved.',
+    unknownTime: 'Timezone unspecified; no conversion', conflict: 'Source variants differ; raw values and flags are preserved. A timing flag is not a flight-identity conflict.',
     metadata: 'Sources, identity qualification and attribution', pdfHash: 'PDF SHA-256', sourceLink: 'Open original DGCA PDF',
     checked: 'Checked', reviewBy: 'Review by', snapshotOnly: 'Snapshot date retained; no review deadline supplied',
     currentReview: 'Source review window is current', expiredReview: 'Source review window expired', futureReview: 'Source check is in the future',
     unknownCarrier: 'Carrier identity unresolved by the DGCA source', mappedCarrier: 'Source attribution independently cross-checked',
     excluded: 'Excluded records', conflicts: 'Variant overlap/conflict summary', showMore: 'Show more', empty: 'No source identity references match this search.',
-    asOf: 'snapshot as of', pages: 'pages', bytes: 'bytes', unloadedSummary: 'SpiceJet, IndiGo, and Air India',
+    asOf: 'snapshot as of', pages: 'pages', bytes: 'bytes', unloadedSummary: 'SpiceJet, IndiGo, Air India, and Air India Express',
   };
 
   const totalReferences = catalog?.sources.reduce((total, source) => total + source.counts.currentReferences, 0) ?? 0;
@@ -134,15 +138,19 @@ export function DgcaScheduleEvidenceDirectory({ zh }: Props): React.ReactElement
                   <details>
                     <summary>{copy.details} · {reference.variants.length}</summary>
                     {reference.variants.map(variant => <div className="dgca-schedule-evidence-directory__variant" key={variant.id} data-dgca-variant={variant.id}>
+                      {variant.sourceStatusAsOf && <p>{copy.sourceStatus}: <code>{variant.sourceStatusAsOf}</code></p>}
                       <p><strong>{variant.effectiveFromRaw} → {variant.effectiveUntilRaw}</strong> · {variant.id}</p>
                       <p>{copy.frequency}: <code>{raw(variant.frequencyRaw)}</code> · {copy.clocks}: <code>{rawList(variant.departureClockValuesRaw)} → {rawList(variant.arrivalClockValuesRaw)}</code> ({copy.unknownTime}) · {copy.aircraft}: <code>{rawList(variant.aircraftTypeValuesRaw)}</code></p>
                       <p>{copy.sourceRows}: {variant.sourceRows.map(row => <span className="dgca-schedule-evidence-directory__lineage" key={row.referenceRaw}>
-                        <code>{row.referenceRaw}</code> · p.{row.page}{row.physicalRow ? ` · physical row ${row.physicalRow}` : ''}{row.stationSectionOrdinal ? ` · section ${row.stationSectionOrdinal}` : ''}{row.stationSectionRaw ? ` · ${row.stationSectionRaw}` : ''}{row.printedRowRaw ? ` · printed row ${row.printedRowRaw}` : ''}{row.sourceSide ? ` · ${row.sourceSide}` : ''}{row.sourceRowSha256 ? ` · row SHA-256 ${row.sourceRowSha256}` : ''}
+                        <code>{row.referenceRaw}</code> · p.{row.page}{row.physicalRow ? ` · physical row ${row.physicalRow}` : ''}{row.stationSectionOrdinal ? ` · section ${row.stationSectionOrdinal}` : ''}{row.stationSectionRaw ? ` · ${row.stationSectionRaw}` : ''}{row.printedRowRaw ? ` · printed row ${row.printedRowRaw}` : ''}{row.sourceSide ? ` · ${row.sourceSide}` : ''}{row.sourceRowSha256 ? ` · lineage SHA-256 ${row.sourceRowSha256}` : ''}{row.sourceRowTextSha256 ? ` · ${copy.rowTextHash} ${row.sourceRowTextSha256}` : ''}
                       </span>)}</p>
                       <p>{copy.rowRelation}: {variant.sourceCounterpartStatus === 'paired' ? copy.paired : copy.oneSided}{variant.sourceMovementSides.length > 0 ? ` · ${variant.sourceMovementSides.join(', ')}` : ''}</p>
                       {variant.stationLabelsRaw.length > 0 && <p>{zh ? '來源站名' : 'Raw station labels'}: {variant.stationLabelsRaw.join(' · ')} · {variant.stationCodeResolution}</p>}
                       {variant.frequencyWeekdaysCorroborated.length > 0 && <p>{zh ? 'AAI 另源對照（非 DGCA 定義，不用於推算日期）' : 'Separate AAI weekday annotation (not defined by DGCA and not used to generate dates)'}: {variant.frequencyWeekdaysCorroborated.join(', ')}</p>}
                       {(variant.conflictIds.length > 0 || variant.conflictFields.length > 0) && <p>{copy.conflicts}: {variant.conflictKinds.join(', ')} · {variant.conflictFields.join(', ')} · {variant.conflictIds.join(', ')}</p>}
+                      {variant.conflictEvidence.length > 0 && <ul data-dgca-overlap-flags>{variant.conflictEvidence.map(evidence => <li key={evidence.id}>
+                        <code>{evidence.id}</code> · {evidence.peerVariantId} · {evidence.overlapFrom} → {evidence.overlapUntil} · {evidence.differingRawFields.join(', ')} · {evidence.interpretation}
+                      </li>)}</ul>}
                       <details className="dgca-schedule-evidence-directory__notes"><summary>{zh ? '來源說明' : 'Source qualifications'}</summary><ul>{variant.notes.map((note, index) => <li key={`${variant.id}:note:${index}`}>{note}</li>)}</ul></details>
                     </div>)}
                   </details>

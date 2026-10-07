@@ -1,0 +1,31 @@
+{
+  "source_url": "https://public-prd-dgca.s3.ap-south-1.amazonaws.com/InventoryList/airOperation/certification/scheduled/domestic/AirIndiaExpressLimited_SS_2026.pdf",
+  "directory_url": "https://www.dgca.gov.in/digigov-portal/?baseLocale=hi?page=4201/4200/servicename",
+  "downloaded_at_utc": "Wed, 07 Oct 2026 08:22:05 GMT",
+  "successful_get_count": 1,
+  "http_status": "200 OK",
+  "response_headers_file": "dgca-response-headers.txt",
+  "response_headers_sha256": "0a049d027babf31f7f6fbe45374eb6cd42c52cb106ca8e62f5cd032ed5cbee97",
+  "pdf_bytes": 1155068,
+  "pdf_sha256": "da2dd03095df387cf9b914f192b317d3eb530961d52e4fd7368ca9c56c3d6340",
+  "response_headers": {
+    "x-amz-id-2": "imOXa0EX1iVcUHrL8nc+XZ5QQm2MQ+cPyHv0BvERyPVnXY6gILgqFB/aIkH0l2/47/573pfj4F6vpmtSQgyp6lXOrMYdOtfi",
+    "x-amz-request-id": "5N53Q8EM3M0G6PFR",
+    "server": "AmazonS3",
+    "date": "Wed, 07 Oct 2026 08:22:05 GMT",
+    "last-modified": "Sun, 22 Mar 2026 10:21:51 GMT",
+    "etag": "\"62903e026a2d0a7af62cf56657e3506c\"",
+    "x-amz-server-side-encryption": "AES256",
+    "x-amz-meta-ctime": "1774174910",
+    "x-amz-meta-mode": "33184",
+    "x-amz-meta-gid": "1011",
+    "x-amz-meta-uid": "1009",
+    "x-amz-meta-mtime": "1774174910",
+    "x-amz-version-id": "tKtANDbB4YXPf9pIJ652B2AH_ENWvQI8",
+    "accept-ranges": "bytes",
+    "content-type": "application/pdf",
+    "content-length": "1155068"
+  },
+  "pdf_information_file": "../extract/pdfinfo.txt",
+  "extraction_backend_file": "../extract/pdftotext-version.txt"
+}

@@ -1,0 +1,138 @@
+{
+  "airportHeadingResolution": {
+    "aliasEvidence": "task-37 validated DGCA station-mapping review; pinned catalog IATA code uniqueness verified; task-33 same-label cross-check retained when available",
+    "all43CodesUniqueInPinnedCatalog": true,
+    "explicitEndpointRowsUniqueInPinnedCatalog": true,
+    "oldHoldsResolvedByReviewedCrossSourceAlias": 13,
+    "remainingHeldHeadings": 0,
+    "resolvedByOldExactCityRule": 30,
+    "resolvedSourceRows": 1744,
+    "sourceRowsPreviouslyHeldOnStationIdentity": 1119,
+    "stationHeadings": 43,
+    "task33SameLabelCrosschecksAmongThe13Aliases": 8
+  },
+  "asOfDate": "2026-10-07",
+  "classificationCounts": {
+    "acceptedCurrentFutureIdentityKeys": 433,
+    "acceptedCurrentFutureRows": 1051,
+    "acceptedCurrentFutureVariants": 940,
+    "acceptedCurrentIdentityKeys": 425,
+    "acceptedCurrentRows": 935,
+    "acceptedCurrentVariants": 825,
+    "acceptedFutureOnlyIdentityKeys": 8,
+    "acceptedFutureRows": 116,
+    "acceptedFutureVariants": 115,
+    "directionalIdentitiesAllValidity": 473,
+    "expiredRows": 693,
+    "expiredVariants": 669,
+    "heldRows": 0,
+    "heldVariants": 0,
+    "scheduleVariantGroupsAllValidity": 1609,
+    "sourceMovementRows": 1744,
+    "variantCounterpartPaired": 135,
+    "variantOneSided": 1474
+  },
+  "deliverables": [
+    "integration-candidate-snapshot.json",
+    "airport-heading-resolution.csv",
+    "reviewed-station-aliases.csv",
+    "schedule-rows.csv",
+    "schedule-variants.csv",
+    "identity-ledger.csv",
+    "runtime-comparison.csv",
+    "overlapping-variant-review.csv",
+    "rights-review.md",
+    "README.md",
+    "checksums.sha256"
+  ],
+  "extractionReproduction": {
+    "freshCaptureMatchesTask34RouteLedger": true,
+    "freshCaptureMatchesTask34ScheduleRows": true,
+    "lineageHashesUnique": true,
+    "pageRowsUnique": 1744,
+    "parserPath": "/Users/zhenyu/Documents/Codex/2026-10-07/task-27/scripts/parse_dgca_aix_schedule.py",
+    "parserSha256": "edc21cc5c206c77304f7b7a6551686b2bec8554ef7d1f2b3115bf322ee1668ae",
+    "pdfHashMatchesExpected": true,
+    "runtimeHashMatchesExpected": true,
+    "sourceRowIdsUnique": true,
+    "sourceRows": 1744
+  },
+  "metadataReview": {
+    "aaiWeekdayConventionUse": "corroborative only; not a DGCA legend and not used to expand schedule occurrences",
+    "frequencyLegendPresentInPdf": false,
+    "overlappingVariantPairsByDifferingRawField": {
+      "aircraft": 306,
+      "arrival_clock": 1411,
+      "departure_clock": 1419,
+      "raw_frequency": 2259
+    },
+    "overlappingVariantPairsInterpretation": "Retained as distinct raw variants, not called contradictions because DGCA does not define frequency weekdays; arrival and departure clocks remain separate raw fields.",
+    "overlappingVariantPairsSameFrequencyDifferentClockStillActiveAtAsOf": 129,
+    "overlappingVariantPairsStillActiveAtAsOf": 849,
+    "overlappingVariantPairsWithDifferentRawMetadata": 2458,
+    "overlappingVariantPairsWithSameRawFrequencyAndDifferentClock": 199,
+    "overlappingVariantReviewDetailsFile": "overlapping-variant-review.csv",
+    "sameSideClockConflictVariants": 0,
+    "sourceRowsInSameSideClockConflicts": 0,
+    "timezonePresentInPdf": false,
+    "utcConversionOrConnectionTiming": "blocked; raw HH:MM values preserved"
+  },
+  "pinnedInputs": {
+    "airportCatalogPath": "/Users/zhenyu/Documents/Codex/2026-10-07/task-17/gcmp/public/data/airports.json",
+    "airportCatalogSha256": "76ebd24200aa5a81f924b0071f0ecf6263411ea7b23ae0475dcc735efe32453b",
+    "flightNumberCandidatePath": "/Users/zhenyu/Documents/Codex/2026-10-07/task-17/gcmp/public/data/route-network/flight-numbers-current.json",
+    "flightNumberCandidateSha256": "deaed1fdb0d879155aaa4728586058319596dcf357fa3e86a1e665fcb3b117f5",
+    "runtimeGitCommit": "f472092b0324df7b2d744596709c69f27cbbad55",
+    "runtimeLabel": "lastf472092",
+    "runtimePath": "/Users/zhenyu/Documents/Codex/2026-10-07/task-17/gcmp/public/data/route-network/runtime-current.json",
+    "runtimeSha256": "aa90283d52015b1b418c3840252cb34152f9ed577a3e0766291935b92b151537",
+    "task33StationIdentityLedgerPath": "/Users/zhenyu/Documents/Codex/2026-10-07/task-33/airindia-summer-2026-evidence/data/station-identity-ledger.csv",
+    "task33StationIdentityLedgerSha256": "bb902f5e600167a25d3bceeb48788093eee173030501ef0afdf8a9afaad63a3b",
+    "task37StationMappingReviewPath": "/Users/zhenyu/Documents/Codex/2026-10-07/task-37/review/validated/station-mapping-review.csv",
+    "task37StationMappingReviewSha256": "2c5f2e6c0747cdad17a84915fc358e67c74d55138ec0524df82eb67c16afa0a7",
+    "task37ValidationSha256": "b45cbddeef33739579c6292420c7360108e8e4eff36fd1879ae2e6ad7250bbaa"
+  },
+  "rightsReview": {
+    "contentAttribution": "Directorate General of Civil Aviation (DGCA), Airport Movement Report - Approved Summer Schedule Domestic, Air India Express Limited, published 18 March 2026.",
+    "customMetadata": "no",
+    "dgcaWebsitePolicy": "Permits accurate, non-derogatory/non-misleading reproduction free of charge with prominent source acknowledgment; exception for material identified as third-party copyright.",
+    "encrypted": false,
+    "metadataStream": "no",
+    "pdfMetadataProducer": "iText® 7.1.4 ©2000-2018 iText Group NV (Directorate General of Civil Aviation; licensed version)",
+    "pdfPagesTextScanned": 32,
+    "producerInterpretation": "PDF-generation software metadata, not a content-copyright notice. No identified third-party content or separate PDF rights notice found in the 32-page scan.",
+    "rightsNoticeTermsFoundInPdfText": 0
+  },
+  "runtimeComparison": {
+    "acceptedCurrentFutureIdentityKeys": 433,
+    "currentFutureIdentitiesByUndirectedRuntimePairStatus": {
+      "new airport pair vs pinned runtime": 164,
+      "present in pinned runtime (any carrier)": 269
+    },
+    "distinctDirectedAirportPairsAllValidity": 109,
+    "distinctDirectedAirportPairsCurrentFuture": 105,
+    "distinctUndirectedAirportPairsAllValidity": 109,
+    "distinctUndirectedAirportPairsCurrentFuture": 105,
+    "exactFlightNumberAndPairMatches": 0,
+    "runtimeCarrierAiRouteRecords": 457,
+    "runtimeCarrierIxRouteRecords": 0,
+    "runtimeIxFlightNumberCandidates": 0,
+    "runtimePairsComparison": "Any-carrier airport-pair overlap only; not an IX identity confirmation. AI and IX remain separate."
+  },
+  "source": {
+    "flightPrefixRaw": "IX",
+    "operatorCodeRaw": "AXB",
+    "operatorNameRaw": "Air India Express Limited",
+    "pdfBytes": 1155068,
+    "pdfPages": 32,
+    "pdfSha256": "da2dd03095df387cf9b914f192b317d3eb530961d52e4fd7368ca9c56c3d6340",
+    "pdfUrl": "https://public-prd-dgca.s3.ap-south-1.amazonaws.com/InventoryList/airOperation/certification/scheduled/domestic/AirIndiaExpressLimited_SS_2026.pdf",
+    "publishedDateRaw": "18/03/2026",
+    "seasonLabel": "Approved Summer Schedule Domestic",
+    "seasonValidity": [
+      "2026-03-29",
+      "2026-10-24"
+    ],
+    "sourceType": "approved schedule plan; not evidence of actual operation"
+  }
+}

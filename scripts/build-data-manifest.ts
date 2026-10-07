@@ -92,6 +92,20 @@ const DGCA_SCHEDULE_EVIDENCE_INPUTS = [
   'docs/source-evidence/airindia-dgca-2026/integration-snapshot.json',
   'docs/source-evidence/airindia-dgca-2026/movement-lineage.csv',
   'docs/source-evidence/airindia-dgca-2026/schedule-identity-ledger.csv',
+  'docs/source-evidence/air-india-express-dgca-2026-10-07/reviewed-output/README.md',
+  'docs/source-evidence/air-india-express-dgca-2026-10-07/reviewed-output/airport-heading-resolution.csv',
+  'docs/source-evidence/air-india-express-dgca-2026-10-07/reviewed-output/checksums.sha256',
+  'docs/source-evidence/air-india-express-dgca-2026-10-07/reviewed-output/identity-ledger.csv',
+  'docs/source-evidence/air-india-express-dgca-2026-10-07/reviewed-output/integration-candidate-snapshot.json',
+  'docs/source-evidence/air-india-express-dgca-2026-10-07/reviewed-output/overlapping-variant-review.csv',
+  'docs/source-evidence/air-india-express-dgca-2026-10-07/reviewed-output/reviewed-station-aliases.csv',
+  'docs/source-evidence/air-india-express-dgca-2026-10-07/reviewed-output/rights-review.md',
+  'docs/source-evidence/air-india-express-dgca-2026-10-07/reviewed-output/runtime-comparison.csv',
+  'docs/source-evidence/air-india-express-dgca-2026-10-07/reviewed-output/schedule-rows.csv',
+  'docs/source-evidence/air-india-express-dgca-2026-10-07/reviewed-output/schedule-variants.csv',
+  'docs/source-evidence/air-india-express-dgca-2026-10-07/reviewed-output/summary.json',
+  'docs/source-evidence/air-india-express-dgca-2026-10-07/source/AirIndiaExpressLimited_SS_2026.pdf',
+  'docs/source-evidence/air-india-express-dgca-2026-10-07/source/source-manifest.json',
   'docs/source-evidence/indigo-ss-2026/REVIEW.md',
   'docs/source-evidence/indigo-ss-2026/airport-mapping-supplement.csv',
   'docs/source-evidence/indigo-ss-2026/flagged-source-rows.csv',
@@ -111,9 +125,11 @@ const DGCA_SCHEDULE_EVIDENCE_INPUTS = [
   'public/data/route-network/avinor-remaining-airports-release-20261007.json',
   'public/data/route-network/caa-weekly-schedule-tier-20261006.json',
   'public/data/route-network/runtime-current.json',
+  'public/data/route-network/flight-numbers-current.json',
   'public/data/route-network/siros-registered-plan-release-20261007.json',
   'scripts/build-dgca-schedule-evidence.ts',
   'scripts/build-spicejet-schedule-references.ts',
+  'scripts/verify-dgca-schedule-evidence.ts',
   'scripts/lib/alliance-airline-icao.ts',
   'src/lib/schemas/airports.ts',
   'src/lib/schemas/dgca-schedule-evidence.ts',
@@ -249,8 +265,8 @@ function describe(path: string): { source: string; license: DataLicense } {
     };
   }
   if (path === 'dgca-schedule-evidence-20261007.json') {
-    return {
-      source: 'DGCA-approved SpiceJet, IndiGo, and Air India domestic schedule snapshots; exact packet hashes, source URLs, validity windows and page/row evidence retained (see THIRD_PARTY_NOTICES.md)',
+      return {
+      source: 'DGCA-approved SpiceJet, IndiGo, Air India, and Air India Express domestic schedule snapshots; exact packet hashes, source URLs, validity windows and page/row evidence retained (see THIRD_PARTY_NOTICES.md)',
       license: 'site-terms',
     };
   }
@@ -388,7 +404,7 @@ function build(): void {
       bytes,
       sha256,
       notes: isDgcaScheduleEvidence
-        ? '2,931 accepted designator/direction identities and 4,790 current source-window variants across SpiceJet (140 / 196 variants), IndiGo (2,218 / 3,729 variants), and Air India (573 / 865 variants). IndiGo has zero unresolved-station holds; its 1,381 expired variants are excluded, while the 10 PXN variants remain source-only across six identities. Preserves inclusive source validity, raw frequency/clocks, conflict flags and corrected source page/physical-row/station/printed-row/hash lineage. Air India aircraft conflicts are held at field level. The catalog is read-only identity evidence; it adds no selectable service, weekday pattern, UTC occurrence, date availability, connection timing, or actual-operation claim.'
+        ? '3,364 accepted designator/direction identities and 5,730 current source-window variants across SpiceJet (140 / 196 variants), IndiGo (2,218 / 3,729 variants), Air India (573 / 865 variants), and Air India Express (433 / 940 variants). IndiGo has zero unresolved-station holds; its 1,381 expired variants are excluded, while the 10 PXN variants remain source-only across six identities. Air India Express preserves 1,051 accepted movement rows, 693 expired rows, raw frequency and clocks, unknown timezone, per-variant dates, 2,458 overlapping raw-metadata pairs, and 129 active same-frequency/different-clock timing flags with zero core identity conflicts. IX and source code AXB remain separate from AI and have zero exact current baseline matches. Source attribution and DGCA policy are linked; no CC or public-domain license is claimed. The catalog is read-only identity evidence; it adds no selectable service, weekday pattern, UTC occurrence, date availability, connection timing, or actual-operation claim.'
         : path === 'route-network/siros-registered-plan-release-20261007.json'
         ? 'Pins the captured 2026-10-07 SIROS CSV source body and accepted 14,997-row existing-route proposal. The proposal has 57 exact candidate matches and 1,390 designator identities absent from candidate/confirmed layers; it overlaps zero of 2,767 confirmed associations. The archive preserves exact accepted raw source rows. Held, expired, Z-prefixed schema-incompatible and new-route cases are outside this release.'
         : isCaaWeeklyTier

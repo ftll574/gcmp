@@ -134,6 +134,20 @@
       "kind": "derived",
       "producer": "scripts/build-dgca-schedule-evidence.ts",
       "inputs": [
+        "docs/source-evidence/air-india-express-dgca-2026-10-07/reviewed-output/README.md",
+        "docs/source-evidence/air-india-express-dgca-2026-10-07/reviewed-output/airport-heading-resolution.csv",
+        "docs/source-evidence/air-india-express-dgca-2026-10-07/reviewed-output/checksums.sha256",
+        "docs/source-evidence/air-india-express-dgca-2026-10-07/reviewed-output/identity-ledger.csv",
+        "docs/source-evidence/air-india-express-dgca-2026-10-07/reviewed-output/integration-candidate-snapshot.json",
+        "docs/source-evidence/air-india-express-dgca-2026-10-07/reviewed-output/overlapping-variant-review.csv",
+        "docs/source-evidence/air-india-express-dgca-2026-10-07/reviewed-output/reviewed-station-aliases.csv",
+        "docs/source-evidence/air-india-express-dgca-2026-10-07/reviewed-output/rights-review.md",
+        "docs/source-evidence/air-india-express-dgca-2026-10-07/reviewed-output/runtime-comparison.csv",
+        "docs/source-evidence/air-india-express-dgca-2026-10-07/reviewed-output/schedule-rows.csv",
+        "docs/source-evidence/air-india-express-dgca-2026-10-07/reviewed-output/schedule-variants.csv",
+        "docs/source-evidence/air-india-express-dgca-2026-10-07/reviewed-output/summary.json",
+        "docs/source-evidence/air-india-express-dgca-2026-10-07/source/AirIndiaExpressLimited_SS_2026.pdf",
+        "docs/source-evidence/air-india-express-dgca-2026-10-07/source/source-manifest.json",
         "docs/source-evidence/airindia-dgca-2026/README.md",
         "docs/source-evidence/airindia-dgca-2026/SHA256SUMS",
         "docs/source-evidence/airindia-dgca-2026/integration-snapshot.json",
@@ -157,22 +171,24 @@
         "public/data/official-schedules.json",
         "public/data/route-network/avinor-remaining-airports-release-20261007.json",
         "public/data/route-network/caa-weekly-schedule-tier-20261006.json",
+        "public/data/route-network/flight-numbers-current.json",
         "public/data/route-network/runtime-current.json",
         "public/data/route-network/siros-registered-plan-release-20261007.json",
         "scripts/build-dgca-schedule-evidence.ts",
         "scripts/build-spicejet-schedule-references.ts",
         "scripts/lib/alliance-airline-icao.ts",
+        "scripts/verify-dgca-schedule-evidence.ts",
         "src/lib/schemas/airports.ts",
         "src/lib/schemas/dgca-schedule-evidence.ts",
         "src/lib/schemas/spicejet-schedule-references.ts"
       ],
-      "source": "DGCA-approved SpiceJet, IndiGo, and Air India domestic schedule snapshots; exact packet hashes, source URLs, validity windows and page/row evidence retained (see THIRD_PARTY_NOTICES.md)",
+      "source": "DGCA-approved SpiceJet, IndiGo, Air India, and Air India Express domestic schedule snapshots; exact packet hashes, source URLs, validity windows and page/row evidence retained (see THIRD_PARTY_NOTICES.md)",
       "license": "site-terms",
       "attribution": "Directorate General of Civil Aviation (DGCA), Government of India — source attribution and reuse policy linked in the directory",
       "schema": "src/lib/schemas/dgca-schedule-evidence.ts",
-      "bytes": 14410969,
-      "sha256": "65c08cf0dfd1d07f",
-      "notes": "2,931 accepted designator/direction identities and 4,790 current source-window variants across SpiceJet (140 / 196 variants), IndiGo (2,218 / 3,729 variants), and Air India (573 / 865 variants). IndiGo has zero unresolved-station holds; its 1,381 expired variants are excluded, while the 10 PXN variants remain source-only across six identities. Preserves inclusive source validity, raw frequency/clocks, conflict flags and corrected source page/physical-row/station/printed-row/hash lineage. Air India aircraft conflicts are held at field level. The catalog is read-only identity evidence; it adds no selectable service, weekday pattern, UTC occurrence, date availability, connection timing, or actual-operation claim."
+      "bytes": 19871079,
+      "sha256": "93a9b9b5734195f4",
+      "notes": "3,364 accepted designator/direction identities and 5,730 current source-window variants across SpiceJet (140 / 196 variants), IndiGo (2,218 / 3,729 variants), Air India (573 / 865 variants), and Air India Express (433 / 940 variants). IndiGo has zero unresolved-station holds; its 1,381 expired variants are excluded, while the 10 PXN variants remain source-only across six identities. Air India Express preserves 1,051 accepted movement rows, 693 expired rows, raw frequency and clocks, unknown timezone, per-variant dates, 2,458 overlapping raw-metadata pairs, and 129 active same-frequency/different-clock timing flags with zero core identity conflicts. IX and source code AXB remain separate from AI and have zero exact current baseline matches. Source attribution and DGCA policy are linked; no CC or public-domain license is claimed. The catalog is read-only identity evidence; it adds no selectable service, weekday pattern, UTC occurrence, date availability, connection timing, or actual-operation claim."
     },
     {
       "id": "geo.airport-browse-regions",
@@ -5700,8 +5716,8 @@
       "kind": "derived",
       "producer": "scripts/build-route-library-carrier-shards.ts",
       "inputs": [],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 20469,
@@ -5716,8 +5732,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 1797,
@@ -5732,8 +5748,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 3577,
@@ -5748,8 +5764,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 2201,
@@ -5764,8 +5780,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 4122,
@@ -5780,8 +5796,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 4801,
@@ -5796,8 +5812,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 5598,
@@ -5812,8 +5828,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 2056,
@@ -5828,8 +5844,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 4865,
@@ -5844,8 +5860,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 2590,
@@ -5860,8 +5876,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 266539,
@@ -5876,8 +5892,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 1193227,
@@ -5892,8 +5908,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 599419,
@@ -5908,8 +5924,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 1941042,
@@ -5924,8 +5940,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 18357,
@@ -5940,8 +5956,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 758508,
@@ -5956,8 +5972,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 218532,
@@ -5972,8 +5988,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 7161,
@@ -5988,8 +6004,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 193083,
@@ -6004,8 +6020,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 369660,
@@ -6020,8 +6036,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 347610,
@@ -6036,8 +6052,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 170681,
@@ -6052,8 +6068,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 241060,
@@ -6068,8 +6084,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 210145,
@@ -6084,8 +6100,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 212709,
@@ -6100,8 +6116,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 17056,
@@ -6116,8 +6132,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 399682,
@@ -6132,8 +6148,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 3148,
@@ -6148,8 +6164,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 72646,
@@ -6164,8 +6180,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 113929,
@@ -6180,8 +6196,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 26560,
@@ -6196,8 +6212,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 3972,
@@ -6212,8 +6228,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 608443,
@@ -6228,8 +6244,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 140203,
@@ -6244,8 +6260,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 508741,
@@ -6260,8 +6276,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 135398,
@@ -6276,8 +6292,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 6390,
@@ -6292,8 +6308,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 4158,
@@ -6308,8 +6324,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 191365,
@@ -6324,8 +6340,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 5911,
@@ -6340,8 +6356,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 39681,
@@ -6356,8 +6372,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 933822,
@@ -6372,8 +6388,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 60750,
@@ -6388,8 +6404,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 1996080,
@@ -6404,8 +6420,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 6505,
@@ -6420,8 +6436,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 39195,
@@ -6436,8 +6452,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 187359,
@@ -6452,8 +6468,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 1803,
@@ -6468,8 +6484,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 7668,
@@ -6484,8 +6500,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 8939,
@@ -6500,8 +6516,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 30891,
@@ -6516,8 +6532,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 43648,
@@ -6532,8 +6548,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 5667,
@@ -6548,8 +6564,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 24274,
@@ -6564,8 +6580,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 5954386,
@@ -6580,8 +6596,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 2057,
@@ -6596,8 +6612,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 73783,
@@ -6612,8 +6628,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 2407,
@@ -6628,8 +6644,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 9518,
@@ -6644,8 +6660,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 93774,
@@ -6660,8 +6676,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 2363,
@@ -6676,8 +6692,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 51800,
@@ -6692,8 +6708,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 3764,
@@ -6708,8 +6724,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 3150,
@@ -6724,8 +6740,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 6658,
@@ -6740,8 +6756,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 3780,
@@ -6756,8 +6772,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 419199,
@@ -6772,8 +6788,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 34364,
@@ -6788,8 +6804,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 92020,
@@ -6804,8 +6820,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 3265567,
@@ -6820,8 +6836,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 187578,
@@ -6836,8 +6852,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 11726,
@@ -6852,8 +6868,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 42034,
@@ -6868,8 +6884,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 196963,
@@ -6884,8 +6900,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 448730,
@@ -6900,8 +6916,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 55743,
@@ -6916,8 +6932,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 102113,
@@ -6932,8 +6948,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 3851,
@@ -6948,8 +6964,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 721469,
@@ -6964,8 +6980,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 7848,
@@ -6980,8 +6996,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 214568,
@@ -6996,8 +7012,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 3172,
@@ -7012,8 +7028,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 220462,
@@ -7028,8 +7044,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 43929,
@@ -7044,8 +7060,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 270151,
@@ -7060,8 +7076,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 99616,
@@ -7076,8 +7092,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 11887,
@@ -7092,8 +7108,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 109570,
@@ -7108,8 +7124,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 769994,
@@ -7124,8 +7140,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 180415,
@@ -7140,8 +7156,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 3148,
@@ -7156,8 +7172,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 4610,
@@ -7172,8 +7188,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 151102,
@@ -7188,8 +7204,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 1763,
@@ -7204,8 +7220,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 185259,
@@ -7220,8 +7236,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 86732,
@@ -7236,8 +7252,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 111406,
@@ -7252,8 +7268,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 12639,
@@ -7268,8 +7284,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 3164,
@@ -7284,8 +7300,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 2114,
@@ -7300,8 +7316,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 211972,
@@ -7316,8 +7332,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 286587,
@@ -7332,8 +7348,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 3127,
@@ -7348,8 +7364,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 6686,
@@ -7364,8 +7380,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 1499,
@@ -7380,8 +7396,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 78689,
@@ -7396,8 +7412,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 16622,
@@ -7412,8 +7428,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 86181,
@@ -7428,8 +7444,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 66259,
@@ -7444,8 +7460,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 3150,
@@ -7460,8 +7476,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 987281,
@@ -7476,8 +7492,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 8736,
@@ -7492,8 +7508,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 153141,
@@ -7508,8 +7524,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 128137,
@@ -7524,8 +7540,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 170962,
@@ -7540,8 +7556,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 92571,
@@ -7556,8 +7572,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 615505,
@@ -7572,8 +7588,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 6514,
@@ -7588,8 +7604,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 1276962,
@@ -7604,8 +7620,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 6675,
@@ -7620,8 +7636,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 11482,
@@ -7636,8 +7652,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 1135600,
@@ -7652,8 +7668,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 71446,
@@ -7668,8 +7684,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 5600,
@@ -7684,8 +7700,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 160630,
@@ -7700,8 +7716,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 3728,
@@ -7716,8 +7732,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 8806,
@@ -7732,8 +7748,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 123811,
@@ -7748,8 +7764,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 70135,
@@ -7764,8 +7780,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 3258,
@@ -7780,8 +7796,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 4572,
@@ -7796,8 +7812,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 7329,
@@ -7812,8 +7828,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 100365,
@@ -7828,8 +7844,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 2041181,
@@ -7844,8 +7860,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 142580,
@@ -7860,8 +7876,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 3123,
@@ -7876,8 +7892,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 3345,
@@ -7892,8 +7908,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 59270,
@@ -7908,8 +7924,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 3253,
@@ -7924,8 +7940,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 3956,
@@ -7940,8 +7956,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 5606,
@@ -7956,8 +7972,8 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
-      "license": "ODbL-1.0",
+      "source": "Curated and provider-listed route-network layers, ODbL route sources, source-specific Avinor and CAA evidence, and the independently reviewed ANAC SIROS registered-schedule snapshot (see THIRD_PARTY_NOTICES.md)",
+      "license": "mixed-source-terms",
       "attribution": null,
       "schema": null,
       "bytes": 242341,

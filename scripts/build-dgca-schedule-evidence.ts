@@ -11,9 +11,12 @@ const ROOT = resolve(process.cwd());
 const SPICEJET_PACKET = join(ROOT, 'docs/source-evidence/spicejet-ss-2026');
 const INDIGO_PACKET = join(ROOT, 'docs/source-evidence/indigo-ss-2026');
 const AIRINDIA_PACKET = join(ROOT, 'docs/source-evidence/airindia-dgca-2026');
+const AIRINDIAEXPRESS_PACKET = join(ROOT, 'docs/source-evidence/air-india-express-dgca-2026-10-07/reviewed-output');
+const AIRINDIAEXPRESS_SOURCE = join(ROOT, 'docs/source-evidence/air-india-express-dgca-2026-10-07/source/AirIndiaExpressLimited_SS_2026.pdf');
 const SPICEJET_NORMALIZED = join(ROOT, '.tmp/spicejet-schedule-reference-normalizer.json');
 const OUT = join(ROOT, 'public/data/dgca-schedule-evidence-20261007.json');
 const RELEASE_BASE_RUNTIME_SHA256 = '34c465081e6835721abf95bd6ca9e132f3afad6386977b4ca6ca797b528c37e9';
+const RELEASE_BASE_FLIGHT_NUMBERS_SHA256 = 'deaed1fdb0d879155aaa4728586058319596dcf357fa3e86a1e665fcb3b117f5';
 const INDIGO_MANIFEST_SHA256 = '6c02de06403cde63f2acea74d09c608b84c6a6d9ab109a4f5547b7ff4750eede';
 const AIRINDIA_MANIFEST_SHA256 = 'f51868d23f1170ba81bcd650f570e9cb2d3c72575a4827ac39900405dfefd17b';
 const INDIGO_ARTIFACT_HASHES: Record<string, string> = {
@@ -32,6 +35,22 @@ const AIRINDIA_ARTIFACT_HASHES: Record<string, string> = {
   'movement-lineage.csv': '41732e1ec2eee4048324fa0b09819cde53cc9e7aca36851fd531c373a8268123',
   'integration-snapshot.json': '5655533f15459917af220661deb438e11e47b172d6243c4993987d1c2dbcca77',
 };
+const AIRINDIAEXPRESS_CHECKSUMS_SHA256 = '899c52515f36adb8d96baade015b4e3b24b20bec27ebfea3ad82d1bf46c2319a';
+const AIRINDIAEXPRESS_ARTIFACT_HASHES: Record<string, string> = {
+  'README.md': '5e20f8404dd31c5fdb362b085c88a2b369c76431be7ad2fac19fbf64673d8d1c',
+  'airport-heading-resolution.csv': '9f345557ea4474ab4658cb824e2fc936cf7c630c1f5f7827ac52768b2cc8d852',
+  'identity-ledger.csv': 'a8c5d5033f4db128e074b271f1f413bea82b17277b2148325f8d6b0b267818b4',
+  'integration-candidate-snapshot.json': '247dff164caf81db93190487b3b05f2034edcc332b5f63c771de33e03a8bc926',
+  'overlapping-variant-review.csv': 'bad55d8c91410177f0b9ba9593eb01a320baea068d1dff2938ad3b9707acb5a0',
+  'reviewed-station-aliases.csv': 'c5ec55def3a1714702779435b0ba54bdb4936a9757d32534fa9749ba7611e4a8',
+  'rights-review.md': 'e7ab28aed8688f35d4daa5e6e99c27db4bd6410668b22d41933cce7b76cc10bc',
+  'runtime-comparison.csv': '4dfed132d82b9a409bcf4436d588d8eb3488d8007022fcfe24952bdb9363a6a3',
+  'schedule-rows.csv': '7e2f1e01daf514beaa26765f33198d343dab7a5a2c906b546ff34ea073fbec84',
+  'schedule-variants.csv': '0e2aa5b116abb5336ff73938bf3cdb9c59b1aea85e35281fb46f01ce4b093552',
+  'summary.json': '7a7127497275c6027e2673195a7fcc98d95951de23ad801358e010f1baff1693',
+};
+const AIRINDIAEXPRESS_PDF_SHA256 = 'da2dd03095df387cf9b914f192b317d3eb530961d52e4fd7368ca9c56c3d6340';
+const AIRINDIAEXPRESS_SOURCE_MANIFEST_SHA256 = 'dbbf9990a615e65e90de315d911a2eb7ce8d047f240d1554751aa3ca76bb828d';
 
 const SnapshotRecordSchema = z.object({
   id: z.string(),
@@ -149,6 +168,101 @@ const AirIndiaMovementRowSchema = z.object({
   physical_row_on_page: z.string(), station_section_ordinal_on_page: z.string(), station_section_raw: z.string(), printed_row_no: z.string(),
   movement_id: z.string(), movement_side: z.enum(['arrival', 'departure']), origin_iata: z.string(), destination_iata: z.string(),
   raw_clock: z.string(), identity_id: z.string(),
+}).passthrough();
+
+const AirIndiaExpressIdentitySchema = z.object({
+  id: z.string().min(1),
+  acceptedCurrentFuture: z.literal(true),
+  actualOperationVerified: z.literal(false),
+  asOfValidityStatus: z.enum(['current', 'future']),
+  directionalIdentityStatus: z.literal('accepted'),
+  exactFlightNumberAndPairMatch: z.literal(false),
+  originIata: z.string().regex(/^[A-Z]{3}$/),
+  destinationIata: z.string().regex(/^[A-Z]{3}$/),
+  publishedDesignatorCompact: z.string().regex(/^IX\d{1,4}[A-Z]?$/),
+  publishedDesignatorRaw: z.string().min(1),
+  selectableOperatingService: z.literal(false),
+  sourceOperatorCodeRaw: z.literal('AXB'),
+  sourceOperatorNameRaw: z.literal('Air India Express Limited'),
+  sourceRowCount: z.number().int().positive(),
+  sourceRowIds: z.array(z.string().min(1)).min(1),
+  variantCount: z.number().int().positive(),
+  variantIds: z.array(z.string().min(1)).min(1),
+}).passthrough();
+
+const AirIndiaExpressSnapshotSchema = z.object({
+  asOfDate: z.literal('2026-10-07'),
+  airportHeadingResolution: z.object({
+    all43CodesUniqueInPinnedCatalog: z.literal(true),
+    explicitEndpointRowsUniqueInPinnedCatalog: z.literal(true),
+    oldHoldsResolvedByReviewedCrossSourceAlias: z.literal(13),
+    remainingHeldHeadings: z.literal(0),
+    resolvedSourceRows: z.literal(1744),
+    stationHeadings: z.literal(43),
+  }).passthrough(),
+  classificationCounts: z.object({
+    acceptedCurrentFutureIdentityKeys: z.literal(433),
+    acceptedCurrentFutureRows: z.literal(1051),
+    acceptedCurrentFutureVariants: z.literal(940),
+    acceptedCurrentIdentityKeys: z.literal(425),
+    acceptedCurrentRows: z.literal(935),
+    acceptedCurrentVariants: z.literal(825),
+    acceptedFutureOnlyIdentityKeys: z.literal(8),
+    acceptedFutureRows: z.literal(116),
+    acceptedFutureVariants: z.literal(115),
+    directionalIdentitiesAllValidity: z.literal(473),
+    expiredRows: z.literal(693),
+    expiredVariants: z.literal(669),
+    heldRows: z.literal(0),
+    heldVariants: z.literal(0),
+    scheduleVariantGroupsAllValidity: z.literal(1609),
+    sourceMovementRows: z.literal(1744),
+  }).passthrough(),
+  format: z.literal('dgca-approved-schedule-evidence-identities-v1'),
+  overlappingVariantReviewFile: z.literal('overlapping-variant-review.csv'),
+  pinnedInputs: z.object({
+    airportCatalogSha256: z.string().regex(/^[0-9a-f]{64}$/),
+    flightNumberCandidateSha256: z.string().regex(/^[0-9a-f]{64}$/),
+    runtimeSha256: z.string().regex(/^[0-9a-f]{64}$/),
+  }).passthrough(),
+  runtimeComparison: z.object({
+    acceptedCurrentFutureIdentityKeys: z.literal(433),
+    currentFutureIdentitiesByUndirectedRuntimePairStatus: z.object({
+      'new airport pair vs pinned runtime': z.literal(164),
+      'present in pinned runtime (any carrier)': z.literal(269),
+    }).passthrough(),
+    exactFlightNumberAndPairMatches: z.literal(0),
+    runtimeCarrierIxRouteRecords: z.literal(0),
+    runtimeIxFlightNumberCandidates: z.literal(0),
+  }).passthrough(),
+  records: z.array(AirIndiaExpressIdentitySchema),
+  rightsReview: z.object({
+    contentAttribution: z.string().min(1),
+    dgcaWebsitePolicy: z.string().min(1),
+    pdfPagesTextScanned: z.literal(32),
+    rightsNoticeTermsFoundInPdfText: z.literal(0),
+  }).passthrough(),
+  semantics: z.object({
+    actualOperationVerified: z.literal(false),
+    bookableStatus: z.literal('not established'),
+    frequencyRawOnly: z.literal(true),
+    selectableOperatingService: z.literal(false),
+    timezone: z.null(),
+    clockValuesUse: z.literal('raw only; no UTC or connection timing'),
+    routeConstruction: z.literal('One explicit source movement row establishes one directed leg; direct reciprocal rows may be consolidated while retaining both lineages. No airport in/out chaining.'),
+  }).passthrough(),
+  source: z.object({
+    flightPrefixRaw: z.literal('IX'),
+    operatorCodeRaw: z.literal('AXB'),
+    operatorNameRaw: z.literal('Air India Express Limited'),
+    pdfBytes: z.literal(1155068),
+    pdfPages: z.literal(32),
+    pdfSha256: z.literal(AIRINDIAEXPRESS_PDF_SHA256),
+    pdfUrl: z.string().url(),
+    publishedDateRaw: z.literal('18/03/2026'),
+  }).passthrough(),
+  sourceRowLedgerFile: z.literal('schedule-rows.csv'),
+  scheduleVariantLedgerFile: z.literal('schedule-variants.csv'),
 }).passthrough();
 
 interface CsvRecord { [key: string]: string }
@@ -329,6 +443,7 @@ function mapSpiceJet(source: z.infer<typeof SpiceJetScheduleReferenceCatalogSche
         conflictFields: variant.metadataDifferenceFields.map(field => ({
           frequency_raw: 'frequency', departure_time_raw: 'departureClock', arrival_time_raw: 'arrivalClock', aircraft_type_raw: 'aircraftType',
         }[field] as 'frequency' | 'departureClock' | 'arrivalClock' | 'aircraftType')).filter(Boolean),
+        conflictEvidence: [],
         hasVariantConflict: variant.overlappingMetadataVariant,
         timeConflict: variant.metadataDifferenceFields.includes('arrival_time_raw') || variant.metadataDifferenceFields.includes('departure_time_raw'),
         notes: ['Source-side row pairing is identity evidence only; actual operation is not established.'],
@@ -402,6 +517,7 @@ function mapIndiGo(snapshot: z.infer<typeof IndigoSnapshotSchema>, conflicts: Ma
         conflictIds: record.scheduleVariantConflictIds,
         conflictKinds,
         conflictFields,
+        conflictEvidence: [],
         hasVariantConflict: record.scheduleVariantConflictIds.length > 0 || conflictFields.length > 0,
         timeConflict: record.scheduleVariantTimeConflict,
         notes: [record.evidenceReason, record.operatorRoleQualification, record.frequencyQualification, record.timezoneQualification,
@@ -580,6 +696,7 @@ function mapAirIndia(): z.infer<typeof DgcaScheduleEvidenceCatalogSchema>['sourc
         conflictIds: fieldHeld ? [row.identity_id] : [],
         conflictKinds: fieldHeld ? ['aircraft-field-hold'] : [],
         conflictFields: fieldHeld ? ['aircraftType' as const] : [],
+        conflictEvidence: [],
         hasVariantConflict: fieldHeld,
         timeConflict: false,
         notes: [
@@ -675,10 +792,427 @@ function mapAirIndia(): z.infer<typeof DgcaScheduleEvidenceCatalogSchema>['sourc
   };
 }
 
+type AirIndiaExpressConflictField = 'frequency' | 'departureClock' | 'arrivalClock' | 'aircraftType' | 'rawClock';
+interface AirIndiaExpressOverlap {
+  readonly id: string;
+  readonly identityId: string;
+  readonly variantA: string;
+  readonly variantB: string;
+  readonly overlapFrom: string;
+  readonly overlapUntil: string;
+  readonly differingRawFields: AirIndiaExpressConflictField[];
+  readonly interpretation: string;
+}
+
+function verifyAirIndiaExpressPacket(): void {
+  const checksumPath = join(AIRINDIAEXPRESS_PACKET, 'checksums.sha256');
+  if (sha256(checksumPath) !== AIRINDIAEXPRESS_CHECKSUMS_SHA256) throw new Error('Air India Express reviewed checksum-file hash changed');
+  const checksums = readFileSync(checksumPath, 'utf8').trim().split(/\r?\n/).map(line => {
+    const match = /^([0-9a-f]{64})\s{2}(.+)$/.exec(line);
+    if (!match) throw new Error('Malformed Air India Express reviewed checksum entry');
+    return { hash: match[1]!, label: match[2]! };
+  });
+  for (const [filename, expected] of Object.entries(AIRINDIAEXPRESS_ARTIFACT_HASHES)) {
+    const row = checksums.find(item => item.label === filename);
+    if (!row || row.hash !== expected || sha256(join(AIRINDIAEXPRESS_PACKET, filename)) !== expected) {
+      throw new Error(`Air India Express reviewed output hash mismatch: ${filename}`);
+    }
+  }
+  const pdfChecksum = checksums.find(item => item.label === 'SOURCE_PDF:AirIndiaExpressLimited_SS_2026.pdf');
+  const provenanceChecksum = checksums.find(item => item.label === 'SOURCE_PROVENANCE:source-manifest.json');
+  if (!pdfChecksum || pdfChecksum.hash !== AIRINDIAEXPRESS_PDF_SHA256 || sha256(AIRINDIAEXPRESS_SOURCE) !== AIRINDIAEXPRESS_PDF_SHA256
+    || !provenanceChecksum || provenanceChecksum.hash !== AIRINDIAEXPRESS_SOURCE_MANIFEST_SHA256
+    || sha256(join(ROOT, 'docs/source-evidence/air-india-express-dgca-2026-10-07/source/source-manifest.json')) !== AIRINDIAEXPRESS_SOURCE_MANIFEST_SHA256) {
+    throw new Error('Air India Express captured PDF or source-provenance hash mismatch');
+  }
+}
+
+function airIndiaExpressOverlapFields(raw: string): AirIndiaExpressConflictField[] {
+  const rawFields = raw.match(/raw_frequency|arrival_clock|departure_clock|aircraft/g) ?? [];
+  const fieldMap: Record<string, AirIndiaExpressConflictField> = {
+    raw_frequency: 'frequency', arrival_clock: 'arrivalClock', departure_clock: 'departureClock', aircraft: 'aircraftType',
+  };
+  const fields = [...new Set(rawFields.map(field => fieldMap[field]).filter((field): field is AirIndiaExpressConflictField => Boolean(field)))];
+  if (fields.length === 0 || !raw.startsWith('[') || !raw.endsWith(']')) throw new Error(`Malformed Air India Express overlap field list: ${raw}`);
+  return fields;
+}
+
+function mapAirIndiaExpress(): z.infer<typeof DgcaScheduleEvidenceCatalogSchema>['sources'][number] {
+  verifyAirIndiaExpressPacket();
+  const snapshot = AirIndiaExpressSnapshotSchema.parse(readJson(join(AIRINDIAEXPRESS_PACKET, 'integration-candidate-snapshot.json')));
+  const sourceHash = snapshot.source.pdfSha256;
+  if (sha256(join(ROOT, 'public/data/airports.json')) !== snapshot.pinnedInputs.airportCatalogSha256
+    || sha256(join(ROOT, 'public/data/route-network/flight-numbers-current.json')) !== RELEASE_BASE_FLIGHT_NUMBERS_SHA256
+    || sha256(join(ROOT, 'public/data/route-network/flight-numbers-current.json')) !== snapshot.pinnedInputs.flightNumberCandidateSha256) {
+    throw new Error('Air India Express pinned airport or current flight-number baseline changed');
+  }
+  if (sha256(AIRINDIAEXPRESS_SOURCE) !== sourceHash || snapshot.source.pdfBytes !== 1155068 || snapshot.source.pdfPages !== 32
+    || snapshot.source.flightPrefixRaw !== 'IX' || snapshot.source.operatorCodeRaw !== 'AXB'
+    || snapshot.runtimeComparison.exactFlightNumberAndPairMatches !== 0 || snapshot.runtimeComparison.runtimeIxFlightNumberCandidates !== 0) {
+    throw new Error('Air India Express source identity, PDF, or reviewed runtime baseline differs from the packet');
+  }
+
+  const ledger = parseCsv(readFileSync(join(AIRINDIAEXPRESS_PACKET, 'identity-ledger.csv'), 'utf8'));
+  const allVariants = parseCsv(readFileSync(join(AIRINDIAEXPRESS_PACKET, 'schedule-variants.csv'), 'utf8'));
+  const allRows = parseCsv(readFileSync(join(AIRINDIAEXPRESS_PACKET, 'schedule-rows.csv'), 'utf8'));
+  const overlapRows = parseCsv(readFileSync(join(AIRINDIAEXPRESS_PACKET, 'overlapping-variant-review.csv'), 'utf8'));
+  const rowById = new Map<string, CsvRecord>();
+  const variantById = new Map<string, CsvRecord>();
+  const ledgerById = new Map<string, CsvRecord>();
+  for (const row of allRows) {
+    if (!row.source_row_id || rowById.has(row.source_row_id)) throw new Error(`Duplicate or missing Air India Express source row ID: ${row.source_row_id}`);
+    if (row.source_pdf_sha256 !== sourceHash || row.source_pdf_url !== snapshot.source.pdfUrl
+      || row.flight_prefix_raw !== 'IX' || row.operator_code_raw !== 'AXB' || row.operator_name_from_pdf !== 'Air India Express Limited') {
+      throw new Error(`Air India Express source-row identity fields changed: ${row.source_row_id}`);
+    }
+    if (!row.source_row_text_sha256 || !row.source_lineage_sha256
+      || !row.physical_lineage_ref.endsWith(`lineage=${row.source_lineage_sha256}`)) {
+      throw new Error(`Air India Express row lineage/hash is incomplete: ${row.source_row_id}`);
+    }
+    rowById.set(row.source_row_id, row);
+  }
+  for (const row of allVariants) {
+    if (!row.schedule_variant_id || variantById.has(row.schedule_variant_id)) throw new Error(`Duplicate or missing Air India Express variant ID: ${row.schedule_variant_id}`);
+    if (row.operator_code_raw !== 'AXB' || row.flight_designator_compact.slice(0, 2) !== 'IX'
+      || !/^(current|future|expired)$/.test(row.validity_status_as_of)
+      || !/^(accepted|expired)$/.test(row.record_classification)) {
+      throw new Error(`Air India Express variant fields or status changed: ${row.schedule_variant_id}`);
+    }
+    const sourceIds = row.source_rows.split(';').filter(Boolean);
+    if (sourceIds.length === 0 || sourceIds.some(id => !rowById.has(id))) throw new Error(`Air India Express variant has missing source rows: ${row.schedule_variant_id}`);
+    variantById.set(row.schedule_variant_id, row);
+  }
+  for (const row of ledger) {
+    if (!row.identity_id || ledgerById.has(row.identity_id)) throw new Error(`Duplicate or missing Air India Express identity ID: ${row.identity_id}`);
+    if (row.operator_code_raw !== 'AXB' || !/^IX\d{1,4}[A-Z]?$/.test(row.flight_designator_compact)) {
+      throw new Error(`Air India Express identity code or prefix changed: ${row.identity_id}`);
+    }
+    ledgerById.set(row.identity_id, row);
+  }
+
+  const acceptedRows = allRows.filter(row => row.record_classification === 'accepted' && ['current', 'future'].includes(row.validity_status_as_of));
+  const expiredRows = allRows.filter(row => row.record_classification === 'expired' && row.validity_status_as_of === 'expired');
+  const acceptedVariants = allVariants.filter(row => row.record_classification === 'accepted' && ['current', 'future'].includes(row.validity_status_as_of));
+  const expiredVariants = allVariants.filter(row => row.record_classification === 'expired' && row.validity_status_as_of === 'expired');
+  const activeIdentities = ledger.filter(row => row.accepted_current_future === 'true');
+  if (allRows.length !== 1744 || acceptedRows.length !== 1051 || expiredRows.length !== 693
+    || allVariants.length !== 1609 || acceptedVariants.length !== 940 || expiredVariants.length !== 669
+    || ledger.length !== 473 || activeIdentities.length !== 433 || ledgerById.size !== ledger.length
+    || acceptedRows.length !== snapshot.classificationCounts.acceptedCurrentFutureRows
+    || acceptedVariants.length !== snapshot.classificationCounts.acceptedCurrentFutureVariants
+    || activeIdentities.length !== snapshot.classificationCounts.acceptedCurrentFutureIdentityKeys
+    || allRows.length !== snapshot.classificationCounts.sourceMovementRows) {
+    throw new Error('Air India Express movement, identity, or variant totals differ from the reviewed snapshot');
+  }
+  const rowLineages = new Set(allRows.map(row => row.source_lineage_sha256));
+  if (rowLineages.size !== allRows.length || acceptedRows.some(row => row.source_lineage_sha256 === '')) {
+    throw new Error('Air India Express source-row physical lineage is not unique');
+  }
+  const byIdentityVariants = new Map<string, CsvRecord[]>();
+  for (const variant of allVariants) {
+    const group = byIdentityVariants.get(variant.identity_id) ?? [];
+    group.push(variant);
+    byIdentityVariants.set(variant.identity_id, group);
+  }
+  const byIdentityRows = new Map<string, CsvRecord[]>();
+  for (const row of allRows) {
+    const group = byIdentityRows.get(row.identity_record_id) ?? [];
+    group.push(row);
+    byIdentityRows.set(row.identity_record_id, group);
+  }
+
+  const pairRows: AirIndiaExpressOverlap[] = overlapRows.map(row => {
+    const variantA = variantById.get(row.variantA);
+    const variantB = variantById.get(row.variantB);
+    if (!variantA || !variantB || row.identityId !== variantA.identity_id || row.identityId !== variantB.identity_id) {
+      throw new Error(`Air India Express overlap pair is not tied to variants of one directional identity: ${row.variantA}/${row.variantB}`);
+    }
+    const id = `ix-overlap-${createHash('sha256').update(`${row.identityId}|${row.variantA}|${row.variantB}|${row.overlapFrom}|${row.overlapUntil}`).digest('hex').slice(0, 20)}`;
+    return {
+      id,
+      identityId: row.identityId,
+      variantA: row.variantA,
+      variantB: row.variantB,
+      overlapFrom: row.overlapFrom,
+      overlapUntil: row.overlapUntil,
+      differingRawFields: airIndiaExpressOverlapFields(row.differingRawFields),
+      interpretation: row.interpretation,
+    };
+  });
+  if (pairRows.length !== 2458 || new Set(pairRows.map(pair => pair.id)).size !== pairRows.length) {
+    throw new Error('Air India Express reviewed overlapping-variant pair total or uniqueness changed');
+  }
+  const pairFieldCounts: Record<string, number> = { frequency: 0, arrivalClock: 0, departureClock: 0, aircraftType: 0 };
+  for (const pair of pairRows) for (const field of pair.differingRawFields) pairFieldCounts[field] = (pairFieldCounts[field] ?? 0) + 1;
+  const activeVariantIds = new Set(acceptedVariants.map(row => row.schedule_variant_id));
+  const activePairs = pairRows.filter(pair => activeVariantIds.has(pair.variantA) && activeVariantIds.has(pair.variantB));
+  const sameFrequencyClockPairs = (rows: AirIndiaExpressOverlap[]): AirIndiaExpressOverlap[] => rows.filter(pair =>
+    !pair.differingRawFields.includes('frequency')
+    && (pair.differingRawFields.includes('arrivalClock') || pair.differingRawFields.includes('departureClock')));
+  const allSameFrequencyClockPairs = sameFrequencyClockPairs(pairRows);
+  const activeSameFrequencyClockPairs = sameFrequencyClockPairs(activePairs);
+  if (pairFieldCounts.frequency !== 2259 || pairFieldCounts.arrivalClock !== 1411 || pairFieldCounts.departureClock !== 1419
+    || pairFieldCounts.aircraftType !== 306 || activePairs.length !== 849
+    || allSameFrequencyClockPairs.length !== 199 || activeSameFrequencyClockPairs.length !== 129) {
+    throw new Error('Air India Express raw-overlap field counts or active timing flags differ from review');
+  }
+
+  const overlapsByVariant = new Map<string, AirIndiaExpressOverlap[]>();
+  for (const pair of pairRows) {
+    for (const variantId of [pair.variantA, pair.variantB]) {
+      if (!activeVariantIds.has(variantId)) continue;
+      const evidence = overlapsByVariant.get(variantId) ?? [];
+      evidence.push(pair);
+      overlapsByVariant.set(variantId, evidence);
+    }
+  }
+  const currentRuntime = readJson(join(ROOT, 'public/data/route-network/runtime-current.json')) as { routes: Array<Record<string, unknown>> };
+  const currentFlightNumberLayer = readJson(join(ROOT, 'public/data/route-network/flight-numbers-current.json')) as { routes: Array<Record<string, unknown>> };
+  const runtimeRoutes = currentRuntime.routes;
+  const flightNumberRoutes = currentFlightNumberLayer.routes;
+  const exactDesignatorMatches = (routes: Array<Record<string, unknown>>, designator: string, origin: string, destination: string): boolean => routes.some(route => {
+    const pair = route.pair;
+    if (!Array.isArray(pair) || pair[0] !== origin || pair[1] !== destination) return false;
+    const numbers = [...(Array.isArray(route.flightNumbers) ? route.flightNumbers : []), ...(Array.isArray(route.flightNumberCandidates) ? route.flightNumberCandidates : [])];
+    return numbers.includes(designator);
+  });
+  const hasDirectedPair = (routes: Array<Record<string, unknown>>, origin: string, destination: string): boolean => routes.some(route => {
+    const pair = route.pair;
+    return Array.isArray(pair) && pair[0] === origin && pair[1] === destination;
+  });
+  let currentPairMatches = 0;
+  let currentExactMatches = 0;
+  let currentCandidateLayerExactMatches = 0;
+  const activeIdentityKeys = new Set<string>();
+  for (const record of snapshot.records) {
+    const key = `${record.publishedDesignatorCompact}|${record.originIata}|${record.destinationIata}`;
+    activeIdentityKeys.add(key);
+    if (hasDirectedPair(runtimeRoutes, record.originIata, record.destinationIata)) currentPairMatches += 1;
+    if (exactDesignatorMatches(runtimeRoutes, record.publishedDesignatorCompact, record.originIata, record.destinationIata)) currentExactMatches += 1;
+    if (exactDesignatorMatches(flightNumberRoutes, record.publishedDesignatorCompact, record.originIata, record.destinationIata)) currentCandidateLayerExactMatches += 1;
+  }
+  if (activeIdentityKeys.size !== 433 || currentExactMatches !== 0 || currentCandidateLayerExactMatches !== 0
+    || snapshot.records.some(record => record.exactFlightNumberAndPairMatch)) {
+    throw new Error('Air India Express has an exact designator/direction match in current route or flight-number data');
+  }
+
+  const identitiesById = new Map(snapshot.records.map(record => [record.id, record]));
+  const references = activeIdentities.sort((a, b) => a.identity_id.localeCompare(b.identity_id)).map(identity => {
+    const record = identitiesById.get(identity.identity_id);
+    if (!record || identity.identity_status !== 'accepted' || identity.as_of_validity_status !== record.asOfValidityStatus
+      || identity.flight_designator_compact !== record.publishedDesignatorCompact
+      || identity.from_iata !== record.originIata || identity.to_iata !== record.destinationIata) {
+      throw new Error(`Air India Express identity ledger/snapshot mismatch: ${identity.identity_id}`);
+    }
+    const allIdentityVariants = byIdentityVariants.get(identity.identity_id) ?? [];
+    const identityVariants = allIdentityVariants.filter(variant => activeVariantIds.has(variant.schedule_variant_id));
+    const allIdentityRows = byIdentityRows.get(identity.identity_id) ?? [];
+    const ledgerSourceIds = identity.source_rows.split(';').filter(Boolean);
+    const ledgerLineages = identity.physical_lineage_refs.split(';').filter(Boolean);
+    if (allIdentityVariants.length !== record.variantCount || allIdentityRows.length !== record.sourceRowCount
+      || new Set(record.variantIds).size !== allIdentityVariants.length
+      || record.variantIds.some(id => !allIdentityVariants.some(variant => variant.schedule_variant_id === id))
+      || new Set(record.sourceRowIds).size !== allIdentityRows.length
+      || record.sourceRowIds.some(id => !allIdentityRows.some(row => row.source_row_id === id))
+      || new Set(ledgerSourceIds).size !== allIdentityRows.length
+      || ledgerSourceIds.some(id => !allIdentityRows.some(row => row.source_row_id === id))
+      || new Set(ledgerLineages).size !== allIdentityRows.length
+      || ledgerLineages.some(ref => !allIdentityRows.some(row => row.physical_lineage_ref === ref))) {
+      throw new Error(`Air India Express active source-row/variant join count changed: ${identity.identity_id}`);
+    }
+    const referenceVariants = identityVariants.sort((a, b) => a.effective_from.localeCompare(b.effective_from)
+      || a.effective_to.localeCompare(b.effective_to) || a.schedule_variant_id.localeCompare(b.schedule_variant_id)).map(variant => {
+      const ids = variant.source_rows.split(';').filter(Boolean);
+      const sourceRows = ids.map(id => {
+        const row = rowById.get(id);
+        if (!row || row.record_classification !== 'accepted' || !['current', 'future'].includes(row.validity_status_as_of)
+          || row.identity_record_id !== identity.identity_id || row.flight_designator_compact !== identity.flight_designator_compact
+          || row.route_from_iata !== identity.from_iata || row.route_to_iata !== identity.to_iata
+          || row.frequency_raw !== variant.frequency_raw || row.effective_from !== variant.effective_from || row.effective_to !== variant.effective_to
+          || row.aircraft_type_raw !== variant.aircraft_type_raw) {
+          throw new Error(`Air India Express variant/source-row identity join mismatch: ${variant.schedule_variant_id}/${id}`);
+        }
+        const side = row.movement_direction;
+        if (side !== 'arrival' && side !== 'departure') throw new Error(`Unknown Air India Express movement side: ${id}`);
+        return {
+          referenceRaw: row.physical_lineage_ref,
+          page: Number(row.pdf_page),
+          physicalRow: Number(row.pdf_row_order),
+          stationSectionOrdinal: null,
+          stationSectionRaw: row.airport_section_title_raw,
+          printedRowRaw: row.printed_serial_raw,
+          sourceSide: side,
+          sourceRowSha256: row.source_lineage_sha256,
+          sourceRowTextSha256: row.source_row_text_sha256,
+        };
+      }).sort((a, b) => a.page - b.page || (a.physicalRow ?? 0) - (b.physicalRow ?? 0));
+      const sides = [...new Set(sourceRows.map(row => row.sourceSide))].sort();
+      const paired = sides.includes('arrival') && sides.includes('departure');
+      if (paired !== variant.counterpart_status.startsWith('paired')) {
+        throw new Error(`Air India Express paired/one-sided source status changed: ${variant.schedule_variant_id}`);
+      }
+      const conflictEvidence = (overlapsByVariant.get(variant.schedule_variant_id) ?? []).map(pair => ({
+        id: pair.id,
+        peerVariantId: pair.variantA === variant.schedule_variant_id ? pair.variantB : pair.variantA,
+        overlapFrom: pair.overlapFrom,
+        overlapUntil: pair.overlapUntil,
+        differingRawFields: pair.differingRawFields,
+        interpretation: pair.interpretation,
+      })).sort((a, b) => a.id.localeCompare(b.id));
+      const conflictFields = [...new Set(conflictEvidence.flatMap(evidence => evidence.differingRawFields))].sort();
+      const conflictIds = conflictEvidence.map(evidence => evidence.id);
+      const arrivalClocks = variant.arrival_times_raw === '' ? (sides.includes('arrival') ? [''] : []) : variant.arrival_times_raw.split(';');
+      const departureClocks = variant.departure_times_raw === '' ? (sides.includes('departure') ? [''] : []) : variant.departure_times_raw.split(';');
+      return {
+        id: variant.schedule_variant_id,
+        effectiveFrom: variant.effective_from,
+        effectiveUntil: variant.effective_to,
+        effectiveFromRaw: variant.effective_from_raw,
+        effectiveUntilRaw: variant.effective_to_raw,
+        sourceStatusAsOf: variant.validity_status_as_of as 'current' | 'future',
+        frequencyRaw: variant.frequency_raw,
+        frequencyQualification: 'Raw DGCA frequency digits are retained. The PDF contains no frequency legend; weekday expansion is not inferred.',
+        frequencyWeekdaysCorroborated: [],
+        departureClockValuesRaw: departureClocks,
+        arrivalClockValuesRaw: arrivalClocks,
+        aircraftTypeValuesRaw: [variant.aircraft_type_raw],
+        timeBasis: 'unknown' as const,
+        timezone: null,
+        sourceRows,
+        stationCodeResolution: 'Reviewed station-heading crosswalks and unique current airport-catalog codes; raw headings remain in source lineage.',
+        stationLabelsRaw: [...new Set(sourceRows.map(row => row.stationSectionRaw).filter(Boolean))],
+        sourceMovementSides: sides,
+        sourceCounterpartStatus: paired ? 'paired' as const : 'one-sided' as const,
+        conflictIds,
+        conflictKinds: conflictEvidence.length > 0 ? ['overlapping-raw-variant-metadata'] : [],
+        conflictFields,
+        conflictEvidence,
+        hasVariantConflict: conflictEvidence.length > 0,
+        timeConflict: conflictFields.includes('arrivalClock') || conflictFields.includes('departureClock'),
+        notes: [
+          'DGCA source status is approved schedule evidence; actual operation, date availability, and bookability are not established.',
+          'The source prints flight prefix IX and operator code AXB separately. No carrier, Air India/AI identity, alliance membership, or confirmed-route identity is inferred.',
+          'Frequency digits and HH:MM values stay raw. The source specifies neither a frequency legend nor a timezone; no weekday expansion, UTC occurrence, or connection timing is generated.',
+          `Source movement relation: ${variant.counterpart_status}. A one-sided movement supports this directed leg only; no reverse leg or chained nonstop is inferred.`,
+          ...(conflictEvidence.length > 0 ? ['Overlap records are raw metadata/timing flags, not flight-identity conflicts; see the linked pair, date window, fields, and review interpretation.'] : []),
+        ],
+      };
+    });
+    const airportCatalogStatus = AIRPORT_CATALOG_CODES.has(identity.from_iata) && AIRPORT_CATALOG_CODES.has(identity.to_iata)
+      ? 'all-endpoints-present' as const : 'source-code-not-in-current-catalog' as const;
+    if (airportCatalogStatus !== 'all-endpoints-present') throw new Error(`Air India Express reviewed endpoint is absent from current airport catalog: ${identity.identity_id}`);
+    const conflictReferences = [...new Set(referenceVariants.flatMap(variant => variant.conflictIds))].sort();
+    return {
+      id: identity.identity_id,
+      publishedDesignatorRaw: identity.flight_designator_raw,
+      designatorKey: identity.flight_designator_compact,
+      designatorPrefixRaw: 'IX',
+      flightDigitsRaw: identity.flight_designator_compact.slice(2),
+      originIata: identity.from_iata,
+      destinationIata: identity.to_iata,
+      identityStatus: 'accepted-identity-only',
+      airportCatalogStatus,
+      otherDirectionalRoutes: [],
+      sourceCounterpartStatus: referenceVariants.some(variant => variant.sourceCounterpartStatus === 'paired') ? 'paired' : 'one-sided',
+      hasVariantConflict: referenceVariants.some(variant => variant.hasVariantConflict),
+      conflictReferences,
+      variants: referenceVariants,
+    };
+  });
+  if (references.length !== 433 || references.reduce((sum, reference) => sum + reference.variants.length, 0) !== 940) {
+    throw new Error('Air India Express accepted identity/variant join differs from the reviewed counts');
+  }
+
+  const aliases = parseCsv(readFileSync(join(AIRINDIAEXPRESS_PACKET, 'reviewed-station-aliases.csv'), 'utf8'));
+  const airportHeadings = parseCsv(readFileSync(join(AIRINDIAEXPRESS_PACKET, 'airport-heading-resolution.csv'), 'utf8'));
+  if (aliases.length !== 13 || airportHeadings.length !== 43 || !snapshot.airportHeadingResolution.all43CodesUniqueInPinnedCatalog
+    || snapshot.airportHeadingResolution.oldHoldsResolvedByReviewedCrossSourceAlias !== 13 || snapshot.airportHeadingResolution.remainingHeldHeadings !== 0) {
+    throw new Error('Air India Express station crosswalk review or catalog uniqueness changed');
+  }
+  const rights = snapshot.rightsReview;
+  const allPairCount = pairRows.length;
+  const baselineRuntimeRoutes = currentRuntime.routes;
+  const currentRoutesWithIXOrAXB = baselineRuntimeRoutes.filter(route => route.carrier === 'IX' || route.carrier === 'AXB').length;
+  if (currentRoutesWithIXOrAXB !== 0) throw new Error('An IX/AXB route layer exists in the release baseline; reconcile before attaching evidence');
+  return {
+    id: 'dgca-air-india-express-domestic-ss-2026',
+    title: `DGCA approved Summer 2026 domestic schedule — ${snapshot.source.operatorNameRaw}`,
+    url: snapshot.source.pdfUrl,
+    pdfSha256: sourceHash,
+    pdfBytes: snapshot.source.pdfBytes,
+    pages: snapshot.source.pdfPages,
+    publishedDateRaw: snapshot.source.publishedDateRaw,
+    checkedAt: null,
+    reviewBy: null,
+    reviewedSnapshotDate: snapshot.asOfDate,
+    attribution: `Source: Directorate General of Civil Aviation (DGCA), “Airport Movement Report - Approved Summer Schedule Domestic,” ${snapshot.source.operatorNameRaw}, published ${snapshot.source.publishedDateRaw}.`,
+    reusePolicyUrl: 'https://www.dgca.gov.in/digigov-portal/jsp/dgca/footerLink/WebsitePolicy.jsp',
+    reusePolicyStatement: `${rights.dgcaWebsitePolicy} The reviewed 32-page PDF had no marked third-party content. No Creative Commons or public-domain license is claimed.`,
+    operator: {
+      printedNameRaw: snapshot.source.operatorNameRaw,
+      operatorCodeRaw: snapshot.source.operatorCodeRaw,
+      carrierIdentityStatus: 'unresolved',
+      carrierName: null,
+      iataDesignator: null,
+      icaoCode: null,
+      identitySourceUrl: null,
+      qualification: 'The source prints IX as its flight-designator prefix and AXB as its operator code. No airline-identity crosswalk is supplied; IX is distinct from AI and is not linked to Air India, an alliance, or confirmed routes.',
+    },
+    counts: {
+      currentReferences: references.length,
+      currentVariants: acceptedVariants.length,
+      excludedExpiredVariants: expiredVariants.length,
+      excludedHeldVariants: 0,
+      excludedExpiredOnlyIdentityKeys: 40,
+      overlapPairs: allPairCount,
+      conflictingCoreIdentityPairs: 0,
+      conflictVariants: new Set([...overlapsByVariant.keys()]).size,
+    },
+    sourceSpecificCounts: {
+      allMovementRows: allRows.length,
+      acceptedCurrentFutureMovementRows: acceptedRows.length,
+      currentMovementRows: 935,
+      futureMovementRows: 116,
+      expiredMovementRows: expiredRows.length,
+      heldMovementRows: 0,
+      allValidityDirectionalIdentityKeys: ledger.length,
+      currentDirectionalIdentityKeys: 425,
+      futureOnlyDirectionalIdentityKeys: 8,
+      expiredOnlyDirectionalIdentityKeys: 40,
+      allValidityScheduleVariants: allVariants.length,
+      acceptedCurrentFutureScheduleVariants: acceptedVariants.length,
+      currentScheduleVariants: 825,
+      futureScheduleVariants: 115,
+      expiredScheduleVariants: expiredVariants.length,
+      heldScheduleVariants: 0,
+      reviewedOverlappingRawMetadataPairsAllValidity: allPairCount,
+      reviewedOverlappingRawMetadataPairsCurrentFuture: activePairs.length,
+      sameFrequencyDifferentClockPairsAllValidity: allSameFrequencyClockPairs.length,
+      sameFrequencyDifferentClockPairsCurrentFuture: activeSameFrequencyClockPairs.length,
+      pairsDifferingFrequency: pairFieldCounts.frequency,
+      pairsDifferingArrivalClock: pairFieldCounts.arrivalClock,
+      pairsDifferingDepartureClock: pairFieldCounts.departureClock,
+      pairsDifferingAircraftType: pairFieldCounts.aircraftType,
+      currentRuntimeDirectedAirportPairIdentityMatchesAnyCarrier: currentPairMatches,
+      currentRuntimeExactIXDesignatorDirectionMatches: currentExactMatches,
+      currentFlightNumberLayerExactIXDesignatorDirectionMatches: currentCandidateLayerExactMatches,
+      reviewedBaselineRuntimeExactIXDesignatorDirectionMatches: snapshot.runtimeComparison.exactFlightNumberAndPairMatches,
+      reviewedBaselineIXFlightNumberCandidateMatches: snapshot.runtimeComparison.runtimeIxFlightNumberCandidates,
+      reviewedBaselineExistingAirportPairIdentityOverlaps: 269,
+      reviewedBaselineNewAirportPairIdentityRows: 164,
+      reviewedAirportHeadings: airportHeadings.length,
+      reviewedCrossSourceAliasResolutions: aliases.length,
+      sourcePdfMovementRows: snapshot.classificationCounts.sourceMovementRows,
+    },
+    references,
+  };
+}
+
 function build(): void {
   verifyChecksumPacket(SPICEJET_PACKET, 'SHA256SUMS.txt');
   verifyChecksumPacket(INDIGO_PACKET, 'manifest.sha256', INDIGO_MANIFEST_SHA256, INDIGO_ARTIFACT_HASHES);
   verifyChecksumPacket(AIRINDIA_PACKET, 'SHA256SUMS', AIRINDIA_MANIFEST_SHA256, AIRINDIA_ARTIFACT_HASHES);
+  verifyAirIndiaExpressPacket();
   const spicejet = SpiceJetScheduleReferenceCatalogSchema.parse(readJson(SPICEJET_NORMALIZED));
   const snapshot = IndigoSnapshotSchema.parse(readJson(join(INDIGO_PACKET, 'integration-candidate-snapshot.json')));
   const indigoLedgerRows = parseCsv(readFileSync(join(INDIGO_PACKET, 'identity-ledger.csv'), 'utf8'));
@@ -711,6 +1245,22 @@ function build(): void {
   if (sha256(join(ROOT, 'public/data/route-network/runtime-current.json')) !== RELEASE_BASE_RUNTIME_SHA256) {
     throw new Error('Accepted route runtime differs from the resolved Brazil release base; reconcile before building DGCA evidence');
   }
+  const sources = [
+    mapSpiceJet(spicejet.source, spicejet.counts, spicejet.references),
+    mapIndiGo(snapshot, conflictIndex, indigoLedgerById, validation),
+    mapAirIndia(),
+    mapAirIndiaExpress(),
+  ];
+  const joinedIdentities = new Set<string>();
+  for (const source of sources) for (const reference of source.references) {
+    const key = `${reference.designatorKey}|${reference.originIata}|${reference.destinationIata}`;
+    if (joinedIdentities.has(key)) throw new Error(`DGCA source packets contain a duplicate directional identity: ${key}`);
+    joinedIdentities.add(key);
+  }
+  const totalVariants = sources.reduce((sum, source) => sum + source.counts.currentVariants, 0);
+  if (sources.length !== 4 || joinedIdentities.size !== 3364 || totalVariants !== 5730) {
+    throw new Error(`Shared DGCA catalog join totals changed (${joinedIdentities.size} identities / ${totalVariants} variants across ${sources.length} sources)`);
+  }
   const catalog = DgcaScheduleEvidenceCatalogSchema.parse({
     version: 1,
     kind: 'dgca-schedule-identity-evidence',
@@ -725,11 +1275,7 @@ function build(): void {
       utcOccurrencesGenerated: false,
       connectionTimingEstablished: false,
     },
-    sources: [
-      mapSpiceJet(spicejet.source, spicejet.counts, spicejet.references),
-      mapIndiGo(snapshot, conflictIndex, indigoLedgerById, validation),
-      mapAirIndia(),
-    ],
+    sources,
   });
   writeFileSync(OUT, `${JSON.stringify(catalog, null, 2)}\n`);
   console.log(`Wrote shared DGCA evidence catalog: ${catalog.sources.map(source => `${source.counts.currentReferences} identities / ${source.counts.currentVariants} variants`).join('; ')}`);
