@@ -625,8 +625,10 @@
       "stopoverLabel": "第 {n} 段停留/轉機狀態",
       "stopoverTitle": "環球票時間規則：24 小時內通常是轉機，24 小時以上通常是停留。",
       "surfaceTitle": "地面段 / open-jaw：這一段不搭飛機移動。",
-      "unverifiedRoute": "未驗證航線"
-      ,"assumedCarrier": "假設航司・待確認"
+      "unverifiedRoute": "未驗證航線",
+      "assumedCarrier": "假設航司・待確認",
+      "dgcaReference": "DGCA 身份參考・非實際班次",
+      "carrierUnknown": "營運航空公司未知"
     },
     "timing": {
       "unknownShort": "時間？",
@@ -657,6 +659,7 @@
       "airlineEligibilityPass": "所有執飛航司都符合此產品的航司資格規則。",
       "airlineEligibilityFail": "有一段或多段執飛航司不符合此產品資格。",
       "airlineEligibilityConditional": "有航段使用假設航司；確認實際執飛者後才能完成此產品的航司資格檢查。",
+      "airlineEligibilityUnknown": "有一段或多段來源參考航段的營運航空公司與聯盟資格未知。",
       "carrierCombinationConditional": "多航司規則取決於假設航司；確認實際執飛者後才能完成檢查。",
       "flightSegmentsPass": "路線共有 {count} 段飛行，符合段數限制。",
       "flightSegmentsFail": "路線共有 {count} 段飛行；允許範圍是 {min}-{max}。",

@@ -3261,6 +3261,29 @@
   color: var(--tertiary-label);
   cursor: not-allowed;
 }
+.rtw-leg-date-cell input[type="date"] {
+  max-width: 142px;
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-control);
+  padding: 6px 8px;
+  color: var(--label);
+  background: var(--grouped-background);
+  font: inherit;
+}
+.rtw-dgca-reference {
+  max-width: 520px;
+  margin-top: var(--space-2);
+  color: var(--secondary-label);
+  font-size: var(--type-caption);
+  line-height: 1.5;
+}
+.rtw-dgca-reference summary {
+  color: var(--label);
+  cursor: pointer;
+  font-weight: 650;
+}
+.rtw-dgca-reference p { margin: 6px 0; overflow-wrap: anywhere; }
+.rtw-dgca-reference code { overflow-wrap: anywhere; }
 .rtw-leg-surface-toggle {
   display: inline-flex;
   align-items: center;

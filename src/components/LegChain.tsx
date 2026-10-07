@@ -38,7 +38,7 @@ interface Props {
   airlines: ReadonlyArray<Airline>;
   onReorder: (airportOccurrenceOrder: ReadonlyArray<number>) => void;
   onRemove: (iata: Iata, index: number) => void;
-  onCarrierChange: (legIndex: number, carrier: AirlineIata) => void;
+  onCarrierChange: (legIndex: number, carrier: AirlineIata | undefined) => void;
   onCabinChange: (legIndex: number, cabin: CabinId | undefined) => void;
   /** Set undefined to clear the override (let cabin default apply). */
   onFareClassChange: (legIndex: number, fareClass: string | undefined) => void;
@@ -173,6 +173,7 @@ export function LegChain({
                 <span className="leg-chip-route-arrow" aria-hidden="true">{isSurface ? '⇢' : '→'}</span>
                 <strong className="leg-chip-iata">{toAirport.iata}</strong>
                 {isManual && <span className="leg-chip-unverified" data-leg-manual>{t('rtw.legChip.unverifiedRoute')}</span>}
+                {flight?.dgcaScheduleReference && <span className="leg-chip-unverified" data-dgca-reference-tag>{t('rtw.legChip.dgcaReference')}</span>}
               </span>
               <span className="leg-chip-city">{airport.city} → {toAirport.city}</span>
               <span className="leg-chip-route-actions">
@@ -229,7 +230,7 @@ export function LegChain({
                   onClick={() => setExpandedLegIndex(isEditingLeg ? null : legIndex)}
                 >
                   <span className="leg-chip-summary-main">
-                    <strong>{flight ? `${flight.operatingCarrier}${flight.flightNumber ?? ''}` : t('rtw.timing.surface')}</strong>
+                    <strong>{flight ? (flight.dgcaScheduleReference?.reference.designatorKey ?? `${flight.operatingCarrier ?? ''}${flight.flightNumber ?? ''}`) || t('rtw.legChip.carrierUnknown') : t('rtw.timing.surface')}</strong>
                   </span>
                   <span className="leg-chip-summary-meta">
                     {flight
@@ -242,13 +243,14 @@ export function LegChain({
                   <span className="leg-chip-arrow" aria-hidden="true">→</span>
                   {flight && <select
                     className="leg-chip-carrier"
-                    value={flight.operatingCarrier}
-                    onChange={(e) => onCarrierChange(legIndex, e.target.value.toUpperCase())}
+                    value={flight.operatingCarrier ?? ''}
+                    onChange={(e) => onCarrierChange(legIndex, e.target.value === '' ? undefined : e.target.value.toUpperCase())}
                     aria-label={t('leg.carrierLabel', { n: legIndex + 1 })}
                     data-rtw-field={'carrier:' + legIndex}
-                    aria-invalid={!airlines.some((airline) => airline.iata === flight.operatingCarrier)}
+                    aria-invalid={Boolean(flight.operatingCarrier && !airlines.some((airline) => airline.iata === flight.operatingCarrier))}
                   >
-                    {!airlines.some((airline) => airline.iata === flight.operatingCarrier) && (
+                    {flight.dgcaScheduleReference && <option value="">{t('rtw.legChip.carrierUnknown')}</option>}
+                    {flight.operatingCarrier && !airlines.some((airline) => airline.iata === flight.operatingCarrier) && (
                       <option value={flight.operatingCarrier}>{flight.operatingCarrier} · {t('rtw.integrity.ineligibleCarrier')}</option>
                     )}
                     {airlines.map((al) => (

@@ -1,6 +1,6 @@
 import { sameAirport } from '../airport-identity.ts';
 import { passengerRouteUseDecision } from './passenger-route-use.ts';
-import { isFlightLeg, type Airport, type FlightLeg, type Leg, type RoutingRequest } from '../types.ts';
+import { hasOperatingCarrier, isFlightLeg, type Airport, type FlightLeg, type Leg, type RoutingRequest } from '../types.ts';
 import type { AllianceCatalog } from '../schemas/alliance.ts';
 import type { RtwRuleSet, RtwSurfaceDistancePolicy } from '../schemas/rtw-rule.ts';
 import { cityCodeForAirport, cityCodeLabel } from '../city-codes.ts';
@@ -587,6 +587,14 @@ export function validateRtwRoute(
   // Missing rights/product evidence is not a claim of legal prohibition.
   legs.forEach((leg, index) => {
     if (!isFlightLeg(leg)) return;
+    if (!leg.operatingCarrier) {
+      if (leg.dgcaScheduleReference) findings.push({
+        ruleId: 'dgca-source-reference', severity: 'unknown', affectedLegIndexes: [index],
+        message: `${leg.dgcaScheduleReference.reference.designatorKey} is a DGCA source identity reference for ${leg.from}-${leg.to}; dated service, operating airline, alliance eligibility, and connection timing are not established.`,
+        sourceUrl: leg.dgcaScheduleReference.source.url,
+      });
+      return;
+    }
     const decision = passengerRouteUseDecision(leg.operatingCarrier, leg.from, leg.to, leg.departsOn ?? '', ruleSet.id, undefined, leg.operatingCarrierEntityKey);
     if (decision === 'local-sale-unverified' || decision === 'product-use-unverified') findings.push({
       ruleId: 'passenger-route-use', severity: 'fail', affectedLegIndexes: [index],
@@ -753,26 +761,30 @@ export function validateRtwRoute(
   }
 
   const members = activeAllianceMembers(ruleSet, inputs.allianceCatalog);
+  const unattributedReferenceLegIndexes = legs
+    .map((leg, index) => ({ leg, index }))
+    .filter(({ leg }) => isFlightLeg(leg) && leg.dgcaScheduleReference !== undefined && leg.operatingCarrier === undefined)
+    .map(({ index }) => index);
   const assumedCarrierLegIndexes = legs
     .map((leg, index) => ({ leg, index }))
-    .filter((item): item is { leg: FlightLeg; index: number } => isFlightLeg(item.leg))
+    .filter((item): item is { leg: FlightLeg & { readonly operatingCarrier: string }; index: number } => hasOperatingCarrier(item.leg))
     .filter(({ leg }) => leg.carrierAssumed === true)
     .map(({ index }) => index);
   const ineligibleLegIndexes = legs
     .map((leg, index) => ({ leg, index }))
-    .filter((item): item is { leg: FlightLeg; index: number } => isFlightLeg(item.leg))
+    .filter((item): item is { leg: FlightLeg & { readonly operatingCarrier: string }; index: number } => hasOperatingCarrier(item.leg))
     .filter(({ leg }) => leg.carrierAssumed !== true && !members.has(leg.operatingCarrier))
     .map(({ index }) => index);
 
   const confirmedFlownCarriers = new Set(
     legs
-      .filter(isFlightLeg)
+      .filter(hasOperatingCarrier)
       .filter((leg) => leg.carrierAssumed !== true)
       .map((leg) => leg.operatingCarrier),
   );
   const assumedFlownCarriers = new Set(
     legs
-      .filter(isFlightLeg)
+      .filter(hasOperatingCarrier)
       .filter((leg) => leg.carrierAssumed === true)
       .map((leg) => leg.operatingCarrier),
   );
@@ -781,15 +793,17 @@ export function validateRtwRoute(
   findings.push(localizedFinding(
     {
       ruleId: 'airline-eligibility',
-      severity: ineligibleLegIndexes.length > 0 ? 'fail' : assumedCarrierLegIndexes.length > 0 ? 'unknown' : 'pass',
+      severity: ineligibleLegIndexes.length > 0 ? 'fail' : assumedCarrierLegIndexes.length > 0 || unattributedReferenceLegIndexes.length > 0 ? 'unknown' : 'pass',
       message:
         ineligibleLegIndexes.length > 0
           ? 'One or more operating carriers are not eligible for this product.'
           : assumedCarrierLegIndexes.length > 0
             ? 'Carrier eligibility is conditional until assumed itinerary carriers are verified.'
+            : unattributedReferenceLegIndexes.length > 0
+              ? 'Operating airline and alliance eligibility are unknown for source-reference legs.'
             : 'All operating carriers match this product eligibility rule.',
-      ...((ineligibleLegIndexes.length > 0 || assumedCarrierLegIndexes.length > 0)
-        ? { affectedLegIndexes: [...ineligibleLegIndexes, ...assumedCarrierLegIndexes] }
+      ...((ineligibleLegIndexes.length > 0 || assumedCarrierLegIndexes.length > 0 || unattributedReferenceLegIndexes.length > 0)
+        ? { affectedLegIndexes: [...new Set([...ineligibleLegIndexes, ...assumedCarrierLegIndexes, ...unattributedReferenceLegIndexes])] }
         : {}),
       ...(sourceUrl ? { sourceUrl } : {}),
     },
@@ -797,7 +811,9 @@ export function validateRtwRoute(
       ? 'rtw.findings.airlineEligibilityFail'
       : assumedCarrierLegIndexes.length > 0
         ? 'rtw.findings.airlineEligibilityConditional'
-        : 'rtw.findings.airlineEligibilityPass',
+        : unattributedReferenceLegIndexes.length > 0
+          ? 'rtw.findings.airlineEligibilityUnknown'
+          : 'rtw.findings.airlineEligibilityPass',
   ));
 
   // Network-gap watchlist warnings (docs/calibration-set.md addendum A2):
@@ -809,7 +825,7 @@ export function validateRtwRoute(
     const tripStartYm = request?.startDate?.slice(0, 7);
     const gapMatches = new Map<string, { gap: NetworkGapEntry; legIndexes: number[] }>();
     for (const [index, leg] of legs.entries()) {
-      if (!isFlightLeg(leg)) continue;
+      if (!hasOperatingCarrier(leg)) continue;
       for (const gap of inputs.networkGaps) {
         const [a, b] = gap.pair;
         const matchesPair =
@@ -899,7 +915,7 @@ export function validateRtwRoute(
   // schedules input produces zero findings (degrade-to-null loader contract).
   if (inputs.schedules !== undefined && inputs.schedules.length > 0) {
     for (const [index, leg] of legs.entries()) {
-      if (!isFlightLeg(leg)) continue;
+      if (!hasOperatingCarrier(leg)) continue;
       if (leg.departsOn === undefined) continue;
       const entry = inputs.schedules.find(
         (candidate) =>

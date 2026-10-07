@@ -142,7 +142,7 @@ function formatGroup(
     return (
       padR(`${ld.leg.from}→${ld.leg.to}`, ROUTE_W) +
       '  ' +
-      padR(flight ? flight.operatingCarrier : 'SURF', OP_W) +
+      padR(flight ? flight.operatingCarrier ?? (flight.dgcaScheduleReference ? 'DGCA REF' : 'UNKNOWN') : 'SURF', OP_W) +
       '  ' +
       padR(flight?.cabin ? CABIN_SHORT[flight.cabin] : '—', CAB_W) +
       '  ' +

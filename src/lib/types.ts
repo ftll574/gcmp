@@ -3,6 +3,8 @@
  * (lib/calc/**) does not depend on UI types.
  */
 
+import type { DgcaScheduleDraftReference } from './schemas/dgca-schedule-evidence.ts';
+
 export type Iata = string; // 3-letter airport code, uppercase
 export type AirlineIata = string; // 2-3 letter airline code, uppercase
 
@@ -139,11 +141,13 @@ interface BaseLeg {
   readonly stopover?: boolean;
 }
 
-/** A real flown sector. Only this variant can carry flight-specific data. */
+/** A planned flown sector. DGCA source references remain separate from
+ * operating-flight facts and can leave the operator unresolved. */
 export interface FlightLeg extends BaseLeg {
   /** `surface: true` is reserved for SurfaceLeg; flown legs normally omit it. */
   readonly surface?: false | undefined;
-  readonly operatingCarrier: AirlineIata;
+  /** Omitted only for a source-reference draft whose operating carrier is unknown. */
+  readonly operatingCarrier?: AirlineIata | undefined;
   /** Optional qualified operator identity where an IATA code is shared. */
   readonly operatingCarrierEntityKey?: string;
   /** The selected carrier is a planning assumption, not verified operator evidence. */
@@ -175,6 +179,8 @@ export interface FlightLeg extends BaseLeg {
    * (docs/decisions/flight-schedule-model.md S1).
    */
   readonly departsOn?: string;
+  /** Date-bounded source identity evidence; never proves operation or UTC timing. */
+  readonly dgcaScheduleReference?: DgcaScheduleDraftReference | undefined;
 }
 
 /**
@@ -195,6 +201,11 @@ export function isSurfaceLeg(leg: Leg): leg is SurfaceLeg {
 
 export function isFlightLeg(leg: Leg): leg is FlightLeg {
   return leg.surface !== true;
+}
+
+/** True only when a draft flight leg carries an explicitly selected operator. */
+export function hasOperatingCarrier(leg: Leg): leg is FlightLeg & { readonly operatingCarrier: AirlineIata } {
+  return isFlightLeg(leg) && leg.operatingCarrier !== undefined;
 }
 
 export type ProjectionShortCode = 'm' | 'e' | 'a' | 'o';

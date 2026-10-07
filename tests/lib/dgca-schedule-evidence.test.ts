@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   DgcaScheduleEvidenceCatalogSchema,
+  dgcaDraftDateStatus,
   matchesDgcaIdentityWindow,
 } from '../../src/lib/schemas/dgca-schedule-evidence.ts';
 
@@ -140,6 +141,32 @@ describe('DGCA schedule evidence schema', () => {
     const invalid = catalogFixture();
     invalid.sources[0]!.references[0]!.variants[0]!.hasVariantConflict = true;
     expect(() => DgcaScheduleEvidenceCatalogSchema.parse(invalid)).toThrow();
+  });
+
+  it('uses only corroborated weekdays and keeps unknown, mixed, and conflicting annotations explicit', () => {
+    const reference = catalogFixture().sources[0]!.references[0]!;
+    const evidence = reference.variants[0]!;
+    expect(dgcaDraftDateStatus(reference, '2026-10-07')).toBe('weekday-unknown');
+
+    evidence.frequencyWeekdaysCorroborated = ['Monday'];
+    expect(dgcaDraftDateStatus(reference, '2026-11-02')).toBe('weekday-supported');
+    expect(dgcaDraftDateStatus(reference, '2026-11-03')).toBe('weekday-not-supported');
+    expect(dgcaDraftDateStatus(reference, '2026-10-25')).toBe('outside-window');
+
+    const conflicting = catalogFixture().sources[0]!.references[0]!;
+    conflicting.variants[0]!.frequencyWeekdaysCorroborated = ['Monday'];
+    conflicting.variants[0]!.conflictFields = ['frequency'];
+    expect(dgcaDraftDateStatus(conflicting, '2026-10-07')).toBe('weekday-conflict');
+
+    const mixedCatalog = catalogFixture();
+    const mixedSource = mixedCatalog.sources[0]!;
+    const second = structuredClone(mixedSource.references[0]!.variants[0]!);
+    second.id = 'dgca-6e-example-variant-2';
+    second.frequencyWeekdaysCorroborated = ['Tuesday'];
+    mixedSource.references[0]!.variants.push(second);
+    mixedSource.counts.currentVariants += 1;
+    expect(DgcaScheduleEvidenceCatalogSchema.parse(mixedCatalog)).toBeTruthy();
+    expect(dgcaDraftDateStatus(mixedSource.references[0]!, '2026-10-07')).toBe('weekday-unknown');
   });
 
   it('retains overlap timing evidence without classifying it as an identity conflict', () => {

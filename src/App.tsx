@@ -44,6 +44,7 @@ import {
 import { preferredCarrierForProduct, sortMileageRedemptionRtwProductsForMarket } from './lib/rtw/products.ts';
 import { seasonalItineraryLegs } from './lib/rtw/seasonal-itinerary.ts';
 import { parseShareUrl } from './lib/url-schema.ts';
+import type { DgcaScheduleDraftReference } from './lib/schemas/dgca-schedule-evidence.ts';
 import {
   isFlightLeg,
   isSurfaceLeg,
@@ -200,6 +201,16 @@ function LoadedSiteApp({ siteView, onNavigateSite }: LoadedSiteAppProps): React.
               operatingCarrier: carrier,
               ...(flightNumber ? { flightNumber } : {}),
               ...(departsOn ? { departsOn } : {}),
+            };
+            setRouting({ ...routing.request, groups: [{ legs: [leg] }] });
+            onNavigateSite('planner');
+          }}
+          onPlanDgcaReference={(reference: DgcaScheduleDraftReference, date: string) => {
+            const leg: FlightLeg = {
+              from: reference.reference.originIata,
+              to: reference.reference.destinationIata,
+              departsOn: date,
+              dgcaScheduleReference: reference,
             };
             setRouting({ ...routing.request, groups: [{ legs: [leg] }] });
             onNavigateSite('planner');
@@ -491,11 +502,18 @@ function Ready({
     });
   }
 
-  function changeCarrier(legIndex: number, carrier: AirlineIata): void {
+  function changeCarrier(legIndex: number, carrier: AirlineIata | undefined): void {
     updateActiveGroup((group) => ({
       legs: group.legs.map((leg, i) => {
         if (i !== legIndex || !isFlightLeg(leg) || leg.operatingCarrier === carrier) return leg;
-        return { ...clearLegField(leg, 'flightNumber'), operatingCarrier: carrier };
+        const next = { ...clearLegField(leg, 'flightNumber') };
+        delete next.operatingCarrierEntityKey;
+        if (carrier === undefined) {
+          delete next.operatingCarrier;
+          delete next.carrierAssumed;
+          return next;
+        }
+        return { ...next, operatingCarrier: carrier, ...(leg.dgcaScheduleReference ? { carrierAssumed: true } : {}) };
       }),
     }));
   }

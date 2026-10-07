@@ -17,7 +17,7 @@ async function openDirectory(): Promise<void> {
 test('loads the shared evidence directory on open and filters the bounded IndiGo identity records', async () => {
   const fetch = vi.fn(async () => new Response(asset));
   vi.stubGlobal('fetch', fetch);
-  render(<DgcaScheduleEvidenceDirectory zh={false} />);
+  render(<DgcaScheduleEvidenceDirectory zh={false} onPlanReference={() => undefined} />);
   expect(fetch).not.toHaveBeenCalled();
   expect(screen.getByText('SpiceJet, IndiGo, Air India, and Air India Express')).toBeInTheDocument();
   await openDirectory();
@@ -34,7 +34,7 @@ test('loads the shared evidence directory on open and filters the bounded IndiGo
   expect(identity).toHaveTextContent('6E102');
   expect(identity).toHaveTextContent('BOM → DEL');
   expect(identity).toHaveTextContent('service on that date and actual operation remain unknown');
-  expect(identity.querySelectorAll('button')).toHaveLength(0);
+  expect(identity.querySelectorAll('button')).toHaveLength(1);
 
   const variantDisclosure = identity.querySelector<HTMLDetailsElement>('details')!;
   variantDisclosure.open = true;
@@ -55,7 +55,7 @@ test('loads the shared evidence directory on open and filters the bounded IndiGo
 
 test('preserves SpiceJet source lineage, one-sided wording, source attribution and hash disclosures', async () => {
   vi.stubGlobal('fetch', vi.fn(async () => new Response(asset)));
-  render(<DgcaScheduleEvidenceDirectory zh={false} />);
+  render(<DgcaScheduleEvidenceDirectory zh={false} onPlanReference={() => undefined} />);
   await openDirectory();
   fireEvent.change(screen.getByLabelText('Source'), { target: { value: 'dgca-spicejet-ss-2026' } });
   fireEvent.change(screen.getByLabelText('Search designator or airport code'), { target: { value: 'SG105' } });
@@ -63,7 +63,7 @@ test('preserves SpiceJet source lineage, one-sided wording, source attribution a
 
   const identity = document.querySelector<HTMLElement>('[data-dgca-reference="dgca-spicejet-ss26-sg105-del-pnq"]')!;
   expect(identity).toHaveTextContent('DEL → PNQ');
-  expect(identity.querySelectorAll('button')).toHaveLength(0);
+  expect(identity.querySelectorAll('button')).toHaveLength(1);
   const variantDisclosure = identity.querySelector<HTMLDetailsElement>('details')!;
   variantDisclosure.open = true;
   fireEvent(variantDisclosure, new Event('toggle'));
@@ -83,7 +83,7 @@ test('preserves SpiceJet source lineage, one-sided wording, source attribution a
 
 test('keeps Air India suffixes, exact page-section lineage and baseline identity classes visible', async () => {
   vi.stubGlobal('fetch', vi.fn(async () => new Response(asset)));
-  render(<DgcaScheduleEvidenceDirectory zh={false} />);
+  render(<DgcaScheduleEvidenceDirectory zh={false} onPlanReference={() => undefined} />);
   await openDirectory();
   fireEvent.change(screen.getByLabelText('Source'), { target: { value: 'dgca-air-india-domestic-ss-2026' } });
   fireEvent.change(screen.getByLabelText('Search designator or airport code'), { target: { value: 'AI532A' } });
@@ -94,7 +94,7 @@ test('keeps Air India suffixes, exact page-section lineage and baseline identity
   expect(identity).toHaveAttribute('data-source-window', 'inside');
   expect(identity).toHaveTextContent('AI532A');
   expect(identity).toHaveTextContent('AMD → DEL');
-  expect(identity.querySelectorAll('button')).toHaveLength(0);
+  expect(identity.querySelectorAll('button')).toHaveLength(1);
   const variantDisclosure = identity.querySelector<HTMLDetailsElement>('details')!;
   variantDisclosure.open = true;
   fireEvent(variantDisclosure, new Event('toggle'));
@@ -114,7 +114,7 @@ test('keeps Air India suffixes, exact page-section lineage and baseline identity
 
 test('filters Air India Express IX evidence while retaining its source code, one-sided rows, raw clocks and overlap flags', async () => {
   vi.stubGlobal('fetch', vi.fn(async () => new Response(asset)));
-  render(<DgcaScheduleEvidenceDirectory zh={false} />);
+  render(<DgcaScheduleEvidenceDirectory zh={false} onPlanReference={() => undefined} />);
   await openDirectory();
   fireEvent.change(screen.getByLabelText('Source'), { target: { value: 'dgca-air-india-express-domestic-ss-2026' } });
   fireEvent.change(screen.getByLabelText('Search designator or airport code'), { target: { value: 'IX1012' } });
@@ -153,7 +153,7 @@ test('offers Retry after a failed lazy load and renders the directory after the 
     .mockResolvedValueOnce(new Response('temporarily unavailable', { status: 503 }))
     .mockResolvedValueOnce(new Response(asset));
   vi.stubGlobal('fetch', fetch);
-  render(<DgcaScheduleEvidenceDirectory zh={false} />);
+  render(<DgcaScheduleEvidenceDirectory zh={false} onPlanReference={() => undefined} />);
   const directory = document.querySelector<HTMLDetailsElement>('[data-dgca-schedule-evidence-directory] > details')!;
   directory.open = true;
   fireEvent(directory, new Event('toggle'));
@@ -163,4 +163,32 @@ test('offers Retry after a failed lazy load and renders the directory after the 
   await waitFor(() => expect(screen.getByLabelText('Search designator or airport code')).toBeInTheDocument());
   expect(fetch).toHaveBeenCalledTimes(2);
   expect(document.querySelector('.dgca-schedule-evidence-directory__count')).toHaveTextContent('3,364 source identity references');
+});
+
+test('adds a date-bounded draft reference while weekday and operator remain unknown', async () => {
+  vi.stubGlobal('fetch', vi.fn(async () => new Response(asset)));
+  const onPlanReference = vi.fn();
+  render(<DgcaScheduleEvidenceDirectory zh={false} onPlanReference={onPlanReference} />);
+  await openDirectory();
+  fireEvent.change(screen.getByLabelText('Source'), { target: { value: 'dgca-air-india-express-domestic-ss-2026' } });
+  fireEvent.change(screen.getByLabelText('Search designator or airport code'), { target: { value: 'IX1403' } });
+  await waitFor(() => expect(document.querySelectorAll('[data-dgca-reference]')).toHaveLength(1));
+
+  const identity = document.querySelector<HTMLElement>('[data-dgca-reference="ix-leg-033ee97a60eee28872d2"]')!;
+  expect(identity).toHaveAttribute('data-source-window', 'inside');
+  expect(identity).toHaveTextContent('Weekday interpretation is unknown');
+  expect(identity.querySelector('[data-dgca-weekday-status]')).toHaveAttribute('data-dgca-weekday-status', 'weekday-unknown');
+  fireEvent.click(screen.getByRole('button', { name: /Add to draft/ }));
+
+  expect(onPlanReference).toHaveBeenCalledTimes(1);
+  const [draftReference, date] = onPlanReference.mock.calls[0]!;
+  expect(date).toBe('2026-10-07');
+  expect(draftReference.reference).toMatchObject({
+    id: 'ix-leg-033ee97a60eee28872d2',
+    designatorKey: 'IX1403',
+    originIata: 'BLR',
+    destinationIata: 'IXB',
+  });
+  expect(draftReference.reference.variants[0].sourceRows[0].sourceRowSha256).toBeTruthy();
+  expect(draftReference.source.operator.carrierIdentityStatus).toBe('unresolved');
 });

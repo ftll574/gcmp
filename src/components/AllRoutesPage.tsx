@@ -21,6 +21,7 @@ import { AvinorPublicBatchDirectory } from './AvinorPublicBatchDirectory.tsx';
 import { AvinorFollowOnDirectory } from './AvinorFollowOnDirectory.tsx';
 import { AvinorRemainingAirportsDirectory } from './AvinorRemainingAirportsDirectory.tsx';
 import { DgcaScheduleEvidenceDirectory } from './DgcaScheduleEvidenceDirectory.tsx';
+import type { DgcaScheduleDraftReference } from '../lib/schemas/dgca-schedule-evidence.ts';
 import { SiteHeader, type SiteView } from './SiteHeader.tsx';
 import { useLocale } from '../i18n/use-locale.ts';
 
@@ -39,6 +40,7 @@ interface Props {
   readonly data: RouteLibraryData;
   readonly onNavigate: (view: SiteView) => void;
   readonly onPlanRoute: (route: { from: string; to: string; carrier: string; flightNumber?: string | undefined; departsOn?: string | undefined }) => void;
+  readonly onPlanDgcaReference: (reference: DgcaScheduleDraftReference, date: string) => void;
 }
 
 function RouteNetworkLoading({
@@ -198,7 +200,7 @@ function advancedFromLocation(): boolean {
   return new URLSearchParams(window.location.search).get('advanced') === '1';
 }
 
-export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.ReactElement {
+export function AllRoutesPage({ data, onNavigate, onPlanRoute, onPlanDgcaReference }: Props): React.ReactElement {
   const { locale } = useLocale();
   const zh = locale === 'zh-TW';
   const copy = locale === 'zh-TW' ? {
@@ -568,7 +570,7 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
                 </Suspense>
               </section>}
             </section>
-            <DgcaScheduleEvidenceDirectory zh={zh} />
+            <DgcaScheduleEvidenceDirectory zh={zh} onPlanReference={onPlanDgcaReference} />
             <CaaWeeklyScheduleTierDirectory />
             <AvinorPublicSnapshotDirectory />
             <AvinorPublicBatchDirectory />

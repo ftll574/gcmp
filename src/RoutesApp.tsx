@@ -2,6 +2,7 @@ import { AllRoutesPage } from './components/AllRoutesPage.tsx';
 import { SiteHeader, type SiteView } from './components/SiteHeader.tsx';
 import { useLocaleState } from './i18n/use-locale-state.ts';
 import type { FlightLeg, RoutingRequest } from './lib/types.ts';
+import type { DgcaScheduleDraftReference } from './lib/schemas/dgca-schedule-evidence.ts';
 import { useRouteLibraryData } from './state/use-route-library-data.ts';
 
 interface Props {
@@ -101,6 +102,15 @@ export function RoutesApp({ onNavigateSite }: Props): React.ReactElement {
           operatingCarrier: carrier,
           ...(flightNumber ? { flightNumber } : {}),
           ...(departsOn ? { departsOn } : {}),
+        };
+        void routeToPlanner(leg, onNavigateSite);
+      }}
+      onPlanDgcaReference={(reference: DgcaScheduleDraftReference, date: string) => {
+        const leg: FlightLeg = {
+          from: reference.reference.originIata,
+          to: reference.reference.destinationIata,
+          departsOn: date,
+          dgcaScheduleReference: reference,
         };
         void routeToPlanner(leg, onNavigateSite);
       }}

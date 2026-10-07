@@ -69,6 +69,7 @@ const LETTER_BY_TIER: Record<EliteTier, string> = {
   top: 't',
 };
 import type { ProjectionId } from './calc/projection-model.ts';
+import { DgcaScheduleDraftReferenceSchema } from './schemas/dgca-schedule-evidence.ts';
 
 const SCHEMA_VERSION = 'v1';
 
@@ -170,6 +171,7 @@ export function parseShareUrl(input: string): UrlParseResult {
   const dRaw = params.get('d');
   const fnRaw = params.get('fn');
   const oeRaw = params.get('oe');
+  const dgRaw = params.get('dg');
   const flightNumbersByGroup = fnRaw === null ? null : fnRaw.split(';');
   if (flightNumbersByGroup && flightNumbersByGroup.length !== iataByGroup.length) {
     return err('mismatched-op-length', 'Flight-number groups must match the airport groups.');
@@ -178,6 +180,30 @@ export function parseShareUrl(input: string): UrlParseResult {
   if (oeRaw !== null) {
     operatorEntitiesByGroupStr = oeRaw.split(';');
     if (operatorEntitiesByGroupStr.length !== iataByGroup.length) return err('mismatched-op-length', 'Qualified-operator groups must match the airport groups.');
+  }
+  let dgcaReferencesByGroup: Array<Array<import('./schemas/dgca-schedule-evidence.ts').DgcaScheduleDraftReference | undefined>> | null = null;
+  if (dgRaw !== null) {
+    const encodedGroups = dgRaw.split(';');
+    if (encodedGroups.length !== iataByGroup.length) return err('mismatched-op-length', 'DGCA reference groups must match the airport groups.');
+    dgcaReferencesByGroup = [];
+    for (const [gi, encodedGroup] of encodedGroups.entries()) {
+      const expected = (iataByGroup[gi]?.length ?? 1) - 1;
+      const encodedCells = encodedGroup.split(',');
+      if (encodedCells.length !== expected) return err('mismatched-op-length', `Group ${gi + 1}: DGCA references must match the leg count.`);
+      const decoded: Array<import('./schemas/dgca-schedule-evidence.ts').DgcaScheduleDraftReference | undefined> = [];
+      for (const cell of encodedCells) {
+        if (cell === '') {
+          decoded.push(undefined);
+          continue;
+        }
+        try {
+          decoded.push(DgcaScheduleDraftReferenceSchema.parse(JSON.parse(decodeURIComponent(cell))));
+        } catch {
+          return err('malformed-path', 'Invalid DGCA route-reference metadata.');
+        }
+      }
+      dgcaReferencesByGroup.push(decoded);
+    }
   }
   const stopoverRaw = params.get('stp');
   const surfaceRaw = params.get('surf');
@@ -444,6 +470,7 @@ export function parseShareUrl(input: string): UrlParseResult {
 
     const legs: Leg[] = [];
     const flightNumbers = flightNumbersByGroup?.[gi]?.split(',');
+    const dgcaReferences = dgcaReferencesByGroup?.[gi];
     if (flightNumbers && flightNumbers.length !== expectedOpCount) {
       return err('mismatched-op-length', `Group ${gi + 1}: flight numbers must match the leg count.`);
     }
@@ -463,6 +490,10 @@ export function parseShareUrl(input: string): UrlParseResult {
       const departsOn = departures?.[i];
       const flightNumber = flightNumbers?.[i];
       const operatingCarrierEntityKey = operatorEntities?.[i];
+      const dgcaScheduleReference = dgcaReferences?.[i];
+      if (dgcaScheduleReference && (dgcaScheduleReference.reference.originIata !== from || dgcaScheduleReference.reference.destinationIata !== to)) {
+        return err('malformed-path', 'DGCA reference direction must match its itinerary leg.');
+      }
       if (surface === true) {
         // Legacy links stored a placeholder carrier (and could also carry
         // flight-only metadata) on surface sectors. Accept a syntactically
@@ -471,7 +502,7 @@ export function parseShareUrl(input: string): UrlParseResult {
         if (operatingCarrier !== '' && !/^[A-Z0-9]{2,3}$/.test(operatingCarrier)) {
           return err('malformed-path', `Invalid operating carrier code: "${operatingCarrier}"`);
         }
-        if (flightNumber || operatingCarrierEntityKey || carrierAssumed === true) {
+        if (flightNumber || operatingCarrierEntityKey || carrierAssumed === true || dgcaScheduleReference) {
           return err('malformed-path', 'Flight-only metadata requires a flown leg.');
         }
         legs.push({
@@ -479,6 +510,21 @@ export function parseShareUrl(input: string): UrlParseResult {
           to,
           surface: true,
           ...(stopover !== undefined ? { stopover } : {}),
+        });
+        continue;
+      }
+      if (operatingCarrier === '' && dgcaScheduleReference) {
+        if (flightNumber || operatingCarrierEntityKey || carrierAssumed === true) {
+          return err('malformed-path', 'A source-reference leg cannot claim a flight number or operator identity.');
+        }
+        legs.push({
+          from,
+          to,
+          dgcaScheduleReference,
+          ...(legCabin !== undefined ? { cabin: legCabin } : {}),
+          ...(stopover !== undefined ? { stopover } : {}),
+          ...(surface === false ? { surface: false as const } : {}),
+          ...(departsOn !== undefined ? { departsOn } : {}),
         });
         continue;
       }
@@ -501,6 +547,7 @@ export function parseShareUrl(input: string): UrlParseResult {
         ...(carrierAssumed === true ? { carrierAssumed: true } : {}),
         ...(departsOn !== undefined ? { departsOn } : {}),
         ...(flightNumber ? { flightNumber } : {}),
+        ...(dgcaScheduleReference ? { dgcaScheduleReference } : {}),
       });
     }
     groups.push({ legs });
@@ -651,6 +698,12 @@ export function encodeShareUrl(req: RoutingRequest): string {
   const operatorEntitiesByGroup = anyQualifiedOperator
     ? req.groups.map((group) => group.legs.map((leg) => isFlightLeg(leg) ? (leg.operatingCarrierEntityKey ?? '') : '').join(','))
     : null;
+  const anyDgcaReference = req.groups.some((group) => group.legs.some((leg) => isFlightLeg(leg) && leg.dgcaScheduleReference !== undefined));
+  const dgcaByGroup = anyDgcaReference
+    ? req.groups.map((group) => group.legs.map((leg) => isFlightLeg(leg) && leg.dgcaScheduleReference
+      ? encodeURIComponent(JSON.stringify(leg.dgcaScheduleReference))
+      : '').join(','))
+    : null;
 
   const path = groupChains.join(',');
   const op = opByGroup.join(';');
@@ -682,6 +735,7 @@ export function encodeShareUrl(req: RoutingRequest): string {
     params.set('d', datesByGroup.join(';'));
   }
   if (operatorEntitiesByGroup) params.set('oe', operatorEntitiesByGroup.join(';'));
+  if (dgcaByGroup) params.set('dg', dgcaByGroup.join(';'));
   if (req.groups.some((group) => group.legs.some((leg) => isFlightLeg(leg) && leg.flightNumber !== undefined))) {
     params.set('fn', req.groups.map((group) => group.legs.map((leg) => isFlightLeg(leg) ? (leg.flightNumber ?? '') : '').join(',')).join(';'));
   }

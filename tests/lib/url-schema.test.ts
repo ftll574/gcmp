@@ -7,7 +7,9 @@
  */
 
 import { describe, expect, test } from 'vitest';
+import { readFileSync } from 'node:fs';
 import { encodeShareUrl, parseShareUrl } from '../../src/lib/url-schema.ts';
+import { DgcaScheduleEvidenceCatalogSchema, DgcaScheduleDraftReferenceSchema } from '../../src/lib/schemas/dgca-schedule-evidence.ts';
 import type { RoutingRequest } from '../../src/lib/types.ts';
 
 const SINGLE_GROUP: RoutingRequest = {
@@ -43,6 +45,23 @@ const MULTI_GROUP: RoutingRequest = {
   cabin: 'business',
   programs: ['aa-aadvantage', 'as-mileage-plan'],
 };
+
+function dgcaDraftReference() {
+  const catalog = DgcaScheduleEvidenceCatalogSchema.parse(JSON.parse(readFileSync('public/data/dgca-schedule-evidence-20261007.json', 'utf8')));
+  const source = catalog.sources.find(item => item.id === 'dgca-air-india-express-domestic-ss-2026')!;
+  const reference = source.references.find(item => item.id === 'ix-leg-033ee97a60eee28872d2')!;
+  return DgcaScheduleDraftReferenceSchema.parse({
+    source: {
+      id: source.id, title: source.title, url: source.url, pdfSha256: source.pdfSha256,
+      publishedDateRaw: source.publishedDateRaw, checkedAt: source.checkedAt, reviewBy: source.reviewBy,
+      reviewedSnapshotDate: source.reviewedSnapshotDate, attribution: source.attribution,
+      reusePolicyUrl: source.reusePolicyUrl, reusePolicyStatement: source.reusePolicyStatement,
+      operator: source.operator,
+    },
+    reference,
+    catalogSnapshotAsOfDate: catalog.snapshotAsOfDate,
+  });
+}
 
 describe('encodeShareUrl (single-group)', () => {
   test('produces /r/v1/IATA-IATA-... path', () => {
@@ -269,6 +288,28 @@ describe('parseShareUrl (multi-group)', () => {
       expect(parsed.request.projection).toBe('azimuthal-equidistant');
       expect(parsed.request.groups.length).toBe(2);
     }
+  });
+});
+
+describe('DGCA source-reference sharing', () => {
+  test('round-trips an unresolved-operator dated reference and rejects a reversed direction', () => {
+    const reference = dgcaDraftReference();
+    const request: RoutingRequest = {
+      groups: [{ legs: [{ from: 'BLR', to: 'IXB', departsOn: '2026-10-07', dgcaScheduleReference: reference }] }],
+      cabin: 'business',
+      programs: ['aa-aadvantage'],
+    };
+    const encoded = encodeShareUrl(request);
+    const parsed = parseShareUrl(encoded);
+
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      const leg = parsed.request.groups[0]!.legs[0]!;
+      expect(leg).toMatchObject({ from: 'BLR', to: 'IXB', departsOn: '2026-10-07', dgcaScheduleReference: reference });
+      if (leg.surface !== true) expect(leg.operatingCarrier).toBeUndefined();
+    }
+    const reversed = parseShareUrl(encoded.replace('/BLR-IXB?', '/IXB-BLR?'));
+    expect(reversed).toMatchObject({ ok: false, kind: 'malformed-path' });
   });
 });
 

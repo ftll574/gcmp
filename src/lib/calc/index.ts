@@ -183,11 +183,13 @@ function computeGroup(
     const programNotes: string[] = [];
 
     for (const ld of byLeg) {
-      if (ld.leg.surface === true) {
+      if (ld.leg.surface === true || ld.leg.operatingCarrier === undefined) {
         perLeg.push(
           emptyLegEarning(
             ld.distanceNm,
-            'Surface/open-jaw sector — no flight earning is computed for this segment.',
+            ld.leg.surface === true
+              ? 'Surface/open-jaw sector — no flight earning is computed for this segment.'
+              : 'Source-only route reference with unknown operating airline — no flight earning is computed for this segment.',
           ),
         );
         confidences.push(null);

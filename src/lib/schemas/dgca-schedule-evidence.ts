@@ -94,6 +94,40 @@ export const DgcaScheduleIdentityReferenceSchema = z.object({
   }
 });
 
+/** Small source envelope copied with an itinerary draft so its qualification
+ * survives a share/load even if the published directory changes later. */
+export const DgcaScheduleDraftSourceSchema = z.object({
+  id: z.string().min(1),
+  title: z.string().min(1),
+  url: z.string().url(),
+  pdfSha256: Sha256,
+  publishedDateRaw: z.string().min(1),
+  checkedAt: z.string().datetime().nullable(),
+  reviewBy: z.string().datetime().nullable(),
+  reviewedSnapshotDate: CalendarDate,
+  attribution: z.string().min(1),
+  reusePolicyUrl: z.string().url(),
+  reusePolicyStatement: z.string().min(1),
+  operator: z.object({
+    printedNameRaw: z.string().nullable(),
+    operatorCodeRaw: z.string().nullable(),
+    carrierIdentityStatus: z.enum(['independently-mapped', 'unresolved']),
+    carrierName: z.string().nullable(),
+    iataDesignator: z.string().nullable(),
+    icaoCode: z.string().nullable(),
+    identitySourceUrl: z.string().url().nullable(),
+    qualification: z.string().min(1),
+  }).strict(),
+}).strict();
+
+/** Self-contained DGCA identity evidence for a dated geographic draft leg.
+ * It is deliberately not a schedule occurrence or operating-flight record. */
+export const DgcaScheduleDraftReferenceSchema = z.object({
+  source: DgcaScheduleDraftSourceSchema,
+  reference: DgcaScheduleIdentityReferenceSchema,
+  catalogSnapshotAsOfDate: CalendarDate,
+}).strict();
+
 export const DgcaScheduleEvidenceCatalogSchema = z.object({
   version: z.literal(1),
   kind: z.literal('dgca-schedule-identity-evidence'),
@@ -183,10 +217,33 @@ export const DgcaScheduleEvidenceCatalogSchema = z.object({
 
 export type DgcaScheduleEvidenceCatalog = z.infer<typeof DgcaScheduleEvidenceCatalogSchema>;
 export type DgcaScheduleIdentityReference = z.infer<typeof DgcaScheduleIdentityReferenceSchema>;
+export type DgcaScheduleDraftReference = z.infer<typeof DgcaScheduleDraftReferenceSchema>;
 
 /** Checks only the published identity's inclusive source window, never flight availability. */
 export function matchesDgcaIdentityWindow(reference: DgcaScheduleIdentityReference, date: string): boolean {
   return isCalendarDate(date) && reference.variants.some(variant => date >= variant.effectiveFrom && date <= variant.effectiveUntil);
+}
+
+export type DgcaDraftDateStatus = 'outside-window' | 'weekday-supported' | 'weekday-not-supported' | 'weekday-unknown' | 'weekday-conflict';
+
+/** Uses only separately corroborated weekday annotations. Raw frequency text
+ * is never decoded here, and a supported weekday still does not establish
+ * service or operation on the date. */
+export function dgcaDraftDateStatus(reference: DgcaScheduleIdentityReference, date: string): DgcaDraftDateStatus {
+  if (!isCalendarDate(date)) return 'outside-window';
+  const variants = reference.variants.filter(variant => date >= variant.effectiveFrom && date <= variant.effectiveUntil);
+  if (variants.length === 0) return 'outside-window';
+  if (variants.some(variant => variant.conflictFields.includes('frequency')
+    || variant.conflictEvidence.some(evidence => evidence.differingRawFields.includes('frequency')))) {
+    return 'weekday-conflict';
+  }
+  const weekdays = variants.map(variant => [...new Set(variant.frequencyWeekdaysCorroborated)].sort().join('|'));
+  if (weekdays.some(value => value === '') || new Set(weekdays).size > 1) return 'weekday-unknown';
+  const supported = new Set((weekdays[0] ?? '').split('|'));
+  if (supported.size === 0) return 'weekday-unknown';
+  const dayIndex = new Date(`${date}T00:00:00.000Z`).getUTCDay();
+  const dayName = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayIndex];
+  return dayName && supported.has(dayName) ? 'weekday-supported' : 'weekday-not-supported';
 }
 
 export function dgcaSourceReviewState(

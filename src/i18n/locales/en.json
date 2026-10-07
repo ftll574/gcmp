@@ -625,8 +625,10 @@
       "stopoverLabel": "Stopover status for leg {n}",
       "stopoverTitle": "RTW timing: transfer is under 24h, stopover is 24h+",
       "surfaceTitle": "Surface/open-jaw sector: no flight is taken for this segment",
-      "unverifiedRoute": "Unverified route"
-      ,"assumedCarrier": "Assumed carrier · verify"
+      "unverifiedRoute": "Unverified route",
+      "assumedCarrier": "Assumed carrier · verify",
+      "dgcaReference": "DGCA identity reference · not service",
+      "carrierUnknown": "Operating airline unknown"
     },
     "timing": {
       "unknownShort": "Timing?",
@@ -657,6 +659,7 @@
       "airlineEligibilityPass": "All operating carriers match this product eligibility rule.",
       "airlineEligibilityFail": "One or more operating carriers are not eligible for this product.",
       "airlineEligibilityConditional": "Some legs use an assumed carrier; verify the operator before completing this product eligibility check.",
+      "airlineEligibilityUnknown": "Operating airline and alliance eligibility are unknown for one or more source-reference legs.",
       "carrierCombinationConditional": "This multi-carrier rule depends on assumed carriers; verify the operators to complete this check.",
       "flightSegmentsPass": "Route has {count} flight segments within the allowed range.",
       "flightSegmentsFail": "Route has {count} flight segments; allowed range is {min}-{max}.",

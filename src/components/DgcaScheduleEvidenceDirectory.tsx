@@ -1,15 +1,21 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   dgcaSourceReviewState,
+  dgcaDraftDateStatus,
   DgcaScheduleEvidenceCatalogSchema,
+  DgcaScheduleDraftReferenceSchema,
   matchesDgcaIdentityWindow,
   type DgcaScheduleEvidenceCatalog,
+  type DgcaScheduleDraftReference,
 } from '../lib/schemas/dgca-schedule-evidence.ts';
 import { siteAssetHref } from '../lib/site-navigation.ts';
 import { useEvidenceClock } from '../lib/use-evidence-clock.ts';
 import './DgcaScheduleEvidenceDirectory.css';
 
-interface Props { readonly zh: boolean; }
+interface Props {
+  readonly zh: boolean;
+  readonly onPlanReference: (reference: DgcaScheduleDraftReference, date: string) => void;
+}
 
 function raw(value: string): string { return value === '' ? '(blank in source)' : value; }
 
@@ -17,14 +23,14 @@ function rawList(values: readonly string[]): string {
   return values.length === 0 ? '(not printed for this movement)' : values.map(raw).join(' · ');
 }
 
-export function DgcaScheduleEvidenceDirectory({ zh }: Props): React.ReactElement {
+export function DgcaScheduleEvidenceDirectory({ zh, onPlanReference }: Props): React.ReactElement {
   const [open, setOpen] = useState(false);
   const [catalog, setCatalog] = useState<DgcaScheduleEvidenceCatalog | null>(null);
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
   const [retryKey, setRetryKey] = useState(0);
   const [query, setQuery] = useState('');
-  const [date, setDate] = useState('2026-10-07');
+  const [date, setDate] = useState('');
   const [sourceId, setSourceId] = useState('all');
   const [visibleCount, setVisibleCount] = useState(20);
 
@@ -35,7 +41,10 @@ export function DgcaScheduleEvidenceDirectory({ zh }: Props): React.ReactElement
       .then(async response => {
         if (!response.ok) throw new Error('DGCA schedule evidence unavailable');
         const parsed = DgcaScheduleEvidenceCatalogSchema.parse(await response.json());
-        if (!controller.signal.aborted) setCatalog(parsed);
+        if (!controller.signal.aborted) {
+          setCatalog(parsed);
+          setDate(previous => previous || parsed.snapshotAsOfDate);
+        }
       })
       .catch(() => { if (!controller.signal.aborted) setFailed(true); })
       .finally(() => { if (!controller.signal.aborted) setLoading(false); });
@@ -71,6 +80,13 @@ export function DgcaScheduleEvidenceDirectory({ zh }: Props): React.ReactElement
     airportUnmapped: '來源機場代碼尚未匹配目前 GCMP 機場目錄；保留為來源參考，不加入可用航線。這不代表沒有航班。',
     unknownTime: '時區未定義；不作轉換', conflict: '來源變體有差異；保留原始值與標記。時刻標記不代表航班身份矛盾。',
     metadata: '來源、身份說明與顯名', pdfHash: 'PDF SHA-256', sourceLink: '開啟 DGCA 原始 PDF',
+    addDraft: '加入草稿（來源身份參考）',
+    weekdaySupported: '另源佐證的星期包含此日期；仍未知是否有班次或實際運航。',
+    weekdayNotSupported: '另源佐證的星期不包含此日期；此參考不能用於所選日期。',
+    weekdayUnknown: '星期解讀未知；僅能確認身份有效期間，不代表該星期有班次。',
+    weekdayConflict: '來源班次頻率欄位有衝突；無法判定所選星期。',
+    sourceAttributionKnown: 'DGCA 來源歸屬身份有另源對照；不代表實際運航或聯盟／環球票資格。',
+    sourceAttributionUnknown: 'DGCA 未確認營運航空公司；航空公司與聯盟身份維持未知。',
     checked: '核驗', reviewBy: '覆核期限', snapshotOnly: '僅保留核驗快照日期，未設定期限',
     currentReview: '覆核期限仍有效', expiredReview: '覆核期限已過', futureReview: '核驗時間尚未到達',
     unknownCarrier: '營運者身份未由來源確認', mappedCarrier: '來源歸屬身份獨立交叉核對',
@@ -92,6 +108,13 @@ export function DgcaScheduleEvidenceDirectory({ zh }: Props): React.ReactElement
     airportUnmapped: 'A source endpoint code is not matched in the current GCMP airport catalog. It stays as source evidence and is not added as a route; this does not mean there is no flight.',
     unknownTime: 'Timezone unspecified; no conversion', conflict: 'Source variants differ; raw values and flags are preserved. A timing flag is not a flight-identity conflict.',
     metadata: 'Sources, identity qualification and attribution', pdfHash: 'PDF SHA-256', sourceLink: 'Open original DGCA PDF',
+    addDraft: 'Add to draft (source identity reference)',
+    weekdaySupported: 'A separate weekday annotation includes this date; service and actual operation remain unknown.',
+    weekdayNotSupported: 'The separately corroborated weekday annotation excludes this date; this reference cannot be added for the selected date.',
+    weekdayUnknown: 'Weekday interpretation is unknown; only the identity window is supported, not service on that weekday.',
+    weekdayConflict: 'Source frequency fields conflict; the selected weekday cannot be determined.',
+    sourceAttributionKnown: 'DGCA source attribution is independently mapped; actual operation and alliance/award eligibility are not established.',
+    sourceAttributionUnknown: 'DGCA does not identify the operating airline; airline and alliance identity remain unknown.',
     checked: 'Checked', reviewBy: 'Review by', snapshotOnly: 'Snapshot date retained; no review deadline supplied',
     currentReview: 'Source review window is current', expiredReview: 'Source review window expired', futureReview: 'Source check is in the future',
     unknownCarrier: 'Carrier identity unresolved by the DGCA source', mappedCarrier: 'Source attribution independently cross-checked',
@@ -128,12 +151,33 @@ export function DgcaScheduleEvidenceDirectory({ zh }: Props): React.ReactElement
             {filtered.length === 0 ? <p>{copy.empty}</p> : <ul>
               {filtered.slice(0, visibleCount).map(({ source, reference }) => {
                 const withinWindow = matchesDgcaIdentityWindow(reference, date);
+                const weekdayStatus = dgcaDraftDateStatus(reference, date);
+                const airportPairKnown = reference.airportCatalogStatus === 'all-endpoints-present';
+                const canAdd = withinWindow && airportPairKnown && weekdayStatus !== 'weekday-not-supported';
                 const windows = [...new Set(reference.variants.map(variant => `${variant.effectiveFrom} → ${variant.effectiveUntil}`))];
                 return <li key={`${source.id}:${reference.id}`} data-dgca-reference={reference.id} data-source-id={source.id} data-source-window={withinWindow ? 'inside' : 'outside'}>
                   <div className="dgca-schedule-evidence-directory__identity"><strong>{reference.designatorKey}</strong><span>{reference.originIata} → {reference.destinationIata}</span><small>{source.operator.printedNameRaw ?? source.title}</small></div>
                   {reference.airportCatalogStatus === 'source-code-not-in-current-catalog' && <small data-airport-catalog-status="unmatched">{copy.airportUnmapped} ({reference.originIata}, {reference.destinationIata})</small>}
                   <p>{copy.sourceWindow}: {windows.join(' · ')}</p>
                   <small>{withinWindow ? copy.inside : copy.outside}</small>
+                  {withinWindow && <small data-dgca-weekday-status={weekdayStatus}>{copy[weekdayStatus === 'weekday-supported' ? 'weekdaySupported' : weekdayStatus === 'weekday-not-supported' ? 'weekdayNotSupported' : weekdayStatus === 'weekday-conflict' ? 'weekdayConflict' : 'weekdayUnknown']}</small>}
+                  <small data-dgca-carrier-attribution={source.operator.carrierIdentityStatus}>
+                    {source.operator.carrierIdentityStatus === 'independently-mapped' ? copy.sourceAttributionKnown : copy.sourceAttributionUnknown}
+                  </small>
+                  {canAdd && <button type="button" data-plan-dgca-reference={`${source.id}:${reference.id}`} onClick={() => {
+                    const draftReference = DgcaScheduleDraftReferenceSchema.parse({
+                      source: {
+                        id: source.id, title: source.title, url: source.url, pdfSha256: source.pdfSha256,
+                        publishedDateRaw: source.publishedDateRaw, checkedAt: source.checkedAt, reviewBy: source.reviewBy,
+                        reviewedSnapshotDate: source.reviewedSnapshotDate, attribution: source.attribution,
+                        reusePolicyUrl: source.reusePolicyUrl, reusePolicyStatement: source.reusePolicyStatement,
+                        operator: source.operator,
+                      },
+                      reference,
+                      catalogSnapshotAsOfDate: catalog.snapshotAsOfDate,
+                    });
+                    onPlanReference(draftReference, date);
+                  }}>{copy.addDraft} · {date}</button>}
                   {reference.hasVariantConflict && <small>{copy.conflict}</small>}
                   <details>
                     <summary>{copy.details} · {reference.variants.length}</summary>
