@@ -12,7 +12,7 @@
     "airports": 5355,
     "runtimeRoutes": 31658,
     "runtimePublishedRoutes": 31068,
-    "runtimeSHA256": "fe8c3105e8c822b3cee15d8f584849ec39c3b031e055909d87b8d693eaf99eb6",
+    "runtimeSHA256": "e3a475d5df03b152245c0f3aabdd0b38c668092b047d57dbf0455f7abedc7c1c",
     "brazil": {
       "previousBatchDirections": 51,
       "recentBatchDirections": 127,
@@ -265,7 +265,7 @@
     "sirosBrazilBulk": {
       "state": "stale",
       "reviewRuntimeSHA256": "02d9abc817db4073a088376eaed39e72d9a5ccdea07157f13bf808d455f90c1e",
-      "currentRuntimeSHA256": "fe8c3105e8c822b3cee15d8f584849ec39c3b031e055909d87b8d693eaf99eb6"
+      "currentRuntimeSHA256": "e3a475d5df03b152245c0f3aabdd0b38c668092b047d57dbf0455f7abedc7c1c"
     },
     "palSummerInventory": {
       "state": "reviewed",

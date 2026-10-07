@@ -51,6 +51,8 @@ const CURATED_INPUTS = new Set([
   'route-network/flight-numbers-current.json',
   'route-network/avinor-osl-public-20261006.json',
   'route-network/avinor-osl-public-20261006.xml',
+  'route-network/avinor-public-airport-batch-20261006.json',
+  ...['aes', 'bdu', 'bgo', 'boo', 'eve', 'krs', 'mol', 'svg', 'tos', 'trd'].map((airport) => `route-network/avinor-xml-public-${airport}-20261006.xml`),
   'route-network/flightsfrom-flight-numbers-20260909.json',
   'route-network/mrairspace-flight-number-candidates.json',
   'route-network/mrairspace-flight-number-candidates-2026-Q2.json',
@@ -81,6 +83,12 @@ function describe(path: string): { source: string; license: DataLicense } {
     if (path.startsWith('route-network/avinor-osl-public-20261006.')) {
       return {
         source: 'Avinor XML Public OSL snapshot; one 144-hour response with original bytes and exact source/freshness metadata bundled alongside the accepted rows',
+        license: 'site-terms',
+      };
+    }
+    if (path === 'route-network/avinor-public-airport-batch-20261006.json' || /^route-network\/avinor-xml-public-(aes|bdu|bgo|boo|eve|krs|mol|svg|tos|trd)-20261006\.xml$/.test(path)) {
+      return {
+        source: 'Avinor XML Public airport snapshots; ten bounded 144-hour responses with original bytes and per-airport retrieval/freshness metadata in the companion provenance asset',
         license: 'site-terms',
       };
     }
@@ -250,6 +258,8 @@ function build(): void {
     const isCaaWeeklyTier = path === 'route-network/caa-weekly-schedule-tier-20261006.json';
     const isAvinorSnapshot = path === 'route-network/avinor-osl-public-20261006.json';
     const isAvinorXml = path === 'route-network/avinor-osl-public-20261006.xml';
+    const isAvinorBatchSnapshot = path === 'route-network/avinor-public-airport-batch-20261006.json';
+    const isAvinorBatchXml = /^route-network\/avinor-xml-public-(aes|bdu|bgo|boo|eve|krs|mol|svg|tos|trd)-20261006\.xml$/.test(path);
     const isRuntimeNetwork = path === 'route-network/runtime-current.json';
     const isRuntimeMeta = path === 'route-network/runtime-current.meta.json';
     const previous = existingByPath.get(path);
@@ -259,20 +269,25 @@ function build(): void {
       kind: isCaaWeeklyTier ? kind : previous?.kind ?? kind,
       producer: isCaaWeeklyTier ? producer : previous?.producer ?? producer,
       inputs: isCaaWeeklyTier ? inputs : previous?.inputs ?? inputs,
-      source: isCaaWeeklyTier || isAvinorSnapshot || isAvinorXml || isRuntimeNetwork || isRuntimeMeta ? source : previous?.source ?? source,
-      license: isCaaWeeklyTier || isAvinorSnapshot || isAvinorXml || isRuntimeNetwork || isRuntimeMeta ? license : previous?.license ?? license,
+      source: isCaaWeeklyTier || isAvinorSnapshot || isAvinorXml || isAvinorBatchSnapshot || isAvinorBatchXml || isRuntimeNetwork || isRuntimeMeta ? source : previous?.source ?? source,
+      license: isCaaWeeklyTier || isAvinorSnapshot || isAvinorXml || isAvinorBatchSnapshot || isAvinorBatchXml || isRuntimeNetwork || isRuntimeMeta ? license : previous?.license ?? license,
       attribution: isCaaWeeklyTier
         ? 'Taiwan Civil Aviation Administration (交通部民用航空局)'
-        : isAvinorSnapshot || isAvinorXml ? 'Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app' : previous?.attribution ?? null,
+        : isAvinorSnapshot || isAvinorXml || isAvinorBatchSnapshot || isAvinorBatchXml ? 'Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app' : previous?.attribution ?? null,
       schema: isCaaWeeklyTier ? 'src/lib/schemas/caa-weekly-schedule-tier.ts'
         : isAvinorSnapshot ? 'src/lib/schemas/avinor-xml-public.ts'
-          : isAvinorXml ? null : previous?.schema ?? null,
+          : isAvinorBatchSnapshot ? 'src/lib/schemas/avinor-xml-public-batch.ts'
+            : isAvinorXml || isAvinorBatchXml ? null : previous?.schema ?? null,
       bytes,
       sha256,
       notes: isCaaWeeklyTier
         ? '488 schedule-listed carrier-number-direction associations as of 2026-10-06; operator identity unknown; no actual-operation, bookability, nonstop, selectable-flight or award-eligibility claim. Source SHA-256 values are included in the asset.'
         : isAvinorSnapshot
           ? '412 exact candidate-key matches for 130 directed routes using Avinor OperatingAirlineIata, full FlightId and direction fields. One OSL request retrieved 2026-10-06; six-day scope expires at 2026-10-12T19:47:47Z. Full original XML is bundled; visible linked attribution is required by source terms. Blank via_airport means no intermediate airport was reported; it does not prove physical nonstop service. A schedule row is not actual-operation, recurrence, award-seat or bookability evidence.'
+          : isAvinorBatchSnapshot
+            ? 'Ten bounded airport-specific XML Public snapshots with exact accepted carrier, full FlightId and direction matches. Per-airport retrieval timestamps, 144-hour freshness deadlines, original response bytes/hashes, exact input packet hashes, and candidate effective windows are retained. Existing candidate dates are not extended; published schedule rows are display-only and do not establish recurring service, actual operation, award seats or bookability.'
+            : isAvinorBatchXml
+              ? 'Original Avinor XML Public response bytes. The full SHA-256, size, retrieval timestamp and freshness deadline are in avinor-public-airport-batch-20261006.json.'
           : isAvinorXml
             ? 'Original 849,172-byte Avinor XML Public response. The full SHA-256 and retrieval timestamp are in the matching JSON provenance asset.'
             : isRuntimeNetwork

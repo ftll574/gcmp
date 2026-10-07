@@ -30,7 +30,12 @@ test('premerged runtime route network is current with every source layer', () =>
     flightNumbers?: string[];
     flightNumberCandidates?: string[];
     flightNumberSourceIds?: string[];
-    timeBoundFlightNumbers?: Array<{ flightNumber: string; sourceId: string }>;
+    timeBoundFlightNumbers?: Array<{
+      flightNumber: string;
+      sourceId: string;
+      candidateWindow?: { runtimeValidityAtCaptureDate: 'active' | 'unknown'; hasOccurrenceAfterEffectiveUntil: boolean };
+      plannerUse?: 'dated-departure' | 'reference-only' | 'display-only';
+    }>;
   }>;
   const published = runtime.filter((route) => route.status === 'published');
   expect(meta.confirmedOperatingRoutes).toBe(published.filter((route) => route.carrierIdentity === 'operating').length);
@@ -57,7 +62,12 @@ test('premerged runtime route network is current with every source layer', () =>
     for (const route of shard.routes) {
       for (const number of route.flightNumbers ?? []) {
         const timed = route.timeBoundFlightNumbers?.find((evidence) => evidence.flightNumber === number);
-        if (timed) expect(timed.sourceId).toBe('avinor-xml-public-osl-20261006');
+        if (timed?.sourceId === 'avinor-xml-public-osl-20261006') expect(timed.sourceId).toBe('avinor-xml-public-osl-20261006');
+        else if (timed) {
+          expect(timed.sourceId).toMatch(/^avinor-xml-public-batch-/);
+          expect(timed.plannerUse).toBe('display-only');
+          expect(timed.candidateWindow).toBeDefined();
+        }
         else expect(route.flightNumberSourceIds?.length).toBeGreaterThan(0);
       }
       if ((route.flightNumberCandidates?.length ?? 0) > 0) expect(route.flightNumberCandidateSourceIds?.length).toBeGreaterThan(0);

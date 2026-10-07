@@ -87,6 +87,15 @@ export const RouteNetworkEntrySchema = z.object({
     sourceId: SourceIdSchema,
     candidateSourceIds: z.array(SourceIdSchema).min(1),
     occurrencesUTC: z.array(z.iso.datetime({ offset: true }).refine((value) => value.endsWith('Z'), 'Occurrence timestamp must be UTC')).min(1),
+    /** Prior route-candidate dates remain separate from the public snapshot window. */
+    candidateWindow: z.object({
+      effectiveFrom: DateSchema.optional(),
+      effectiveUntil: DateSchema.optional(),
+      runtimeValidityAtCaptureDate: z.enum(['active', 'unknown']),
+      hasOccurrenceAfterEffectiveUntil: z.boolean(),
+    }).strict().optional(),
+    /** Some source rows are read-only research evidence and must not create a Planner action. */
+    plannerUse: z.enum(['dated-departure', 'reference-only', 'display-only']).optional(),
   }).strict()).optional(),
   /** Useful designators from standing/marketing/reference layers that need a
    * date/operator recheck before itinerary persistence. */
@@ -207,6 +216,10 @@ export const RouteNetworkCatalogSchema = z.object({
       }
       if (new Set(evidence.occurrencesUTC).size !== evidence.occurrencesUTC.length) {
         ctx.addIssue({ code: 'custom', path: ['routes', routeIndex, 'timeBoundFlightNumbers', evidenceIndex, 'occurrencesUTC'], message: 'Duplicate observed flight time' });
+      }
+      if (evidence.sourceId.startsWith('avinor-xml-public-batch-')
+        && (!evidence.candidateWindow || evidence.plannerUse !== 'display-only')) {
+        ctx.addIssue({ code: 'custom', path: ['routes', routeIndex, 'timeBoundFlightNumbers', evidenceIndex], message: 'Multi-airport Avinor schedule rows require the preserved candidate window and display-only Planner guard' });
       }
     }
     const identities = identityByCode.get(route.carrier) ?? new Set<string>();

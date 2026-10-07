@@ -1,6 +1,8 @@
 # Avinor XML Public snapshot refresh
 
-This is a **manual, one-request refresh path** for the dated OSL evidence. It does not run on a schedule, publish data, or accept a promotion. The current release is a single `TimeFrom=1`, `TimeTo=144` hour response, so its validity ends at retrieval time plus six days.
+This is a **manual, one-request refresh path** for the dated OSL evidence. It does not run on a schedule, publish data, or accept a promotion. The OSL capture is one `TimeFrom=1`, `TimeTo=144` hour response, so its validity ends at retrieval time plus six days.
+
+The separately archived 2026-10-06 multi-airport batch contains ten individually bounded XML Public responses. Each retains its own retrieval time, original bytes/hash, and six-day cutoff in `public/data/route-network/avinor-public-airport-batch-20261006.json`. This OSL command does not refresh that batch; do not turn the ten-request sample into an automated or recurring job.
 
 ## Capture and parse
 

@@ -22,6 +22,8 @@ export interface RouteLibraryCarrierRoute {
     readonly flightNumber: string;
     readonly occurrencesUTC: ReadonlyArray<string>;
     readonly freshUntilUTC: string;
+    readonly candidateWindow?: NonNullable<RouteNetworkEntry['timeBoundFlightNumbers']>[number]['candidateWindow'];
+    readonly plannerUse?: NonNullable<RouteNetworkEntry['timeBoundFlightNumbers']>[number]['plannerUse'];
   }>;
   readonly candidateNumbers: ReadonlyArray<string>;
   readonly staleNumbers: ReadonlyArray<string>;
@@ -231,7 +233,13 @@ function carriersForPair(
       ...group.flatMap(row => (row.timeBoundFlightNumbers ?? []).map(evidence => evidence.sourceId)),
     ]);
     const numberStates = group.map(row => routeFlightNumberFreshness(row, sourceById, evidenceNow));
-    const datedByNumber = new Map<string, { flightNumber: string; occurrencesUTC: string[]; freshUntilUTC: string }>();
+    const datedByNumber = new Map<string, {
+      flightNumber: string;
+      occurrencesUTC: string[];
+      freshUntilUTC: string;
+      candidateWindow?: NonNullable<RouteNetworkEntry['timeBoundFlightNumbers']>[number]['candidateWindow'];
+      plannerUse?: NonNullable<RouteNetworkEntry['timeBoundFlightNumbers']>[number]['plannerUse'];
+    }>();
     for (const route of group) {
       for (const evidence of route.timeBoundFlightNumbers ?? []) {
         const freshUntilUTC = sourceById.get(evidence.sourceId)?.freshUntilUTC;
@@ -241,6 +249,8 @@ function carriersForPair(
           flightNumber: evidence.flightNumber,
           occurrencesUTC: [...new Set([...(previous?.occurrencesUTC ?? []), ...evidence.occurrencesUTC])].sort(),
           freshUntilUTC,
+          ...(evidence.candidateWindow ? { candidateWindow: evidence.candidateWindow } : previous?.candidateWindow ? { candidateWindow: previous.candidateWindow } : {}),
+          ...(evidence.plannerUse ? { plannerUse: evidence.plannerUse } : previous?.plannerUse ? { plannerUse: previous.plannerUse } : {}),
         });
       }
     }

@@ -1,6 +1,6 @@
 {
   "version": "2026.3",
-  "generatedAt": "2026-10-06",
+  "generatedAt": "2026-10-07",
   "datasets": [
     {
       "id": "VERSION",
@@ -4930,6 +4930,160 @@
       "notes": "Original 849,172-byte Avinor XML Public response. The full SHA-256 and retrieval timestamp are in the matching JSON provenance asset."
     },
     {
+      "id": "route-network.avinor-public-airport-batch-20261006",
+      "path": "route-network/avinor-public-airport-batch-20261006.json",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Avinor XML Public airport snapshots; ten bounded 144-hour responses with original bytes and per-airport retrieval/freshness metadata in the companion provenance asset",
+      "license": "site-terms",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app",
+      "schema": "src/lib/schemas/avinor-xml-public-batch.ts",
+      "bytes": 466291,
+      "sha256": "0794e762dc686560",
+      "notes": "Ten bounded airport-specific XML Public snapshots with exact accepted carrier, full FlightId and direction matches. Per-airport retrieval timestamps, 144-hour freshness deadlines, original response bytes/hashes, exact input packet hashes, and candidate effective windows are retained. Existing candidate dates are not extended; published schedule rows are display-only and do not establish recurring service, actual operation, award seats or bookability."
+    },
+    {
+      "id": "route-network.avinor-xml-public-aes-20261006.xml",
+      "path": "route-network/avinor-xml-public-aes-20261006.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Avinor XML Public airport snapshots; ten bounded 144-hour responses with original bytes and per-airport retrieval/freshness metadata in the companion provenance asset",
+      "license": "site-terms",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app",
+      "schema": null,
+      "bytes": 50058,
+      "sha256": "5bfb52914b4a1817",
+      "notes": "Original Avinor XML Public response bytes. The full SHA-256, size, retrieval timestamp and freshness deadline are in avinor-public-airport-batch-20261006.json."
+    },
+    {
+      "id": "route-network.avinor-xml-public-bdu-20261006.xml",
+      "path": "route-network/avinor-xml-public-bdu-20261006.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Avinor XML Public airport snapshots; ten bounded 144-hour responses with original bytes and per-airport retrieval/freshness metadata in the companion provenance asset",
+      "license": "site-terms",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app",
+      "schema": null,
+      "bytes": 6243,
+      "sha256": "e64a54e7513f788a",
+      "notes": "Original Avinor XML Public response bytes. The full SHA-256, size, retrieval timestamp and freshness deadline are in avinor-public-airport-batch-20261006.json."
+    },
+    {
+      "id": "route-network.avinor-xml-public-bgo-20261006.xml",
+      "path": "route-network/avinor-xml-public-bgo-20261006.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Avinor XML Public airport snapshots; ten bounded 144-hour responses with original bytes and per-airport retrieval/freshness metadata in the companion provenance asset",
+      "license": "site-terms",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app",
+      "schema": null,
+      "bytes": 347016,
+      "sha256": "d82cb07848c5fa13",
+      "notes": "Original Avinor XML Public response bytes. The full SHA-256, size, retrieval timestamp and freshness deadline are in avinor-public-airport-batch-20261006.json."
+    },
+    {
+      "id": "route-network.avinor-xml-public-boo-20261006.xml",
+      "path": "route-network/avinor-xml-public-boo-20261006.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Avinor XML Public airport snapshots; ten bounded 144-hour responses with original bytes and per-airport retrieval/freshness metadata in the companion provenance asset",
+      "license": "site-terms",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app",
+      "schema": null,
+      "bytes": 145452,
+      "sha256": "e3a6da24e758597b",
+      "notes": "Original Avinor XML Public response bytes. The full SHA-256, size, retrieval timestamp and freshness deadline are in avinor-public-airport-batch-20261006.json."
+    },
+    {
+      "id": "route-network.avinor-xml-public-eve-20261006.xml",
+      "path": "route-network/avinor-xml-public-eve-20261006.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Avinor XML Public airport snapshots; ten bounded 144-hour responses with original bytes and per-airport retrieval/freshness metadata in the companion provenance asset",
+      "license": "site-terms",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app",
+      "schema": null,
+      "bytes": 38017,
+      "sha256": "89c04d2c8f43bb29",
+      "notes": "Original Avinor XML Public response bytes. The full SHA-256, size, retrieval timestamp and freshness deadline are in avinor-public-airport-batch-20261006.json."
+    },
+    {
+      "id": "route-network.avinor-xml-public-krs-20261006.xml",
+      "path": "route-network/avinor-xml-public-krs-20261006.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Avinor XML Public airport snapshots; ten bounded 144-hour responses with original bytes and per-airport retrieval/freshness metadata in the companion provenance asset",
+      "license": "site-terms",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app",
+      "schema": null,
+      "bytes": 46554,
+      "sha256": "aa42221e48c28d1e",
+      "notes": "Original Avinor XML Public response bytes. The full SHA-256, size, retrieval timestamp and freshness deadline are in avinor-public-airport-batch-20261006.json."
+    },
+    {
+      "id": "route-network.avinor-xml-public-mol-20261006.xml",
+      "path": "route-network/avinor-xml-public-mol-20261006.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Avinor XML Public airport snapshots; ten bounded 144-hour responses with original bytes and per-airport retrieval/freshness metadata in the companion provenance asset",
+      "license": "site-terms",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app",
+      "schema": null,
+      "bytes": 23078,
+      "sha256": "e38e3aaaee75475d",
+      "notes": "Original Avinor XML Public response bytes. The full SHA-256, size, retrieval timestamp and freshness deadline are in avinor-public-airport-batch-20261006.json."
+    },
+    {
+      "id": "route-network.avinor-xml-public-svg-20261006.xml",
+      "path": "route-network/avinor-xml-public-svg-20261006.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Avinor XML Public airport snapshots; ten bounded 144-hour responses with original bytes and per-airport retrieval/freshness metadata in the companion provenance asset",
+      "license": "site-terms",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app",
+      "schema": null,
+      "bytes": 138130,
+      "sha256": "9e9cb66e16ab864d",
+      "notes": "Original Avinor XML Public response bytes. The full SHA-256, size, retrieval timestamp and freshness deadline are in avinor-public-airport-batch-20261006.json."
+    },
+    {
+      "id": "route-network.avinor-xml-public-tos-20261006.xml",
+      "path": "route-network/avinor-xml-public-tos-20261006.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Avinor XML Public airport snapshots; ten bounded 144-hour responses with original bytes and per-airport retrieval/freshness metadata in the companion provenance asset",
+      "license": "site-terms",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app",
+      "schema": null,
+      "bytes": 155207,
+      "sha256": "4a635a571b7681f7",
+      "notes": "Original Avinor XML Public response bytes. The full SHA-256, size, retrieval timestamp and freshness deadline are in avinor-public-airport-batch-20261006.json."
+    },
+    {
+      "id": "route-network.avinor-xml-public-trd-20261006.xml",
+      "path": "route-network/avinor-xml-public-trd-20261006.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Avinor XML Public airport snapshots; ten bounded 144-hour responses with original bytes and per-airport retrieval/freshness metadata in the companion provenance asset",
+      "license": "site-terms",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app",
+      "schema": null,
+      "bytes": 202871,
+      "sha256": "6de95c7cb67eab5a",
+      "notes": "Original Avinor XML Public response bytes. The full SHA-256, size, retrieval timestamp and freshness deadline are in avinor-public-airport-batch-20261006.json."
+    },
+    {
       "id": "route-network.bts-marketing-current",
       "path": "route-network/bts-marketing-current.json",
       "kind": "input",
@@ -5113,7 +5267,7 @@
       "attribution": null,
       "schema": null,
       "bytes": 18157,
-      "sha256": "e8b88e01a1659b25",
+      "sha256": "91589eb6edaa525f",
       "notes": ""
     },
     {
@@ -5336,8 +5490,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 574952,
-      "sha256": "5e32a722748c8429",
+      "bytes": 577551,
+      "sha256": "3ceeb04118696d99",
       "notes": ""
     },
     {
@@ -5464,8 +5618,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 148032,
-      "sha256": "077fbd0d31f6b0b9",
+      "bytes": 153561,
+      "sha256": "6cbe596c0d1d9f4c",
       "notes": ""
     },
     {
@@ -6184,8 +6338,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 273548,
-      "sha256": "2ffed06a4196be31",
+      "bytes": 292901,
+      "sha256": "452546c1fbda8572",
       "notes": ""
     },
     {
@@ -6248,8 +6402,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 629445,
-      "sha256": "58111c97fa184e48",
+      "bytes": 638120,
+      "sha256": "a283fc9d69d4c4f4",
       "notes": ""
     },
     {
@@ -6280,8 +6434,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 194583,
-      "sha256": "094b49d6d65065bf",
+      "bytes": 196896,
+      "sha256": "2027855f362723e7",
       "notes": ""
     },
     {
@@ -6712,8 +6866,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 518455,
-      "sha256": "2db274e932fee8c6",
+      "bytes": 583829,
+      "sha256": "932892e0e72f00f8",
       "notes": ""
     },
     {
@@ -7141,8 +7295,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 16326517,
-      "sha256": "fe8c3105e8c822b3",
+      "bytes": 16423108,
+      "sha256": "e3a475d5df03b152",
       "notes": "Runtime route graph includes 412 time-bound Avinor designator/direction associations; freshness is guarded in the UI until 2026-10-12T19:47:47Z. The separate CAA schedule tier remains unchanged."
     },
     {
@@ -7170,8 +7324,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 10389,
-      "sha256": "67b6ffadd84cb04d",
+      "bytes": 11601,
+      "sha256": "46ccf3b459a3d9a4",
       "notes": "Build metadata pins the Avinor source JSON, original XML, route-network inputs, and output hash."
     },
     {
@@ -7217,8 +7371,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1118915,
-      "sha256": "c89af7495d058cb8",
+      "bytes": 1136325,
+      "sha256": "018aff7ec8efb639",
       "notes": ""
     },
     {
@@ -7233,8 +7387,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1106108,
-      "sha256": "954709b4cc8106d4",
+      "bytes": 1125260,
+      "sha256": "675d90ec28ccd3a6",
       "notes": ""
     },
     {
@@ -7249,8 +7403,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1412989,
-      "sha256": "4db8798d92d89943",
+      "bytes": 1430370,
+      "sha256": "6b7aee337e08476c",
       "notes": ""
     },
     {
@@ -7281,8 +7435,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 299736,
-      "sha256": "9802ff1d048675cf",
+      "bytes": 300877,
+      "sha256": "305d99efbb99397b",
       "notes": ""
     },
     {
@@ -7297,8 +7451,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 572436,
-      "sha256": "011cf1403589472d",
+      "bytes": 576376,
+      "sha256": "82a582e63020a946",
       "notes": ""
     },
     {
@@ -7313,8 +7467,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 801673,
-      "sha256": "228ef23afe677891",
+      "bytes": 802502,
+      "sha256": "2d03126b3e79ca45",
       "notes": ""
     },
     {
@@ -7329,8 +7483,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 745267,
-      "sha256": "b885e6545cf22d62",
+      "bytes": 748849,
+      "sha256": "e334556c5608666f",
       "notes": ""
     },
     {
@@ -7377,8 +7531,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 473816,
-      "sha256": "9277463fa380f40f",
+      "bytes": 476964,
+      "sha256": "1ae6a4dc54eea4e4",
       "notes": ""
     },
     {
@@ -7393,8 +7547,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1107666,
-      "sha256": "37ebd112ab8d40a7",
+      "bytes": 1110204,
+      "sha256": "cf2bca9c75f49ee4",
       "notes": ""
     },
     {
@@ -7409,8 +7563,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1268994,
-      "sha256": "c8ace4c013ff8468",
+      "bytes": 1271643,
+      "sha256": "4735f7349f9510ba",
       "notes": ""
     },
     {
@@ -7441,8 +7595,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 690917,
-      "sha256": "eef0e9c9104f325d",
+      "bytes": 692318,
+      "sha256": "3834bc89e610317a",
       "notes": ""
     },
     {
@@ -7489,8 +7643,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 383505,
-      "sha256": "0834cfb568bff0ee",
+      "bytes": 385406,
+      "sha256": "7f922b6d9f4e7a03",
       "notes": ""
     },
     {
@@ -7505,8 +7659,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1330255,
-      "sha256": "11315fe0e533e061",
+      "bytes": 1347081,
+      "sha256": "d1e143bfdaa774f5",
       "notes": ""
     },
     {
@@ -7521,8 +7675,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 688245,
-      "sha256": "f30e5bad0a3ad0db",
+      "bytes": 709733,
+      "sha256": "713b53f93c27ec15",
       "notes": ""
     },
     {
@@ -7569,8 +7723,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 214219,
-      "sha256": "838cc7d9cde40745",
+      "bytes": 215036,
+      "sha256": "61d04a0774415c07",
       "notes": ""
     },
     {

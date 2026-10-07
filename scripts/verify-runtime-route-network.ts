@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { parseRouteNetworkCatalog } from '../src/lib/schemas/route-network.ts';
+import { parseAvinorXmlPublicBatch } from '../src/lib/schemas/avinor-xml-public-batch.ts';
 
 const ROOT = 'public/data/route-network';
 const INPUTS = [
@@ -16,6 +17,7 @@ const INPUTS = [
   'scripts/data/accepted-runtime-preservation.json',
   'avinor-osl-public-20261006.json',
   'avinor-osl-public-20261006.xml',
+  'avinor-public-airport-batch-20261006.json',
 ] as const;
 
 function sha256(text: string): string {
@@ -36,11 +38,19 @@ const meta = JSON.parse(readFileSync(`${ROOT}/runtime-current.meta.json`, 'utf8'
   routes: number;
   originShards: Record<string, { routes: number; bytes: number; sha256: string }>;
 };
+const batch = parseAvinorXmlPublicBatch(JSON.parse(readFileSync(`${ROOT}/avinor-public-airport-batch-20261006.json`, 'utf8')));
+const inputFiles = [...INPUTS, ...batch.snapshots.map((snapshot) => snapshot.rawResponsePath.split('/').at(-1)!)];
 
-for (const file of INPUTS) {
+for (const file of inputFiles) {
   const path = file.startsWith('scripts/') ? file : `${ROOT}/${file}`;
   const actual = file.endsWith('.xml') ? sha256Bytes(readFileSync(path)) : sha256(readFileSync(path, 'utf8'));
   if (meta.inputs[file] !== actual) throw new Error(`Stale runtime input hash: ${file}`);
+}
+for (const snapshot of batch.snapshots) {
+  const bytes = readFileSync(`${ROOT}/${snapshot.rawResponsePath.split('/').at(-1)}`);
+  if (bytes.byteLength !== snapshot.responseBytes || sha256Bytes(bytes) !== snapshot.responseSHA256) {
+    throw new Error(`Avinor XML size/hash mismatch: ${snapshot.airport}`);
+  }
 }
 const runtimeText = readFileSync(`${ROOT}/runtime-current.json`, 'utf8');
 if (meta.outputSha256 !== sha256(runtimeText)) throw new Error('runtime-current.json hash mismatch');
@@ -59,4 +69,4 @@ for (const [letter, shardMeta] of Object.entries(meta.originShards)) {
 }
 if (shardedRoutes !== meta.routes) throw new Error(`Shard total ${shardedRoutes} != runtime total ${meta.routes}`);
 
-console.log(JSON.stringify({ verified: true, inputs: INPUTS.length, shards: Object.keys(meta.originShards).length, routes: meta.routes }, null, 2));
+console.log(JSON.stringify({ verified: true, inputs: inputFiles.length, avinorSnapshots: batch.snapshots.length, shards: Object.keys(meta.originShards).length, routes: meta.routes }, null, 2));

@@ -1,6 +1,6 @@
 # Third-Party Notices & Data Provenance
 
-更新時間:2026-10-06 · 用途:記錄 public/data/ 每個資料來源的授權與義務。
+更新時間:2026-10-07 · 用途:記錄 public/data/ 每個資料來源的授權與義務。
 單一檔案內有自帶 source/license 欄位者,以該欄位為準。
 
 ## 資料來源清單
@@ -14,6 +14,7 @@
 | 交通部 TDX 運輸資料流通服務 (tdx.transportdata.tw) | 台灣班表 dated 管道 | 政府資料開放授權條款 第1版 (OGDL) | 顯名聲明(見下)+ 可再轉授權;無 share-alike |
 | Taiwan Civil Aviation Administration (交通部民用航空局), datasets 6066 and 9973 | 488 筆 CAA 列示週班表班號／方向參考 | Taiwan Open Government Data License 1.0 (OGDL-Taiwan-1.0) | 顯名「Taiwan Civil Aviation Administration (交通部民用航空局)」+ 授權連結;來源 SHA-256、版本日期及原始列號隨資料提供 |
 | Avinor XML Public | OSL 單次 144 小時快照中的來源列示營運航空公司 IATA、完整班號、方向與 UTC 日期，保留失效時間 | Avinor flight data service terms | 介面需在資料附近以可見連結顯示「Flight data from Avinor」，連結至 www.avinor.no；大量負載前先聯絡 Avinor |
+| Avinor XML Public airport batch | 十個 144 小時機場快照中的精確營運航空公司／完整班號／方向與 UTC 班表列，逐份保存原始回應及 freshness cutoff | Avinor flight data service terms | 同上；人工查詢至少間隔三分鐘；不將來源班表當作固定服務或已實際運航 |
 | STARLUX 官方班表 API (ecapi.starlux-airlines.com) | JX 班表(78 筆 chart-verified) | 站方 API 條款 | 依 API 使用條款;harvest 腳本引用查詢 URL |
 | AeroRoutes 官方公告 | BR 班表(28 筆) | 站方條款 | 新聞稿類資料,標註出處 |
 | China Airlines 官方時刻表 PDF | CI 班表(32 筆) | 華航文件 | 標註版本與有效期 |
@@ -45,6 +46,12 @@ This reference tier describes only source-listed carrier/designator/direction re
 `public/data/route-network/avinor-osl-public-20261006.xml` preserves the exact 849,172 response bytes (SHA-256 `78403435f3c31ae82d9b45249267cf5e843a7db76bf81bd1f39bb856a65adf7f`). Its companion JSON records the single request URL, retrieval time (`2026-10-06T19:47:47Z`), feed update time, six-day request window, accepted-association digest, and UTC validity cutoff (`2026-10-12T19:47:47Z`). The release includes 412 exact matches between candidate keys and Avinor's listed `OperatingAirlineIata`, full `FlightId`, and direction, each with at least one upcoming schedule row and no reported via-airport or cancellation field. A blank `via_airport` means this source reported no intermediate airport; it is not independent proof of physical nonstop service. A listed schedule does not prove that a flight actually operated. The independently reviewed source packet and raw XML remain available for audit; scheduled rows and their UTC times are retained in the user-facing directory.
 
 Required visible nearby attribution: [Flight data from Avinor](https://www.avinor.no/). The [flight-data terms](https://partner.avinor.no/en/services/flight-data/) require that exact text to link to www.avinor.no and remain clearly visible near the data. This OSL capture is a short-lived snapshot, not recurring timetable evidence, proof of actual departure for every row, award inventory, or bookability. At the UTC cutoff, the UI marks these designators stale and removes them from current dated-schedule counts. The public endpoint is `https://asrv.avinor.no/XmlFeed/v1.0`; use only the one-shot, fixed-scope XML Public refresh command documented in [`docs/avinor-xml-public-refresh.md`](docs/avinor-xml-public-refresh.md). Reuse cached responses, leave at least three minutes between manual requests, do not retry automatically, and contact Avinor before heavy load. The contact-required `XmlFeedScheduled` endpoint is not part of this release.
+
+## Avinor XML Public airport-batch notice
+
+`public/data/route-network/avinor-public-airport-batch-20261006.json` retains the accepted 179-key and 22-key input-packet hashes, the exact 201 accepted keys and supporting rows, each source airport's retrieval timestamp and +144-hour freshness cutoff, and the original XML path, byte count and SHA-256. The ten successful snapshots are BGO, TRD, SVG, TOS, BOO, KRS, AES, MOL, EVE and BDU. The original XML bytes are shipped as `avinor-xml-public-{airport}-20261006.xml`; the companion JSON identifies each full hash and response size.
+
+These associations preserve the prior runtime candidate effective dates, including the unknown window, separately from the Avinor snapshot scope. A date beyond a candidate's existing window is displayed as a conflict; it does not extend that window. The route detail treats these multi-airport rows as read-only schedule evidence and disables Planner actions. Each source snapshot expires independently at its recorded UTC cutoff. The directory shows the status by airport, exact linked attribution and original XML links. The ten requests were bounded XML Public queries with `TimeFrom=1`, `TimeTo=144`, `codeshare=Y`, both directions, and were spaced at least three minutes apart. No credentials, access-restricted XML Scheduled endpoint, unattended refresh, award-seat, bookability, recurring-service, or universal actual-departure claim is included.
 
 ## ODbL notice 範例(§4.3(a) 建議文字)
 
