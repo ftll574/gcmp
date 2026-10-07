@@ -17,13 +17,38 @@ export interface RouteLibraryCarrierRoute {
   readonly carrierEntityKey?: string;
   readonly name: string;
   readonly identity: 'operating' | 'provider-listed' | 'unknown';
+  readonly scheduledEndpointPair?: boolean;
   readonly confirmedNumbers: ReadonlyArray<string>;
+  readonly referenceNumbers: ReadonlyArray<string>;
   readonly datedFlightNumbers: ReadonlyArray<{
     readonly flightNumber: string;
     readonly occurrencesUTC: ReadonlyArray<string>;
     readonly freshUntilUTC: string;
     readonly candidateWindow?: NonNullable<RouteNetworkEntry['timeBoundFlightNumbers']>[number]['candidateWindow'];
     readonly plannerUse?: NonNullable<RouteNetworkEntry['timeBoundFlightNumbers']>[number]['plannerUse'];
+    readonly occurrenceDetails: ReadonlyArray<{
+      readonly scheduleTimeUTC: string;
+      readonly expiresAtUTC: string;
+    readonly sourceId: string;
+    readonly freshUntilUTC: string;
+      readonly candidateKey?: string;
+      readonly sourceAirport?: string;
+      readonly sourceOperatingCarrierIATA?: string;
+      readonly arrDepRaw?: string;
+      readonly carrierEntityName?: string | null;
+      readonly carrierEntityNameMapping?: 'unique-trusted-name' | 'not-present-in-curated-registry' | 'unresolved-not-supplied-by-source-record';
+      readonly oldCandidateWindowConflict?: boolean;
+      readonly oldCandidateWindowConflictOccurrenceCount?: number;
+      readonly oldCandidateWindowEffectiveFrom?: string | null;
+      readonly oldCandidateWindowEffectiveUntil?: string | null;
+      readonly oldCandidateWindowRelationship?: string;
+      readonly oldCandidateWindowSource?: string;
+      readonly sourceRow?: number;
+      readonly sourceUniqueID?: string;
+      readonly statusCode?: string;
+      readonly viaAirportRaw?: string;
+      readonly viaAirports?: ReadonlyArray<string>;
+    }>;
   }>;
   readonly candidateNumbers: ReadonlyArray<string>;
   readonly staleNumbers: ReadonlyArray<string>;
@@ -97,6 +122,7 @@ export function buildLandingShowcaseFingerprint(
             name: leg.carrierName,
             identity: leg.carrierIdentity,
             confirmedNumbers: [],
+            referenceNumbers: [],
             datedFlightNumbers: [],
             candidateNumbers: [leg.flightNumber],
             staleNumbers: [],
@@ -212,8 +238,11 @@ export interface BuildRouteLibraryEntityInput {
 }
 
 function publishedRows(input: BuildRouteLibraryEntityInput): ReadonlyArray<RouteNetworkEntry> {
+  const sourceById = new Map(input.network.sources.map((source) => [source.id, source] as const));
   return input.network.routes.filter((route) => route.status === 'published'
-    && (!input.memberCodes || input.memberCodes.has(route.carrier)));
+    && (!input.memberCodes || input.memberCodes.has(route.carrier))
+    && (route.service !== 'scheduled-endpoint-pair'
+      || routeFlightNumberFreshness(route, sourceById, input.evidenceNow).current.length > 0));
 }
 
 function carriersForPair(
@@ -233,35 +262,71 @@ function carriersForPair(
       ...group.flatMap(row => (row.timeBoundFlightNumbers ?? []).map(evidence => evidence.sourceId)),
     ]);
     const numberStates = group.map(row => routeFlightNumberFreshness(row, sourceById, evidenceNow));
+    const verifiedNumbers = new Set<string>();
+    const referenceNumbers = new Set<string>();
+    group.forEach((route, index) => {
+      const operatorVerified = route.carrierIdentity === 'operating' && !route.carrierEntityKey;
+      for (const number of numberStates[index]?.current ?? []) {
+        (operatorVerified ? verifiedNumbers : referenceNumbers).add(number);
+      }
+    });
+    for (const number of verifiedNumbers) referenceNumbers.delete(number);
     const datedByNumber = new Map<string, {
       flightNumber: string;
       occurrencesUTC: string[];
       freshUntilUTC: string;
       candidateWindow?: NonNullable<RouteNetworkEntry['timeBoundFlightNumbers']>[number]['candidateWindow'];
       plannerUse?: NonNullable<RouteNetworkEntry['timeBoundFlightNumbers']>[number]['plannerUse'];
+      occurrenceDetails: RouteLibraryCarrierRoute['datedFlightNumbers'][number]['occurrenceDetails'][number][];
     }>();
     for (const route of group) {
       for (const evidence of route.timeBoundFlightNumbers ?? []) {
         const freshUntilUTC = sourceById.get(evidence.sourceId)?.freshUntilUTC;
-        if (!freshUntilUTC || evidenceNow >= Date.parse(freshUntilUTC)) continue;
+        if (!freshUntilUTC) continue;
         const previous = datedByNumber.get(evidence.flightNumber);
+        const snapshotAirport = /^avinor-xml-public-(?:batch-)?([a-z]{3})-\d{8}$/.exec(evidence.sourceId)?.[1]?.toUpperCase();
+        const endpointDirection = snapshotAirport === route.pair[0]
+          ? 'D'
+          : snapshotAirport === route.pair[1] ? 'A' : undefined;
+        const detailedTimes = new Set((evidence.occurrenceDetails ?? []).map((occurrence) => occurrence.scheduleTimeUTC));
+        const occurrenceDetails: RouteLibraryCarrierRoute['datedFlightNumbers'][number]['occurrenceDetails'] = [
+          ...(evidence.occurrenceDetails ?? []).map((occurrence) => ({
+              ...occurrence,
+              sourceId: evidence.sourceId,
+              freshUntilUTC,
+            })),
+          ...evidence.occurrencesUTC.filter((scheduleTimeUTC) => !detailedTimes.has(scheduleTimeUTC)).map((scheduleTimeUTC) => ({
+              scheduleTimeUTC,
+              expiresAtUTC: scheduleTimeUTC,
+              sourceId: evidence.sourceId,
+              freshUntilUTC,
+              ...(snapshotAirport ? { sourceAirport: snapshotAirport } : {}),
+              ...(endpointDirection ? { arrDepRaw: endpointDirection } : {}),
+            })),
+        ];
         datedByNumber.set(evidence.flightNumber, {
           flightNumber: evidence.flightNumber,
           occurrencesUTC: [...new Set([...(previous?.occurrencesUTC ?? []), ...evidence.occurrencesUTC])].sort(),
-          freshUntilUTC,
+          freshUntilUTC: previous && Date.parse(previous.freshUntilUTC) > Date.parse(freshUntilUTC) ? previous.freshUntilUTC : freshUntilUTC,
           ...(evidence.candidateWindow ? { candidateWindow: evidence.candidateWindow } : previous?.candidateWindow ? { candidateWindow: previous.candidateWindow } : {}),
           ...(evidence.plannerUse ? { plannerUse: evidence.plannerUse } : previous?.plannerUse ? { plannerUse: previous.plannerUse } : {}),
+          occurrenceDetails: [...(previous?.occurrenceDetails ?? []), ...occurrenceDetails]
+            .filter((occurrence, index, all) => all.findIndex((candidate) => candidate.sourceId === occurrence.sourceId
+              && candidate.scheduleTimeUTC === occurrence.scheduleTimeUTC
+              && candidate.sourceRow === occurrence.sourceRow) === index)
+            .sort((a, b) => a.scheduleTimeUTC.localeCompare(b.scheduleTimeUTC) || a.sourceId.localeCompare(b.sourceId)),
         });
       }
     }
-    const datedNumbers = new Set(datedByNumber.keys());
     return {
       carrier: row.carrier,
       ...(row.carrierEntityKey ? { carrierEntityKey: row.carrierEntityKey } : {}),
       name: row.carrierEntityName ?? carrierNames.get(row.carrier) ?? row.carrier,
       identity: row.carrierIdentity ?? 'unknown',
-      confirmedNumbers: [...new Set(numberStates.flatMap(state => state.current))].filter(number => !datedNumbers.has(number)),
-      datedFlightNumbers: [...datedByNumber.values()],
+      scheduledEndpointPair: group.some((route) => route.service === 'scheduled-endpoint-pair'),
+      confirmedNumbers: [...verifiedNumbers].sort(),
+      referenceNumbers: [...referenceNumbers].sort(),
+      datedFlightNumbers: [...datedByNumber.values()].sort((a, b) => a.flightNumber.localeCompare(b.flightNumber)),
       candidateNumbers: [...new Set(numberStates.flatMap(state => state.candidates))],
       staleNumbers: [...new Set(numberStates.flatMap(state => state.stale))],
       sourcePairs: group.map(row => row.pair),
@@ -448,7 +513,8 @@ export function buildAirlineEntityProfile(input: BuildRouteLibraryEntityInput, c
     routes,
     airportCount: airportsUsed.size,
     countryCount: countries.size,
-    confirmedRouteCount: rows.filter((row) => routeFlightNumberFreshness(row, sourceById, input.evidenceNow).current.length > 0).length,
+    confirmedRouteCount: rows.filter((row) => row.carrierIdentity === 'operating' && !row.carrierEntityKey
+      && routeFlightNumberFreshness(row, sourceById, input.evidenceNow).current.length > 0).length,
     operatingRouteCount: rows.filter((row) => (row.carrierIdentity ?? 'unknown') === 'operating').length,
     topHubs,
   };
@@ -526,33 +592,42 @@ export function searchRouteLibraryEntities(
   if (exactAirport) addAirport(exactAirport);
   const exactAirlineName = input.carrierNames.get(upper);
   if (exactAirlineName) addAirline(upper, exactAirlineName);
+  if (/^[A-Z0-9]{2,3}$/.test(upper)) {
+    const matchingCodeRoutes = publishedRows(input).filter((row) => row.carrier === upper);
+    const identities = new Set(matchingCodeRoutes.map((row) => carrierIdentityKey(row)));
+    if (identities.size === 1) {
+      const matching = matchingCodeRoutes[0]!;
+      addAirline(matching.carrierEntityKey ?? matching.carrier,
+        matching.carrierEntityName ?? input.carrierNames.get(matching.carrier) ?? matching.carrier,
+        matching.carrier,
+        input.locale === 'zh-TW' ? '以來源代碼識別的航網' : 'Route network identified by source code');
+    }
+  }
 
   if (/^[A-Z0-9]{2,3}\d{1,4}[A-Z]?$/.test(upper)) {
     const flightResults: RouteLibrarySearchResult[] = [];
     for (const row of publishedRows(input)) {
       const numberState = routeFlightNumberFreshness(row, sourceById, input.evidenceNow);
-      const confirmed = numberState.current.filter(number => number.startsWith(upper));
+      const operatorVerified = row.carrierIdentity === 'operating' && !row.carrierEntityKey;
+      const confirmed = operatorVerified ? numberState.current.filter(number => number.startsWith(upper)) : [];
+      const references = operatorVerified ? [] : numberState.current.filter(number => number.startsWith(upper));
       const candidates = numberState.candidates.filter(number => number.startsWith(upper));
       const stale = numberState.stale;
-      const datedByNumber = new Map((row.timeBoundFlightNumbers ?? []).map(evidence => [evidence.flightNumber, evidence] as const));
-      for (const number of [...new Set([...confirmed, ...candidates])]) {
+      for (const number of [...new Set([...confirmed, ...references, ...candidates])]) {
         const id = row.pair.join('-');
         const isConfirmed = confirmed.includes(number);
-        const dated = datedByNumber.get(number);
-        const datedTimes = dated?.occurrencesUTC.join(', ');
+        const isReference = references.includes(number);
         flightResults.push({
           key: `flight:${number}:${id}`,
           selection: { kind: 'route', id },
           kind: 'flight',
           title: `${number} · ${row.pair[0]} → ${row.pair[1]}`,
           subtitle: `${input.carrierNames.get(row.carrier) ?? row.carrier} · ${stale.includes(number)
-            ? (input.locale === 'zh-TW' ? 'Avinor 快照已過期；不列為目前已確認班號' : 'Avinor snapshot expired; excluded from current confirmed numbers')
-            : isConfirmed && dated
-            ? (input.locale === 'zh-TW' ? `Avinor 列示營運航空公司班表 · ${datedTimes} UTC · 未核對實際運航` : `Avinor-listed scheduled operator row · ${datedTimes} UTC · actual operation not checked`)
+            ? (input.locale === 'zh-TW' ? 'Avinor 快照已過期；不列為目前有效的來源班號' : 'Avinor snapshot expired; excluded from current source-listed numbers')
             : isConfirmed
-            ? (input.locale === 'zh-TW' ? '已確認班號' : 'Confirmed flight number')
-            : numberState.passed.includes(number)
-            ? (input.locale === 'zh-TW' ? 'Avinor 班表時間已過；未核對實際運航' : 'Avinor schedule time passed; actual operation not checked')
+            ? (input.locale === 'zh-TW' ? '營運者核實班號' : 'Operator-verified flight number')
+            : isReference
+            ? (input.locale === 'zh-TW' ? '班號參考（營運者未核實）' : 'Flight-number reference (operator not verified)')
             : (input.locale === 'zh-TW' ? '候選班號' : 'Candidate flight number')}`,
         });
       }

@@ -83,7 +83,7 @@ export interface RouteCatalogSourceView {
 export interface RouteCatalogEvidenceView {
   readonly sourceReview?:SourceReviewWindow & {readonly state:SourceReviewState};
   readonly id: string;
-  readonly kind: 'route' | 'weekly-schedule' | 'official-service' | 'flight-number-reference' | 'flight-number-candidate' | 'time-bound-flight-number' | 'passed-flight-number' | 'expired-flight-number';
+  readonly kind: 'route' | 'weekly-schedule' | 'official-service' | 'flight-number-reference' | 'flight-number-candidate' | 'time-bound-flight-number' | 'expired-flight-number';
   readonly flightNumbers: ReadonlyArray<string>;
   readonly candidateFlightNumbers: ReadonlyArray<string>;
   readonly daysOfWeek: ReadonlyArray<number>;
@@ -320,18 +320,13 @@ export function buildRouteCatalogPairs(input: BuildRouteCatalogPairsInput): Read
     for (const evidence of route.timeBoundFlightNumbers ?? []) {
       const source = routeSources.get(evidence.sourceId);
       const freshUntilUTC = source?.freshUntilUTC;
-      const now = input.evidenceNow ?? Date.now();
-      const cutoff = Date.parse(freshUntilUTC ?? '');
-      const sourceFresh = Number.isFinite(cutoff) && now < cutoff;
-      const futureOccurrence = evidence.occurrencesUTC.some((value) => now < Date.parse(value) && Date.parse(value) <= cutoff);
-      const fresh = sourceFresh && futureOccurrence;
-      const kind = fresh ? 'time-bound-flight-number' : sourceFresh ? 'passed-flight-number' : 'expired-flight-number';
-      const evidenceCarrier = carrierBucket(pair, carrierIdentityKey(route), route.carrierIdentity ?? 'unknown');
+      const fresh = freshUntilUTC !== undefined && (input.evidenceNow ?? Date.now()) < Date.parse(freshUntilUTC);
+      const evidenceCarrier = carrierBucket(pair, carrierIdentityKey(route), fresh ? 'operating' : route.carrierIdentity ?? 'unknown');
       evidenceCarrier.entityKey = route.carrierEntityKey;
       evidenceCarrier.name = route.carrierEntityName ?? route.carrier;
       pushEvidence(evidenceCarrier, {
         id: `time-bound-number:${route.carrier}:${route.pair[0]}-${route.pair[1]}:${evidence.sourceId}:${evidence.flightNumber}`,
-        kind,
+        kind: fresh ? 'time-bound-flight-number' : 'expired-flight-number',
         flightNumbers: fresh ? [evidence.flightNumber] : [],
         candidateFlightNumbers: fresh ? [] : [evidence.flightNumber],
         daysOfWeek: [], addedDates: [],

@@ -108,6 +108,12 @@
 .registered-plans-evidence>p{color:var(--secondary-label,#65736a);font-size:12px;line-height:1.65}
 .registered-plans-evidence li{display:block;padding:10px 0;border-bottom:1px solid var(--separator,#e0e5e1);overflow-wrap:anywhere}
 .registered-plans-evidence li p{margin:0 0 6px;line-height:1.6}
+.entity-route-number-preview{display:block;max-width:100%;overflow-wrap:anywhere;white-space:normal}
+.entity-route-number-preview strong{color:#64746a;text-transform:uppercase;letter-spacing:.04em}
+.entity-route-number-preview.reference{color:#80664c}
+.route-carrier-numbers>div{display:grid;gap:7px}
+.route-carrier-numbers>div>div{display:flex;flex-wrap:wrap;gap:7px}
+.route-carrier-numbers>div>div>code{padding:6px 9px;border:1px dashed #d5c8b8;border-radius:8px;background:#faf6f1;color:#80664c;font:700 11px/1 var(--font-mono)}
 
 .caa-published-timetable-evidence{font-size:12px;line-height:1.65;overflow-wrap:anywhere}
 .caa-published-timetable-evidence>p{color:var(--secondary-label,#65736a)}

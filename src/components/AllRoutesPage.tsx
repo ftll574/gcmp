@@ -18,6 +18,7 @@ import { RouteLibraryExplorer } from './RouteLibraryExplorer.tsx';
 import { CaaWeeklyScheduleTierDirectory } from './CaaWeeklyScheduleTierDirectory.tsx';
 import { AvinorPublicSnapshotDirectory } from './AvinorPublicSnapshotDirectory.tsx';
 import { AvinorPublicBatchDirectory } from './AvinorPublicBatchDirectory.tsx';
+import { AvinorFollowOnDirectory } from './AvinorFollowOnDirectory.tsx';
 import { SiteHeader, type SiteView } from './SiteHeader.tsx';
 import { useLocale } from '../i18n/use-locale.ts';
 
@@ -472,10 +473,12 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
 
   const memberships = data.allianceCatalog.memberships.filter((membership) => membership.status === 'member');
   const memberCodes = useMemo(() => new Set(
-    memberships
+    [...memberships
       .filter((membership) => alliance === 'all' || membership.alliance === alliance)
       .map((membership) => membership.airline),
-  ), [memberships, alliance]);
+      ...(alliance === 'all' ? data.routeNetworkRuntimeMeta?.avinorFollowOnCarrierCodes ?? [] : []),
+    ],
+  ), [data.routeNetworkRuntimeMeta?.avinorFollowOnCarrierCodes, memberships, alliance]);
   const carrierNames = useMemo(() => new Map(memberships.map((membership) => [membership.airline, membership.airlineName] as const)), [memberships]);
   const selectionMemberCodes = useMemo<ReadonlySet<string>>(() => {
     const selectedEntityKey = selectedCarrier?.includes('+') ? selectedCarrier : routeQualifiedCarrierKey;
@@ -566,6 +569,7 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
             <CaaWeeklyScheduleTierDirectory />
             <AvinorPublicSnapshotDirectory />
             <AvinorPublicBatchDirectory />
+            <AvinorFollowOnDirectory onPlanRoute={onPlanRoute} />
           </>
         )}
       </main>

@@ -20,6 +20,8 @@ export const RouteNetworkSourceSchema = z.object({
   publishedOn: DateSchema.optional(),
   /** Exact source cutoff for short-lived snapshot evidence; after this UTC instant it is stale. */
   freshUntilUTC: z.iso.datetime({ offset: true }).refine((value) => value.endsWith('Z'), 'Freshness deadline must be UTC').optional(),
+  /** Cached response path relative to the public data root. */
+  rawAssetPath: z.string().regex(/^[A-Za-z0-9._/-]+$/).refine((value) => !value.startsWith('/') && !value.split('/').includes('..'), 'Raw source asset path must stay within the published data root').optional(),
   /** Generator review policy, never a passenger service period. */
   routeReviewWindow: z.object({from:DateSchema,until:DateSchema,basis:z.literal('generated-freshness-policy')}).strict().refine(w=>w.from<=w.until,'Inverted source review window').optional(),
   note: z.string().min(1),
@@ -58,7 +60,8 @@ export const RouteNetworkEntrySchema = z.object({
   carrierEntityKey: CarrierEntityKeySchema.optional(),
   carrierEntityName: z.string().min(1).optional(),
   pair: z.tuple([z.string().regex(/^[A-Z]{3}$/), z.string().regex(/^[A-Z]{3}$/)]),
-  service: z.literal('nonstop'),
+  /** A scheduled endpoint pair is date-scoped and does not claim physical nonstop service. */
+  service: z.enum(['nonstop', 'scheduled-endpoint-pair']),
   /** Registered plans are evidence only; never upgrade carrier identity, confirmed designators or dated selectable services. */
   registeredPlans: z.array(z.object({registrationId:z.string().min(1),registeredOperator:z.string().regex(/^[A-Z0-9]{2,3}$/),registeredOperatorICAO:z.string().regex(/^[A-Z]{3}$/).optional(),carrierEntityKey:CarrierEntityKeySchema.optional(),flightNumberRaw:z.string().regex(/^\d{1,4}$/),effectiveFrom:DateSchema,effectiveUntil:DateSchema,weekdays:z.array(z.number().int().min(1).max(7)).min(1),departureUTC:z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/),arrivalUTC:z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/),arrivalDayOffset:z.null(),codeshareRaw:z.string().optional(),codeshareCompleteness:z.literal('unknown').optional(),stageNumber:z.number().int().positive().optional(),versionConflict:z.boolean().optional(),confidence:z.literal('high-confidence-schema-inference'),sourceId:SourceIdSchema}).strict()).optional(),
   /** `identity-unresolved` preserves a sourced route relationship that is no
@@ -85,7 +88,7 @@ export const RouteNetworkEntrySchema = z.object({
   timeBoundFlightNumbers: z.array(z.object({
     flightNumber: FlightDesignatorSchema,
     sourceId: SourceIdSchema,
-    candidateSourceIds: z.array(SourceIdSchema).min(1),
+    candidateSourceIds: z.array(SourceIdSchema).default([]),
     occurrencesUTC: z.array(z.iso.datetime({ offset: true }).refine((value) => value.endsWith('Z'), 'Occurrence timestamp must be UTC')).min(1),
     /** Prior route-candidate dates remain separate from the public snapshot window. */
     candidateWindow: z.object({
@@ -96,6 +99,29 @@ export const RouteNetworkEntrySchema = z.object({
     }).strict().optional(),
     /** Some source rows are read-only research evidence and must not create a Planner action. */
     plannerUse: z.enum(['dated-departure', 'reference-only', 'display-only']).optional(),
+    /** Full occurrence lineage from the reviewed follow-on ledger. */
+    occurrenceDetails: z.array(z.object({
+      candidateKey: z.string().min(1),
+      carrierEntityName: z.string().nullable(),
+      carrierEntityNameMapping: z.enum(['unique-trusted-name', 'not-present-in-curated-registry', 'unresolved-not-supplied-by-source-record']),
+      directnessAssessment: z.literal('no-via-airport-reported; nonstop-unverified'),
+      expiresAtUTC: z.iso.datetime({ offset: true }).refine((value) => value.endsWith('Z'), 'Occurrence expiry must be UTC'),
+      oldCandidateWindowConflict: z.boolean(),
+      oldCandidateWindowConflictOccurrenceCount: z.number().int().nonnegative(),
+      oldCandidateWindowEffectiveFrom: DateSchema.nullable(),
+      oldCandidateWindowEffectiveUntil: DateSchema.nullable(),
+      oldCandidateWindowRelationship: z.string().min(1),
+      oldCandidateWindowSource: z.string().min(1),
+      scheduleTimeUTC: z.iso.datetime({ offset: true }).refine((value) => value.endsWith('Z'), 'Schedule timestamp must be UTC'),
+      sourceAirport: z.string().regex(/^[A-Z]{3}$/),
+      sourceOperatingCarrierIATA: z.string().regex(/^[A-Z0-9]{2,3}$/),
+      sourceRow: z.number().int().positive(),
+      sourceUniqueID: z.string().min(1),
+      statusCode: z.string(),
+      arrDepRaw: z.string(),
+      viaAirportRaw: z.string(),
+      viaAirports: z.array(z.string().regex(/^[A-Z]{3}$/)),
+    }).strict()).optional(),
   }).strict()).optional(),
   /** Useful designators from standing/marketing/reference layers that need a
    * date/operator recheck before itinerary persistence. */
@@ -111,6 +137,10 @@ export const RouteNetworkEntrySchema = z.object({
   }
   if (entry.routeEvidenceScope === 'route-only' && (entry.carrierIdentity !== 'provider-listed' || entry.routeEvidence !== 'official-directed' || entry.registeredPlans !== undefined || entry.flightNumbers !== undefined || entry.flightNumberCandidates !== undefined || entry.effectiveFrom !== undefined || entry.effectiveUntil !== undefined)) {
     ctx.addIssue({ code: 'custom', path: ['routeEvidenceScope'], message: 'Route-only evidence must remain an undated provider-listed relationship without plan or flight-number promotion' });
+  }
+  if (entry.service === 'scheduled-endpoint-pair'
+    && (entry.status !== 'published' || entry.carrierIdentity !== 'provider-listed' || !(entry.timeBoundFlightNumbers?.length))) {
+    ctx.addIssue({ code: 'custom', path: ['service'], message: 'A scheduled endpoint pair requires published, provider-listed, date-bound schedule evidence' });
   }
   if (entry.effectiveFrom && entry.effectiveUntil && entry.effectiveFrom > entry.effectiveUntil) {
     ctx.addIssue({ code: 'custom', path: ['effectiveUntil'], message: 'Inverted validity window' });
@@ -201,10 +231,11 @@ export const RouteNetworkCatalogSchema = z.object({
       if (!(route.flightNumbers ?? []).includes(evidence.flightNumber)) {
         ctx.addIssue({ code: 'custom', path: ['routes', routeIndex, 'timeBoundFlightNumbers', evidenceIndex, 'flightNumber'], message: 'Time-bound evidence must refer to a confirmed flight number' });
       }
-      if (datedNumbers.has(evidence.flightNumber)) {
-        ctx.addIssue({ code: 'custom', path: ['routes', routeIndex, 'timeBoundFlightNumbers', evidenceIndex], message: 'Duplicate time-bound flight number evidence' });
+      const datedIdentity = `${evidence.flightNumber}|${evidence.sourceId}`;
+      if (datedNumbers.has(datedIdentity)) {
+        ctx.addIssue({ code: 'custom', path: ['routes', routeIndex, 'timeBoundFlightNumbers', evidenceIndex], message: 'Duplicate time-bound flight number/source evidence' });
       }
-      datedNumbers.add(evidence.flightNumber);
+      datedNumbers.add(datedIdentity);
       if (!(route.flightNumberCandidates ?? []).every((number) => number !== evidence.flightNumber)) {
         ctx.addIssue({ code: 'custom', path: ['routes', routeIndex, 'timeBoundFlightNumbers', evidenceIndex], message: 'Time-bound confirmed numbers may not remain in the candidate list' });
       }
@@ -217,9 +248,25 @@ export const RouteNetworkCatalogSchema = z.object({
       if (new Set(evidence.occurrencesUTC).size !== evidence.occurrencesUTC.length) {
         ctx.addIssue({ code: 'custom', path: ['routes', routeIndex, 'timeBoundFlightNumbers', evidenceIndex, 'occurrencesUTC'], message: 'Duplicate observed flight time' });
       }
-      if (evidence.sourceId.startsWith('avinor-xml-public-batch-')
+      if (evidence.sourceId.startsWith('avinor-xml-public-batch-') && !evidence.occurrenceDetails
         && (!evidence.candidateWindow || evidence.plannerUse !== 'display-only')) {
         ctx.addIssue({ code: 'custom', path: ['routes', routeIndex, 'timeBoundFlightNumbers', evidenceIndex], message: 'Multi-airport Avinor schedule rows require the preserved candidate window and display-only Planner guard' });
+      }
+      if (evidence.occurrenceDetails) {
+        const detailTimes = evidence.occurrenceDetails.map((occurrence) => occurrence.scheduleTimeUTC);
+        const detailIds = evidence.occurrenceDetails.map((occurrence) => `${occurrence.sourceAirport}|${occurrence.sourceRow}|${occurrence.sourceUniqueID}`);
+        if (new Set(detailIds).size !== detailIds.length
+          || detailTimes.some((time) => !evidence.occurrencesUTC.includes(time))) {
+          ctx.addIssue({ code: 'custom', path: ['routes', routeIndex, 'timeBoundFlightNumbers', evidenceIndex, 'occurrenceDetails'], message: 'Detailed occurrences must retain unique source-row lineage and match a stored schedule time' });
+        }
+        evidence.occurrenceDetails.forEach((occurrence, occurrenceIndex) => {
+          if (occurrence.expiresAtUTC !== occurrence.scheduleTimeUTC
+            || occurrence.sourceOperatingCarrierIATA !== route.carrier
+            || occurrence.viaAirportRaw !== ''
+            || occurrence.viaAirports.length !== 0) {
+            ctx.addIssue({ code: 'custom', path: ['routes', routeIndex, 'timeBoundFlightNumbers', evidenceIndex, 'occurrenceDetails', occurrenceIndex], message: 'Avinor occurrence must expire at its schedule time, retain its raw carrier, and keep via empty' });
+          }
+        });
       }
     }
     const identities = identityByCode.get(route.carrier) ?? new Set<string>();

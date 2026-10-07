@@ -1,0 +1,283 @@
+{
+  "version": 1,
+  "kind": "avinor-xml-public-follow-on-release",
+  "releaseId": "avinor-follow-on-20261006",
+  "packetAsOfUTC": "2026-10-06T23:18:31Z",
+  "networkRequestsMadeForHandoff": 0,
+  "coverage": {
+    "scope": "11 of the documented 43 Avinor airports; bounded 144-hour passenger-airport schedule snapshots.",
+    "snapshotCount": 11,
+    "documentedAirportCount": 43,
+    "isGlobalCoverage": false
+  },
+  "accepted": {
+    "identityGroups": 1373,
+    "occurrences": 5421,
+    "directedAirportPairs": 498,
+    "carrierDirectedRoutes": 650,
+    "identityGroupsFromAcceptedSourceSets": [
+      {
+        "name": "accepted-pending-179",
+        "identityGroups": 179,
+        "sha256": "a1709224afceb12b5b0b65467c77658d9af9e4a5f31452b24e6a50d7f05212b6"
+      },
+      {
+        "name": "accepted-batch3-22",
+        "identityGroups": 22,
+        "sha256": "63430fe35c340a969b85919c31b07295659e177438145ac1233981122bc4ae85"
+      },
+      {
+        "name": "independent-review-accepted-1172",
+        "identityGroups": 1172,
+        "sha256": "58e8c62aa436be0f559a660d12444a9e38fd091e9f146e1fc1c11a6daecda1fa"
+      },
+      {
+        "name": "reviewer-held-8",
+        "identityGroups": 8,
+        "sha256": "4913574639f6375f1de929ca0d235272d6179ae7f6ebdce138a46416dd03ebf0"
+      }
+    ],
+    "earliestScheduleUTC": "2026-10-06T19:45:00Z",
+    "latestScheduleUTC": "2026-10-12T20:40:00Z",
+    "expiredAtPacketAsOf": 44,
+    "unresolvedDisplayNameIdentityGroups": 1330,
+    "newReviewedIdentityGroupsWithoutPriorExactCandidate": 1172,
+    "existingCandidateIdentityGroups": 201
+  },
+  "firstReleaseDisjointnessReference": {
+    "identityGroups": 412,
+    "keyProjectionPath": "inputs/reference/first-release-412-keys-only.jsonl",
+    "keyProjectionSHA256": "a9aae1884a9679425b3fc07d65deada5c673d5dbe0dfe91123766b5fd7394683",
+    "overlapWithFollowOn": 0,
+    "includedInFollowOnLedger": false
+  },
+  "held": {
+    "identityGroups": 8,
+    "occurrences": 28,
+    "codes": [
+      "EZY",
+      "LTR",
+      "VAA"
+    ],
+    "ledgerPath": "docs/avinor-follow-on-release-20261007/reviewer-held-ledger.jsonl",
+    "ledgerSHA256": "9247107a4d069f1efd6cbba4524907cf5dd548f16c22a5a5fab7a977647bc234",
+    "integrated": false
+  },
+  "historicalWindowConflicts": {
+    "identityGroupsWithAtLeastOneConflict": {
+      "accepted-batch3-22": 20,
+      "accepted-pending-179": 176
+    },
+    "keysWithoutCompletePriorCandidateWindow": 1,
+    "note": "The prior candidate windows are retained as historical identity context and are not extended by this handoff. A dated schedule occurrence outside the prior identity-specific window is explicitly flagged; new 1172 identities have no old candidate window.",
+    "occurrencesOutsidePriorCandidateWindow": {
+      "accepted-batch3-22": 70,
+      "accepted-pending-179": 530
+    }
+  },
+  "sourceSnapshots": [
+    {
+      "airport": "AES",
+      "httpStatus": 200,
+      "contentType": "application/xml;charset=iso-8859-1",
+      "requestUrl": "https://asrv.avinor.no/XmlFeed/v1.0?airport=AES&TimeFrom=1&TimeTo=144&codeshare=Y",
+      "retrievedAtUTC": "2026-10-06T20:57:40Z",
+      "feedLastUpdateUTC": "2026-10-06T20:53:41.694080Z",
+      "freshUntilUTC": "2026-10-12T20:57:40Z",
+      "responseBytes": 50058,
+      "responseSHA256": "5bfb52914b4a1817dbca90a24d750b638efbc0c685ec9da150bc0d2fcb44b5a4",
+      "xmlRowCount": 197,
+      "requestMetadataSHA256": "bb5802948def2029dc6dc5f6c04c3a04d7ec9a7d2cb1aea48a7becc450843eee",
+      "headersSHA256": "4fe72aa3efd36ce3f34d89dfa1b73bd902ebf5cb65b1ca3869316f1a05518f1d",
+      "rawAssetPath": "route-network/avinor-aes-public-20261006.xml"
+    },
+    {
+      "airport": "BDU",
+      "httpStatus": 200,
+      "contentType": "application/xml;charset=iso-8859-1",
+      "requestUrl": "https://asrv.avinor.no/XmlFeed/v1.0?airport=BDU&TimeFrom=1&TimeTo=144&codeshare=Y",
+      "retrievedAtUTC": "2026-10-06T21:08:44Z",
+      "feedLastUpdateUTC": "2026-10-06T20:39:10.269812Z",
+      "freshUntilUTC": "2026-10-12T21:08:44Z",
+      "responseBytes": 6243,
+      "responseSHA256": "e64a54e7513f788afead276f5710fd383c3ec29a6669007e4cabfee3723f74e0",
+      "xmlRowCount": 29,
+      "requestMetadataSHA256": "b255fa0197b3eb81d02c559b8379f7ae341cbedb27e091f602afee36f82e685c",
+      "headersSHA256": "c662d5fedef1f4c36c20978e05771b8c695801da10e0081f1f33b47950aac9b2",
+      "rawAssetPath": "route-network/avinor-bdu-public-20261006.xml"
+    },
+    {
+      "airport": "BGO",
+      "httpStatus": 200,
+      "contentType": "application/xml;charset=iso-8859-1",
+      "requestUrl": "https://asrv.avinor.no/XmlFeed/v1.0?airport=BGO&TimeFrom=1&TimeTo=144&codeshare=Y",
+      "retrievedAtUTC": "2026-10-06T20:20:11Z",
+      "feedLastUpdateUTC": "2026-10-06T20:20:10.381914Z",
+      "freshUntilUTC": "2026-10-12T20:20:11Z",
+      "responseBytes": 347016,
+      "responseSHA256": "d82cb07848c5fa137197e07023bdadd7876c999286828c3bece59a6e08ace642",
+      "xmlRowCount": 1270,
+      "requestMetadataSHA256": "4e3c90ea99950fa74dfbed58b39fc1546898f3fe2ff24016cf6f2f37129f0f4b",
+      "headersSHA256": "e4b6169debefaf2eed87fc5253fceded2fd1ed39da012a9b73001d6eb8df511b",
+      "rawAssetPath": "route-network/avinor-bgo-public-20261006.xml"
+    },
+    {
+      "airport": "BOO",
+      "httpStatus": 200,
+      "contentType": "application/xml;charset=iso-8859-1",
+      "requestUrl": "https://asrv.avinor.no/XmlFeed/v1.0?airport=BOO&TimeFrom=1&TimeTo=144&codeshare=Y",
+      "retrievedAtUTC": "2026-10-06T20:34:34Z",
+      "feedLastUpdateUTC": "2026-10-06T20:34:08.290460Z",
+      "freshUntilUTC": "2026-10-12T20:34:34Z",
+      "responseBytes": 145452,
+      "responseSHA256": "e3a6da24e758597b76270fef35182a199d8398f8ab5cc393a06b18af1bc8ece6",
+      "xmlRowCount": 617,
+      "requestMetadataSHA256": "f2a8839d756f8029f2b26f8a832474ca66c72629247ef4f526bbd471cd09adad",
+      "headersSHA256": "960b7f322e870990b70993353f69ecdb27b96ca8b047d742914f08c1cf3a7d6c",
+      "rawAssetPath": "route-network/avinor-boo-public-20261006.xml"
+    },
+    {
+      "airport": "EVE",
+      "httpStatus": 200,
+      "contentType": "application/xml;charset=iso-8859-1",
+      "requestUrl": "https://asrv.avinor.no/XmlFeed/v1.0?airport=EVE&TimeFrom=1&TimeTo=144&codeshare=Y",
+      "retrievedAtUTC": "2026-10-06T21:04:51Z",
+      "feedLastUpdateUTC": "2026-10-06T21:03:31.351777Z",
+      "freshUntilUTC": "2026-10-12T21:04:51Z",
+      "responseBytes": 38017,
+      "responseSHA256": "89c04d2c8f43bb29757ab92c4b936db7fc41b048b926fcf2f9487c0967b6a077",
+      "xmlRowCount": 170,
+      "requestMetadataSHA256": "243e017dcd382ae7ff71b8baca15ac893b0c0e32faa7110a0bc31a3404ac911a",
+      "headersSHA256": "937fd2b422867e612dcb92c6d5a9e20e9a20d0d3e62929ce1628276cb511dc6d",
+      "rawAssetPath": "route-network/avinor-eve-public-20261006.xml"
+    },
+    {
+      "airport": "KRS",
+      "httpStatus": 200,
+      "contentType": "application/xml;charset=iso-8859-1",
+      "requestUrl": "https://asrv.avinor.no/XmlFeed/v1.0?airport=KRS&TimeFrom=1&TimeTo=144&codeshare=Y",
+      "retrievedAtUTC": "2026-10-06T20:54:09Z",
+      "feedLastUpdateUTC": "2026-10-06T20:47:07.953049Z",
+      "freshUntilUTC": "2026-10-12T20:54:09Z",
+      "responseBytes": 46554,
+      "responseSHA256": "aa42221e48c28d1e9f6f93ec4b9f0c9f1045d46b0b39520855e5b16a43681f39",
+      "xmlRowCount": 175,
+      "requestMetadataSHA256": "6c3d3b55bbfba2f1022c0354e76ee15368719142d3fd0e81d50ce7e5c30edb2e",
+      "headersSHA256": "0ccb7795e3185556870623fb6c1ecfd5ad1b16cd60a01f751f20e33f2c82a3d4",
+      "rawAssetPath": "route-network/avinor-krs-public-20261006.xml"
+    },
+    {
+      "airport": "MOL",
+      "httpStatus": 200,
+      "contentType": "application/xml;charset=iso-8859-1",
+      "requestUrl": "https://asrv.avinor.no/XmlFeed/v1.0?airport=MOL&TimeFrom=1&TimeTo=144&codeshare=Y",
+      "retrievedAtUTC": "2026-10-06T21:01:12Z",
+      "feedLastUpdateUTC": "2026-10-06T20:25:19.321182Z",
+      "freshUntilUTC": "2026-10-12T21:01:12Z",
+      "responseBytes": 23078,
+      "responseSHA256": "e38e3aaaee75475d540cad6e875c9c1af69506c7bab0690c968a992ab71b7ae1",
+      "xmlRowCount": 72,
+      "requestMetadataSHA256": "66b22be3b6837fb5393bb7bc7709cf4a93638fd8fee245168d197c51acf721e3",
+      "headersSHA256": "919db7927aab6c6f8a24269db0831935eb280bbb508c51010f52f7fdd0dbc325",
+      "rawAssetPath": "route-network/avinor-mol-public-20261006.xml"
+    },
+    {
+      "airport": "OSL",
+      "httpStatus": 200,
+      "contentType": "application/xml;charset=iso-8859-1",
+      "requestUrl": "https://asrv.avinor.no/XmlFeed/v1.0?airport=OSL&TimeFrom=1&TimeTo=144&codeshare=Y",
+      "retrievedAtUTC": "2026-10-06T19:47:47Z",
+      "feedLastUpdateUTC": "2026-10-06T19:47:29.962615Z",
+      "freshUntilUTC": "2026-10-12T19:47:47Z",
+      "responseBytes": 849172,
+      "responseSHA256": "78403435f3c31ae82d9b45249267cf5e843a7db76bf81bd1f39bb856a65adf7f",
+      "xmlRowCount": 3724,
+      "requestMetadataSHA256": "3195275ec75eace79b81e6b4cccc9ed04e093da5579e4e9feb495ecb0f01d3a4",
+      "headersSHA256": "8bb0e5e74db65d6cc83a91906c5e7abd02ab7aef0f145054a8639be0d16efd9a",
+      "rawAssetPath": "route-network/avinor-osl-public-20261006.xml"
+    },
+    {
+      "airport": "SVG",
+      "httpStatus": 200,
+      "contentType": "application/xml;charset=iso-8859-1",
+      "requestUrl": "https://asrv.avinor.no/XmlFeed/v1.0?airport=SVG&TimeFrom=1&TimeTo=144&codeshare=Y",
+      "retrievedAtUTC": "2026-10-06T20:27:07Z",
+      "feedLastUpdateUTC": "2026-10-06T20:26:59.676947Z",
+      "freshUntilUTC": "2026-10-12T20:27:07Z",
+      "responseBytes": 138130,
+      "responseSHA256": "9e9cb66e16ab864d0e0d2f80ffeb539beb74714bf1311e74da9608aca5585481",
+      "xmlRowCount": 620,
+      "requestMetadataSHA256": "374a25fc58dba978e54953d23afe278ed4aba2677cfb5a2ccc33b2075c594e7b",
+      "headersSHA256": "84879843c968033137d514c5cfcc8bcface6f92332206f20338b28c2d758f107",
+      "rawAssetPath": "route-network/avinor-svg-public-20261006.xml"
+    },
+    {
+      "airport": "TOS",
+      "httpStatus": 200,
+      "contentType": "application/xml;charset=iso-8859-1",
+      "requestUrl": "https://asrv.avinor.no/XmlFeed/v1.0?airport=TOS&TimeFrom=1&TimeTo=144&codeshare=Y",
+      "retrievedAtUTC": "2026-10-06T20:31:09Z",
+      "feedLastUpdateUTC": "2026-10-06T20:30:40.711514Z",
+      "freshUntilUTC": "2026-10-12T20:31:09Z",
+      "responseBytes": 155207,
+      "responseSHA256": "4a635a571b7681f79186ff2fe66b2c833e2b27d574f5ecdb2f4dcc5d55a00d74",
+      "xmlRowCount": 595,
+      "requestMetadataSHA256": "6fc726a665042468e547aed92e8a23d03b252ddaef0bc97a78376aa22e6ebf91",
+      "headersSHA256": "5961e1ab033e7ea5a5caaf85d1ca5907dcf6cdf6ca0a12fd2db1519b97635b81",
+      "rawAssetPath": "route-network/avinor-tos-public-20261006.xml"
+    },
+    {
+      "airport": "TRD",
+      "httpStatus": 200,
+      "contentType": "application/xml;charset=iso-8859-1",
+      "requestUrl": "https://asrv.avinor.no/XmlFeed/v1.0?airport=TRD&TimeFrom=1&TimeTo=144&codeshare=Y",
+      "retrievedAtUTC": "2026-10-06T20:23:40Z",
+      "feedLastUpdateUTC": "2026-10-06T20:23:36.054013Z",
+      "freshUntilUTC": "2026-10-12T20:23:40Z",
+      "responseBytes": 202871,
+      "responseSHA256": "6de95c7cb67eab5aa22a2818b6b678e5c5b3e493ce66a0883f64780258ec4609",
+      "xmlRowCount": 853,
+      "requestMetadataSHA256": "893fa03b4b4198092c8e741a72bd1acc606086ad46d6a5ea8652ea97a4ed0bb1",
+      "headersSHA256": "dbebef38ea42f692807e4dbf1ad612f7e766f01369a66e5616cb0ba33e824ce5",
+      "rawAssetPath": "route-network/avinor-trd-public-20261006.xml"
+    }
+  ],
+  "assets": {
+    "acceptedLedger": {
+      "path": "route-network/avinor-follow-on-evidence-20261006.jsonl",
+      "bytes": 14885824,
+      "sha256": "36890cfce29ee71e4171cc32deb6fa0417de4793d9b9c694a0f113b409b3e4d2"
+    },
+    "validationReportPath": "docs/avinor-follow-on-release-20261007/validation-report.json",
+    "validationReportSHA256": "91b292773261ff86d15246b415495dc0c85477c3b8a2ea73ecf9f6bebafe8d79",
+    "cachedTermsSnapshotPath": "docs/avinor-follow-on-release-20261007/avinor-flight-data-terms-20261002.html",
+    "cachedTermsSnapshotSHA256": "fd1116c4eb6e714e43a8c537556fe24148a781e75cae997c3dfaf0149f1c3084"
+  },
+  "licenseAndAttribution": {
+    "cachedTermsSnapshotSHA256": "fd1116c4eb6e714e43a8c537556fe24148a781e75cae997c3dfaf0149f1c3084",
+    "futureHeavyLoadContactRequirement": true,
+    "requiredVisibleAttribution": {
+      "href": "https://www.avinor.no",
+      "placement": "visible and close to the data",
+      "text": "Flight data from Avinor"
+    },
+    "termsLinkIsSeparateFromAttribution": true,
+    "termsUrl": "https://partner.avinor.no/en/services/flight-data/",
+    "termsUseSummary": "The cached 2026-10-02 terms state no general use limitation subject to Norwegian law; visible linked attribution near the data is required; contact Avinor before heavy server load."
+  },
+  "dataLimits": [
+    "XML Public covers Norwegian airport traffic; this set is not global coverage.",
+    "No per-flight service type is present in this packet; schedule rows do not establish passenger-versus-charter status.",
+    "Schedules do not establish actual operation, recurring service, independent nonstop status, seats, or bookability.",
+    "Display names unresolved in source records remain null; no airline/company name is invented."
+  ],
+  "fieldSemantics": {
+    "dateScope": "Every occurrence expires at its scheduled UTC time. Do not promote occurrence rows to evergreen flightNumbers or a recurring validity interval.",
+    "flightId": "Exact full flight_id; no number padding, leading-zero change, marketing-code substitution, or alias mapping.",
+    "operation": "Scheduled association only; no actual departure or physical operating company is asserted.",
+    "sourceAirlineField": "Exact Avinor airline IATA code; retained verbatim and required to match the complete source flight_id prefix.",
+    "status": "Source status retained per occurrence; code C is not present among accepted or held rows.",
+    "viaAirport": "Empty via_airport is only a source-reported no-intermediate value; it is not independent proof of nonstop service because source completeness is not guaranteed."
+  },
+  "sourceIdentitySemantics": "Each accepted occurrence is cross-checked by airport, XML row number, uniqueID, exact airline code, full flight_id, ordered route, schedule UTC time, status and via_airport against its copied response.xml bytes."
+}

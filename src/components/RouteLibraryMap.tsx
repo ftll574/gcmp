@@ -475,8 +475,8 @@ export function RouteEntityMap({
   const model = useMemo(() => buildRouteMapModel(routes, hubs), [routes, hubs]);
   useEffect(() => { routeSourceStateRef.current = { kind: null, key: null }; }, [model]);
   const copy = locale === 'zh-TW'
-    ? { fit: '顯示完整航網', airport: '機場資訊', route: '航線詳情', confirmed: '已確認班號', noConfirmed: '尚無 confirmed 班號', fallback: '此瀏覽器無法啟用互動地圖。', fallbackHelp: '仍可使用搜尋與下方列表瀏覽航線。', mapHelp: '使用搜尋欄可用鍵盤選擇任何機場、航空公司、航線或班號；地圖提供拖曳與縮放瀏覽。', all: '全部', clusters: '個機場', zoomCluster: '點擊放大查看' }
-    : { fit: 'Fit network', airport: 'Airport details', route: 'Route details', confirmed: 'Confirmed flights', noConfirmed: 'No confirmed flight number', fallback: 'Interactive map is unavailable in this browser.', fallbackHelp: 'Use search or the route list below to keep exploring.', mapHelp: 'Use the search field to select any airport, airline, route or flight number with the keyboard; the map supports pan and zoom.', all: 'All', clusters: 'airports', zoomCluster: 'Click to zoom in' };
+    ? { fit: '顯示完整航網', airport: '機場資訊', route: '航線詳情', confirmed: '營運者核實班號', references: '班號參考（營運者未核實）', noConfirmed: '尚無營運者核實班號', fallback: '此瀏覽器無法啟用互動地圖。', fallbackHelp: '仍可使用搜尋與下方列表瀏覽航線。', mapHelp: '使用搜尋欄可用鍵盤選擇任何機場、航空公司、航線或班號；地圖提供拖曳與縮放瀏覽。', all: '全部', clusters: '個機場', zoomCluster: '點擊放大查看' }
+    : { fit: 'Fit network', airport: 'Airport details', route: 'Route details', confirmed: 'Operator-verified flight numbers', references: 'Flight-number references (operator not verified)', noConfirmed: 'No operator-verified flight number', fallback: 'Interactive map is unavailable in this browser.', fallbackHelp: 'Use search or the route list below to keep exploring.', mapHelp: 'Use the search field to select any airport, airline, route or flight number with the keyboard; the map supports pan and zoom.', all: 'All', clusters: 'airports', zoomCluster: 'Click to zoom in' };
 
   const safeActiveSearchIndex = controls && controls.searchResults.length > 0 && activeSearchIndex >= 0
     ? Math.min(activeSearchIndex, controls.searchResults.length - 1)
@@ -973,10 +973,13 @@ export function RouteEntityMap({
           {activeRoutes.slice(0, 6).map((route) => {
             const carriers = route.carriers.map((carrier) => carrier.carrier).join(' · ');
             const numbers = route.carriers.flatMap((carrier) => carrier.confirmedNumbers).slice(0, 8);
+            const references = route.carriers.flatMap((carrier) => carrier.referenceNumbers).slice(0, 8);
             return <div key={`${route.from.iata}-${route.to.iata}`}>
               <span><code>{route.from.iata}</code> → <code>{route.to.iata}</code><b>{route.distanceNm.toLocaleString()} nm</b></span>
               <small>{carriers}</small>
-              <em>{numbers.length > 0 ? `${copy.confirmed}: ${numbers.join(' · ')}` : copy.noConfirmed}</em>
+              {numbers.length > 0 && <em>{copy.confirmed}: {numbers.join(' · ')}</em>}
+              {references.length > 0 && <em>{copy.references}: {references.join(' · ')}</em>}
+              {numbers.length === 0 && references.length === 0 && <em>{copy.noConfirmed}</em>}
               {onRouteSelect && <button type="button" onClick={() => onRouteSelect(`${route.from.iata}-${route.to.iata}`)}>{copy.route}</button>}
             </div>;
           })}

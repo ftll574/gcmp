@@ -53,6 +53,8 @@ const CURATED_INPUTS = new Set([
   'route-network/avinor-osl-public-20261006.xml',
   'route-network/avinor-public-airport-batch-20261006.json',
   ...['aes', 'bdu', 'bgo', 'boo', 'eve', 'krs', 'mol', 'svg', 'tos', 'trd'].map((airport) => `route-network/avinor-xml-public-${airport}-20261006.xml`),
+  'route-network/avinor-follow-on-evidence-20261006.jsonl',
+  'route-network/avinor-follow-on-release-20261006.json',
   'route-network/flightsfrom-flight-numbers-20260909.json',
   'route-network/mrairspace-flight-number-candidates.json',
   'route-network/mrairspace-flight-number-candidates-2026-Q2.json',
@@ -80,6 +82,13 @@ const PRODUCERS: Record<string, string> = {
 /** License / source descriptor by directory family. */
 function describe(path: string): { source: string; license: DataLicense } {
   if (path.startsWith('route-network/')) {
+    if (path === 'route-network/avinor-follow-on-evidence-20261006.jsonl'
+      || path === 'route-network/avinor-follow-on-release-20261006.json') {
+      return {
+        source: 'Avinor XML Public follow-on review packet; exact accepted occurrence ledger, release hashes and source-window metadata retained alongside the original XML response assets',
+        license: 'site-terms',
+      };
+    }
     if (path.startsWith('route-network/avinor-osl-public-20261006.')) {
       return {
         source: 'Avinor XML Public OSL snapshot; one 144-hour response with original bytes and exact source/freshness metadata bundled alongside the accepted rows',
@@ -100,7 +109,7 @@ function describe(path: string): { source: string; license: DataLicense } {
     }
     if (path.includes('runtime')) {
       return {
-        source: 'curated + provider-listed route-network layers and a dated Avinor public snapshot (see THIRD_PARTY_NOTICES.md)',
+        source: 'curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)',
         license: 'ODbL-1.0',
       };
     }
@@ -260,6 +269,8 @@ function build(): void {
     const isAvinorXml = path === 'route-network/avinor-osl-public-20261006.xml';
     const isAvinorBatchSnapshot = path === 'route-network/avinor-public-airport-batch-20261006.json';
     const isAvinorBatchXml = /^route-network\/avinor-xml-public-(aes|bdu|bgo|boo|eve|krs|mol|svg|tos|trd)-20261006\.xml$/.test(path);
+    const isAvinorFollowOn = path === 'route-network/avinor-follow-on-evidence-20261006.jsonl'
+      || path === 'route-network/avinor-follow-on-release-20261006.json';
     const isRuntimeNetwork = path === 'route-network/runtime-current.json';
     const isRuntimeMeta = path === 'route-network/runtime-current.meta.json';
     const previous = existingByPath.get(path);
@@ -269,15 +280,16 @@ function build(): void {
       kind: isCaaWeeklyTier ? kind : previous?.kind ?? kind,
       producer: isCaaWeeklyTier ? producer : previous?.producer ?? producer,
       inputs: isCaaWeeklyTier ? inputs : previous?.inputs ?? inputs,
-      source: isCaaWeeklyTier || isAvinorSnapshot || isAvinorXml || isAvinorBatchSnapshot || isAvinorBatchXml || isRuntimeNetwork || isRuntimeMeta ? source : previous?.source ?? source,
-      license: isCaaWeeklyTier || isAvinorSnapshot || isAvinorXml || isAvinorBatchSnapshot || isAvinorBatchXml || isRuntimeNetwork || isRuntimeMeta ? license : previous?.license ?? license,
+      source: isCaaWeeklyTier || isAvinorSnapshot || isAvinorXml || isAvinorBatchSnapshot || isAvinorBatchXml || isAvinorFollowOn || isRuntimeNetwork || isRuntimeMeta ? source : previous?.source ?? source,
+      license: isCaaWeeklyTier || isAvinorSnapshot || isAvinorXml || isAvinorBatchSnapshot || isAvinorBatchXml || isAvinorFollowOn || isRuntimeNetwork || isRuntimeMeta ? license : previous?.license ?? license,
       attribution: isCaaWeeklyTier
         ? 'Taiwan Civil Aviation Administration (交通部民用航空局)'
-        : isAvinorSnapshot || isAvinorXml || isAvinorBatchSnapshot || isAvinorBatchXml ? 'Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app' : previous?.attribution ?? null,
+        : isAvinorSnapshot || isAvinorXml || isAvinorBatchSnapshot || isAvinorBatchXml || isAvinorFollowOn ? 'Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; link the flight-data terms separately' : previous?.attribution ?? null,
       schema: isCaaWeeklyTier ? 'src/lib/schemas/caa-weekly-schedule-tier.ts'
         : isAvinorSnapshot ? 'src/lib/schemas/avinor-xml-public.ts'
           : isAvinorBatchSnapshot ? 'src/lib/schemas/avinor-xml-public-batch.ts'
-            : isAvinorXml || isAvinorBatchXml ? null : previous?.schema ?? null,
+            : isAvinorFollowOn ? 'src/lib/schemas/avinor-follow-on.ts'
+              : isAvinorXml || isAvinorBatchXml ? null : previous?.schema ?? null,
       bytes,
       sha256,
       notes: isCaaWeeklyTier
@@ -286,12 +298,14 @@ function build(): void {
           ? '412 exact candidate-key matches for 130 directed routes using Avinor OperatingAirlineIata, full FlightId and direction fields. One OSL request retrieved 2026-10-06; six-day scope expires at 2026-10-12T19:47:47Z. Full original XML is bundled; visible linked attribution is required by source terms. Blank via_airport means no intermediate airport was reported; it does not prove physical nonstop service. A schedule row is not actual-operation, recurrence, award-seat or bookability evidence.'
           : isAvinorBatchSnapshot
             ? 'Ten bounded airport-specific XML Public snapshots with exact accepted carrier, full FlightId and direction matches. Per-airport retrieval timestamps, 144-hour freshness deadlines, original response bytes/hashes, exact input packet hashes, and candidate effective windows are retained. Existing candidate dates are not extended; published schedule rows are display-only and do not establish recurring service, actual operation, award seats or bookability.'
+          : isAvinorFollowOn
+            ? 'The packet ledger preserves 1,373 accepted schedule identities and 5,421 exact occurrences across 11 snapshots; 201 identities/726 occurrences were already promoted by the preceding release. Runtime adds only 1,172 new identities. Each occurrence expires at its scheduled UTC time; no actual-operation, physical nonstop, recurrence, award-seat or bookability claim is made. The route map covers 43 documented airports, not global coverage.'
             : isAvinorBatchXml
               ? 'Original Avinor XML Public response bytes. The full SHA-256, size, retrieval timestamp and freshness deadline are in avinor-public-airport-batch-20261006.json.'
           : isAvinorXml
             ? 'Original 849,172-byte Avinor XML Public response. The full SHA-256 and retrieval timestamp are in the matching JSON provenance asset.'
             : isRuntimeNetwork
-              ? 'Runtime route graph includes 412 time-bound Avinor designator/direction associations; freshness is guarded in the UI until 2026-10-12T19:47:47Z. The separate CAA schedule tier remains unchanged.'
+              ? 'Runtime preserves the first 412 OSL identities, the prior release’s 201 promoted identities, and the 1,172 net-new follow-on identities with per-occurrence expiry and source-window cutoffs. CAA’s 488 operator-unknown associations remain separate.'
               : isRuntimeMeta
                 ? 'Build metadata pins the Avinor source JSON, original XML, route-network inputs, and output hash.'
         : previous?.notes ?? '',

@@ -69,7 +69,7 @@ describe('Avinor XML Public release', () => {
     expect(avinorOslDepartureDate('2026-10-06T22:30:00Z')).toBe('2026-10-07');
   });
 
-  test('keeps Avinor schedule numbers out of general route references and demotes them after expiry', () => {
+  test('keeps expired Avinor rows as dated history and demotes their number after expiry', () => {
     const first = snapshot.associations[0]!;
     const [carrier, , pair, flightNumber] = first.candidateKey.split('|');
     const [from, to] = pair!.split('>');
@@ -94,7 +94,7 @@ describe('Avinor XML Public release', () => {
     expect(current.datedFlightNumbers.find(row => row.flightNumber === flightNumber)?.occurrencesUTC.length).toBeGreaterThan(0);
 
     const expired = carrierProfileAt(Date.parse(snapshot.snapshot.validUntilUTC));
-    expect(expired.datedFlightNumbers.some(row => row.flightNumber === flightNumber)).toBe(false);
+    expect(expired.datedFlightNumbers.find(row => row.flightNumber === flightNumber)?.occurrencesUTC.length).toBeGreaterThan(0);
     expect(expired.staleNumbers).toContain(flightNumber);
     expect(expired.candidateNumbers).toContain(flightNumber);
   });

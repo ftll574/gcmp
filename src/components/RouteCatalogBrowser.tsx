@@ -82,18 +82,17 @@ const COPY = {
     routes: '航線',
     carriers: '航司',
     flights: '班號',
-    knownFlights: '一般班號參考',
+    knownFlights: '一般班號參考（營運者未核實）',
     candidateFlights: '候選班號',
     candidateNote: '候選班號來自近期觀測、standing 或 marketing 參考；請再確認日期與實際營運者。',
-    noFlights: '這裡沒有一般班號參考；日期班表列請看下方來源證據。',
+    noFlights: '目前資料只有航線證據，尚沒有可列出的確切班號。',
     evidence: '班表與資料來源',
     routeEvidence: '航線來源',
     weeklySchedule: '週班表',
     officialService: '官方班次',
     flightReference: '班號參考',
     flightCandidate: '候選班號參考',
-    avinorDatedFlight: 'Avinor 日期班表列示的營運航空公司班號',
-    avinorPassedFlight: 'Avinor 列示班表時間已過；未核對實際運航',
+    avinorDatedFlight: 'Avinor 日期營運班號證據',
     avinorExpiredFlight: 'Avinor 快照證據已過期',
     snapshotCutoff: '快照有效至（UTC）',
     snapshotDates: '來源列示日期與時間（UTC）',
@@ -133,15 +132,14 @@ const COPY = {
     knownFlights: 'General flight-number references',
     candidateFlights: 'Candidate flight numbers',
     candidateNote: 'Candidate numbers come from recent observations, standing data, or marketing references; recheck date and actual operator.',
-    noFlights: 'There is no general flight-number reference here; see the dated schedule rows in the source evidence below.',
+    noFlights: 'Only route evidence is available here; no exact flight number is currently cataloged.',
     evidence: 'Schedule & sources',
     routeEvidence: 'Route evidence',
     weeklySchedule: 'Weekly schedule',
     officialService: 'Published service',
     flightReference: 'Flight-number reference',
     flightCandidate: 'Candidate flight-number reference',
-    avinorDatedFlight: 'Avinor dated scheduled operating-carrier row',
-    avinorPassedFlight: 'Avinor schedule time passed; actual operation not checked',
+    avinorDatedFlight: 'Avinor dated operating flight evidence',
     avinorExpiredFlight: 'Expired Avinor snapshot evidence',
     snapshotCutoff: 'Snapshot valid until (UTC)',
     snapshotDates: 'Source-listed schedule times (UTC)',
@@ -166,14 +164,13 @@ const WEEKDAYS = {
 
 function evidenceKindLabel(
   kind: RouteCatalogEvidenceView['kind'],
-  copy: Pick<(typeof COPY)[keyof typeof COPY], 'routeEvidence' | 'weeklySchedule' | 'officialService' | 'flightReference' | 'flightCandidate' | 'avinorDatedFlight' | 'avinorPassedFlight' | 'avinorExpiredFlight'>,
+  copy: Pick<(typeof COPY)[keyof typeof COPY], 'routeEvidence' | 'weeklySchedule' | 'officialService' | 'flightReference' | 'flightCandidate' | 'avinorDatedFlight' | 'avinorExpiredFlight'>,
 ): string {
   if (kind === 'route') return copy.routeEvidence;
   if (kind === 'weekly-schedule') return copy.weeklySchedule;
   if (kind === 'official-service') return copy.officialService;
   if (kind === 'flight-number-candidate') return copy.flightCandidate;
   if (kind === 'time-bound-flight-number') return copy.avinorDatedFlight;
-  if (kind === 'passed-flight-number') return copy.avinorPassedFlight;
   if (kind === 'expired-flight-number') return copy.avinorExpiredFlight;
   return copy.flightReference;
 }
@@ -211,7 +208,7 @@ function EvidenceRow({ evidence, locale }: { evidence: RouteCatalogEvidenceView;
             </dd>
           </>
         )}
-        {(evidence.kind === 'time-bound-flight-number' || evidence.kind === 'passed-flight-number' || evidence.kind === 'expired-flight-number') && <><dt>{copy.source}</dt><dd><a href="https://www.avinor.no/" target="_blank" rel="noreferrer">Flight data from Avinor</a> · <a href="https://partner.avinor.no/en/services/flight-data/" target="_blank" rel="noreferrer">{locale === 'zh-TW' ? '資料條款' : 'Terms'}</a></dd></>}
+        {(evidence.kind === 'time-bound-flight-number' || evidence.kind === 'expired-flight-number') && <><dt>{copy.source}</dt><dd><a href="https://www.avinor.no/" target="_blank" rel="noreferrer">Flight data from Avinor</a> · <a href="https://partner.avinor.no/en/services/flight-data/" target="_blank" rel="noreferrer">Avinor flight-data terms</a></dd></>}
       </dl>
     </div>
   );
@@ -219,19 +216,15 @@ function EvidenceRow({ evidence, locale }: { evidence: RouteCatalogEvidenceView;
 
 function CarrierDetails({ carrier, locale }: { carrier: RouteCatalogCarrierView; locale: 'en' | 'zh-TW' }): React.ReactElement {
   const copy = COPY[locale];
-  const datedNumbers = new Set(carrier.evidence
-    .filter(evidence => evidence.kind === 'time-bound-flight-number')
-    .flatMap(evidence => evidence.flightNumbers));
-  const generalFlightNumbers = carrier.flightNumbers.filter(flight => !datedNumbers.has(flight));
   return (
     <div className="route-browser-carrier-body">
       <div className="route-browser-flight-block">
         <span className="route-browser-kicker">{copy.knownFlights}</span>
-        {generalFlightNumbers.length > 0 ? (
+        {carrier.flightNumbers.length > 0 ? (
           <div className="route-browser-flight-chips">
-            {generalFlightNumbers.map((flight) => <code key={flight}>{flight}</code>)}
+            {carrier.flightNumbers.map((flight) => <code key={flight}>{flight}</code>)}
           </div>
-        ) : <p>{copy.noFlights}</p>}
+        ) : carrier.candidateFlightNumbers.length === 0 ? <p>{copy.noFlights}</p> : null}
         {carrier.candidateFlightNumbers.length > 0 && (
           <div className="route-browser-candidate-block">
             <span className="route-browser-kicker">{copy.candidateFlights}</span>

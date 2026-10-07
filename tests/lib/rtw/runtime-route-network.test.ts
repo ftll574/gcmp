@@ -35,6 +35,7 @@ test('premerged runtime route network is current with every source layer', () =>
       sourceId: string;
       candidateWindow?: { runtimeValidityAtCaptureDate: 'active' | 'unknown'; hasOccurrenceAfterEffectiveUntil: boolean };
       plannerUse?: 'dated-departure' | 'reference-only' | 'display-only';
+      occurrenceDetails?: Array<{ candidateKey: string }>;
     }>;
   }>;
   const published = runtime.filter((route) => route.status === 'published');
@@ -65,8 +66,11 @@ test('premerged runtime route network is current with every source layer', () =>
         if (timed?.sourceId === 'avinor-xml-public-osl-20261006') expect(timed.sourceId).toBe('avinor-xml-public-osl-20261006');
         else if (timed) {
           expect(timed.sourceId).toMatch(/^avinor-xml-public-batch-/);
-          expect(timed.plannerUse).toBe('display-only');
-          expect(timed.candidateWindow).toBeDefined();
+          if (timed.candidateWindow) expect(timed.plannerUse).toBe('display-only');
+          else {
+            expect(timed.plannerUse).toBe('dated-departure');
+            expect(timed.occurrenceDetails?.length).toBeGreaterThan(0);
+          }
         }
         else expect(route.flightNumberSourceIds?.length).toBeGreaterThan(0);
       }

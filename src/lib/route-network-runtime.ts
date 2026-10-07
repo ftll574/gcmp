@@ -5,6 +5,7 @@ export interface RuntimeRouteNetworkMeta {
   readonly outputSha256: string;
   readonly routes: number;
   readonly originShards: Readonly<Record<string, RuntimeRouteNetworkShardMeta>>;
+  readonly avinorFollowOnCarrierCodes?: ReadonlyArray<string>;
 }
 
 export interface RuntimeRouteNetworkShardMeta {
@@ -41,6 +42,11 @@ export function parseRuntimeRouteNetworkMeta(raw: unknown): RuntimeRouteNetworkM
     fail('metadata outputSha256 is invalid');
   }
   if (!Number.isInteger(raw.routes) || (raw.routes as number) < 0) fail('metadata routes is invalid');
+  const avinorFollowOnCarrierCodes = raw.avinorFollowOnCarrierCodes === undefined
+    ? undefined
+    : Array.isArray(raw.avinorFollowOnCarrierCodes) && raw.avinorFollowOnCarrierCodes.every((code) => typeof code === 'string' && /^[A-Z0-9]{2,3}$/.test(code))
+      ? raw.avinorFollowOnCarrierCodes as string[]
+      : fail('metadata avinorFollowOnCarrierCodes is invalid');
   const originShards: Record<string, RuntimeRouteNetworkShardMeta> = {};
   if (raw.originShards !== undefined) {
     if (!isRecord(raw.originShards)) fail('metadata originShards is invalid');
@@ -58,7 +64,7 @@ export function parseRuntimeRouteNetworkMeta(raw: unknown): RuntimeRouteNetworkM
       };
     }
   }
-  return { outputSha256: raw.outputSha256, routes: raw.routes as number, originShards };
+  return { outputSha256: raw.outputSha256, routes: raw.routes as number, originShards, ...(avinorFollowOnCarrierCodes ? { avinorFollowOnCarrierCodes } : {}) };
 }
 
 export function parseRuntimeRouteNetworkCarrierManifest(raw: unknown): RuntimeRouteNetworkCarrierManifest {

@@ -19,6 +19,7 @@ export interface RouteMapRouteProperties {
   readonly distanceNm: number;
   readonly carriers: string;
   readonly confirmedNumbers: string;
+  readonly referenceNumbers: string;
   readonly importance: number;
   readonly bundleCount?: number;
 }
@@ -100,6 +101,7 @@ function routeFeature(route: RouteLibraryRouteCard, count: number, importance: n
       distanceNm: route.distanceNm,
       carriers: route.carriers.map((carrier) => carrier.carrierEntityKey ? `${carrier.carrier} · ${carrier.name}` : carrier.carrier).join(' · '),
       confirmedNumbers: route.carriers.flatMap((carrier) => carrier.confirmedNumbers).slice(0, 8).join(' · '),
+      referenceNumbers: route.carriers.flatMap((carrier) => carrier.referenceNumbers).slice(0, 8).join(' · '),
       importance,
     },
   };
@@ -117,6 +119,7 @@ export function buildClusterBundledRoutes(
     readonly routes: RouteLibraryRouteCard[];
     readonly carriers: Set<string>;
     readonly confirmedNumbers: string[];
+    readonly referenceNumbers: string[];
     importance: number;
   }
 
@@ -139,19 +142,26 @@ export function buildClusterBundledRoutes(
         for (const number of carrier.confirmedNumbers) {
           if (existing.confirmedNumbers.length < 8 && !existing.confirmedNumbers.includes(number)) existing.confirmedNumbers.push(number);
         }
+        for (const number of carrier.referenceNumbers) {
+          if (existing.referenceNumbers.length < 8 && !existing.referenceNumbers.includes(number)) existing.referenceNumbers.push(number);
+        }
       }
       continue;
     }
 
     const carriers = new Set<string>();
     const confirmedNumbers: string[] = [];
+    const referenceNumbers: string[] = [];
     for (const carrier of route.carriers) {
       carriers.add(carrier.carrierEntityKey ? `${carrier.carrier} · ${carrier.name}` : carrier.carrier);
       for (const number of carrier.confirmedNumbers) {
         if (confirmedNumbers.length < 8 && !confirmedNumbers.includes(number)) confirmedNumbers.push(number);
       }
+      for (const number of carrier.referenceNumbers) {
+        if (referenceNumbers.length < 8 && !referenceNumbers.includes(number)) referenceNumbers.push(number);
+      }
     }
-    bundles.set(key, { from: first, to: second, routes: [route], carriers, confirmedNumbers, importance });
+    bundles.set(key, { from: first, to: second, routes: [route], carriers, confirmedNumbers, referenceNumbers, importance });
   }
 
   return {
@@ -171,6 +181,7 @@ export function buildClusterBundledRoutes(
           distanceNm: onlyRoute?.distanceNm ?? 0,
           carriers: [...bundle.carriers].join(' · '),
           confirmedNumbers: bundle.confirmedNumbers.join(' · '),
+          referenceNumbers: bundle.referenceNumbers.join(' · '),
           importance: bundle.importance,
           bundleCount: bundle.routes.length,
         },

@@ -154,6 +154,38 @@ describe('entity-first route library model', () => {
   const card=buildRouteEntityProfile(input,'YYZ-GIG')?.route.carriers.find(x=>x.carrier==='AC');
   const row=network.routes.find(x=>x.carrier==='AC'&&x.pair.join('-')==='YYZ-GIG')!;
   expect(card?.registeredPlans).toEqual(row.registeredPlans);expect(card?.registeredPlans.length).toBeGreaterThan(0);
-  expect(card?.identity).toBe('provider-listed');expect(card?.confirmedNumbers).toEqual(row.flightNumbers??[]);
+  expect(card?.identity).toBe('provider-listed');expect(card?.confirmedNumbers).toEqual([]);expect(card?.referenceNumbers).toEqual(row.flightNumbers??[]);
   const br=buildRouteEntityProfile(input,'TPE-NRT')?.route.carriers.find(x=>x.carrier==='BR');expect(br?.registeredPlans).toEqual([]);
+ });
+
+ test('labels a provider-listed Avinor number as an unverified reference in search results', () => {
+  const result = searchRouteLibraryEntities({ ...input, query: 'A3757' }).find(row => row.kind === 'flight' && row.title === 'A3757 · OSL → ATH');
+  expect(result?.subtitle).toContain('Flight-number reference (operator not verified)');
+ });
+
+ test('makes the new 4Y EVE–FRA schedule identity searchable and visible as a dated endpoint pair', () => {
+  const model = { ...input, memberCodes: new Set([...memberCodes, '4Y']) };
+  const airlineSearch = searchRouteLibraryEntities({ ...model, query: '4Y' });
+  expect(airlineSearch).toEqual(expect.arrayContaining([
+    expect.objectContaining({ kind: 'airline', title: '4Y · 4Y', selection: { kind: 'airline', id: '4Y' } }),
+  ]));
+  const route = buildRouteEntityProfile(model, 'EVE-FRA')?.route;
+  const carrier = route?.carriers.find((row) => row.carrier === '4Y');
+  expect(carrier).toMatchObject({
+    identity: 'provider-listed', scheduledEndpointPair: true,
+    referenceNumbers: expect.arrayContaining(['4Y1301']),
+  });
+  expect(carrier?.datedFlightNumbers[0]?.occurrenceDetails).toEqual(expect.arrayContaining([
+    expect.objectContaining({
+      candidateKey: '4Y|4Y|EVE>FRA|4Y1301', sourceId: 'avinor-xml-public-batch-eve-20261006',
+      sourceAirport: 'EVE', arrDepRaw: 'D', expiresAtUTC: '2026-10-11T13:00:00Z',
+      carrierEntityNameMapping: 'not-present-in-curated-registry', oldCandidateWindowConflict: false,
+    }),
+  ]));
+ });
+
+ test('removes a schedule-only route from the current route/map model after every occurrence expires', () => {
+  const model = { ...input, memberCodes: new Set([...memberCodes, '4Y']), evidenceNow: Date.parse('2026-10-11T13:00:00Z') };
+  expect(buildRouteEntityProfile(model, 'EVE-FRA')?.route.carriers.some((row) => row.carrier === '4Y') ?? false).toBe(false);
+  expect(searchRouteLibraryEntities({ ...model, query: '4Y1301' }).some((row) => row.title === '4Y1301 · EVE → FRA')).toBe(false);
  });

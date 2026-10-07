@@ -113,6 +113,33 @@
   word-break: break-word;
 }
 
+.avinor-follow-on-source-snapshots {
+  margin: 12px 0;
+  padding: 10px 12px;
+  border: 1px solid #d7dfdc;
+  border-radius: 9px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.avinor-follow-on-source-snapshots > summary {
+  cursor: pointer;
+  font-weight: 650;
+}
+
+.avinor-follow-on-source-snapshots > ul {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0 0;
+  padding-left: 20px;
+}
+
+.avinor-follow-on-source-snapshots code {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 .avinor-snapshot-filters {
   display: grid;
   grid-template-columns: minmax(180px, 1fr) minmax(170px, 230px);

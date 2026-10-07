@@ -1,0 +1,163 @@
+{
+  "acceptedKeyOverlapWithReviewerHeld": 0,
+  "actual": {
+    "acceptedOccurrenceCount": 5421,
+    "acceptedOccurrencesExpiredAtPacketAsOf": 44,
+    "combinedAcceptedSource": {
+      "distinctCarrierDirectedRoutes": 759,
+      "distinctDirectedRoutePairs": 520,
+      "identityGroups": 1785
+    },
+    "earliestAcceptedScheduleUTC": "2026-10-06T19:45:00Z",
+    "firstReleaseKeyReference": {
+      "distinctCarrierDirectedRoutes": 130,
+      "distinctDirectedRoutePairs": 116,
+      "identityGroups": 412
+    },
+    "followOn": {
+      "distinctCarrierDirectedRoutes": 650,
+      "distinctDirectedRoutePairs": 498,
+      "identityGroups": 1373
+    },
+    "latestAcceptedScheduleUTC": "2026-10-12T20:40:00Z",
+    "reviewerHeld": {
+      "distinctCarrierDirectedRoutes": 6,
+      "distinctDirectedRoutePairs": 6,
+      "identityGroups": 8,
+      "scheduledOccurrences": 28
+    }
+  },
+  "expected": {
+    "combinedAcceptedSourceIdentityGroups": 1785,
+    "firstReleaseReferenceIdentityGroups": 412,
+    "followOnIdentityGroups": 1373,
+    "reviewerHeldIdentityGroups": 8
+  },
+  "firstReleaseKeyOverlap": 0,
+  "kind": "offline-Avinor-follow-on-release-handoff-validation",
+  "legacyCandidateWindowConflicts": {
+    "identityGroupsWithAtLeastOneConflict": {
+      "accepted-batch3-22": 20,
+      "accepted-pending-179": 176
+    },
+    "keysWithoutCompletePriorCandidateWindow": 1,
+    "note": "The prior candidate windows are retained as historical identity context and are not extended by this handoff. A dated schedule occurrence outside the prior identity-specific window is explicitly flagged; new 1172 identities have no old candidate window.",
+    "occurrencesOutsidePriorCandidateWindow": {
+      "accepted-batch3-22": 70,
+      "accepted-pending-179": 530
+    }
+  },
+  "mappingAndClaimControls": {
+    "acceptedEndpointAirportRegistryGaps": 0,
+    "heldKeys": [
+      "EZY|EZY|MAN>OSL|EZY2297",
+      "EZY|EZY|OSL>MAN|EZY2298",
+      "LTR|LTR|BOO>VRY|LTR001",
+      "LTR|LTR|BOO>VRY|LTR003",
+      "LTR|LTR|VRY>BOO|LTR002",
+      "LTR|LTR|VRY>BOO|LTR004",
+      "VAA|VAA|EBJ>SVG|VAA2010",
+      "VAA|VAA|SVG>EBJ|VAA2011"
+    ],
+    "independentNonstopClaims": 0,
+    "marketingCodeSubstitutions": 0,
+    "physicalOperatorClaims": 0,
+    "sourceCodeRewrites": 0,
+    "threeCharacterCodesHeld": [
+      "EZY",
+      "LTR",
+      "VAA"
+    ],
+    "unresolvedDisplayNameIdentityGroupsAccepted1172": 1129,
+    "unresolvedDisplayNameIdentityGroupsFollowOn": 1330
+  },
+  "networkRequestsMade": 0,
+  "outputs": {
+    "first-release-412-key-reference.jsonl": {
+      "bytes": 16289,
+      "sha256": "a9aae1884a9679425b3fc07d65deada5c673d5dbe0dfe91123766b5fd7394683"
+    },
+    "normalized-follow-on-evidence-ledger.jsonl": {
+      "bytes": 14885824,
+      "sha256": "36890cfce29ee71e4171cc32deb6fa0417de4793d9b9c694a0f113b409b3e4d2"
+    },
+    "provenance-license-manifest.json": {
+      "bytes": 27487,
+      "sha256": "c6144e02aa66d249562b77073fd6e011e88ce288f3a8d580d28e0cb8ee0430fd"
+    },
+    "reviewer-held-ledger.jsonl": {
+      "bytes": 79310,
+      "sha256": "9247107a4d069f1efd6cbba4524907cf5dd548f16c22a5a5fab7a977647bc234"
+    }
+  },
+  "packetAsOfUTC": "2026-10-06T23:18:31Z",
+  "pairwiseKeySetOverlaps": {
+    "accepted-batch3-22∩independent-review-accepted-1172": 0,
+    "accepted-pending-179∩accepted-batch3-22": 0,
+    "accepted-pending-179∩independent-review-accepted-1172": 0
+  },
+  "preReview1180Partition": {
+    "acceptedAfterReview": 1172,
+    "acceptedHeldOverlap": 0,
+    "heldAfterReview": 8,
+    "preReviewProposalKeys": 1180,
+    "unionEqualsPreReviewProposal": true
+  },
+  "publisherCheckoutTouched": false,
+  "reviewerExpansionCategories": {
+    "new-directed-route-pair": 382,
+    "new-number-on-known-same-carrier-route": 52,
+    "new-operating-code-on-known-directed-route": 738
+  },
+  "runtimeMutationApplied": false,
+  "runtimeReconciliation": {
+    "baselineCandidateIdentityKeys": 132996,
+    "baselineConfirmedIdentityKeys": 839,
+    "baselineSHA256": "2bd353350db6d871099a2c2aa2aee23b63b0a7e65cccbbc502d9234eeb017c8a",
+    "candidateDeltaIfPublisherAddsAllFollowOnKeys": 1172,
+    "confirmedDelta": 0,
+    "existingCandidateKeysIncludedInFollowOn": 201,
+    "held8AbsentFromRuntime": 8,
+    "newAccepted1172AbsentFromRuntime": 1172
+  },
+  "sourceRowValidation": {
+    "acceptedAndHeldOccurrenceReferencesVerifiedAgainstRawXml": 5449,
+    "cancelledOrViaRowsIncluded": 0,
+    "copiedXmlSnapshotCount": 11,
+    "missingAirportOrRowPointers": 0,
+    "requiredAttributionHref": "https://www.avinor.no",
+    "routeOrScheduleTimestampMismatches": 0,
+    "separateTermsHref": "https://partner.avinor.no/en/services/flight-data/",
+    "sourceAttributionContractVerifiedOffline": true,
+    "sourceOperatingCodeOrFullIdMismatches": 0,
+    "statusOrViaMismatches": 0
+  },
+  "sourceSetBreakdown": {
+    "accepted-batch3-22": {
+      "distinctCarrierDirectedRoutes": 16,
+      "distinctDirectedRoutePairs": 16,
+      "expiredAtPacketAsOf": 3,
+      "identityGroups": 22,
+      "occurrenceCount": 86,
+      "sourceFileSHA256": "63430fe35c340a969b85919c31b07295659e177438145ac1233981122bc4ae85"
+    },
+    "accepted-pending-179": {
+      "distinctCarrierDirectedRoutes": 90,
+      "distinctDirectedRoutePairs": 90,
+      "expiredAtPacketAsOf": 8,
+      "identityGroups": 179,
+      "occurrenceCount": 640,
+      "sourceFileSHA256": "a1709224afceb12b5b0b65467c77658d9af9e4a5f31452b24e6a50d7f05212b6"
+    },
+    "independent-review-accepted-1172": {
+      "distinctCarrierDirectedRoutes": 547,
+      "distinctDirectedRoutePairs": 434,
+      "expiredAtPacketAsOf": 33,
+      "identityGroups": 1172,
+      "occurrenceCount": 4695,
+      "sourceFileSHA256": "58e8c62aa436be0f559a660d12444a9e38fd091e9f146e1fc1c11a6daecda1fa"
+    }
+  },
+  "status": "validated",
+  "task11Touched": false
+}

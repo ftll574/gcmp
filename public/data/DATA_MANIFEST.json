@@ -4902,6 +4902,34 @@
       "notes": ""
     },
     {
+      "id": "route-network.avinor-follow-on-evidence-20261006.jsonl",
+      "path": "route-network/avinor-follow-on-evidence-20261006.jsonl",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Avinor XML Public follow-on review packet; exact accepted occurrence ledger, release hashes and source-window metadata retained alongside the original XML response assets",
+      "license": "site-terms",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; link the flight-data terms separately",
+      "schema": "src/lib/schemas/avinor-follow-on.ts",
+      "bytes": 14885824,
+      "sha256": "36890cfce29ee71e",
+      "notes": "The packet ledger preserves 1,373 accepted schedule identities and 5,421 exact occurrences across 11 snapshots; 201 identities/726 occurrences were already promoted by the preceding release. Runtime adds only 1,172 new identities. Each occurrence expires at its scheduled UTC time; no actual-operation, physical nonstop, recurrence, award-seat or bookability claim is made. The route map covers 43 documented airports, not global coverage."
+    },
+    {
+      "id": "route-network.avinor-follow-on-release-20261006",
+      "path": "route-network/avinor-follow-on-release-20261006.json",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Avinor XML Public follow-on review packet; exact accepted occurrence ledger, release hashes and source-window metadata retained alongside the original XML response assets",
+      "license": "site-terms",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; link the flight-data terms separately",
+      "schema": "src/lib/schemas/avinor-follow-on.ts",
+      "bytes": 14372,
+      "sha256": "2d2a587bb76af3ee",
+      "notes": "The packet ledger preserves 1,373 accepted schedule identities and 5,421 exact occurrences across 11 snapshots; 201 identities/726 occurrences were already promoted by the preceding release. Runtime adds only 1,172 new identities. Each occurrence expires at its scheduled UTC time; no actual-operation, physical nonstop, recurrence, award-seat or bookability claim is made. The route map covers 43 documented airports, not global coverage."
+    },
+    {
       "id": "route-network.avinor-osl-public-20261006",
       "path": "route-network/avinor-osl-public-20261006.json",
       "kind": "input",
@@ -4909,7 +4937,7 @@
       "inputs": [],
       "source": "Avinor XML Public OSL snapshot; one 144-hour response with original bytes and exact source/freshness metadata bundled alongside the accepted rows",
       "license": "site-terms",
-      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; link the flight-data terms separately",
       "schema": "src/lib/schemas/avinor-xml-public.ts",
       "bytes": 1374361,
       "sha256": "215338835fe04829",
@@ -4923,7 +4951,7 @@
       "inputs": [],
       "source": "Avinor XML Public OSL snapshot; one 144-hour response with original bytes and exact source/freshness metadata bundled alongside the accepted rows",
       "license": "site-terms",
-      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; link the flight-data terms separately",
       "schema": null,
       "bytes": 849172,
       "sha256": "78403435f3c31ae8",
@@ -4937,7 +4965,7 @@
       "inputs": [],
       "source": "Avinor XML Public airport snapshots; ten bounded 144-hour responses with original bytes and per-airport retrieval/freshness metadata in the companion provenance asset",
       "license": "site-terms",
-      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; link the flight-data terms separately",
       "schema": "src/lib/schemas/avinor-xml-public-batch.ts",
       "bytes": 466291,
       "sha256": "0794e762dc686560",
@@ -4951,7 +4979,7 @@
       "inputs": [],
       "source": "Avinor XML Public airport snapshots; ten bounded 144-hour responses with original bytes and per-airport retrieval/freshness metadata in the companion provenance asset",
       "license": "site-terms",
-      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; link the flight-data terms separately",
       "schema": null,
       "bytes": 50058,
       "sha256": "5bfb52914b4a1817",
@@ -4965,7 +4993,7 @@
       "inputs": [],
       "source": "Avinor XML Public airport snapshots; ten bounded 144-hour responses with original bytes and per-airport retrieval/freshness metadata in the companion provenance asset",
       "license": "site-terms",
-      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; link the flight-data terms separately",
       "schema": null,
       "bytes": 6243,
       "sha256": "e64a54e7513f788a",
@@ -4979,7 +5007,7 @@
       "inputs": [],
       "source": "Avinor XML Public airport snapshots; ten bounded 144-hour responses with original bytes and per-airport retrieval/freshness metadata in the companion provenance asset",
       "license": "site-terms",
-      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; link the flight-data terms separately",
       "schema": null,
       "bytes": 347016,
       "sha256": "d82cb07848c5fa13",
@@ -4993,7 +5021,7 @@
       "inputs": [],
       "source": "Avinor XML Public airport snapshots; ten bounded 144-hour responses with original bytes and per-airport retrieval/freshness metadata in the companion provenance asset",
       "license": "site-terms",
-      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; link the flight-data terms separately",
       "schema": null,
       "bytes": 145452,
       "sha256": "e3a6da24e758597b",
@@ -5007,7 +5035,7 @@
       "inputs": [],
       "source": "Avinor XML Public airport snapshots; ten bounded 144-hour responses with original bytes and per-airport retrieval/freshness metadata in the companion provenance asset",
       "license": "site-terms",
-      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; link the flight-data terms separately",
       "schema": null,
       "bytes": 38017,
       "sha256": "89c04d2c8f43bb29",
@@ -5021,7 +5049,7 @@
       "inputs": [],
       "source": "Avinor XML Public airport snapshots; ten bounded 144-hour responses with original bytes and per-airport retrieval/freshness metadata in the companion provenance asset",
       "license": "site-terms",
-      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; link the flight-data terms separately",
       "schema": null,
       "bytes": 46554,
       "sha256": "aa42221e48c28d1e",
@@ -5035,7 +5063,7 @@
       "inputs": [],
       "source": "Avinor XML Public airport snapshots; ten bounded 144-hour responses with original bytes and per-airport retrieval/freshness metadata in the companion provenance asset",
       "license": "site-terms",
-      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; link the flight-data terms separately",
       "schema": null,
       "bytes": 23078,
       "sha256": "e38e3aaaee75475d",
@@ -5049,7 +5077,7 @@
       "inputs": [],
       "source": "Avinor XML Public airport snapshots; ten bounded 144-hour responses with original bytes and per-airport retrieval/freshness metadata in the companion provenance asset",
       "license": "site-terms",
-      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; link the flight-data terms separately",
       "schema": null,
       "bytes": 138130,
       "sha256": "9e9cb66e16ab864d",
@@ -5063,7 +5091,7 @@
       "inputs": [],
       "source": "Avinor XML Public airport snapshots; ten bounded 144-hour responses with original bytes and per-airport retrieval/freshness metadata in the companion provenance asset",
       "license": "site-terms",
-      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; link the flight-data terms separately",
       "schema": null,
       "bytes": 155207,
       "sha256": "4a635a571b7681f7",
@@ -5077,7 +5105,7 @@
       "inputs": [],
       "source": "Avinor XML Public airport snapshots; ten bounded 144-hour responses with original bytes and per-airport retrieval/freshness metadata in the companion provenance asset",
       "license": "site-terms",
-      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; see terms link in app",
+      "attribution": "Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; link the flight-data terms separately",
       "schema": null,
       "bytes": 202871,
       "sha256": "6de95c7cb67eab5a",
@@ -5266,8 +5294,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 18157,
-      "sha256": "91589eb6edaa525f",
+      "bytes": 20455,
+      "sha256": "f6ed5fbc0eb5b031",
       "notes": ""
     },
     {
@@ -5316,6 +5344,22 @@
       "schema": null,
       "bytes": 2201,
       "sha256": "0d7f3708aba67c74",
+      "notes": ""
+    },
+    {
+      "id": "route-network.runtime-carriers.4Y",
+      "path": "route-network/runtime-carriers/4Y.json",
+      "kind": "shard",
+      "producer": null,
+      "inputs": [
+        "route-network/runtime-current.json"
+      ],
+      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "license": "ODbL-1.0",
+      "attribution": null,
+      "schema": null,
+      "bytes": 4122,
+      "sha256": "6c041a3d2ec3214a",
       "notes": ""
     },
     {
@@ -5410,8 +5454,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 257575,
-      "sha256": "192f5a3d86f79c28",
+      "bytes": 266539,
+      "sha256": "e5057537aac95030",
       "notes": ""
     },
     {
@@ -5490,8 +5534,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 577551,
-      "sha256": "3ceeb04118696d99",
+      "bytes": 582687,
+      "sha256": "61e28d379a0f06e1",
       "notes": ""
     },
     {
@@ -5618,8 +5662,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 153561,
-      "sha256": "6cbe596c0d1d9f4c",
+      "bytes": 210145,
+      "sha256": "e2a0095e08ca4c47",
       "notes": ""
     },
     {
@@ -5666,8 +5710,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 377634,
-      "sha256": "724c45d3a9fa2c56",
+      "bytes": 391528,
+      "sha256": "94029242cce48c2c",
       "notes": ""
     },
     {
@@ -5730,8 +5774,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1770,
-      "sha256": "722854b99d2c0f13",
+      "bytes": 26560,
+      "sha256": "39961fe005f9ad9b",
       "notes": ""
     },
     {
@@ -5847,6 +5891,22 @@
       "notes": ""
     },
     {
+      "id": "route-network.runtime-carriers.D8",
+      "path": "route-network/runtime-carriers/D8.json",
+      "kind": "shard",
+      "producer": null,
+      "inputs": [
+        "route-network/runtime-current.json"
+      ],
+      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "license": "ODbL-1.0",
+      "attribution": null,
+      "schema": null,
+      "bytes": 191365,
+      "sha256": "1a520604010112a5",
+      "notes": ""
+    },
+    {
       "id": "route-network.runtime-carriers.DA",
       "path": "route-network/runtime-carriers/DA.json",
       "kind": "shard",
@@ -5860,6 +5920,22 @@
       "schema": null,
       "bytes": 5911,
       "sha256": "ead7723526050127",
+      "notes": ""
+    },
+    {
+      "id": "route-network.runtime-carriers.DK",
+      "path": "route-network/runtime-carriers/DK.json",
+      "kind": "shard",
+      "producer": null,
+      "inputs": [
+        "route-network/runtime-current.json"
+      ],
+      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "license": "ODbL-1.0",
+      "attribution": null,
+      "schema": null,
+      "bytes": 39681,
+      "sha256": "e2b57808b99b8047",
       "notes": ""
     },
     {
@@ -5890,8 +5966,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 5681,
-      "sha256": "35f1c6712c7e1074",
+      "bytes": 60750,
+      "sha256": "c77fa1059ca25994",
       "notes": ""
     },
     {
@@ -5906,8 +5982,24 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 2462,
-      "sha256": "92e2e48c0334bd3b",
+      "bytes": 1996080,
+      "sha256": "939049f50d94fa16",
+      "notes": ""
+    },
+    {
+      "id": "route-network.runtime-carriers.EI",
+      "path": "route-network/runtime-carriers/EI.json",
+      "kind": "shard",
+      "producer": null,
+      "inputs": [
+        "route-network/runtime-current.json"
+      ],
+      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "license": "ODbL-1.0",
+      "attribution": null,
+      "schema": null,
+      "bytes": 6505,
+      "sha256": "e278928d195d0b04",
       "notes": ""
     },
     {
@@ -5922,8 +6014,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 12301,
-      "sha256": "6d062af15a07376c",
+      "bytes": 17630,
+      "sha256": "274d578ed9b6a8bf",
       "notes": ""
     },
     {
@@ -5975,6 +6067,22 @@
       "notes": ""
     },
     {
+      "id": "route-network.runtime-carriers.FH",
+      "path": "route-network/runtime-carriers/FH.json",
+      "kind": "shard",
+      "producer": null,
+      "inputs": [
+        "route-network/runtime-current.json"
+      ],
+      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "license": "ODbL-1.0",
+      "attribution": null,
+      "schema": null,
+      "bytes": 8939,
+      "sha256": "bc239eb74b29f589",
+      "notes": ""
+    },
+    {
       "id": "route-network.runtime-carriers.FI",
       "path": "route-network/runtime-carriers/FI.json",
       "kind": "shard",
@@ -5986,8 +6094,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1792,
-      "sha256": "972b12df2bcd5b12",
+      "bytes": 30891,
+      "sha256": "4c105c9255cf4433",
       "notes": ""
     },
     {
@@ -6020,6 +6128,22 @@
       "schema": null,
       "bytes": 5667,
       "sha256": "c17e5a0f678ed51e",
+      "notes": ""
+    },
+    {
+      "id": "route-network.runtime-carriers.FR",
+      "path": "route-network/runtime-carriers/FR.json",
+      "kind": "shard",
+      "producer": null,
+      "inputs": [
+        "route-network/runtime-current.json"
+      ],
+      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "license": "ODbL-1.0",
+      "attribution": null,
+      "schema": null,
+      "bytes": 24274,
+      "sha256": "4ade9eff88150d46",
       "notes": ""
     },
     {
@@ -6194,8 +6318,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1805,
-      "sha256": "c5c4e352b1500acf",
+      "bytes": 6658,
+      "sha256": "c632b690c1b90f11",
       "notes": ""
     },
     {
@@ -6226,8 +6350,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 358007,
-      "sha256": "d4d0e1b2ead0106d",
+      "bytes": 363187,
+      "sha256": "2e8b18b73dd75290",
       "notes": ""
     },
     {
@@ -6295,6 +6419,22 @@
       "notes": ""
     },
     {
+      "id": "route-network.runtime-carriers.JU",
+      "path": "route-network/runtime-carriers/JU.json",
+      "kind": "shard",
+      "producer": null,
+      "inputs": [
+        "route-network/runtime-current.json"
+      ],
+      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "license": "ODbL-1.0",
+      "attribution": null,
+      "schema": null,
+      "bytes": 11726,
+      "sha256": "db497104e43e6829",
+      "notes": ""
+    },
+    {
       "id": "route-network.runtime-carriers.JX",
       "path": "route-network/runtime-carriers/JX.json",
       "kind": "shard",
@@ -6338,8 +6478,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 292901,
-      "sha256": "452546c1fbda8572",
+      "bytes": 432255,
+      "sha256": "9af0bc88d3182727",
       "notes": ""
     },
     {
@@ -6386,8 +6526,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1763,
-      "sha256": "6f4a607668d90634",
+      "bytes": 3851,
+      "sha256": "77d55f2830d52295",
       "notes": ""
     },
     {
@@ -6402,8 +6542,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 638120,
-      "sha256": "a283fc9d69d4c4f4",
+      "bytes": 688991,
+      "sha256": "2de032b87130fa1b",
       "notes": ""
     },
     {
@@ -6434,8 +6574,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 196896,
-      "sha256": "2027855f362723e7",
+      "bytes": 214568,
+      "sha256": "41bdf88db3b770cf",
       "notes": ""
     },
     {
@@ -6466,8 +6606,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 214177,
-      "sha256": "41f984235c47ca5c",
+      "bytes": 214239,
+      "sha256": "85519792d5b82cb6",
       "notes": ""
     },
     {
@@ -6658,8 +6798,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 185197,
-      "sha256": "9d9b201039584e65",
+      "bytes": 185259,
+      "sha256": "f59e522fa6a3b3ca",
       "notes": ""
     },
     {
@@ -6674,8 +6814,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 84753,
-      "sha256": "39a16c5b90888ee1",
+      "bytes": 86732,
+      "sha256": "303f00953ef9050d",
       "notes": ""
     },
     {
@@ -6706,8 +6846,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1493,
-      "sha256": "7464b04b6f4a5a46",
+      "bytes": 12639,
+      "sha256": "3f9dd1b8ba558ee6",
       "notes": ""
     },
     {
@@ -6770,8 +6910,40 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 277112,
-      "sha256": "4ceeba5a7ec15881",
+      "bytes": 277174,
+      "sha256": "267a73a143e82360",
+      "notes": ""
+    },
+    {
+      "id": "route-network.runtime-carriers.QS",
+      "path": "route-network/runtime-carriers/QS.json",
+      "kind": "shard",
+      "producer": null,
+      "inputs": [
+        "route-network/runtime-current.json"
+      ],
+      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "license": "ODbL-1.0",
+      "attribution": null,
+      "schema": null,
+      "bytes": 3127,
+      "sha256": "6bb712404fb5ca8c",
+      "notes": ""
+    },
+    {
+      "id": "route-network.runtime-carriers.RC",
+      "path": "route-network/runtime-carriers/RC.json",
+      "kind": "shard",
+      "producer": null,
+      "inputs": [
+        "route-network/runtime-current.json"
+      ],
+      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "license": "ODbL-1.0",
+      "attribution": null,
+      "schema": null,
+      "bytes": 6686,
+      "sha256": "5908a000fd24a797",
       "notes": ""
     },
     {
@@ -6804,6 +6976,22 @@
       "schema": null,
       "bytes": 78689,
       "sha256": "e9624bd8d890ca4e",
+      "notes": ""
+    },
+    {
+      "id": "route-network.runtime-carriers.RK",
+      "path": "route-network/runtime-carriers/RK.json",
+      "kind": "shard",
+      "producer": null,
+      "inputs": [
+        "route-network/runtime-current.json"
+      ],
+      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "license": "ODbL-1.0",
+      "attribution": null,
+      "schema": null,
+      "bytes": 16622,
+      "sha256": "d8989794f24ddc74",
       "notes": ""
     },
     {
@@ -6866,8 +7054,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 583829,
-      "sha256": "932892e0e72f00f8",
+      "bytes": 983985,
+      "sha256": "820690f586dea343",
       "notes": ""
     },
     {
@@ -6898,8 +7086,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 153079,
-      "sha256": "3adb749f6a21fa5c",
+      "bytes": 153141,
+      "sha256": "765c28c24fda1aa9",
       "notes": ""
     },
     {
@@ -6946,8 +7134,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 92509,
-      "sha256": "bec4234611caf8fb",
+      "bytes": 92571,
+      "sha256": "b2ad9398c6399a9b",
       "notes": ""
     },
     {
@@ -6962,8 +7150,24 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 587642,
-      "sha256": "4e09084201715bd1",
+      "bytes": 608360,
+      "sha256": "729fdce43a682939",
+      "notes": ""
+    },
+    {
+      "id": "route-network.runtime-carriers.TO",
+      "path": "route-network/runtime-carriers/TO.json",
+      "kind": "shard",
+      "producer": null,
+      "inputs": [
+        "route-network/runtime-current.json"
+      ],
+      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "license": "ODbL-1.0",
+      "attribution": null,
+      "schema": null,
+      "bytes": 6514,
+      "sha256": "32535aee8bdc6169",
       "notes": ""
     },
     {
@@ -6978,8 +7182,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 751449,
-      "sha256": "18b787f6ef2f386b",
+      "bytes": 751511,
+      "sha256": "86cd93d40fa8eee4",
       "notes": ""
     },
     {
@@ -7143,6 +7347,22 @@
       "notes": ""
     },
     {
+      "id": "route-network.runtime-carriers.VY",
+      "path": "route-network/runtime-carriers/VY.json",
+      "kind": "shard",
+      "producer": null,
+      "inputs": [
+        "route-network/runtime-current.json"
+      ],
+      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "license": "ODbL-1.0",
+      "attribution": null,
+      "schema": null,
+      "bytes": 3258,
+      "sha256": "b2c3839acfaca510",
+      "notes": ""
+    },
+    {
       "id": "route-network.runtime-carriers.VZ",
       "path": "route-network/runtime-carriers/VZ.json",
       "kind": "shard",
@@ -7159,6 +7379,38 @@
       "notes": ""
     },
     {
+      "id": "route-network.runtime-carriers.W4",
+      "path": "route-network/runtime-carriers/W4.json",
+      "kind": "shard",
+      "producer": null,
+      "inputs": [
+        "route-network/runtime-current.json"
+      ],
+      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "license": "ODbL-1.0",
+      "attribution": null,
+      "schema": null,
+      "bytes": 7329,
+      "sha256": "63bc64c6d0b54d39",
+      "notes": ""
+    },
+    {
+      "id": "route-network.runtime-carriers.W6",
+      "path": "route-network/runtime-carriers/W6.json",
+      "kind": "shard",
+      "producer": null,
+      "inputs": [
+        "route-network/runtime-current.json"
+      ],
+      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "license": "ODbL-1.0",
+      "attribution": null,
+      "schema": null,
+      "bytes": 100365,
+      "sha256": "1ebe5a879105e027",
+      "notes": ""
+    },
+    {
       "id": "route-network.runtime-carriers.WF",
       "path": "route-network/runtime-carriers/WF.json",
       "kind": "shard",
@@ -7170,8 +7422,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 5451,
-      "sha256": "0f0570c278e0d236",
+      "bytes": 1546216,
+      "sha256": "b0b9dece25ed49aa",
       "notes": ""
     },
     {
@@ -7188,6 +7440,22 @@
       "schema": null,
       "bytes": 4717,
       "sha256": "a96574283ddd132e",
+      "notes": ""
+    },
+    {
+      "id": "route-network.runtime-carriers.WK",
+      "path": "route-network/runtime-carriers/WK.json",
+      "kind": "shard",
+      "producer": null,
+      "inputs": [
+        "route-network/runtime-current.json"
+      ],
+      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "license": "ODbL-1.0",
+      "attribution": null,
+      "schema": null,
+      "bytes": 3123,
+      "sha256": "d5fe173e00e39a4a",
       "notes": ""
     },
     {
@@ -7220,6 +7488,22 @@
       "schema": null,
       "bytes": 59270,
       "sha256": "443b84cc9bef2680",
+      "notes": ""
+    },
+    {
+      "id": "route-network.runtime-carriers.XQ",
+      "path": "route-network/runtime-carriers/XQ.json",
+      "kind": "shard",
+      "producer": null,
+      "inputs": [
+        "route-network/runtime-current.json"
+      ],
+      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "license": "ODbL-1.0",
+      "attribution": null,
+      "schema": null,
+      "bytes": 3253,
+      "sha256": "eb63ffb0bfb05c88",
       "notes": ""
     },
     {
@@ -7291,13 +7575,13 @@
         "route-network/standing-current.json",
         "route-network/validated-static-current.json"
       ],
-      "source": "curated + provider-listed route-network layers and a dated Avinor public snapshot (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 16423108,
-      "sha256": "e3a475d5df03b152",
-      "notes": "Runtime route graph includes 412 time-bound Avinor designator/direction associations; freshness is guarded in the UI until 2026-10-12T19:47:47Z. The separate CAA schedule tier remains unchanged."
+      "bytes": 21207504,
+      "sha256": "1d6f2565df9f6be1",
+      "notes": "Runtime preserves the first 412 OSL identities, the prior release’s 201 promoted identities, and the 1,172 net-new follow-on identities with per-occurrence expiry and source-window cutoffs. CAA’s 488 operator-unknown associations remain separate."
     },
     {
       "id": "route-network.runtime-current.meta",
@@ -7320,12 +7604,12 @@
         "route-network/standing-current.json",
         "route-network/validated-static-current.json"
       ],
-      "source": "curated + provider-listed route-network layers and a dated Avinor public snapshot (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 11601,
-      "sha256": "46ccf3b459a3d9a4",
+      "bytes": 13354,
+      "sha256": "0e0c374436c3442b",
       "notes": "Build metadata pins the Avinor source JSON, original XML, route-network inputs, and output hash."
     },
     {
@@ -7371,8 +7655,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1136325,
-      "sha256": "018aff7ec8efb639",
+      "bytes": 1486434,
+      "sha256": "76fb3ee3ec23d000",
       "notes": ""
     },
     {
@@ -7387,8 +7671,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1125260,
-      "sha256": "675d90ec28ccd3a6",
+      "bytes": 2170041,
+      "sha256": "6ff76cdd4834ba8d",
       "notes": ""
     },
     {
@@ -7403,8 +7687,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1430370,
-      "sha256": "6b7aee337e08476c",
+      "bytes": 1586018,
+      "sha256": "f5e298bfc7e6a4e7",
       "notes": ""
     },
     {
@@ -7419,8 +7703,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 979733,
-      "sha256": "7bdc2a7b3f72d7f6",
+      "bytes": 997808,
+      "sha256": "0c9a0fdb52923f12",
       "notes": ""
     },
     {
@@ -7435,8 +7719,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 300877,
-      "sha256": "305d99efbb99397b",
+      "bytes": 387280,
+      "sha256": "1a41d58f6aa43613",
       "notes": ""
     },
     {
@@ -7451,8 +7735,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 576376,
-      "sha256": "82a582e63020a946",
+      "bytes": 677169,
+      "sha256": "4e01d0817d7f23af",
       "notes": ""
     },
     {
@@ -7467,8 +7751,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 802502,
-      "sha256": "2d03126b3e79ca45",
+      "bytes": 852191,
+      "sha256": "c946dc6158fafe4b",
       "notes": ""
     },
     {
@@ -7483,8 +7767,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 748849,
-      "sha256": "e334556c5608666f",
+      "bytes": 860438,
+      "sha256": "4685c157efec6942",
       "notes": ""
     },
     {
@@ -7499,8 +7783,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 711371,
-      "sha256": "59c768070a0bee2e",
+      "bytes": 721761,
+      "sha256": "733ef53dd8a1b90f",
       "notes": ""
     },
     {
@@ -7515,8 +7799,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 377954,
-      "sha256": "d079d51f3c92c294",
+      "bytes": 378016,
+      "sha256": "426bac4338e33c7f",
       "notes": ""
     },
     {
@@ -7531,8 +7815,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 476964,
-      "sha256": "1ae6a4dc54eea4e4",
+      "bytes": 653881,
+      "sha256": "2c4c9d8c374190fe",
       "notes": ""
     },
     {
@@ -7547,8 +7831,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1110204,
-      "sha256": "cf2bca9c75f49ee4",
+      "bytes": 1258533,
+      "sha256": "f7bc49d6cb06be0e",
       "notes": ""
     },
     {
@@ -7563,8 +7847,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1271643,
-      "sha256": "4735f7349f9510ba",
+      "bytes": 1382919,
+      "sha256": "aee7d7fd07ec2bd9",
       "notes": ""
     },
     {
@@ -7579,8 +7863,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 462539,
-      "sha256": "81fe9824b0c540ae",
+      "bytes": 476941,
+      "sha256": "c44bad925a442db0",
       "notes": ""
     },
     {
@@ -7595,8 +7879,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 692318,
-      "sha256": "3834bc89e610317a",
+      "bytes": 1892111,
+      "sha256": "ff164c35d21ac2ce",
       "notes": ""
     },
     {
@@ -7611,8 +7895,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1040089,
-      "sha256": "3c5d689c3bad8099",
+      "bytes": 1084296,
+      "sha256": "5beff4493a0c8f20",
       "notes": ""
     },
     {
@@ -7643,8 +7927,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 385406,
-      "sha256": "7f922b6d9f4e7a03",
+      "bytes": 440599,
+      "sha256": "67a217995134a0f4",
       "notes": ""
     },
     {
@@ -7659,8 +7943,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1347081,
-      "sha256": "d1e143bfdaa774f5",
+      "bytes": 1781317,
+      "sha256": "5f8c9255a9f06f3f",
       "notes": ""
     },
     {
@@ -7675,8 +7959,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 709733,
-      "sha256": "713b53f93c27ec15",
+      "bytes": 1376467,
+      "sha256": "6c25efb03781db7c",
       "notes": ""
     },
     {
@@ -7707,8 +7991,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 244051,
-      "sha256": "2bbec4a8ede1018b",
+      "bytes": 265573,
+      "sha256": "682e1680f73ed07f",
       "notes": ""
     },
     {
@@ -7723,8 +8007,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 215036,
-      "sha256": "61d04a0774415c07",
+      "bytes": 227515,
+      "sha256": "b172072e6de028c2",
       "notes": ""
     },
     {
@@ -7771,8 +8055,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 193991,
-      "sha256": "ebf86da1295c9b35",
+      "bytes": 199090,
+      "sha256": "dd4ada1055327633",
       "notes": ""
     },
     {
@@ -7912,7 +8196,7 @@
       "attribution": null,
       "schema": null,
       "bytes": 24356,
-      "sha256": "23ebc0a983c269bc",
+      "sha256": "d416e754fbaf5a97",
       "notes": ""
     },
     {

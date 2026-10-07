@@ -10,9 +10,9 @@
     "testsPassed": 1715,
     "testsFailed": 0,
     "airports": 5355,
-    "runtimeRoutes": 31658,
-    "runtimePublishedRoutes": 31068,
-    "runtimeSHA256": "e3a475d5df03b152245c0f3aabdd0b38c668092b047d57dbf0455f7abedc7c1c",
+    "runtimeRoutes": 32171,
+    "runtimePublishedRoutes": 31581,
+    "runtimeSHA256": "1d6f2565df9f6be1168b88c9f27d5a2df2dc9790204eaf276ffd571b5d36f400",
     "brazil": {
       "previousBatchDirections": 51,
       "recentBatchDirections": 127,

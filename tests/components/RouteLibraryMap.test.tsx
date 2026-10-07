@@ -26,11 +26,20 @@ function route(from: Airport, to: Airport, distanceNm: number): RouteLibraryRout
     from,
     to,
     distanceNm,
-    carriers: [{ carrier: 'BR', name: 'EVA Air', identity: 'operating', confirmedNumbers: ['BR001'], datedFlightNumbers: [], candidateNumbers: [], staleNumbers: [], sources: [], sourcePairs: [], registeredPlans: [] }],
+    carriers: [{ carrier: 'BR', name: 'EVA Air', identity: 'operating', confirmedNumbers: ['BR001'], referenceNumbers: [], datedFlightNumbers: [], candidateNumbers: [], staleNumbers: [], sources: [], sourcePairs: [], registeredPlans: [] }],
   };
 }
 
 describe('RouteEntityMap MapLibre model', () => {
+  test('keeps provider-listed flight-number references separate from operator-verified numbers', () => {
+    const providerListed: RouteLibraryRouteCard = {
+      ...route(TPE, LAX, 5_440),
+      carriers: [{ carrier: 'A3', name: 'Aegean Airlines', identity: 'provider-listed', confirmedNumbers: [], referenceNumbers: ['A3757'], datedFlightNumbers: [], candidateNumbers: [], staleNumbers: [], sources: [], sourcePairs: [['TPE', 'LAX']], registeredPlans: [] }],
+    };
+    const model = buildRouteMapModel([providerListed], []);
+    expect(model.routes.features[0]?.properties).toMatchObject({ confirmedNumbers: '', referenceNumbers: 'A3757' });
+  });
+
   test('keeps zoom at the top level of route width expressions', () => {
     const collectZoomPaths = (value: unknown, path = 'root'): string[] => {
       if (!Array.isArray(value)) return [];
