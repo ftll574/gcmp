@@ -21,14 +21,14 @@ describe('published data status integrity', () => {
     expect(status.legacy).toEqual({ total: 31658, published: 31068 });
     expect(status.qualified).toMatchObject({ routes: 0, services: 0, endpoints: 2916 });
     expect(evidence?.state).toBe('verified');
-    expect(runtimeSha256).toBe('1d6f2565df9f6be1168b88c9f27d5a2df2dc9790204eaf276ffd571b5d36f400');
+    expect(runtimeSha256).toBe('aa90283d52015b1b418c3840252cb34152f9ed577a3e0766291935b92b151537');
     expect(runtimeSha256).toBe(runtimeMeta.outputSha256);
     expect(evidence?.runtimeSHA256).toBe(runtimeSha256);
     expect(evidence?.runtimeRoutes).toBe(runtime.routes.length);
     expect(evidence?.runtimePublishedRoutes).toBe(runtime.routes.filter(route => route.status === 'published').length);
     expect(evidence?.airports).toBe(airports.length);
     expect({ routes: runtime.routes.length, published: runtime.routes.filter(route => route.status === 'published').length, airports: airports.length })
-      .toEqual({ routes: 32171, published: 31581, airports: 5355 });
+      .toEqual({ routes: 32216, published: 31626, airports: 5355 });
   });
 
   it('preserves source evidence tiers and explicit limits in the validated status asset', () => {

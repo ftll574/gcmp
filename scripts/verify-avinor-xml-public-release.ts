@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { parseAvinorXmlPublicSnapshot } from '../src/lib/schemas/avinor-xml-public.ts';
 import { parseAvinorXmlPublicBatch } from '../src/lib/schemas/avinor-xml-public-batch.ts';
 import { parseAvinorFollowOnLedgerJsonl } from '../src/lib/schemas/avinor-follow-on.ts';
+import { parseAvinorRemainingAirportsLedgerJsonl } from '../src/lib/schemas/avinor-remaining-airports.ts';
 import { CaaWeeklyScheduleTierSchema } from '../src/lib/schemas/caa-weekly-schedule-tier.ts';
 import { parseRouteNetworkCatalog } from '../src/lib/schemas/route-network.ts';
 import { routeFlightNumberFreshness } from '../src/lib/rtw/time-bound-flight-numbers.ts';
@@ -41,6 +42,7 @@ function assertTotals(actual: ReturnType<typeof totals>, expected: typeof EXPECT
 const snapshot = parseAvinorXmlPublicSnapshot(JSON.parse(readFileSync(SNAPSHOT_PATH, 'utf8')));
 const batch = parseAvinorXmlPublicBatch(JSON.parse(readFileSync(`${ROOT}/avinor-public-airport-batch-20261006.json`, 'utf8')));
 const followOnRows = parseAvinorFollowOnLedgerJsonl(readFileSync(`${ROOT}/avinor-follow-on-evidence-20261006.jsonl`, 'utf8'));
+const remainingRows = parseAvinorRemainingAirportsLedgerJsonl(readFileSync(`${ROOT}/avinor-remaining-airports-accepted-20261007.jsonl`, 'utf8'));
 const xml = readFileSync(XML_PATH);
 const actualXmlSha256 = sha256(xml);
 if (xml.byteLength !== snapshot.snapshot.responseBytes || actualXmlSha256 !== snapshot.snapshot.responseSHA256 || actualXmlSha256 !== EXPECTED_XML_SHA256) {
@@ -65,7 +67,12 @@ if (followOnRows.length !== 1373 || followOnPriorCandidateRows.length !== 201 ||
   || followOnPriorCandidateRows.reduce((total, row) => total + row.occurrences.length, 0) !== 726) {
   throw new Error('Follow-on packet reconciliation no longer resolves to 201 existing and 1,172 net-new identities');
 }
-const acceptedKeys = new Set([...snapshot.associations, ...batch.associations, ...followOnRows].map((row) => 'candidateKey' in row ? row.candidateKey : row.key));
+const remainingKeys = new Set(remainingRows.map((row) => row.candidateKey));
+if (remainingKeys.size !== 143 || remainingRows.reduce((total, row) => total + row.occurrenceEvidence.length, 0) !== 517) {
+  throw new Error('Remaining-airports independent accepted partition changed');
+}
+const acceptedKeys = new Set([...snapshot.associations, ...batch.associations, ...followOnRows, ...remainingRows].map((row) => 'candidateKey' in row ? row.candidateKey : row.key));
+const netNewAcceptedKeys = new Set([...followOnNetNewKeys, ...remainingKeys]);
 const caaKeys = new Set(caa.associations.map((row) => row.key));
 const caaOverlap = [...acceptedKeys].filter((key) => caaKeys.has(key));
 if (caaOverlap.length) throw new Error(`Avinor release overlaps ${caaOverlap.length} actual CAA asset keys: ${caaOverlap.slice(0, 10).join(', ')}`);
@@ -86,13 +93,13 @@ for (const route of runtime.routes) {
   for (const number of route.flightNumberCandidates ?? []) {
     runtimeCandidates.push({ carrier: route.carrier, identity, from: route.pair[0], to: route.pair[1], number });
     const key = `${route.carrier}|${identity}|${pair}|${number}`;
-    if (!followOnNetNewKeys.has(key)) baselineCandidates.push({ carrier: route.carrier, identity, from: route.pair[0], to: route.pair[1], number });
+    if (!netNewAcceptedKeys.has(key)) baselineCandidates.push({ carrier: route.carrier, identity, from: route.pair[0], to: route.pair[1], number });
   }
   for (const number of timed.keys()) {
     const key = `${route.carrier}|${identity}|${pair}|${number}`;
     if (!acceptedKeys.has(key)) throw new Error(`Unexpected time-bound runtime association ${key}`);
     runtimeTimedKeys.add(key);
-    if (!followOnNetNewKeys.has(key)) baselineCandidates.push({ carrier: route.carrier, identity, from: route.pair[0], to: route.pair[1], number });
+    if (!netNewAcceptedKeys.has(key)) baselineCandidates.push({ carrier: route.carrier, identity, from: route.pair[0], to: route.pair[1], number });
   }
 }
 if (runtimeTimedKeys.size !== acceptedKeys.size || [...acceptedKeys].some((key) => !runtimeTimedKeys.has(key))) {

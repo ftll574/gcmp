@@ -4972,6 +4972,370 @@
       "notes": "Ten bounded airport-specific XML Public snapshots with exact accepted carrier, full FlightId and direction matches. Per-airport retrieval timestamps, 144-hour freshness deadlines, original response bytes/hashes, exact input packet hashes, and candidate effective windows are retained. Existing candidate dates are not extended; published schedule rows are display-only and do not establish recurring service, actual operation, award seats or bookability."
     },
     {
+      "id": "route-network.avinor-remaining-airports-accepted-20261007.jsonl",
+      "path": "route-network/avinor-remaining-airports-accepted-20261007.jsonl",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest",
+      "license": "site-terms",
+      "attribution": null,
+      "schema": null,
+      "bytes": 1043409,
+      "sha256": "35f9c0c587a5dc92",
+      "notes": ""
+    },
+    {
+      "id": "route-network.avinor-remaining-airports-release-20261007",
+      "path": "route-network/avinor-remaining-airports-release-20261007.json",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest",
+      "license": "site-terms",
+      "attribution": null,
+      "schema": null,
+      "bytes": 28664,
+      "sha256": "00f2054e2c947cad",
+      "notes": ""
+    },
+    {
+      "id": "route-network.avinor-remaining-xml-public-alf-20261007.xml",
+      "path": "route-network/avinor-remaining-xml-public-alf-20261007.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest",
+      "license": "site-terms",
+      "attribution": null,
+      "schema": null,
+      "bytes": 31276,
+      "sha256": "76c06bc8c0687420",
+      "notes": ""
+    },
+    {
+      "id": "route-network.avinor-remaining-xml-public-anx-20261007.xml",
+      "path": "route-network/avinor-remaining-xml-public-anx-20261007.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest",
+      "license": "site-terms",
+      "attribution": null,
+      "schema": null,
+      "bytes": 11054,
+      "sha256": "a83de72985977565",
+      "notes": ""
+    },
+    {
+      "id": "route-network.avinor-remaining-xml-public-bjf-20261007.xml",
+      "path": "route-network/avinor-remaining-xml-public-bjf-20261007.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest",
+      "license": "site-terms",
+      "attribution": null,
+      "schema": null,
+      "bytes": 6483,
+      "sha256": "8fb2df941fae3c93",
+      "notes": ""
+    },
+    {
+      "id": "route-network.avinor-remaining-xml-public-bnn-20261007.xml",
+      "path": "route-network/avinor-remaining-xml-public-bnn-20261007.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest",
+      "license": "site-terms",
+      "attribution": null,
+      "schema": null,
+      "bytes": 17653,
+      "sha256": "f5eb38a8a6d4080e",
+      "notes": ""
+    },
+    {
+      "id": "route-network.avinor-remaining-xml-public-bvg-20261007.xml",
+      "path": "route-network/avinor-remaining-xml-public-bvg-20261007.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest",
+      "license": "site-terms",
+      "attribution": null,
+      "schema": null,
+      "bytes": 6305,
+      "sha256": "da4f778d320ec2b3",
+      "notes": ""
+    },
+    {
+      "id": "route-network.avinor-remaining-xml-public-haa-20261007.xml",
+      "path": "route-network/avinor-remaining-xml-public-haa-20261007.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest",
+      "license": "site-terms",
+      "attribution": null,
+      "schema": null,
+      "bytes": 4221,
+      "sha256": "08c018482e646805",
+      "notes": ""
+    },
+    {
+      "id": "route-network.avinor-remaining-xml-public-hft-20261007.xml",
+      "path": "route-network/avinor-remaining-xml-public-hft-20261007.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest",
+      "license": "site-terms",
+      "attribution": null,
+      "schema": null,
+      "bytes": 40265,
+      "sha256": "65a6cb2c5a03ef6d",
+      "notes": ""
+    },
+    {
+      "id": "route-network.avinor-remaining-xml-public-hov-20261007.xml",
+      "path": "route-network/avinor-remaining-xml-public-hov-20261007.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest",
+      "license": "site-terms",
+      "attribution": null,
+      "schema": null,
+      "bytes": 22218,
+      "sha256": "717c4b99e7d0f7e1",
+      "notes": ""
+    },
+    {
+      "id": "route-network.avinor-remaining-xml-public-hvg-20261007.xml",
+      "path": "route-network/avinor-remaining-xml-public-hvg-20261007.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest",
+      "license": "site-terms",
+      "attribution": null,
+      "schema": null,
+      "bytes": 6929,
+      "sha256": "03091c35ba9711cd",
+      "notes": ""
+    },
+    {
+      "id": "route-network.avinor-remaining-xml-public-kkn-20261007.xml",
+      "path": "route-network/avinor-remaining-xml-public-kkn-20261007.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest",
+      "license": "site-terms",
+      "attribution": null,
+      "schema": null,
+      "bytes": 21966,
+      "sha256": "2cb149f852d2be68",
+      "notes": ""
+    },
+    {
+      "id": "route-network.avinor-remaining-xml-public-ksu-20261007.xml",
+      "path": "route-network/avinor-remaining-xml-public-ksu-20261007.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest",
+      "license": "site-terms",
+      "attribution": null,
+      "schema": null,
+      "bytes": 19514,
+      "sha256": "a122ef8e90189319",
+      "notes": ""
+    },
+    {
+      "id": "route-network.avinor-remaining-xml-public-lkn-20261007.xml",
+      "path": "route-network/avinor-remaining-xml-public-lkn-20261007.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest",
+      "license": "site-terms",
+      "attribution": null,
+      "schema": null,
+      "bytes": 25586,
+      "sha256": "652aa2f0f99cc079",
+      "notes": ""
+    },
+    {
+      "id": "route-network.avinor-remaining-xml-public-meh-20261007.xml",
+      "path": "route-network/avinor-remaining-xml-public-meh-20261007.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest",
+      "license": "site-terms",
+      "attribution": null,
+      "schema": null,
+      "bytes": 7029,
+      "sha256": "0beb837c12059b10",
+      "notes": ""
+    },
+    {
+      "id": "route-network.avinor-remaining-xml-public-mjf-20261007.xml",
+      "path": "route-network/avinor-remaining-xml-public-mjf-20261007.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest",
+      "license": "site-terms",
+      "attribution": null,
+      "schema": null,
+      "bytes": 10596,
+      "sha256": "cd2b18a66e27cbc0",
+      "notes": ""
+    },
+    {
+      "id": "route-network.avinor-remaining-xml-public-mqn-20261007.xml",
+      "path": "route-network/avinor-remaining-xml-public-mqn-20261007.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest",
+      "license": "site-terms",
+      "attribution": null,
+      "schema": null,
+      "bytes": 15147,
+      "sha256": "d36ee81dc3d1965b",
+      "notes": ""
+    },
+    {
+      "id": "route-network.avinor-remaining-xml-public-osy-20261007.xml",
+      "path": "route-network/avinor-remaining-xml-public-osy-20261007.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest",
+      "license": "site-terms",
+      "attribution": null,
+      "schema": null,
+      "bytes": 6376,
+      "sha256": "0ad1dd4532870a9a",
+      "notes": ""
+    },
+    {
+      "id": "route-network.avinor-remaining-xml-public-ret-20261007.xml",
+      "path": "route-network/avinor-remaining-xml-public-ret-20261007.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest",
+      "license": "site-terms",
+      "attribution": null,
+      "schema": null,
+      "bytes": 4651,
+      "sha256": "6b65397b7f5b943f",
+      "notes": ""
+    },
+    {
+      "id": "route-network.avinor-remaining-xml-public-sdn-20261007.xml",
+      "path": "route-network/avinor-remaining-xml-public-sdn-20261007.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest",
+      "license": "site-terms",
+      "attribution": null,
+      "schema": null,
+      "bytes": 10267,
+      "sha256": "88b59da3fce17981",
+      "notes": ""
+    },
+    {
+      "id": "route-network.avinor-remaining-xml-public-skn-20261007.xml",
+      "path": "route-network/avinor-remaining-xml-public-skn-20261007.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest",
+      "license": "site-terms",
+      "attribution": null,
+      "schema": null,
+      "bytes": 18851,
+      "sha256": "3f6ec2c56fcfca00",
+      "notes": ""
+    },
+    {
+      "id": "route-network.avinor-remaining-xml-public-sog-20261007.xml",
+      "path": "route-network/avinor-remaining-xml-public-sog-20261007.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest",
+      "license": "site-terms",
+      "attribution": null,
+      "schema": null,
+      "bytes": 20693,
+      "sha256": "dd56a99d404dfcc4",
+      "notes": ""
+    },
+    {
+      "id": "route-network.avinor-remaining-xml-public-ssj-20261007.xml",
+      "path": "route-network/avinor-remaining-xml-public-ssj-20261007.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest",
+      "license": "site-terms",
+      "attribution": null,
+      "schema": null,
+      "bytes": 10778,
+      "sha256": "c2bf6cc54c6c8180",
+      "notes": ""
+    },
+    {
+      "id": "route-network.avinor-remaining-xml-public-svj-20261007.xml",
+      "path": "route-network/avinor-remaining-xml-public-svj-20261007.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest",
+      "license": "site-terms",
+      "attribution": null,
+      "schema": null,
+      "bytes": 12940,
+      "sha256": "f7aef7ce4f324fd8",
+      "notes": ""
+    },
+    {
+      "id": "route-network.avinor-remaining-xml-public-vaw-20261007.xml",
+      "path": "route-network/avinor-remaining-xml-public-vaw-20261007.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest",
+      "license": "site-terms",
+      "attribution": null,
+      "schema": null,
+      "bytes": 6407,
+      "sha256": "eac3bfe354a52d15",
+      "notes": ""
+    },
+    {
+      "id": "route-network.avinor-remaining-xml-public-vds-20261007.xml",
+      "path": "route-network/avinor-remaining-xml-public-vds-20261007.xml",
+      "kind": "input",
+      "producer": null,
+      "inputs": [],
+      "source": "Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest",
+      "license": "site-terms",
+      "attribution": null,
+      "schema": null,
+      "bytes": 18271,
+      "sha256": "a842916844a1e77e",
+      "notes": ""
+    },
+    {
       "id": "route-network.avinor-xml-public-aes-20261006.xml",
       "path": "route-network/avinor-xml-public-aes-20261006.xml",
       "kind": "input",
@@ -5290,12 +5654,12 @@
       "kind": "derived",
       "producer": "scripts/build-route-library-carrier-shards.ts",
       "inputs": [],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
       "bytes": 20455,
-      "sha256": "f6ed5fbc0eb5b031",
+      "sha256": "0caa1c3df6b7ff32",
       "notes": ""
     },
     {
@@ -5306,7 +5670,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5322,7 +5686,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5338,7 +5702,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5354,7 +5718,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5370,7 +5734,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5386,7 +5750,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5402,7 +5766,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5418,7 +5782,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5434,7 +5798,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5450,7 +5814,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5466,7 +5830,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5482,7 +5846,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5498,7 +5862,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5514,7 +5878,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5530,7 +5894,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5546,7 +5910,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5562,7 +5926,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5578,7 +5942,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5594,7 +5958,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5610,7 +5974,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5626,7 +5990,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5642,7 +6006,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5658,7 +6022,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5674,7 +6038,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5690,7 +6054,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5706,7 +6070,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5722,7 +6086,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5738,7 +6102,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5754,7 +6118,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5770,7 +6134,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5786,7 +6150,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5802,7 +6166,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5818,7 +6182,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5834,7 +6198,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5850,7 +6214,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5866,7 +6230,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5882,7 +6246,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5898,7 +6262,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5914,7 +6278,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5930,7 +6294,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5946,7 +6310,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5962,7 +6326,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5978,7 +6342,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -5994,7 +6358,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6010,7 +6374,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6026,7 +6390,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6042,7 +6406,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6058,7 +6422,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6074,7 +6438,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6090,7 +6454,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6106,7 +6470,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6122,7 +6486,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6138,7 +6502,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6154,7 +6518,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6170,7 +6534,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6186,7 +6550,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6202,7 +6566,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6218,7 +6582,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6234,7 +6598,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6250,7 +6614,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6266,7 +6630,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6282,7 +6646,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6298,7 +6662,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6314,7 +6678,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6330,7 +6694,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6346,7 +6710,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6362,7 +6726,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6378,7 +6742,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6394,7 +6758,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6410,7 +6774,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6426,7 +6790,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6442,7 +6806,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6458,7 +6822,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6474,7 +6838,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6490,7 +6854,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6506,7 +6870,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6522,7 +6886,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6538,7 +6902,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6554,7 +6918,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6570,7 +6934,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6586,7 +6950,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6602,7 +6966,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6618,7 +6982,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6634,7 +6998,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6650,7 +7014,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6666,7 +7030,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6682,7 +7046,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6698,7 +7062,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6714,7 +7078,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6730,7 +7094,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6746,7 +7110,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6762,7 +7126,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6778,7 +7142,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6794,7 +7158,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6810,7 +7174,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6826,7 +7190,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6842,7 +7206,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6858,7 +7222,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6874,7 +7238,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6890,7 +7254,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6906,7 +7270,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6922,7 +7286,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6938,7 +7302,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6954,7 +7318,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6970,7 +7334,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -6986,7 +7350,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7002,7 +7366,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7018,7 +7382,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7034,7 +7398,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7050,12 +7414,12 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 983985,
-      "sha256": "820690f586dea343",
+      "bytes": 987281,
+      "sha256": "66f028d891f90921",
       "notes": ""
     },
     {
@@ -7066,7 +7430,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7082,7 +7446,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7098,7 +7462,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7114,7 +7478,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7130,7 +7494,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7146,7 +7510,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7162,7 +7526,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7178,7 +7542,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7194,7 +7558,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7210,7 +7574,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7226,7 +7590,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7242,7 +7606,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7258,7 +7622,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7274,7 +7638,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7290,7 +7654,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7306,7 +7670,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7322,7 +7686,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7338,7 +7702,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7354,7 +7718,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7370,7 +7734,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7386,7 +7750,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7402,7 +7766,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7418,12 +7782,12 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1546216,
-      "sha256": "b0b9dece25ed49aa",
+      "bytes": 2041181,
+      "sha256": "730a4c46b6524c31",
       "notes": ""
     },
     {
@@ -7434,7 +7798,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7450,7 +7814,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7466,7 +7830,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7482,7 +7846,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7498,7 +7862,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7514,7 +7878,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7530,7 +7894,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7546,7 +7910,7 @@
       "inputs": [
         "route-network/runtime-current.json"
       ],
-      "source": "curated + provider-listed route-network layers (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
@@ -7575,12 +7939,12 @@
         "route-network/standing-current.json",
         "route-network/validated-static-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 21207504,
-      "sha256": "1d6f2565df9f6be1",
+      "bytes": 21705765,
+      "sha256": "aa90283d52015b1b",
       "notes": "Runtime preserves the first 412 OSL identities, the prior release’s 201 promoted identities, and the 1,172 net-new follow-on identities with per-occurrence expiry and source-window cutoffs. CAA’s 488 operator-unknown associations remain separate."
     },
     {
@@ -7604,12 +7968,12 @@
         "route-network/standing-current.json",
         "route-network/validated-static-current.json"
       ],
-      "source": "curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)",
+      "source": "curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)",
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 13354,
-      "sha256": "0e0c374436c3442b",
+      "bytes": 16979,
+      "sha256": "d586dc0ca1ca2051",
       "notes": "Build metadata pins the Avinor source JSON, original XML, route-network inputs, and output hash."
     },
     {
@@ -7655,8 +8019,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1486434,
-      "sha256": "76fb3ee3ec23d000",
+      "bytes": 1508154,
+      "sha256": "079325fe4a1b0ae8",
       "notes": ""
     },
     {
@@ -7671,8 +8035,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 2170041,
-      "sha256": "6ff76cdd4834ba8d",
+      "bytes": 2274770,
+      "sha256": "642221c760f99677",
       "notes": ""
     },
     {
@@ -7767,8 +8131,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 860438,
-      "sha256": "4685c157efec6942",
+      "bytes": 909246,
+      "sha256": "5d5e8deb4946421b",
       "notes": ""
     },
     {
@@ -7815,8 +8179,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 653881,
-      "sha256": "2c4c9d8c374190fe",
+      "bytes": 676912,
+      "sha256": "781f7745c1fed479",
       "notes": ""
     },
     {
@@ -7831,8 +8195,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1258533,
-      "sha256": "f7bc49d6cb06be0e",
+      "bytes": 1265695,
+      "sha256": "bebad3e9e8307447",
       "notes": ""
     },
     {
@@ -7847,8 +8211,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1382919,
-      "sha256": "aee7d7fd07ec2bd9",
+      "bytes": 1436524,
+      "sha256": "43e8224f691396d2",
       "notes": ""
     },
     {
@@ -7879,8 +8243,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1892111,
-      "sha256": "ff164c35d21ac2ce",
+      "bytes": 1923434,
+      "sha256": "34c15ec94287b89a",
       "notes": ""
     },
     {
@@ -7927,8 +8291,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 440599,
-      "sha256": "67a217995134a0f4",
+      "bytes": 450665,
+      "sha256": "7a87cb41ac2a6d86",
       "notes": ""
     },
     {
@@ -7943,8 +8307,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1781317,
-      "sha256": "5f8c9255a9f06f3f",
+      "bytes": 1846573,
+      "sha256": "9b6d7026eb6fbd98",
       "notes": ""
     },
     {
@@ -7959,8 +8323,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 1376467,
-      "sha256": "6c25efb03781db7c",
+      "bytes": 1479487,
+      "sha256": "d70b89eaa7040788",
       "notes": ""
     },
     {
@@ -7991,8 +8355,8 @@
       "license": "ODbL-1.0",
       "attribution": null,
       "schema": null,
-      "bytes": 265573,
-      "sha256": "682e1680f73ed07f",
+      "bytes": 318389,
+      "sha256": "f41afd76964b9335",
       "notes": ""
     },
     {
@@ -8196,7 +8560,7 @@
       "attribution": null,
       "schema": null,
       "bytes": 24356,
-      "sha256": "d416e754fbaf5a97",
+      "sha256": "67b923617270dcd1",
       "notes": ""
     },
     {

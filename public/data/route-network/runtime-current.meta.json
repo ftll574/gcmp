@@ -1,7 +1,7 @@
 {
   "version": 1,
   "builtOn": "2026-10-07",
-  "source": "curated + provider-listed route-network layers, the first OSL snapshot, the ten-airport Avinor batch, and the 11-snapshot follow-on ledger (see THIRD_PARTY_NOTICES.md and exact occurrence/source expiry metadata)",
+  "source": "curated + provider-listed route-network layers, the first OSL snapshot, the ten-airport Avinor batch, the 11-snapshot follow-on ledger, and the independently reviewed 143-identity Avinor remaining-airports release (see THIRD_PARTY_NOTICES.md and exact occurrence/source expiry metadata)",
   "license": "ODbL-1.0",
   "licenseNote": "Derived database of ODbL-licensed ADS-B route sources; share-alike applies. Avinor is date-scoped schedule evidence with separate attribution terms; every occurrence expires at its scheduled UTC time, and each snapshot has its own source-window cutoff.",
   "mergeStrategy": "curated + generated",
@@ -34,19 +34,45 @@
     "avinor-follow-on-evidence-20261006.jsonl": "36890cfce29ee71e4171cc32deb6fa0417de4793d9b9c694a0f113b409b3e4d2",
     "avinor-follow-on-release-20261006.json": "2d2a587bb76af3ee376e3e889ece1984f49346973a1f9f71bf18fd1971080d08",
     "docs/avinor-follow-on-release-20261007/reviewer-held-ledger.jsonl": "9247107a4d069f1efd6cbba4524907cf5dd548f16c22a5a5fab7a977647bc234",
+    "avinor-remaining-airports-accepted-20261007.jsonl": "35f9c0c587a5dc9290cd8d3f9ccd861a6cd4536b1b4a2ba1e9a91959fb811612",
+    "avinor-remaining-airports-release-20261007.json": "00f2054e2c947cadac9ab5f94826d4f848bfaacba5cb3003cd09be3cc7fafc4b",
+    "avinor-remaining-xml-public-alf-20261007.xml": "76c06bc8c06874206a6c41d4e286bc5e95bfba350de57425a5ddd8c872327027",
+    "avinor-remaining-xml-public-anx-20261007.xml": "a83de729859775658ba688eec40fdefa30317a008d2cdbd57553921c968b65df",
+    "avinor-remaining-xml-public-bjf-20261007.xml": "8fb2df941fae3c93324bf9461831b0c2f1fdfac30328cdde83cca61db423d8a5",
+    "avinor-remaining-xml-public-bnn-20261007.xml": "f5eb38a8a6d4080e54b5d0a47a12631e49f8fbc3191b1198cc55c5763f7e44d0",
+    "avinor-remaining-xml-public-bvg-20261007.xml": "da4f778d320ec2b3f229bc1ce364cbec32b8cd009fc37c1d64b34068d8bcd52d",
+    "avinor-remaining-xml-public-haa-20261007.xml": "08c018482e646805c286685c19db0703a4ea1183e847412f117266618602f9e7",
+    "avinor-remaining-xml-public-hft-20261007.xml": "65a6cb2c5a03ef6d1df915bd75844286b572911145bfa9115bfd810f2967e0aa",
+    "avinor-remaining-xml-public-hov-20261007.xml": "717c4b99e7d0f7e14061048e1c4b2ed6aa6d8e3b52cf839d440150d6e30ee8b7",
+    "avinor-remaining-xml-public-hvg-20261007.xml": "03091c35ba9711cd8760a2daa48ae2ea11e55db613d98690050b1ab3eb6c8f75",
+    "avinor-remaining-xml-public-kkn-20261007.xml": "2cb149f852d2be680d77a35d5e9d6b0748bb1b1a10c2f5ecc2f8e7f056392849",
+    "avinor-remaining-xml-public-ksu-20261007.xml": "a122ef8e90189319e18262e3abf94fa782ff3841163f5594858a40bc127724ad",
+    "avinor-remaining-xml-public-lkn-20261007.xml": "652aa2f0f99cc07921fbd760a496370dd2d78218d1548e06ad99876002c7676b",
+    "avinor-remaining-xml-public-meh-20261007.xml": "0beb837c12059b1056bf41c81bd20ef1db731f00ffb54a5a3fb7fb1dca9bc55c",
+    "avinor-remaining-xml-public-mjf-20261007.xml": "cd2b18a66e27cbc09c41316b1c6363dad250b5962af4f5e0662de0dc36db2a61",
+    "avinor-remaining-xml-public-mqn-20261007.xml": "d36ee81dc3d1965b26cc15aec24d5a4a64e4e4e1fc36e148e6367fcd7ebe6146",
+    "avinor-remaining-xml-public-osy-20261007.xml": "0ad1dd4532870a9a1259b5771648bb155ef4064eda14cf2b580f7e74a5596853",
+    "avinor-remaining-xml-public-ret-20261007.xml": "6b65397b7f5b943f84337860e6996ee3193aea44ff7067a95b876002d7e65569",
+    "avinor-remaining-xml-public-sdn-20261007.xml": "88b59da3fce17981689f43f540edc7c61e9bc34de9cb9cc8e401588ccd64c947",
+    "avinor-remaining-xml-public-skn-20261007.xml": "3f6ec2c56fcfca006a6fe54252c36b058511a436944a4372f140d1e7376f785f",
+    "avinor-remaining-xml-public-sog-20261007.xml": "dd56a99d404dfcc42b9e1a025fc630aa3a033c4261e145ff8b89b8e509e62328",
+    "avinor-remaining-xml-public-ssj-20261007.xml": "c2bf6cc54c6c8180cb55595c8ea722a4b7e8cfd650a715bc9220dfe5cd447a9f",
+    "avinor-remaining-xml-public-svj-20261007.xml": "f7aef7ce4f324fd87e714d5de3aca3ec1e0aa2f8815398e01b1f78e81f36a9d4",
+    "avinor-remaining-xml-public-vaw-20261007.xml": "eac3bfe354a52d153d10bebb7f90b565226617943eb3ddf2a230d58124cba144",
+    "avinor-remaining-xml-public-vds-20261007.xml": "a842916844a1e77e5468058b14d31e7ac398885967e51be944f7cbacf7060235",
     "docs/avinor-follow-on-release-20261007/validation-report.json": "91b292773261ff86d15246b415495dc0c85477c3b8a2ea73ecf9f6bebafe8d79",
     "docs/avinor-follow-on-release-20261007/avinor-flight-data-terms-20261002.html": "fd1116c4eb6e714e43a8c537556fe24148a781e75cae997c3dfaf0149f1c3084"
   },
-  "outputSha256": "1d6f2565df9f6be1168b88c9f27d5a2df2dc9790204eaf276ffd571b5d36f400",
-  "routes": 32171,
-  "publishedRoutes": 31581,
+  "outputSha256": "aa90283d52015b1b418c3840252cb34152f9ed577a3e0766291935b92b151537",
+  "routes": 32216,
+  "publishedRoutes": 31626,
   "carriers": 141,
   "confirmedOperatingRoutes": 1535,
-  "providerListedRoutes": 30010,
+  "providerListedRoutes": 30055,
   "unknownIdentityRoutes": 36,
-  "confirmedFlightNumberRoutes": 1054,
+  "confirmedFlightNumberRoutes": 1099,
   "candidateFlightNumberRoutes": 30543,
-  "anyFlightNumberRoutes": 31197,
+  "anyFlightNumberRoutes": 31242,
   "routeCountByCarrier": {
     "2F": 4,
     "2W": 2,
@@ -157,7 +183,7 @@
     "RO": 181,
     "SA": 120,
     "SC": 2,
-    "SK": 975,
+    "SK": 977,
     "SL": 12,
     "SN": 326,
     "SQ": 269,
@@ -180,7 +206,7 @@
     "VZ": 6,
     "W4": 2,
     "W6": 30,
-    "WF": 122,
+    "WF": 165,
     "WJ": 6,
     "WK": 2,
     "WN": 4,
@@ -346,7 +372,7 @@
     "RO": 181,
     "SA": 85,
     "SC": 2,
-    "SK": 975,
+    "SK": 977,
     "SL": 12,
     "SN": 326,
     "SQ": 193,
@@ -369,7 +395,7 @@
     "VZ": 6,
     "W4": 2,
     "W6": 30,
-    "WF": 122,
+    "WF": 165,
     "WJ": 6,
     "WK": 2,
     "WN": 4,
@@ -393,14 +419,14 @@
   },
   "originShards": {
     "A": {
-      "routes": 2334,
-      "bytes": 1486434,
-      "sha256": "76fb3ee3ec23d0005932bccfd5e70b8bad612f045b81cd9f1db68901cae4326b"
+      "routes": 2337,
+      "bytes": 1508154,
+      "sha256": "079325fe4a1b0ae8a9cd387a19f25fb47612022d8a3f5dfe3997bb00dd3e692f"
     },
     "B": {
-      "routes": 2205,
-      "bytes": 2170041,
-      "sha256": "6ff76cdd4834ba8d48e97bc31221a9bf24866ea3f25c11a63dbe765f31cd3e5f"
+      "routes": 2214,
+      "bytes": 2274770,
+      "sha256": "642221c760f99677a0f40e6b0e6f4c369a066b3053f2f1e1b02bad5d283d4b88"
     },
     "C": {
       "routes": 2628,
@@ -428,9 +454,9 @@
       "sha256": "c946dc6158fafe4b5e93e68c55216e1e1a63d18cd001f99ec923e02a72d3b534"
     },
     "H": {
-      "routes": 1603,
-      "bytes": 860438,
-      "sha256": "4685c157efec6942b0a05324bdc0788a070eccb885a956a7dd2c9af05dae89d2"
+      "routes": 1607,
+      "bytes": 909246,
+      "sha256": "5d5e8deb4946421bad10349daa91fc8c8b86d54a55059e01831bb581c960b207"
     },
     "I": {
       "routes": 1357,
@@ -443,19 +469,19 @@
       "sha256": "426bac4338e33c7fabcb504917290d9835ad3cf2497eb727f9216fb588ae34c6"
     },
     "K": {
-      "routes": 990,
-      "bytes": 653881,
-      "sha256": "2c4c9d8c374190fe76380a2198517979de03babdd450a4a51205ebf38822c565"
+      "routes": 994,
+      "bytes": 676912,
+      "sha256": "781f7745c1fed4797824b1db7e511e72c0b4ed1ab3ba9813145ce1521c37252e"
     },
     "L": {
-      "routes": 2001,
-      "bytes": 1258533,
-      "sha256": "f7bc49d6cb06be0ec8493d606709c3443f3a3d7d3068d088c50f2d9db4baf5f3"
+      "routes": 2002,
+      "bytes": 1265695,
+      "sha256": "bebad3e9e8307447a8624385b98a8bf43079df9e82c80223110f0540d9df49cb"
     },
     "M": {
-      "routes": 2356,
-      "bytes": 1382919,
-      "sha256": "aee7d7fd07ec2bd99d6d9a82d749a68bf5a9f61d1f47a24cd0aebe0358c90f2b"
+      "routes": 2358,
+      "bytes": 1436524,
+      "sha256": "43e8224f691396d24ca35c9ab0c500e5802976cc92787bc15b89b50f5cb75d5d"
     },
     "N": {
       "routes": 869,
@@ -463,9 +489,9 @@
       "sha256": "c44bad925a442db062fb0c33ef82c94f5b3684d5ff5471f6a508669530b9fc27"
     },
     "O": {
-      "routes": 1365,
-      "bytes": 1892111,
-      "sha256": "ff164c35d21ac2ce65bb6e94f620503ce646b23f18f5c289a9e92b4ae55fd3ac"
+      "routes": 1366,
+      "bytes": 1923434,
+      "sha256": "34c15ec94287b89a9355bfea6e549ac9da6477011459cb7b22cbcb7f001623cd"
     },
     "P": {
       "routes": 1947,
@@ -478,19 +504,19 @@
       "sha256": "623ed6f8434f35fe4d71a7aa496fc11ef3e56d9fa1c187d12e4eabb2dd2670ed"
     },
     "R": {
-      "routes": 671,
-      "bytes": 440599,
-      "sha256": "67a217995134a0f4e0279e302eb243301d427aaa48d7e837e6de819d087563f1"
+      "routes": 673,
+      "bytes": 450665,
+      "sha256": "7a87cb41ac2a6d8640696fedc7e8b4a034b71bc4e336545e7f534943bb320299"
     },
     "S": {
-      "routes": 2708,
-      "bytes": 1781317,
-      "sha256": "5f8c9255a9f06f3f518ccbe67bed52fbfcd770e4e84f6c147f71bd60d312b036"
+      "routes": 2714,
+      "bytes": 1846573,
+      "sha256": "9b6d7026eb6fbd985d69bc48b634b8246eb22b293eb6febc1609462c27e76542"
     },
     "T": {
-      "routes": 1427,
-      "bytes": 1376467,
-      "sha256": "6c25efb03781db7cd2c31794c3defb4f7fc820c0dec08a3d673802db94ad4151"
+      "routes": 1431,
+      "bytes": 1479487,
+      "sha256": "d70b89eaa704078829deb9c27cc8bf572605b93b25533c43a42ee1e03fcbfb0f"
     },
     "U": {
       "routes": 140,
@@ -498,9 +524,9 @@
       "sha256": "be417524db5892dd7ba17c60ccd39e72e028c5be032bea3abed230fb7b89f84a"
     },
     "V": {
-      "routes": 478,
-      "bytes": 265573,
-      "sha256": "682e1680f73ed07f7c7889e28059f73e6c93c526e0abe3438e39d85ad0b6caaf"
+      "routes": 487,
+      "bytes": 318389,
+      "sha256": "f41afd76964b9335b9e6a472f94373b832a8b1ddbdd874a35e6ea70869d42b52"
     },
     "W": {
       "routes": 468,
@@ -560,5 +586,19 @@
     "WF",
     "WK",
     "XQ"
-  ]
+  ],
+  "avinorRemainingAirports": {
+    "releaseId": "avinor-remaining-airports-20261007",
+    "acceptedIdentityGroups": 143,
+    "retainedOccurrences": 517,
+    "newCarrierDirectedRoutes": 45,
+    "existingCarrierDirectedRoutes": 31,
+    "sourceSnapshots": 24,
+    "sourceCodes": {
+      "SK": 2,
+      "WF": 141
+    },
+    "independentlyReviewedCurrentOccurrences": 513,
+    "independentlyReviewedExpiredOccurrences": 4
+  }
 }

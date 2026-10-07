@@ -6,6 +6,7 @@ import { afterEach, expect, test, vi } from 'vitest';
 import { AvinorPublicSnapshotDirectory } from '../../src/components/AvinorPublicSnapshotDirectory.tsx';
 import { AvinorPublicBatchDirectory } from '../../src/components/AvinorPublicBatchDirectory.tsx';
 import { AvinorFollowOnDirectory } from '../../src/components/AvinorFollowOnDirectory.tsx';
+import { AvinorRemainingAirportsDirectory } from '../../src/components/AvinorRemainingAirportsDirectory.tsx';
 import { RouteLibraryExplorer } from '../../src/components/RouteLibraryExplorer.tsx';
 import { buildAirportIndex } from '../../src/lib/airport-index.ts';
 import { parseRouteNetworkCatalog } from '../../src/lib/schemas/route-network.ts';
@@ -156,5 +157,56 @@ test('4Y1301 from the reconciled follow-on keeps exact source lineage and dated 
     window.dispatchEvent(new Event('focus'));
   });
   expect(screen.queryByRole('button', { name: /^Add this source-listed departure to Planner: 4Y1301 · 2026-10-11/ })).not.toBeInTheDocument();
-  expect(screen.getByText(/Scheduled time reached; this occurrence is expired/)).toBeInTheDocument();
+  expect(screen.getAllByText(/Scheduled time reached; this occurrence is expired/).length).toBeGreaterThan(0);
+});
+
+test('the accepted remaining-airports identity is discoverable, date-plannable, attributed and expires on schedule', async () => {
+  vi.useFakeTimers({ toFake: ['Date'] });
+  vi.setSystemTime(new Date('2026-10-07T00:00:00Z'));
+  const release = JSON.parse(readFileSync('public/data/route-network/avinor-remaining-airports-release-20261007.json', 'utf8'));
+  const ledger = readFileSync('public/data/route-network/avinor-remaining-airports-accepted-20261007.jsonl', 'utf8');
+  const digest = (bytes: Buffer): ArrayBuffer => {
+    const copy = new Uint8Array(bytes.byteLength);
+    copy.set(bytes);
+    return copy.buffer;
+  };
+  vi.stubGlobal('crypto', { subtle: { digest: async (_algorithm: string, data: BufferSource) => {
+    const bytes = Buffer.from(new Uint8Array(data as ArrayBuffer));
+    return digest(createHash('sha256').update(bytes).digest());
+  } } });
+  vi.stubEnv('BASE_URL', '/gcmp/');
+  vi.stubGlobal('fetch', vi.fn(async (input: RequestInfo | URL) => {
+    if (String(input).includes('avinor-remaining-airports-release-')) return { ok: true, json: async () => release } as Response;
+    return { ok: true, text: async () => ledger } as Response;
+  }));
+  const network = parseRouteNetworkCatalog(JSON.parse(readFileSync('public/data/route-network/runtime-current.json', 'utf8')));
+  const route = network.routes.find((candidate) => candidate.carrier === 'WF' && candidate.pair[0] === 'ALF' && candidate.pair[1] === 'TOS')!;
+  expect(route.service).toBe('scheduled-endpoint-pair');
+  expect(route.carrierIdentity).toBe('provider-listed');
+  expect(route.flightNumbers).toContain('WF904');
+
+  const onPlanRoute = vi.fn();
+  const { container } = render(<AvinorRemainingAirportsDirectory onPlanRoute={onPlanRoute} />);
+  const details = container.querySelector('details')!;
+  details.open = true;
+  fireEvent(details, new Event('toggle'));
+  fireEvent.change(await screen.findByLabelText('Source-listed date (Europe/Oslo)'), { target: { value: '2026-10-08' } });
+  fireEvent.change(screen.getByLabelText('Search flight number, code, direction or airport'), { target: { value: 'WF904' } });
+
+  expect(await screen.findByRole('link', { name: 'Original XML: ALF' })).toHaveAttribute(
+    'href', '/gcmp/data/route-network/avinor-remaining-xml-public-alf-20261007.xml',
+  );
+  expect(screen.getByRole('link', { name: 'Flight data from Avinor' })).toHaveAttribute('href', 'https://www.avinor.no/');
+  expect(screen.getByRole('link', { name: 'Avinor flight-data terms' })).toHaveAttribute('href', 'https://partner.avinor.no/en/services/flight-data/');
+  expect(screen.getAllByText(/Display name unresolved; source code retained · WF/).length).toBeGreaterThan(0);
+  const plan = screen.getByRole('button', { name: /^Add this source-listed departure to Planner: WF904 · 2026-10-08/ });
+  fireEvent.click(plan);
+  expect(onPlanRoute).toHaveBeenCalledWith({ from: 'ALF', to: 'TOS', carrier: 'WF', flightNumber: '904', departsOn: '2026-10-08' });
+
+  act(() => {
+    vi.setSystemTime(new Date('2026-10-08T10:45:01Z'));
+    window.dispatchEvent(new Event('focus'));
+  });
+  expect(screen.queryByRole('button', { name: /^Add this source-listed departure to Planner: WF904 · 2026-10-08/ })).not.toBeInTheDocument();
+  expect(screen.getAllByText(/Scheduled time reached; this occurrence is expired/).length).toBeGreaterThan(0);
 });

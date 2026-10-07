@@ -55,6 +55,9 @@ const CURATED_INPUTS = new Set([
   ...['aes', 'bdu', 'bgo', 'boo', 'eve', 'krs', 'mol', 'svg', 'tos', 'trd'].map((airport) => `route-network/avinor-xml-public-${airport}-20261006.xml`),
   'route-network/avinor-follow-on-evidence-20261006.jsonl',
   'route-network/avinor-follow-on-release-20261006.json',
+  'route-network/avinor-remaining-airports-accepted-20261007.jsonl',
+  'route-network/avinor-remaining-airports-release-20261007.json',
+  ...['alf', 'anx', 'bjf', 'bnn', 'bvg', 'haa', 'hft', 'hov', 'hvg', 'kkn', 'ksu', 'lkn', 'meh', 'mjf', 'mqn', 'osy', 'ret', 'sdn', 'skn', 'sog', 'ssj', 'svj', 'vaw', 'vds'].map((airport) => `route-network/avinor-remaining-xml-public-${airport}-20261007.xml`),
   'route-network/flightsfrom-flight-numbers-20260909.json',
   'route-network/mrairspace-flight-number-candidates.json',
   'route-network/mrairspace-flight-number-candidates-2026-Q2.json',
@@ -89,6 +92,14 @@ function describe(path: string): { source: string; license: DataLicense } {
         license: 'site-terms',
       };
     }
+    if (path === 'route-network/avinor-remaining-airports-accepted-20261007.jsonl'
+      || path === 'route-network/avinor-remaining-airports-release-20261007.json'
+      || /^route-network\/avinor-remaining-xml-public-[a-z]{3}-20261007\.xml$/.test(path)) {
+      return {
+        source: 'Independently reviewed Avinor XML Public remaining-airports release; exact accepted identities, dated occurrences, original source bytes and per-airport request/freshness metadata are retained with the release manifest',
+        license: 'site-terms',
+      };
+    }
     if (path.startsWith('route-network/avinor-osl-public-20261006.')) {
       return {
         source: 'Avinor XML Public OSL snapshot; one 144-hour response with original bytes and exact source/freshness metadata bundled alongside the accepted rows',
@@ -109,7 +120,7 @@ function describe(path: string): { source: string; license: DataLicense } {
     }
     if (path.includes('runtime')) {
       return {
-        source: 'curated + provider-listed route-network layers, first OSL and ten-airport Avinor releases, plus the 11-snapshot follow-on schedule ledger (see THIRD_PARTY_NOTICES.md)',
+        source: 'curated + provider-listed route-network layers, prior Avinor releases, and the independently reviewed remaining-airports schedule ledger (see THIRD_PARTY_NOTICES.md)',
         license: 'ODbL-1.0',
       };
     }

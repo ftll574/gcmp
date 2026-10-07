@@ -19,6 +19,7 @@ import { CaaWeeklyScheduleTierDirectory } from './CaaWeeklyScheduleTierDirectory
 import { AvinorPublicSnapshotDirectory } from './AvinorPublicSnapshotDirectory.tsx';
 import { AvinorPublicBatchDirectory } from './AvinorPublicBatchDirectory.tsx';
 import { AvinorFollowOnDirectory } from './AvinorFollowOnDirectory.tsx';
+import { AvinorRemainingAirportsDirectory } from './AvinorRemainingAirportsDirectory.tsx';
 import { SiteHeader, type SiteView } from './SiteHeader.tsx';
 import { useLocale } from '../i18n/use-locale.ts';
 
@@ -570,6 +571,7 @@ export function AllRoutesPage({ data, onNavigate, onPlanRoute }: Props): React.R
             <AvinorPublicSnapshotDirectory />
             <AvinorPublicBatchDirectory />
             <AvinorFollowOnDirectory onPlanRoute={onPlanRoute} />
+            <AvinorRemainingAirportsDirectory onPlanRoute={onPlanRoute} />
           </>
         )}
       </main>

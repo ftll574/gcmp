@@ -4,6 +4,7 @@ import { parseRouteNetworkCatalog, type RouteNetworkCatalog } from '../src/lib/s
 import { parseAvinorXmlPublicSnapshot } from '../src/lib/schemas/avinor-xml-public.ts';
 import { parseAvinorXmlPublicBatch } from '../src/lib/schemas/avinor-xml-public-batch.ts';
 import { parseAvinorFollowOnLedgerJsonl, parseAvinorFollowOnRelease } from '../src/lib/schemas/avinor-follow-on.ts';
+import { parseAvinorRemainingAirportsLedgerJsonl, parseAvinorRemainingAirportsRelease } from '../src/lib/schemas/avinor-remaining-airports.ts';
 import { CaaWeeklyScheduleTierSchema } from '../src/lib/schemas/caa-weekly-schedule-tier.ts';
 import { carrierRouteKey } from '../src/lib/carrier-identity.ts';
 import { mergeRouteNetworkCatalogs, mergeRouteNumberEvidence, preserveRuntimeRoutesThenQuarantine } from '../src/lib/rtw/route-network-merge.ts';
@@ -31,6 +32,15 @@ const AVINOR_FOLLOWON_LEDGER_INPUT = 'avinor-follow-on-evidence-20261006.jsonl';
 const AVINOR_FOLLOWON_RELEASE_INPUT = 'avinor-follow-on-release-20261006.json';
 const AVINOR_FOLLOWON_HELD_PATH = 'docs/avinor-follow-on-release-20261007/reviewer-held-ledger.jsonl';
 const BASELINE_RUNTIME_SHA256 = '2bd353350db6d871099a2c2aa2aee23b63b0a7e65cccbbc502d9234eeb017c8a';
+const AVINOR_REMAINING_LEDGER_INPUT = 'avinor-remaining-airports-accepted-20261007.jsonl';
+const AVINOR_REMAINING_RELEASE_INPUT = 'avinor-remaining-airports-release-20261007.json';
+const AVINOR_REMAINING_BASELINE_RUNTIME_SHA256 = '1d6f2565df9f6be1168b88c9f27d5a2df2dc9790204eaf276ffd571b5d36f400';
+const AVINOR_REMAINING_HELD_KEYS = new Set([
+  'LTR|LTR|BOO>VRY|LTR001',
+  'LTR|LTR|BOO>VRY|LTR003',
+  'LTR|LTR|VRY>BOO|LTR002',
+  'LTR|LTR|VRY>BOO|LTR004',
+]);
 
 const root = 'public/data/route-network';
 const airportCodes = new Set<string>(
@@ -47,6 +57,10 @@ function sha256Bytes(bytes: Buffer): string {
 
 function normalizedBytes(text: string): number {
   return Buffer.byteLength(text.replace(/\r\n/g, '\n'));
+}
+
+function directedIdentityKey(carrier: string, identity: string, from: string, to: string, number: string): string {
+  return `${carrier}|${identity}|${from}>${to}|${number}`;
 }
 
 const rawByFile = new Map<string, string>();
@@ -521,7 +535,233 @@ for (const row of heldRows) {
     throw new Error(`Reviewer-held identity entered runtime: ${row.candidateKey}`);
   }
 }
-const finalRuntime = followOnRuntime;
+const remainingLedgerRaw = readFileSync(`${root}/${AVINOR_REMAINING_LEDGER_INPUT}`, 'utf8');
+const remainingReleaseRaw = readFileSync(`${root}/${AVINOR_REMAINING_RELEASE_INPUT}`, 'utf8');
+rawByFile.set(AVINOR_REMAINING_LEDGER_INPUT, remainingLedgerRaw);
+rawByFile.set(AVINOR_REMAINING_RELEASE_INPUT, remainingReleaseRaw);
+const remainingRelease = parseAvinorRemainingAirportsRelease(JSON.parse(remainingReleaseRaw));
+const remainingLedgerBytes = Buffer.from(remainingLedgerRaw, 'utf8');
+if (remainingLedgerBytes.byteLength !== remainingRelease.acceptedInput.bytes
+  || sha256Bytes(remainingLedgerBytes) !== remainingRelease.acceptedInput.sha256
+  || remainingRelease.acceptedInput.path !== `route-network/${AVINOR_REMAINING_LEDGER_INPUT}`) {
+  throw new Error('Avinor remaining-airports accepted input differs from its pinned size/hash/path');
+}
+const remainingRows = parseAvinorRemainingAirportsLedgerJsonl(remainingLedgerRaw);
+if (remainingRows.length !== remainingRelease.accepted.identityGroups
+  || remainingRows.reduce((total, row) => total + row.occurrenceEvidence.length, 0) !== remainingRelease.accepted.occurrences) {
+  throw new Error('Avinor remaining-airports identity or occurrence totals differ from the release manifest');
+}
+const remainingBaselineRuntimeSHA256 = sha256(`${JSON.stringify(followOnRuntime)}\n`);
+if (remainingBaselineRuntimeSHA256 !== AVINOR_REMAINING_BASELINE_RUNTIME_SHA256
+  || remainingRelease.runtimeBaseline.sha256 !== remainingBaselineRuntimeSHA256) {
+  throw new Error(`Runtime before the independently accepted remaining-airports batch changed: ${remainingBaselineRuntimeSHA256}`);
+}
+
+const remainingSnapshotsByAirport = new Map(remainingRelease.sourceSnapshots.map((snapshot) => [snapshot.airport, snapshot] as const));
+const remainingSourceByAirport = new Map<string, RouteNetworkCatalog['sources'][number]>();
+const remainingXmlBytes = new Map<string, Buffer>();
+for (const snapshot of remainingRelease.sourceSnapshots) {
+  const rawPath = `${root}/${snapshot.rawAssetPath.split('/').at(-1)}`;
+  const bytes = readFileSync(rawPath);
+  if (bytes.byteLength !== snapshot.responseBytes || sha256Bytes(bytes) !== snapshot.responseSHA256) {
+    throw new Error(`Avinor remaining-airports original XML differs from pinned size/hash for ${snapshot.airport}`);
+  }
+  remainingXmlBytes.set(snapshot.rawAssetPath, bytes);
+  const sourceId = `avinor-remaining-airports-${snapshot.airport.toLowerCase()}-20261007`;
+  const source: RouteNetworkCatalog['sources'][number] = {
+    id: sourceId,
+    url: snapshot.requestUrl,
+    checkedOn: snapshot.retrievedAtUTC.slice(0, 10),
+    freshUntilUTC: snapshot.freshUntilUTC,
+    rawAssetPath: snapshot.rawAssetPath,
+    note: `Avinor XML Public ${snapshot.airport} snapshot retrieved ${snapshot.retrievedAtUTC}; TimeFrom=1 and TimeTo=144 hours, both directions, codeshare=Y. It supplies source-listed dated schedule identities only and is stale after ${snapshot.freshUntilUTC}; each occurrence expires at its own scheduled UTC time. No actual-operation, recurring-service, physical-nonstop, award-seat or bookability claim is made.`,
+  };
+  if (followOnRuntime.sources.some((existing) => existing.id === sourceId)) {
+    throw new Error(`Avinor remaining-airports source ID already exists: ${sourceId}`);
+  }
+  remainingSourceByAirport.set(snapshot.airport, source);
+}
+const acceptedOccurrenceAirports = new Set(remainingRows.flatMap((row) => row.occurrenceEvidence.map((occurrence) => occurrence.sourceAirport)));
+if (acceptedOccurrenceAirports.size !== remainingSnapshotsByAirport.size
+  || [...acceptedOccurrenceAirports].some((airport) => !remainingSnapshotsByAirport.has(airport))) {
+  throw new Error('Remaining-airports release snapshots do not exactly cover the accepted occurrence sources');
+}
+
+const remainingConfirmedBaselineKeys = new Set(followOnRuntime.routes.flatMap((route) => (route.flightNumbers ?? []).map((flightNumber) =>
+  directedIdentityKey(route.carrier, route.carrierEntityKey ?? route.carrier, route.pair[0], route.pair[1], flightNumber),
+)));
+const remainingCandidateBaselineKeys = new Set(followOnRuntime.routes.flatMap((route) => (route.flightNumberCandidates ?? []).map((flightNumber) =>
+  directedIdentityKey(route.carrier, route.carrierEntityKey ?? route.carrier, route.pair[0], route.pair[1], flightNumber),
+)));
+if (remainingConfirmedBaselineKeys.size !== remainingRelease.runtimeBaseline.confirmedFlightIdentityKeys) {
+  throw new Error(`Pinned pre-batch confirmed identity count changed: ${remainingConfirmedBaselineKeys.size}`);
+}
+
+type RemainingRouteEntry = {
+  flightNumber: string;
+  carrierEntityName: string | null;
+  carrierEntityNameMapping: 'unique-trusted-name' | 'not-present-in-curated-registry' | 'unresolved-not-supplied-by-source-record';
+  bySource: Map<string, FollowOnOccurrence[]>;
+};
+type RemainingRouteBucket = {
+  routeIdentity: { carrier: string; carrierEntityKey?: string };
+  from: string;
+  to: string;
+  entries: Map<string, RemainingRouteEntry>;
+};
+const remainingByRoute = new Map<string, RemainingRouteBucket>();
+const remainingAcceptedKeys = new Set<string>();
+let remainingRetainedOccurrences = 0;
+for (const row of remainingRows) {
+  const { candidate } = row;
+  if (remainingAcceptedKeys.has(row.candidateKey)) throw new Error(`Duplicate accepted remaining-airports identity: ${row.candidateKey}`);
+  remainingAcceptedKeys.add(row.candidateKey);
+  if (AVINOR_REMAINING_HELD_KEYS.has(row.candidateKey)) throw new Error(`Reviewer-held identity entered accepted remaining-airports release: ${row.candidateKey}`);
+  if (remainingConfirmedBaselineKeys.has(row.candidateKey) || remainingCandidateBaselineKeys.has(row.candidateKey)) {
+    throw new Error(`New remaining-airports identity unexpectedly overlaps the pinned runtime: ${row.candidateKey}`);
+  }
+  if (candidate.carrierCode === 'LTR') throw new Error(`Held LTR identity entered the accepted remaining-airports ledger: ${row.candidateKey}`);
+  const routeIdentity = { carrier: candidate.carrierCode, ...(candidate.carrierEntityKey !== candidate.carrierCode ? { carrierEntityKey: candidate.carrierEntityKey } : {}) };
+  const routeKey = carrierRouteKey(routeIdentity, candidate.origin, candidate.destination);
+  const routeBucket = remainingByRoute.get(routeKey) ?? { routeIdentity, from: candidate.origin, to: candidate.destination, entries: new Map() };
+  const entry = routeBucket.entries.get(candidate.flightDesignator) ?? {
+    flightNumber: candidate.flightDesignator,
+    carrierEntityName: candidate.carrierEntityName,
+    carrierEntityNameMapping: candidate.carrierEntityNameMapping,
+    bySource: new Map(),
+  };
+  if (entry.carrierEntityName && candidate.carrierEntityName && entry.carrierEntityName !== candidate.carrierEntityName) {
+    throw new Error(`Conflicting trusted carrier display names in ${row.candidateKey}`);
+  }
+  const rowConflictCount = row.occurrenceEvidence.filter((occurrence) => occurrence.oldCandidateWindowConflict).length;
+  for (const occurrence of row.occurrenceEvidence) {
+    const snapshot = remainingSnapshotsByAirport.get(occurrence.sourceAirport);
+    const source = remainingSourceByAirport.get(occurrence.sourceAirport);
+    if (!snapshot || !source
+      || occurrence.snapshotSHA256 !== snapshot.responseSHA256
+      || occurrence.requestUrl !== snapshot.requestUrl
+      || occurrence.retrievedAtUTC !== snapshot.retrievedAtUTC
+      || occurrence.operatingCarrierIATA !== candidate.carrierCode
+      || occurrence.fullFlightID !== candidate.flightDesignator
+      || occurrence.origin !== candidate.origin
+      || occurrence.destination !== candidate.destination
+      || occurrence.expiresAtUTC !== occurrence.scheduleTimeUTC
+      || Date.parse(occurrence.scheduleTimeUTC) <= Date.parse(snapshot.retrievedAtUTC)
+      || Date.parse(occurrence.scheduleTimeUTC) > Date.parse(snapshot.freshUntilUTC)) {
+      throw new Error(`Remaining-airports occurrence provenance, freshness window or exact identity mismatch: ${row.candidateKey} at ${occurrence.scheduleTimeUTC}`);
+    }
+    const details: FollowOnOccurrence = {
+      candidateKey: row.candidateKey,
+      carrierEntityName: candidate.carrierEntityName,
+      carrierEntityNameMapping: candidate.carrierEntityNameMapping,
+      directnessAssessment: row.directnessAssessment,
+      expiresAtUTC: occurrence.expiresAtUTC,
+      oldCandidateWindowConflict: occurrence.oldCandidateWindowConflict,
+      oldCandidateWindowConflictOccurrenceCount: rowConflictCount,
+      oldCandidateWindowEffectiveFrom: null,
+      oldCandidateWindowEffectiveUntil: null,
+      oldCandidateWindowRelationship: occurrence.oldCandidateWindowRelationship,
+      oldCandidateWindowSource: occurrence.oldCandidateWindowConflict
+        ? 'Independent review retained this identity-specific candidate-window conflict; the occurrence remains date-scoped.'
+        : 'Independent review found no identity-specific candidate-window conflict; route context does not extend flight-number validity.',
+      scheduleTimeUTC: occurrence.scheduleTimeUTC,
+      sourceAirport: occurrence.sourceAirport,
+      sourceOperatingCarrierIATA: occurrence.operatingCarrierIATA,
+      sourceRow: occurrence.sourceRow,
+      sourceUniqueID: occurrence.sourceUniqueID,
+      statusCode: occurrence.statusCode,
+      arrDepRaw: occurrence.arrDepRaw,
+      viaAirportRaw: occurrence.viaAirportRaw,
+      viaAirports: occurrence.viaAirports,
+    };
+    const sourceRows = entry.bySource.get(source.id) ?? [];
+    sourceRows.push(details);
+    entry.bySource.set(source.id, sourceRows);
+    remainingRetainedOccurrences += 1;
+  }
+  routeBucket.entries.set(candidate.flightDesignator, entry);
+  remainingByRoute.set(routeKey, routeBucket);
+}
+if (remainingAcceptedKeys.size !== remainingRelease.accepted.identityGroups
+  || remainingRetainedOccurrences !== remainingRelease.accepted.occurrences) {
+  throw new Error('Remaining-airports accepted identity or source occurrence totals changed during runtime mapping');
+}
+
+const remainingBaselineRoutesByKey = new Map(followOnRuntime.routes.map((route) => [carrierRouteKey(route, ...route.pair), route] as const));
+const newRemainingCarrierRoutes = [...remainingByRoute.keys()].filter((key) => !remainingBaselineRoutesByKey.has(key)).length;
+const existingRemainingCarrierRoutes = remainingByRoute.size - newRemainingCarrierRoutes;
+if (remainingByRoute.size !== remainingRelease.accepted.carrierDirectedRoutes
+  || newRemainingCarrierRoutes !== remainingRelease.accepted.newCarrierDirectedRoutes
+  || existingRemainingCarrierRoutes !== remainingRelease.accepted.existingCarrierDirectedRoutes) {
+  throw new Error(`Remaining-airports route reconciliation changed: ${remainingByRoute.size}/${newRemainingCarrierRoutes}/${existingRemainingCarrierRoutes}`);
+}
+
+const remainingRuntimeRoutes = new Map<string, RouteNetworkCatalog['routes'][number]>();
+for (const [routeKey, bucket] of remainingByRoute) {
+  const existing = remainingBaselineRoutesByKey.get(routeKey);
+  const entries = [...bucket.entries.values()];
+  const flightNumbers = entries.map((entry) => entry.flightNumber);
+  const candidateNumbers = (existing?.flightNumberCandidates ?? []).filter((number) => !flightNumbers.includes(number));
+  const sourceIds = [...new Set(entries.flatMap((entry) => [...entry.bySource.keys()]))].sort();
+  const datedEvidence = entries.flatMap((entry) => [...entry.bySource.entries()].map(([sourceId, details]) => ({
+    flightNumber: entry.flightNumber,
+    sourceId,
+    candidateSourceIds: [],
+    occurrencesUTC: [...new Set(details.map((detail) => detail.scheduleTimeUTC))].sort(),
+    occurrenceDetails: [...details].sort((a, b) => a.scheduleTimeUTC.localeCompare(b.scheduleTimeUTC) || a.sourceRow - b.sourceRow),
+    plannerUse: 'dated-departure' as const,
+  })));
+  const trustedName = entries.find((entry) => entry.carrierEntityNameMapping === 'unique-trusted-name' && entry.carrierEntityName)?.carrierEntityName ?? undefined;
+  const route: RouteNetworkCatalog['routes'][number] = existing ? {
+    ...existing,
+    ...(existing.status === 'identity-unresolved' ? { status: 'published' as const } : {}),
+    carrierIdentity: existing.carrierIdentity === 'operating' ? 'operating' : 'provider-listed',
+    ...(existing.carrierEntityName || !trustedName ? {} : { carrierEntityName: trustedName }),
+    flightNumbers: [...new Set([...(existing.flightNumbers ?? []), ...flightNumbers])].sort(),
+    ...(candidateNumbers.length ? { flightNumberCandidates: candidateNumbers } : { flightNumberCandidates: undefined }),
+    ...(candidateNumbers.length ? {} : { flightNumberCandidateSourceIds: undefined }),
+    sourceIds: [...new Set([...existing.sourceIds, ...sourceIds])],
+    timeBoundFlightNumbers: [...(existing.timeBoundFlightNumbers ?? []), ...datedEvidence],
+  } : {
+    carrier: bucket.routeIdentity.carrier,
+    ...(bucket.routeIdentity.carrierEntityKey ? { carrierEntityKey: bucket.routeIdentity.carrierEntityKey } : {}),
+    ...(trustedName ? { carrierEntityName: trustedName } : {}),
+    pair: [bucket.from, bucket.to],
+    service: 'scheduled-endpoint-pair',
+    status: 'published',
+    carrierIdentity: 'provider-listed',
+    flightNumbers: flightNumbers.sort(),
+    sourceIds,
+    timeBoundFlightNumbers: datedEvidence,
+  };
+  remainingRuntimeRoutes.set(routeKey, route);
+}
+const remainingSources = [...remainingSourceByAirport.values()].sort((a, b) => a.id.localeCompare(b.id));
+const remainingRuntime = parseRouteNetworkCatalog({
+  ...followOnRuntime,
+  sources: [...followOnRuntime.sources, ...remainingSources],
+  routes: followOnRuntime.routes.map((route) => remainingRuntimeRoutes.get(carrierRouteKey(route, ...route.pair)) ?? route)
+    .concat([...remainingRuntimeRoutes.entries()].filter(([key]) => !remainingBaselineRoutesByKey.has(key)).map(([, route]) => route)),
+}, airportCodes);
+const remainingRuntimeRoutesWithNewFlight = remainingRuntime.routes.filter((route) =>
+  (route.timeBoundFlightNumbers ?? []).some((evidence) => evidence.occurrenceDetails?.some((detail) => remainingAcceptedKeys.has(detail.candidateKey))),
+);
+const finalConfirmedKeys = new Set(remainingRuntime.routes.flatMap((route) => (route.flightNumbers ?? []).map((flightNumber) =>
+  directedIdentityKey(route.carrier, route.carrierEntityKey ?? route.carrier, route.pair[0], route.pair[1], flightNumber),
+)));
+for (const heldKey of AVINOR_REMAINING_HELD_KEYS) {
+  if (finalConfirmedKeys.has(heldKey)
+    || remainingRuntime.routes.some((route) => (route.timeBoundFlightNumbers ?? []).some((evidence) => (evidence.occurrenceDetails ?? []).some((detail) => detail.candidateKey === heldKey)))) {
+    throw new Error(`Reviewer-held LTR identity entered final runtime: ${heldKey}`);
+  }
+}
+if (remainingRuntime.routes.length !== followOnRuntime.routes.length + 45
+  || remainingRuntime.routes.filter((route) => route.status === 'published').length !== followOnRuntime.routes.filter((route) => route.status === 'published').length + 45
+  || finalConfirmedKeys.size !== remainingConfirmedBaselineKeys.size + 143
+  || remainingRuntimeRoutesWithNewFlight.length !== remainingByRoute.size) {
+  throw new Error('Remaining-airports runtime route, published-route or confirmed-identity projection changed');
+}
+const finalRuntime = remainingRuntime;
 
 rawByFile.set(AVINOR_XML_INPUT, '');
 
@@ -598,7 +838,7 @@ for (const letter of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') {
 // produces byte-identical output, which keeps generated artifacts diffable.
 const builtOn = new Date(
   Math.max(
-    ...[...INPUTS, ...OPTIONAL_INPUTS, CORRECTIONS_INPUT, NUMBER_INPUT, QUARANTINES_INPUT, PRESERVATION_INPUT, AVINOR_SNAPSHOT_INPUT, AVINOR_XML_INPUT, AVINOR_BATCH_INPUT, ...[...batchXmlBytes.keys()].map((path) => path.split('/').at(-1)!)]
+    ...[...INPUTS, ...OPTIONAL_INPUTS, CORRECTIONS_INPUT, NUMBER_INPUT, QUARANTINES_INPUT, PRESERVATION_INPUT, AVINOR_SNAPSHOT_INPUT, AVINOR_XML_INPUT, AVINOR_BATCH_INPUT, ...[...batchXmlBytes.keys()].map((path) => path.split('/').at(-1)!), AVINOR_REMAINING_LEDGER_INPUT, AVINOR_REMAINING_RELEASE_INPUT, ...[...remainingXmlBytes.keys()].map((path) => path.split('/').at(-1)!)]
       .map((file) => `${root}/${file}`)
       .filter((path) => existsSync(path))
       .map((path) => statSync(path).mtimeMs),
@@ -611,7 +851,7 @@ const meta = {
   // Data-license provenance. The route-network layers aggregate ODbL
   // sources (MrAirspace, ADSBiq) whose share-alike terms govern the
   // derived database; see DATA_LICENSE and THIRD_PARTY_NOTICES.md.
-  source: 'curated + provider-listed route-network layers, the first OSL snapshot, the ten-airport Avinor batch, and the 11-snapshot follow-on ledger (see THIRD_PARTY_NOTICES.md and exact occurrence/source expiry metadata)',
+  source: 'curated + provider-listed route-network layers, the first OSL snapshot, the ten-airport Avinor batch, the 11-snapshot follow-on ledger, and the independently reviewed 143-identity Avinor remaining-airports release (see THIRD_PARTY_NOTICES.md and exact occurrence/source expiry metadata)',
   license: 'ODbL-1.0',
   licenseNote: 'Derived database of ODbL-licensed ADS-B route sources; share-alike applies. Avinor is date-scoped schedule evidence with separate attribution terms; every occurrence expires at its scheduled UTC time, and each snapshot has its own source-window cutoff.',
   mergeStrategy: 'curated + generated',
@@ -630,12 +870,15 @@ const meta = {
     AVINOR_FOLLOWON_LEDGER_INPUT,
     AVINOR_FOLLOWON_RELEASE_INPUT,
     AVINOR_FOLLOWON_HELD_PATH,
+    AVINOR_REMAINING_LEDGER_INPUT,
+    AVINOR_REMAINING_RELEASE_INPUT,
+    ...remainingRelease.sourceSnapshots.map((snapshot) => snapshot.rawAssetPath.split('/').at(-1)!),
     followOnRelease.assets.validationReportPath,
     followOnRelease.assets.cachedTermsSnapshotPath,
   ].map((file) => {
     const docOrRootPath = /^(?:docs|scripts|public)\//.test(file) ? file : `${root}/${file}`;
     const bytes = file.endsWith('.xml')
-      ? batchXmlBytes.get(`route-network/${file}`) ?? avinorXmlBytes
+      ? batchXmlBytes.get(`route-network/${file}`) ?? remainingXmlBytes.get(`route-network/${file}`) ?? avinorXmlBytes
       : undefined;
     return [file, bytes ? sha256Bytes(bytes) : sha256(readFileSync(docOrRootPath, 'utf8'))];
   })),
@@ -661,6 +904,17 @@ const meta = {
   ),
   originShards,
   avinorFollowOnCarrierCodes: followOnCarrierCodes,
+  avinorRemainingAirports: {
+    releaseId: remainingRelease.releaseId,
+    acceptedIdentityGroups: remainingAcceptedKeys.size,
+    retainedOccurrences: remainingRetainedOccurrences,
+    newCarrierDirectedRoutes: newRemainingCarrierRoutes,
+    existingCarrierDirectedRoutes: existingRemainingCarrierRoutes,
+    sourceSnapshots: remainingRelease.sourceSnapshots.length,
+    sourceCodes: remainingRelease.accepted.sourceOperatingCodeCounts,
+    independentlyReviewedCurrentOccurrences: remainingRelease.accepted.currentOccurrenceEvidenceAtReviewAsOf,
+    independentlyReviewedExpiredOccurrences: remainingRelease.accepted.expiredOccurrenceEvidenceAtReviewAsOf,
+  },
 };
 writeFileSync(`${root}/runtime-current.meta.json`, `${JSON.stringify(meta, null, 2)}\n`);
 

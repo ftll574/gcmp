@@ -29,6 +29,6 @@ it('reconstructs the accepted legacy runtime bytes after removing only this six-
  const routeOnlyIds=new Set(runtime.routes.filter(row=>row.routeEvidenceScope==='route-only').flatMap(row=>row.sourceIds));
  const legacy={...runtime,routes:runtime.routes.filter(row=>row.routeEvidenceScope!=='route-only'),sources:runtime.sources.filter(row=>!routeOnlyIds.has(row.id))};
  const sha=createHash('sha256').update(`${JSON.stringify(legacy)}\n`).digest('hex');
- expect(legacy.routes).toHaveLength(32165);expect(sha).toBe('975bfb65caac7385f3541f0e6fedb0f385ac04332953ebed7b4020e37e589b19');
+ expect(legacy.routes).toHaveLength(32210);expect(sha).toBe('a2aae6888c0b87e46031bc8e58ee7ee8c96383664ff36997d5c9b9c329a734ec');
  expect(legacy.routes.filter(row=>row.carrier==='AD')).toHaveLength(49);expect(legacy.routes.some(row=>row.carrier==='2F')).toBe(false);
 });

@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, test } from 'vitest';
 import { caaScheduleDateState, parseCaaWeeklyScheduleTier } from '../../../src/lib/schemas/caa-weekly-schedule-tier.ts';
 import { parseAvinorFollowOnLedgerJsonl } from '../../../src/lib/schemas/avinor-follow-on.ts';
+import { parseAvinorRemainingAirportsLedgerJsonl } from '../../../src/lib/schemas/avinor-remaining-airports.ts';
 
 const tier = parseCaaWeeklyScheduleTier(JSON.parse(readFileSync('public/data/route-network/caa-weekly-schedule-tier-20261006.json', 'utf8')));
 const runtime = JSON.parse(readFileSync('public/data/route-network/runtime-current.json', 'utf8')) as {
@@ -17,13 +18,17 @@ const runtime = JSON.parse(readFileSync('public/data/route-network/runtime-curre
 };
 const followOnRows = parseAvinorFollowOnLedgerJsonl(readFileSync('public/data/route-network/avinor-follow-on-evidence-20261006.jsonl', 'utf8'));
 const followOnNetNewKeys = new Set(followOnRows.filter(row => !row.runtimeBaseline.exactIdentityWasCandidateBeforeHandoff).map(row => row.candidateKey));
+const remainingKeys = new Set(parseAvinorRemainingAirportsLedgerJsonl(readFileSync('public/data/route-network/avinor-remaining-airports-accepted-20261007.jsonl', 'utf8')).map(row => row.candidateKey));
 const candidateKeys = new Set(runtime.routes.flatMap(route => {
   const [from, to] = route.pair;
   const entity = route.carrierEntityKey ?? route.carrier;
   const candidateDesignators = [
     ...(route.flightNumberCandidates ?? []),
     ...(route.timeBoundFlightNumbers ?? []).map(row => row.flightNumber)
-      .filter(designator => !followOnNetNewKeys.has(`${route.carrier}|${entity}|${from}>${to}|${designator}`)),
+      .filter(designator => {
+        const key = `${route.carrier}|${entity}|${from}>${to}|${designator}`;
+        return !followOnNetNewKeys.has(key) && !remainingKeys.has(key);
+      }),
   ];
   return candidateDesignators.map(designator => `${entity}|${route.carrier}|${from}>${to}|${designator}`);
 }));

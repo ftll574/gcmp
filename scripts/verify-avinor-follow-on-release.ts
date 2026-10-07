@@ -163,8 +163,8 @@ for (const route of runtime.routes) {
     }
   }
 }
-assert(runtimeTimedKeys.size === uniqueAcceptedKeys.size && [...runtimeTimedKeys].every((key) => uniqueAcceptedKeys.has(key)),
-  'Runtime date-bound identity set differs from first, batch and follow-on accepted sources');
+assert([...uniqueAcceptedKeys].every((key) => runtimeTimedKeys.has(key)),
+  'Runtime is missing a date-bound identity from the first, batch or follow-on accepted sources');
 
 const caa = CaaWeeklyScheduleTierSchema.parse(JSON.parse(readFileSync(CAA_PATH, 'utf8')));
 const caaKeys = new Set(caa.associations.map((row) => row.key));
