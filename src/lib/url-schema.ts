@@ -47,6 +47,7 @@ import {
   isSurfaceLeg,
   type CabinId,
   type EliteTier,
+  type FlightLeg,
   type Leg,
   type ProgramId,
   type ProgramShortCode,
@@ -544,7 +545,7 @@ export function parseShareUrl(input: string): UrlParseResult {
         ...(stopover !== undefined ? { stopover } : {}),
         ...(surface === false ? { surface: false as const } : {}),
         ...(manual === true ? { manual: true } : {}),
-        ...(carrierAssumed === true ? { carrierAssumed: true } : {}),
+        ...(carrierAssumed === true || (dgcaScheduleReference !== undefined && operatingCarrier !== '') ? { carrierAssumed: true } : {}),
         ...(departsOn !== undefined ? { departsOn } : {}),
         ...(flightNumber ? { flightNumber } : {}),
         ...(dgcaScheduleReference ? { dgcaScheduleReference } : {}),
@@ -683,9 +684,11 @@ export function encodeShareUrl(req: RoutingRequest): string {
   const manualByGroup = anyManual
     ? req.groups.map((group) => group.legs.map((leg) => isFlightLeg(leg) && leg.manual === true ? '1' : '').join(','))
     : null;
-  const anyAssumedCarrier = req.groups.some((g) => g.legs.some((leg) => isFlightLeg(leg) && leg.carrierAssumed === true));
+  const isAssumedCarrier = (leg: FlightLeg): boolean => leg.carrierAssumed === true
+    || (leg.dgcaScheduleReference !== undefined && leg.operatingCarrier !== undefined && leg.operatingCarrier !== '');
+  const anyAssumedCarrier = req.groups.some((g) => g.legs.some((leg) => isFlightLeg(leg) && isAssumedCarrier(leg)));
   const assumedCarrierByGroup = anyAssumedCarrier
-    ? req.groups.map((group) => group.legs.map((leg) => isFlightLeg(leg) && leg.carrierAssumed === true ? '1' : '').join(','))
+    ? req.groups.map((group) => group.legs.map((leg) => isFlightLeg(leg) && isAssumedCarrier(leg) ? '1' : '').join(','))
     : null;
   // Per-leg departure dates. Encode as `d=2026-09-01,,2026-09-05` mirroring
   // `op` shape. Empty cell for undated legs. Skip the whole param when no

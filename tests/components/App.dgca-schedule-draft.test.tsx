@@ -108,7 +108,7 @@ test('source-only DGCA route stays geographically visible and qualified through 
 
   fireEvent.click(screen.getByRole('button', { name: 'Save' }));
   fireEvent.change(screen.getByRole('textbox', { name: 'Routing name' }), { target: { value: 'DGCA BOM DEL draft' } });
-  fireEvent.click(screen.getAllByRole('button', { name: 'Save' })[1]!);
+  fireEvent.click(screen.getByRole('button', { name: 'Save', exact: true }));
   const savedRaw = window.localStorage.getItem('gcmp.savedRoutings.v1') ?? '';
   expect(savedRaw).toContain('DGCA BOM DEL draft');
   expect(savedRaw).toContain('dgca-indigo-6e102-bom-del');
@@ -128,6 +128,10 @@ test('source-only DGCA route stays geographically visible and qualified through 
   fireEvent.click(savedPanel);
   fireEvent.click(await screen.findByRole('button', { name: 'DGCA BOM DEL draft' }));
   expect(currentLeg()).toMatchObject({ from: 'BOM', to: 'DEL', departsOn: '2027-04-01' });
+  fireEvent.click(control('[data-route-setup-collapsed="true"]'));
+  const restoredFlightDetails = document.querySelector<HTMLDetailsElement>('.route-flight-details')!;
+  restoredFlightDetails.open = true;
+  fireEvent(restoredFlightDetails, new Event('toggle'));
   expect(control('[data-dgca-draft-reference]')).toHaveTextContent('DGCA source identity reference');
 
   fireEvent.click(control('[data-leg-route="BOM-DEL"] .leg-chip-remove-destination'));

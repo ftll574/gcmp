@@ -4,7 +4,10 @@ import {
   DgcaScheduleDraftReferenceSchema,
   DgcaScheduleEvidenceCatalogSchema,
 } from '../../src/lib/schemas/dgca-schedule-evidence.ts';
+import { AllianceCatalogSchema } from '../../src/lib/schemas/alliance.ts';
+import { RtwRuleCatalogSchema } from '../../src/lib/schemas/rtw-rule.ts';
 import { encodeShareUrl, parseShareUrl } from '../../src/lib/url-schema.ts';
+import { validateRtwRoute } from '../../src/lib/rtw/validate.ts';
 import { isFlightLeg, type FlightLeg, type RoutingRequest } from '../../src/lib/types.ts';
 
 const catalog = DgcaScheduleEvidenceCatalogSchema.parse(
@@ -24,6 +27,29 @@ const reference = DgcaScheduleDraftReferenceSchema.parse({
   reference: identity,
   catalogSnapshotAsOfDate: catalog.snapshotAsOfDate,
 });
+
+const airIndiaSource = catalog.sources.find(item => item.id === 'dgca-air-india-domestic-ss-2026')!;
+const airIndiaIdentity = airIndiaSource.references.find(item => item.id === 'dgca-airindia-ai1701-del-bdq')!;
+const airIndiaReference = DgcaScheduleDraftReferenceSchema.parse({
+  source: {
+    id: airIndiaSource.id, title: airIndiaSource.title, url: airIndiaSource.url, pdfSha256: airIndiaSource.pdfSha256,
+    pdfBytes: airIndiaSource.pdfBytes, pages: airIndiaSource.pages,
+    publishedDateRaw: airIndiaSource.publishedDateRaw, checkedAt: airIndiaSource.checkedAt, reviewBy: airIndiaSource.reviewBy,
+    reviewedSnapshotDate: airIndiaSource.reviewedSnapshotDate, attribution: airIndiaSource.attribution,
+    reusePolicyUrl: airIndiaSource.reusePolicyUrl, reusePolicyStatement: airIndiaSource.reusePolicyStatement,
+    operator: airIndiaSource.operator,
+  },
+  reference: airIndiaIdentity,
+  catalogSnapshotAsOfDate: catalog.snapshotAsOfDate,
+});
+
+const rtwProducts = RtwRuleCatalogSchema.parse(JSON.parse(readFileSync('public/data/rtw-products/current.json', 'utf8')));
+const starAllianceProduct = rtwProducts.products.find(item => item.id === 'star-alliance-rtw-fare')!;
+const airports = new Map(JSON.parse(readFileSync('public/data/airports.json', 'utf8')).map((row: { iata: string }) => [row.iata, row]));
+const validationInputs = {
+  airports: airports as Parameters<typeof validateRtwRoute>[2]['airports'],
+  allianceCatalog: AllianceCatalogSchema.parse(JSON.parse(readFileSync('public/data/alliances/current.json', 'utf8'))),
+};
 
 const request: RoutingRequest = {
   groups: [{ legs: [{
@@ -74,6 +100,49 @@ test('a traveler-selected carrier remains an assumption alongside the independen
   expect(parsed.request.groups[0]?.legs[0]).toMatchObject({
     operatingCarrier: '6E', carrierAssumed: true, dgcaScheduleReference: reference,
   });
+});
+
+test('a DGCA share link cannot turn mapped source attribution into confirmed alliance eligibility', () => {
+  const assumedSourceLeg: FlightLeg = {
+    from: 'DEL', to: 'BDQ', operatingCarrier: 'AI', dgcaScheduleReference: airIndiaReference,
+  };
+  const encoded = encodeShareUrl({
+    ...request,
+    rtwProductId: 'star-alliance-rtw-fare',
+    groups: [{ legs: [assumedSourceLeg] }],
+  });
+  expect(encoded).toContain('&assume=1');
+  expect(encoded).toContain('&dg=');
+
+  // Simulate an older or hand-crafted URL whose `op=AI` lacks `assume=1`.
+  const unqualifiedUrl = encoded.replace('&assume=1', '');
+  const parsed = parseShareUrl(unqualifiedUrl);
+  expect(parsed.ok).toBe(true);
+  if (!parsed.ok) return;
+  const parsedLeg = asFlightLeg(parsed.request.groups[0]?.legs[0]);
+  expect(parsedLeg).toMatchObject({ operatingCarrier: 'AI', carrierAssumed: true });
+  expect(parsedLeg.dgcaScheduleReference).toEqual(airIndiaReference);
+
+  const sharedResult = validateRtwRoute(starAllianceProduct, [parsedLeg], validationInputs);
+  expect(sharedResult.findings).toEqual(expect.arrayContaining([
+    expect.objectContaining({ ruleId: 'airline-eligibility', severity: 'unknown' }),
+  ]));
+  expect(sharedResult.findings).not.toEqual(expect.arrayContaining([
+    expect.objectContaining({ ruleId: 'airline-eligibility', severity: 'pass' }),
+  ]));
+  expect(sharedResult.summary.assumedCarrierLegIndexes).toEqual([0]);
+
+  // The validator also protects internal callers that bypass URL parsing.
+  const directResult = validateRtwRoute(starAllianceProduct, [assumedSourceLeg], validationInputs);
+  expect(directResult.findings).toEqual(expect.arrayContaining([
+    expect.objectContaining({ ruleId: 'airline-eligibility', severity: 'unknown' }),
+  ]));
+
+  // Ordinary confirmed flights without a DGCA identity snapshot retain their old behavior.
+  const confirmedResult = validateRtwRoute(starAllianceProduct, [{ from: 'DEL', to: 'BDQ', operatingCarrier: 'AI' }], validationInputs);
+  expect(confirmedResult.findings).toEqual(expect.arrayContaining([
+    expect.objectContaining({ ruleId: 'airline-eligibility', severity: 'pass' }),
+  ]));
 });
 
 test('rejects malformed DGCA source snapshots and references attached to a different direction', () => {

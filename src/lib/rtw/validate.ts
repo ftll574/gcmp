@@ -768,24 +768,24 @@ export function validateRtwRoute(
   const assumedCarrierLegIndexes = legs
     .map((leg, index) => ({ leg, index }))
     .filter((item): item is { leg: FlightLeg & { readonly operatingCarrier: string }; index: number } => hasOperatingCarrier(item.leg))
-    .filter(({ leg }) => leg.carrierAssumed === true)
+    .filter(({ leg }) => leg.carrierAssumed === true || leg.dgcaScheduleReference !== undefined)
     .map(({ index }) => index);
   const ineligibleLegIndexes = legs
     .map((leg, index) => ({ leg, index }))
     .filter((item): item is { leg: FlightLeg & { readonly operatingCarrier: string }; index: number } => hasOperatingCarrier(item.leg))
-    .filter(({ leg }) => leg.carrierAssumed !== true && !members.has(leg.operatingCarrier))
+    .filter(({ leg }) => leg.carrierAssumed !== true && leg.dgcaScheduleReference === undefined && !members.has(leg.operatingCarrier))
     .map(({ index }) => index);
 
   const confirmedFlownCarriers = new Set(
     legs
       .filter(hasOperatingCarrier)
-      .filter((leg) => leg.carrierAssumed !== true)
+      .filter((leg) => leg.carrierAssumed !== true && leg.dgcaScheduleReference === undefined)
       .map((leg) => leg.operatingCarrier),
   );
   const assumedFlownCarriers = new Set(
     legs
       .filter(hasOperatingCarrier)
-      .filter((leg) => leg.carrierAssumed === true)
+      .filter((leg) => leg.carrierAssumed === true || leg.dgcaScheduleReference !== undefined)
       .map((leg) => leg.operatingCarrier),
   );
   const flownCarriers = new Set([...confirmedFlownCarriers, ...assumedFlownCarriers]);

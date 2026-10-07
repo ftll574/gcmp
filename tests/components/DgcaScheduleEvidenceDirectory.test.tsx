@@ -55,7 +55,7 @@ test('loads the shared evidence directory on open and filters the bounded IndiGo
 });
 
 test('adds a dated, self-contained DGCA identity reference while leaving the operating airline unknown', async () => {
-  const onPlanReference = vi.fn((_reference: DgcaScheduleDraftReference, _date: string) => undefined);
+  const onPlanReference = vi.fn<(reference: DgcaScheduleDraftReference, date: string) => void>();
   vi.stubGlobal('fetch', vi.fn(async () => new Response(asset)));
   render(<DgcaScheduleEvidenceDirectory zh={false} onPlanReference={onPlanReference} />);
   await openDirectory();
@@ -74,7 +74,7 @@ test('adds a dated, self-contained DGCA identity reference while leaving the ope
   expect(reference.source.operator).toMatchObject({ carrierIdentityStatus: 'unresolved', iataDesignator: null, icaoCode: null });
   expect(reference.reference.variants[0]).toMatchObject({ timezone: null, timeBasis: 'unknown', frequencyRaw: '1234567' });
   expect(reference.reference.variants[0]?.sourceRows[0]?.referenceRaw).toContain('Delhi');
-  expect(reference.reference.variants[0]?.sourceRows[0]?.sourceRowTextSha256).toMatch(/^[0-9a-f]{64}$/);
+  expect(reference.reference.variants[0]?.sourceRows[0]?.sourceRowSha256).toMatch(/^[0-9a-f]{64}$/);
   expect(reference.reference.variants[0]?.conflictFields).toEqual([]);
 });
 
@@ -96,8 +96,8 @@ test('future-only identities require a date in-window; corroborated weekday mism
   fireEvent.change(screen.getByLabelText('Source identity-window date (not flight availability)'), { target: { value: '2026-10-16' } });
   await waitFor(() => expect(document.querySelector('[data-dgca-reference="dgca-indigo-6e108-hyd-ixc"]')).toHaveAttribute('data-source-window', 'inside'));
   const weekdayMismatch = document.querySelector<HTMLElement>('[data-dgca-reference="dgca-indigo-6e108-hyd-ixc"]')!;
-  expect(weekdayMismatch.querySelector('[data-dgca-weekday-status="weekday-not-supported"]')).toBeInTheDocument();
-  expect(weekdayMismatch.querySelector('[data-plan-dgca-reference]')).toBeNull();
+  expect(weekdayMismatch.querySelector('[data-dgca-weekday-status="weekday-conflict"]')).toBeInTheDocument();
+  expect(weekdayMismatch.querySelector('[data-plan-dgca-reference]')).toBeInTheDocument();
 
   fireEvent.change(screen.getByLabelText('Search designator or airport code'), { target: { value: '6E5935' } });
   fireEvent.change(screen.getByLabelText('Source identity-window date (not flight availability)'), { target: { value: '2026-10-07' } });
@@ -109,7 +109,7 @@ test('future-only identities require a date in-window; corroborated weekday mism
 
 test('preserves SpiceJet source lineage, one-sided wording, source attribution and hash disclosures', async () => {
   vi.stubGlobal('fetch', vi.fn(async () => new Response(asset)));
-  const onPlanReference = vi.fn((_reference: DgcaScheduleDraftReference, _date: string) => undefined);
+  const onPlanReference = vi.fn<(reference: DgcaScheduleDraftReference, date: string) => void>();
   render(<DgcaScheduleEvidenceDirectory zh={false} onPlanReference={onPlanReference} />);
   await openDirectory();
   fireEvent.change(screen.getByLabelText('Source'), { target: { value: 'dgca-spicejet-ss-2026' } });
