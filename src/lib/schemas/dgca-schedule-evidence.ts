@@ -7,6 +7,8 @@ const Sha256 = z.string().regex(/^[0-9a-f]{64}$/);
 export const DgcaScheduleSourceRowSchema = z.object({
   referenceRaw: z.string().min(1),
   page: z.number().int().positive(),
+  physicalRow: z.number().int().positive().nullable(),
+  stationSectionOrdinal: z.number().int().positive().nullable(),
   stationSectionRaw: z.string().nullable(),
   printedRowRaw: z.string().nullable(),
   sourceSide: z.enum(['arrival', 'departure']).nullable(),
@@ -35,14 +37,14 @@ export const DgcaScheduleEvidenceVariantSchema = z.object({
   conflictIds: z.array(z.string()),
   conflictKinds: z.array(z.string()),
   conflictFields: z.array(z.enum(['frequency', 'departureClock', 'arrivalClock', 'aircraftType', 'rawClock'])),
-  metadataConflict: z.boolean(),
+  hasVariantConflict: z.boolean(),
   timeConflict: z.boolean(),
   notes: z.array(z.string()),
 }).strict().superRefine((variant, ctx) => {
   if (variant.effectiveFrom > variant.effectiveUntil) {
     ctx.addIssue({ code: 'custom', message: 'Source validity window is inverted' });
   }
-  if (variant.metadataConflict !== (variant.conflictIds.length > 0 || variant.conflictFields.length > 0)) {
+  if (variant.hasVariantConflict !== (variant.conflictIds.length > 0 || variant.conflictFields.length > 0)) {
     ctx.addIssue({ code: 'custom', message: 'Conflict flag does not match preserved conflict evidence' });
   }
   if (variant.sourceCounterpartStatus === 'paired' && new Set(variant.sourceMovementSides).size < 2) {
@@ -55,21 +57,22 @@ export const DgcaScheduleIdentityReferenceSchema = z.object({
   publishedDesignatorRaw: z.string().min(1),
   designatorKey: z.string().regex(/^[A-Z0-9]{2}\d{1,4}[A-Z]?$/),
   designatorPrefixRaw: z.string().regex(/^[A-Z0-9]{2}$/),
-  flightDigitsRaw: z.string().regex(/^\d{1,4}$/),
+  flightDigitsRaw: z.string().regex(/^\d{1,4}[A-Z]?$/),
   originIata: z.string().regex(/^[A-Z]{3}$/),
   destinationIata: z.string().regex(/^[A-Z]{3}$/),
   identityStatus: z.literal('accepted-identity-only'),
+  airportCatalogStatus: z.enum(['all-endpoints-present', 'source-code-not-in-current-catalog']),
   otherDirectionalRoutes: z.array(z.string().regex(/^[A-Z]{3}-[A-Z]{3}$/)),
   sourceCounterpartStatus: z.enum(['one-sided', 'paired', 'unknown']),
-  metadataConflict: z.boolean(),
-  conflictPeerIds: z.array(z.string()),
+  hasVariantConflict: z.boolean(),
+  conflictReferences: z.array(z.string()),
   variants: z.array(DgcaScheduleEvidenceVariantSchema).min(1),
 }).strict().superRefine((reference, ctx) => {
   if (reference.originIata === reference.destinationIata
     || reference.designatorKey !== `${reference.designatorPrefixRaw}${reference.flightDigitsRaw}`) {
     ctx.addIssue({ code: 'custom', message: 'Invalid designator or directed airport identity' });
   }
-  if (reference.metadataConflict !== reference.variants.some(variant => variant.metadataConflict)) {
+  if (reference.hasVariantConflict !== reference.variants.some(variant => variant.hasVariantConflict)) {
     ctx.addIssue({ code: 'custom', message: 'Reference conflict flag does not match its variants' });
   }
 });
@@ -117,7 +120,7 @@ export const DgcaScheduleEvidenceCatalogSchema = z.object({
       currentVariants: z.number().int().nonnegative(),
       excludedExpiredVariants: z.number().int().nonnegative(),
       excludedHeldVariants: z.number().int().nonnegative(),
-      excludedExpiredOnlyIdentityKeys: z.number().int().nonnegative(),
+      excludedExpiredOnlyIdentityKeys: z.number().int().nonnegative().nullable(),
       overlapPairs: z.number().int().nonnegative(),
       conflictingCoreIdentityPairs: z.number().int().nonnegative(),
       conflictVariants: z.number().int().nonnegative(),
@@ -135,7 +138,7 @@ export const DgcaScheduleEvidenceCatalogSchema = z.object({
       ctx.addIssue({ code: 'custom', message: `Unresolved carrier identity contains a carrier mapping in ${source.id}` });
     }
     if (source.operator.carrierIdentityStatus === 'independently-mapped'
-      && [source.operator.carrierName, source.operator.iataDesignator, source.operator.icaoCode, source.operator.identitySourceUrl].some(value => value === null)) {
+      && [source.operator.carrierName, source.operator.iataDesignator, source.operator.icaoCode].some(value => value === null)) {
       ctx.addIssue({ code: 'custom', message: `Independent carrier mapping is incomplete in ${source.id}` });
     }
     const identities = new Set<string>();

@@ -83,7 +83,42 @@ const PRODUCERS: Record<string, string> = {
   'route-network/mrairspace-flight-number-candidates-2026-Q2.json': 'scripts/ingest-mrairspace.ts',
   'route-network/caa-weekly-schedule-tier-20261006.json': 'scripts/build-caa-weekly-schedule-tier.py',
   'route-network/siros-registered-plan-release-20261007.json': 'scripts/build-siros-registered-plan-release.ts',
+  'dgca-schedule-evidence-20261007.json': 'scripts/build-dgca-schedule-evidence.ts',
 };
+
+const DGCA_SCHEDULE_EVIDENCE_INPUTS = [
+  'docs/source-evidence/airindia-dgca-2026/README.md',
+  'docs/source-evidence/airindia-dgca-2026/SHA256SUMS',
+  'docs/source-evidence/airindia-dgca-2026/integration-snapshot.json',
+  'docs/source-evidence/airindia-dgca-2026/movement-lineage.csv',
+  'docs/source-evidence/airindia-dgca-2026/schedule-identity-ledger.csv',
+  'docs/source-evidence/indigo-ss-2026/REVIEW.md',
+  'docs/source-evidence/indigo-ss-2026/airport-mapping-supplement.csv',
+  'docs/source-evidence/indigo-ss-2026/flagged-source-rows.csv',
+  'docs/source-evidence/indigo-ss-2026/identity-ledger.csv',
+  'docs/source-evidence/indigo-ss-2026/integration-candidate-snapshot.json',
+  'docs/source-evidence/indigo-ss-2026/manifest.sha256',
+  'docs/source-evidence/indigo-ss-2026/packet-baseline-flagged-source-rows.csv',
+  'docs/source-evidence/indigo-ss-2026/station-mapping-review.csv',
+  'docs/source-evidence/indigo-ss-2026/validation-summary.json',
+  'docs/source-evidence/spicejet-ss-2026/SHA256SUMS.txt',
+  'docs/source-evidence/spicejet-ss-2026/identity_ledger.jsonl',
+  'docs/source-evidence/spicejet-ss-2026/manifest.json',
+  'docs/source-evidence/spicejet-ss-2026/official-schedules.patch.json',
+  'docs/source-evidence/spicejet-ss-2026/review.md',
+  'public/data/airports.json',
+  'public/data/official-schedules.json',
+  'public/data/route-network/avinor-remaining-airports-release-20261007.json',
+  'public/data/route-network/caa-weekly-schedule-tier-20261006.json',
+  'public/data/route-network/runtime-current.json',
+  'public/data/route-network/siros-registered-plan-release-20261007.json',
+  'scripts/build-dgca-schedule-evidence.ts',
+  'scripts/build-spicejet-schedule-references.ts',
+  'scripts/lib/alliance-airline-icao.ts',
+  'src/lib/schemas/airports.ts',
+  'src/lib/schemas/dgca-schedule-evidence.ts',
+  'src/lib/schemas/spicejet-schedule-references.ts',
+].sort();
 
 /** License / source descriptor by directory family. */
 function describe(path: string): { source: string; license: DataLicense } {
@@ -213,6 +248,12 @@ function describe(path: string): { source: string; license: DataLicense } {
       license: 'site-terms',
     };
   }
+  if (path === 'dgca-schedule-evidence-20261007.json') {
+    return {
+      source: 'DGCA-approved SpiceJet, IndiGo, and Air India domestic schedule snapshots; exact packet hashes, source URLs, validity windows and page/row evidence retained (see THIRD_PARTY_NOTICES.md)',
+      license: 'site-terms',
+    };
+  }
   if (path.endsWith('.meta.json') || path === 'VERSION' || path === 'DATA_MANIFEST.json') {
     return { source: 'project metadata', license: 'ODbL-1.0' };
   }
@@ -282,6 +323,9 @@ function build(): void {
         'public/data/route-network/runtime-current.json',
       ];
     }
+    if (path === 'dgca-schedule-evidence-20261007.json') {
+      inputs = DGCA_SCHEDULE_EVIDENCE_INPUTS;
+    }
     if (path === 'route-network/runtime-current.json' || path === 'route-network/runtime-current.meta.json') {
       inputs = CURATED_INPUTS.size
         ? [...CURATED_INPUTS].filter((p) => p.startsWith('route-network/') && !p.includes('runtime')).sort()
@@ -317,22 +361,25 @@ function build(): void {
       || path === 'route-network/siros-registered-plan-raw-rows-20261007.jsonl.gz'
       || path === 'route-network/siros-registered-plan-release-20261007.json';
     const isSiroRelease = path === 'route-network/siros-registered-plan-release-20261007.json';
+    const isDgcaScheduleEvidence = path === 'dgca-schedule-evidence-20261007.json';
     const isRuntimeNetwork = path === 'route-network/runtime-current.json';
     const isRuntimeMeta = path === 'route-network/runtime-current.meta.json';
     const previous = existingByPath.get(path);
     datasets.push({
       id: path.replace(/\.json$/, '').replace(/\//g, '.'),
       path,
-      kind: isCaaWeeklyTier || isSiroArtifact ? kind : previous?.kind ?? kind,
-      producer: isCaaWeeklyTier || isSiroArtifact ? producer : previous?.producer ?? producer,
-      inputs: isCaaWeeklyTier || isSiroArtifact || isRuntimeNetwork || isRuntimeMeta ? inputs : previous?.inputs ?? inputs,
-      source: isCaaWeeklyTier || isAvinorSnapshot || isAvinorXml || isAvinorBatchSnapshot || isAvinorBatchXml || isAvinorFollowOn || isSiroArtifact || isRuntimeNetwork || isRuntimeMeta ? source : previous?.source ?? source,
-      license: isCaaWeeklyTier || isSiroArtifact || isRuntimeNetwork || isRuntimeMeta ? license : previous?.license ?? license,
+      kind: isCaaWeeklyTier || isSiroArtifact || isDgcaScheduleEvidence ? kind : previous?.kind ?? kind,
+      producer: isCaaWeeklyTier || isSiroArtifact || isDgcaScheduleEvidence ? producer : previous?.producer ?? producer,
+      inputs: isCaaWeeklyTier || isSiroArtifact || isDgcaScheduleEvidence || isRuntimeNetwork || isRuntimeMeta ? inputs : previous?.inputs ?? inputs,
+      source: isCaaWeeklyTier || isAvinorSnapshot || isAvinorXml || isAvinorBatchSnapshot || isAvinorBatchXml || isAvinorFollowOn || isSiroArtifact || isDgcaScheduleEvidence || isRuntimeNetwork || isRuntimeMeta ? source : previous?.source ?? source,
+      license: isCaaWeeklyTier || isSiroArtifact || isDgcaScheduleEvidence || isRuntimeNetwork || isRuntimeMeta ? license : previous?.license ?? license,
       attribution: isSiroArtifact ? 'ANAC — Registro de Serviços Aéreos (SIROS); federal open-data reuse basis with attribution, subject to resource-specific terms'
+        : isDgcaScheduleEvidence ? 'Directorate General of Civil Aviation (DGCA), Government of India — source attribution and reuse policy linked in the directory'
         : isCaaWeeklyTier
         ? 'Taiwan Civil Aviation Administration (交通部民用航空局)'
         : isAvinorSnapshot || isAvinorXml || isAvinorBatchSnapshot || isAvinorBatchXml || isAvinorFollowOn ? 'Avinor — link visible “Flight data from Avinor” text to https://www.avinor.no/; link the flight-data terms separately' : previous?.attribution ?? null,
-      schema: isSiroRelease ? 'src/lib/schemas/siros-registered-plan-release.ts'
+      schema: isDgcaScheduleEvidence ? 'src/lib/schemas/dgca-schedule-evidence.ts'
+        : isSiroRelease ? 'src/lib/schemas/siros-registered-plan-release.ts'
         : isCaaWeeklyTier ? 'src/lib/schemas/caa-weekly-schedule-tier.ts'
         : isAvinorSnapshot ? 'src/lib/schemas/avinor-xml-public.ts'
           : isAvinorBatchSnapshot ? 'src/lib/schemas/avinor-xml-public-batch.ts'
@@ -340,7 +387,9 @@ function build(): void {
               : isAvinorXml || isAvinorBatchXml ? null : previous?.schema ?? null,
       bytes,
       sha256,
-      notes: path === 'route-network/siros-registered-plan-release-20261007.json'
+      notes: isDgcaScheduleEvidence
+        ? '2,931 accepted designator/direction identities and 4,790 current source-window variants across SpiceJet (140 / 196 variants), IndiGo (2,218 / 3,729 variants), and Air India (573 / 865 variants). IndiGo has zero unresolved-station holds; its 1,381 expired variants are excluded, while the 10 PXN variants remain source-only across six identities. Preserves inclusive source validity, raw frequency/clocks, conflict flags and corrected source page/physical-row/station/printed-row/hash lineage. Air India aircraft conflicts are held at field level. The catalog is read-only identity evidence; it adds no selectable service, weekday pattern, UTC occurrence, date availability, connection timing, or actual-operation claim.'
+        : path === 'route-network/siros-registered-plan-release-20261007.json'
         ? 'Pins the captured 2026-10-07 SIROS CSV source body and accepted 14,997-row existing-route proposal. The proposal has 57 exact candidate matches and 1,390 designator identities absent from candidate/confirmed layers; it overlaps zero of 2,767 confirmed associations. The archive preserves exact accepted raw source rows. Held, expired, Z-prefixed schema-incompatible and new-route cases are outside this release.'
         : isCaaWeeklyTier
         ? '488 schedule-listed carrier-number-direction associations as of 2026-10-06; operator identity unknown; no actual-operation, bookability, nonstop, selectable-flight or award-eligibility claim. Source SHA-256 values are included in the asset.'

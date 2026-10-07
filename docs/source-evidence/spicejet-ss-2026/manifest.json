@@ -1,0 +1,59 @@
+{
+  "snapshot_as_of_date": "2026-10-07",
+  "source": {
+    "url": "https://public-prd-dgca.s3.ap-south-1.amazonaws.com/InventoryList/airOperation/certification/scheduled/domestic/SpiceJet_SS_2026.pdf",
+    "sha256": "135845cb7339e567e18b8e971d6aa5537882c3e1fd8d8101b024927e2b38124b",
+    "bytes": 192850,
+    "pages": 6
+  },
+  "packet_sha256_manifest_entries_verified": 27,
+  "operator_identity_source": "https://www.iata.org/en/about/members/airline-list/spicejet/532/",
+  "canonical_runtime": {
+    "git_head": "0f9775c5efaa1bce9d2d86c35ef9342c9d042641",
+    "runtime_sha256": "2bd353350db6d871099a2c2aa2aee23b63b0a7e65cccbbc502d9234eeb017c8a",
+    "flight_number_candidates_sha256": "deaed1fdb0d879155aaa4728586058319596dcf357fa3e86a1e665fcb3b117f5",
+    "airport_catalog_sha256": "76ebd24200aa5a81f924b0071f0ecf6263411ea7b23ae0475dcc735efe32453b",
+    "routes_total": 31658,
+    "published_routes": 31068,
+    "published_direction_pairs": 23355,
+    "sg_carrier_records": 0,
+    "sg_flight_number_candidates": 0
+  },
+  "counts": {
+    "source_rows": 284,
+    "directional_assertions": 284,
+    "accepted_current_variants": 196,
+    "expired_variants": 15,
+    "unique_flight_number_direction_keys": 145,
+    "keys_with_current_variant": 140,
+    "expired_only_keys": [
+      "SG 461 AMD-BLR",
+      "SG 463 AMD-HYD",
+      "SG 464 HYD-AMD",
+      "SG 466 AMD-BLR",
+      "SG 466 BLR-AMD"
+    ],
+    "overlap_pairs": 79,
+    "overlap_pairs_conflicting_core_identity": 0,
+    "overlap_claims_flagged": 120,
+    "counterpart_confirmed_keys": 73,
+    "counterpart_confirmed_current_keys": 72,
+    "same_designator_multiple_directional_routes": 27,
+    "all_25_station_heading_crosswalks_match_airport_catalog": true,
+    "distinct_route_endpoint_codes": 25,
+    "unknown_route_endpoint_codes": [],
+    "exact_candidate_matches": 0,
+    "published_route_directions_any_carrier": 100
+  },
+  "ledger_records": 211,
+  "ledger_sha256": "0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9",
+  "integration_patch": {
+    "path": "official-schedules.patch.json",
+    "flight_number_references": 140,
+    "source_id": "dgca-spicejet-ss-2026",
+    "checked_at": "2026-10-07T09:14:55Z",
+    "review_by": "2026-10-24T23:59:59Z",
+    "patch_sha256": "06cef970ec4cc1e1b6cdabf7058bdd4c195da70fa9cf887d673b4d013aa2330b"
+  },
+  "review_sha256": "d09841651dbfa11fba31e94983cc9588a760588b8a0c414e024a81f0fa18c346"
+}

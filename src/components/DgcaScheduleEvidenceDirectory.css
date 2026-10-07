@@ -1,0 +1,124 @@
+.dgca-schedule-evidence-directory {
+  margin: 22px 0;
+  border: 1px solid #d7dfdc;
+  border-radius: 14px;
+  background: #fff;
+  color: #20312e;
+}
+
+.dgca-schedule-evidence-directory > details > summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 7px 14px;
+  padding: 16px 18px;
+  cursor: pointer;
+  list-style-position: inside;
+}
+
+.dgca-schedule-evidence-directory > details > summary strong { color: #194a43; }
+
+.dgca-schedule-evidence-directory > details > summary span,
+.dgca-schedule-evidence-directory__body {
+  font-size: .92rem;
+  line-height: 1.55;
+}
+
+.dgca-schedule-evidence-directory__body { padding: 0 18px 18px; }
+
+.dgca-schedule-evidence-directory__filters {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(170px, 240px) minmax(190px, 260px);
+  gap: 12px;
+  margin: 14px 0;
+}
+
+.dgca-schedule-evidence-directory__filters label {
+  display: grid;
+  gap: 5px;
+  font-weight: 650;
+}
+
+.dgca-schedule-evidence-directory input,
+.dgca-schedule-evidence-directory select {
+  min-width: 0;
+  min-height: 42px;
+  padding: 8px 10px;
+  border: 1px solid #bbc9c5;
+  border-radius: 9px;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+}
+
+.dgca-schedule-evidence-directory__count { color: #51645f; font-weight: 650; }
+
+.dgca-schedule-evidence-directory__body > ul {
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.dgca-schedule-evidence-directory__body > ul > li {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid #e1e8e5;
+  border-radius: 10px;
+  background: #fbfcfb;
+}
+
+.dgca-schedule-evidence-directory__identity {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 12px;
+}
+
+.dgca-schedule-evidence-directory__identity strong { font-variant-numeric: tabular-nums; }
+.dgca-schedule-evidence-directory small { color: #52645e; }
+
+.dgca-schedule-evidence-directory__variant {
+  padding: 8px 0;
+  border-top: 1px solid #e1e8e5;
+}
+
+.dgca-schedule-evidence-directory__variant code,
+.dgca-schedule-evidence-directory__sources code { overflow-wrap: anywhere; }
+
+.dgca-schedule-evidence-directory__lineage { display: block; margin: 5px 0; }
+.dgca-schedule-evidence-directory__notes { margin: 8px 0; }
+
+.dgca-schedule-evidence-directory a { color: #126a60; text-underline-offset: 2px; }
+
+.dgca-schedule-evidence-directory button {
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid #a7c3bd;
+  border-radius: 8px;
+  background: #f1f8f6;
+  color: #194a43;
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.dgca-schedule-evidence-directory__sources {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+  border-top: 1px solid #e1e8e5;
+  padding-top: 10px;
+}
+
+.dgca-schedule-evidence-directory__sources > section { padding-top: 4px; }
+.dgca-schedule-evidence-directory__sources h3 { margin: 10px 0 4px; color: #194a43; }
+.dgca-schedule-evidence-directory__sources dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 4px 16px; }
+.dgca-schedule-evidence-directory__sources dl > div { display: flex; justify-content: space-between; gap: 12px; }
+.dgca-schedule-evidence-directory__sources dt { overflow-wrap: anywhere; }
+.dgca-schedule-evidence-directory__sources dd { margin: 0; font-variant-numeric: tabular-nums; }
+
+@media (max-width: 760px) {
+  .dgca-schedule-evidence-directory__filters { grid-template-columns: minmax(0, 1fr); }
+}

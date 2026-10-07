@@ -42,6 +42,8 @@
     "routes:verify-generated": "tsx scripts/verify-runtime-generated.ts",
     "data:build-manifest": "tsx scripts/build-data-manifest.ts",
     "data:verify-manifest": "tsx scripts/verify-data-manifest.ts",
+    "data:build-dgca-evidence": "node --import tsx scripts/build-spicejet-schedule-references.ts && node --import tsx scripts/build-dgca-schedule-evidence.ts",
+    "data:verify-dgca-evidence": "node --import tsx scripts/verify-dgca-schedule-evidence.ts",
     "data:verify-airlines": "tsx scripts/verify-airlines-provenance.ts",
     "predev": "tsx scripts/build-route-library-carrier-shards.ts && tsx scripts/build-landing-showcases.ts",
     "dev": "tsx scripts/dev.ts",

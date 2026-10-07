@@ -1,0 +1,1557 @@
+{
+  "version": 1,
+  "patchTarget": "public/data/official-schedules.json",
+  "sources": {
+    "dgca-spicejet-ss-2026": {
+      "name": "DGCA approved Summer 2026 SpiceJet domestic schedule",
+      "url": "https://public-prd-dgca.s3.ap-south-1.amazonaws.com/InventoryList/airOperation/certification/scheduled/domestic/SpiceJet_SS_2026.pdf",
+      "kind": "government-timetable",
+      "checkedAt": "2026-10-07T09:14:55Z",
+      "reviewBy": "2026-10-24T23:59:59Z",
+      "publishedOn": "2026-03-18"
+    }
+  },
+  "flightNumberReferences": [
+    {
+      "id": "dgca-spicejet-ss26-sg105-del-pnq",
+      "carrier": "SG",
+      "from": "DEL",
+      "to": "PNQ",
+      "flightNumbers": [
+        "105"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:DELHI:r50|p06:PUNE:r9. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg106-pnq-del",
+      "carrier": "SG",
+      "from": "PNQ",
+      "to": "DEL",
+      "flightNumbers": [
+        "106"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:DELHI:r3|p06:PUNE:r1. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg1077-amd-bom",
+      "carrier": "SG",
+      "from": "AMD",
+      "to": "BOM",
+      "flightNumbers": [
+        "1077"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:AHMEDABAD:r8|p05:MUMBAI:r11. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg1077-maa-amd",
+      "carrier": "SG",
+      "from": "MAA",
+      "to": "AMD",
+      "flightNumbers": [
+        "1077"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:CHENNAI:r1. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg1077-maa-pnq",
+      "carrier": "SG",
+      "from": "MAA",
+      "to": "PNQ",
+      "flightNumbers": [
+        "1077"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:CHENNAI:r2. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg1077-pnq-gox",
+      "carrier": "SG",
+      "from": "PNQ",
+      "to": "GOX",
+      "flightNumbers": [
+        "1077"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:GOA MOPA:r1|p06:PUNE:r3. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg1078-bom-amd",
+      "carrier": "SG",
+      "from": "BOM",
+      "to": "AMD",
+      "flightNumbers": [
+        "1078"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:AHMEDABAD:r14|p05:MUMBAI:r28. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg1081-gox-bom",
+      "carrier": "SG",
+      "from": "GOX",
+      "to": "BOM",
+      "flightNumbers": [
+        "1081"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:GOA MOPA:r2|p05:MUMBAI:r12|p05:MUMBAI:r13. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg1082-bom-gox",
+      "carrier": "SG",
+      "from": "BOM",
+      "to": "GOX",
+      "flightNumbers": [
+        "1082"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:GOA MOPA:r3|p03:GOA MOPA:r4|p05:MUMBAI:r29|p05:MUMBAI:r30. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg115-blr-bom",
+      "carrier": "SG",
+      "from": "BLR",
+      "to": "BOM",
+      "flightNumbers": [
+        "115"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:BANGALORE:r4|p05:MUMBAI:r8. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg115-bom-dbr",
+      "carrier": "SG",
+      "from": "BOM",
+      "to": "DBR",
+      "flightNumbers": [
+        "115"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:DARBHANGA:r1|p05:MUMBAI:r10. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg116-dbr-bom",
+      "carrier": "SG",
+      "from": "DBR",
+      "to": "BOM",
+      "flightNumbers": [
+        "116"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:DARBHANGA:r2|p05:MUMBAI:r21|p05:MUMBAI:r22. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg121-del-ixl",
+      "carrier": "SG",
+      "from": "DEL",
+      "to": "IXL",
+      "flightNumbers": [
+        "121"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:DELHI:r6|p05:LEH:r3. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg122-ixl-del",
+      "carrier": "SG",
+      "from": "IXL",
+      "to": "DEL",
+      "flightNumbers": [
+        "122"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:DELHI:r7|p05:LEH:r4. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg123-del-ixl",
+      "carrier": "SG",
+      "from": "DEL",
+      "to": "IXL",
+      "flightNumbers": [
+        "123"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:DELHI:r22|p05:LEH:r7. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg124-ixl-del",
+      "carrier": "SG",
+      "from": "IXL",
+      "to": "DEL",
+      "flightNumbers": [
+        "124"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:DELHI:r30|p05:LEH:r8. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg125-del-ixl",
+      "carrier": "SG",
+      "from": "DEL",
+      "to": "IXL",
+      "flightNumbers": [
+        "125"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:DELHI:r14|p05:LEH:r5. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg126-ixl-del",
+      "carrier": "SG",
+      "from": "IXL",
+      "to": "DEL",
+      "flightNumbers": [
+        "126"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:DELHI:r27|p05:LEH:r6. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg127-del-ixl",
+      "carrier": "SG",
+      "from": "DEL",
+      "to": "IXL",
+      "flightNumbers": [
+        "127"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:DELHI:r4|p05:LEH:r1. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg128-ixl-del",
+      "carrier": "SG",
+      "from": "IXL",
+      "to": "DEL",
+      "flightNumbers": [
+        "128"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:DELHI:r11|p05:LEH:r2. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg129-sxr-del",
+      "carrier": "SG",
+      "from": "SXR",
+      "to": "DEL",
+      "flightNumbers": [
+        "129"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:DELHI:r33. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg130-ccu-del",
+      "carrier": "SG",
+      "from": "CCU",
+      "to": "DEL",
+      "flightNumbers": [
+        "130"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:DELHI:r15|p04:KOLKATA:r2. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg130-del-sxr",
+      "carrier": "SG",
+      "from": "DEL",
+      "to": "SXR",
+      "flightNumbers": [
+        "130"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:DELHI:r20. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg150-del-ixb",
+      "carrier": "SG",
+      "from": "DEL",
+      "to": "IXB",
+      "flightNumbers": [
+        "150"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:BAGDOGRA:r8|p03:DELHI:r29. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg151-del-blr",
+      "carrier": "SG",
+      "from": "DEL",
+      "to": "BLR",
+      "flightNumbers": [
+        "151"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:BANGALORE:r14|p03:DELHI:r42. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg151-ixb-del",
+      "carrier": "SG",
+      "from": "IXB",
+      "to": "DEL",
+      "flightNumbers": [
+        "151"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:BAGDOGRA:r9|p03:DELHI:r39. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg160-del-ixj",
+      "carrier": "SG",
+      "from": "DEL",
+      "to": "IXJ",
+      "flightNumbers": [
+        "160"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:DELHI:r8|p04:JAMMU:r1. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg160-ixj-sxr",
+      "carrier": "SG",
+      "from": "IXJ",
+      "to": "SXR",
+      "flightNumbers": [
+        "160"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p04:JAMMU:r2. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg161-ixj-del",
+      "carrier": "SG",
+      "from": "IXJ",
+      "to": "DEL",
+      "flightNumbers": [
+        "161"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:DELHI:r25|p04:JAMMU:r4. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg161-sxr-ixj",
+      "carrier": "SG",
+      "from": "SXR",
+      "to": "IXJ",
+      "flightNumbers": [
+        "161"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p04:JAMMU:r3. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg162-del-pat",
+      "carrier": "SG",
+      "from": "DEL",
+      "to": "PAT",
+      "flightNumbers": [
+        "162"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:DELHI:r45|p06:PATNA:r9. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg163-bom-ixb",
+      "carrier": "SG",
+      "from": "BOM",
+      "to": "IXB",
+      "flightNumbers": [
+        "163"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:BAGDOGRA:r10|p05:MUMBAI:r19. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg164-pat-del",
+      "carrier": "SG",
+      "from": "PAT",
+      "to": "DEL",
+      "flightNumbers": [
+        "164"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:DELHI:r1|p06:PATNA:r10. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg166-bom-pat",
+      "carrier": "SG",
+      "from": "BOM",
+      "to": "PAT",
+      "flightNumbers": [
+        "166"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p05:MUMBAI:r6|p05:PATNA:r1. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg167-pat-bom",
+      "carrier": "SG",
+      "from": "PAT",
+      "to": "BOM",
+      "flightNumbers": [
+        "167"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p05:MUMBAI:r18|p05:PATNA:r2. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg168-ixb-bom",
+      "carrier": "SG",
+      "from": "IXB",
+      "to": "BOM",
+      "flightNumbers": [
+        "168"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:BAGDOGRA:r11|p05:MUMBAI:r33. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg173-ccj-bom",
+      "carrier": "SG",
+      "from": "CCJ",
+      "to": "BOM",
+      "flightNumbers": [
+        "173"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p05:MUMBAI:r17. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg173-ccj-maa",
+      "carrier": "SG",
+      "from": "CCJ",
+      "to": "MAA",
+      "flightNumbers": [
+        "173"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p05:KOZHIKODE:r1. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg174-bom-ccj",
+      "carrier": "SG",
+      "from": "BOM",
+      "to": "CCJ",
+      "flightNumbers": [
+        "174"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p05:MUMBAI:r36. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg174-maa-ccj",
+      "carrier": "SG",
+      "from": "MAA",
+      "to": "CCJ",
+      "flightNumbers": [
+        "174"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p05:KOZHIKODE:r2. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg184-pnq-del",
+      "carrier": "SG",
+      "from": "PNQ",
+      "to": "DEL",
+      "flightNumbers": [
+        "184"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:DELHI:r47|p03:DELHI:r48|p06:PUNE:r7. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg185-del-pnq",
+      "carrier": "SG",
+      "from": "DEL",
+      "to": "PNQ",
+      "flightNumbers": [
+        "185"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:DELHI:r17|p02:DELHI:r19|p06:PUNE:r4. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg186-pnq-vns",
+      "carrier": "SG",
+      "from": "PNQ",
+      "to": "VNS",
+      "flightNumbers": [
+        "186"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p06:PUNE:r5|p06:VARANASI:r3. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg187-vns-pnq",
+      "carrier": "SG",
+      "from": "VNS",
+      "to": "PNQ",
+      "flightNumbers": [
+        "187"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p06:PUNE:r6|p06:VARANASI:r4. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg188-blr-cok",
+      "carrier": "SG",
+      "from": "BLR",
+      "to": "COK",
+      "flightNumbers": [
+        "188"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:BANGALORE:r8. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg188-cok-bom",
+      "carrier": "SG",
+      "from": "COK",
+      "to": "BOM",
+      "flightNumbers": [
+        "188"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p04:KOCHI:r1. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg188-del-blr",
+      "carrier": "SG",
+      "from": "DEL",
+      "to": "BLR",
+      "flightNumbers": [
+        "188"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:BANGALORE:r7|p02:DELHI:r18. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg193-ccu-del",
+      "carrier": "SG",
+      "from": "CCU",
+      "to": "DEL",
+      "flightNumbers": [
+        "193"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:DELHI:r44|p04:KOLKATA:r21. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg193-del-amd",
+      "carrier": "SG",
+      "from": "DEL",
+      "to": "AMD",
+      "flightNumbers": [
+        "193"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:AHMEDABAD:r20|p03:DELHI:r46. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg194-amd-del",
+      "carrier": "SG",
+      "from": "AMD",
+      "to": "DEL",
+      "flightNumbers": [
+        "194"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:AHMEDABAD:r5|p02:DELHI:r9. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg194-del-ccu",
+      "carrier": "SG",
+      "from": "DEL",
+      "to": "CCU",
+      "flightNumbers": [
+        "194"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:DELHI:r16|p04:KOLKATA:r11. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg199-del-blr",
+      "carrier": "SG",
+      "from": "DEL",
+      "to": "BLR",
+      "flightNumbers": [
+        "199"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:DELHI:r26. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg199-ixb-del",
+      "carrier": "SG",
+      "from": "IXB",
+      "to": "DEL",
+      "flightNumbers": [
+        "199"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:BAGDOGRA:r3|p03:DELHI:r23. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg200-blr-del",
+      "carrier": "SG",
+      "from": "BLR",
+      "to": "DEL",
+      "flightNumbers": [
+        "200"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:DELHI:r41. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg252-bom-del",
+      "carrier": "SG",
+      "from": "BOM",
+      "to": "DEL",
+      "flightNumbers": [
+        "252"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:DELHI:r13|p05:MUMBAI:r7. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg253-del-sxr",
+      "carrier": "SG",
+      "from": "DEL",
+      "to": "SXR",
+      "flightNumbers": [
+        "253"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:DELHI:r21. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg265-ccu-hyd",
+      "carrier": "SG",
+      "from": "CCU",
+      "to": "HYD",
+      "flightNumbers": [
+        "265"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:HYDERABAD:r5|p04:HYDERABAD:r6|p04:KOLKATA:r10. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg266-hyd-ccu",
+      "carrier": "SG",
+      "from": "HYD",
+      "to": "CCU",
+      "flightNumbers": [
+        "266"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p04:HYDERABAD:r11|p04:KOLKATA:r24. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg269-blr-bom",
+      "carrier": "SG",
+      "from": "BLR",
+      "to": "BOM",
+      "flightNumbers": [
+        "269"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:BANGALORE:r15|p05:MUMBAI:r3. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg2703-hyd-rqy",
+      "carrier": "SG",
+      "from": "HYD",
+      "to": "RQY",
+      "flightNumbers": [
+        "2703"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p04:HYDERABAD:r9|p06:SHIVAMOGGA:r3. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg2704-rqy-maa",
+      "carrier": "SG",
+      "from": "RQY",
+      "to": "MAA",
+      "flightNumbers": [
+        "2704"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:CHENNAI:r11|p06:SHIVAMOGGA:r4. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg2710-maa-rqy",
+      "carrier": "SG",
+      "from": "MAA",
+      "to": "RQY",
+      "flightNumbers": [
+        "2710"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:CHENNAI:r8|p06:SHIVAMOGGA:r1. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg2711-rqy-hyd",
+      "carrier": "SG",
+      "from": "RQY",
+      "to": "HYD",
+      "flightNumbers": [
+        "2711"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p04:HYDERABAD:r7|p06:SHIVAMOGGA:r2. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg277-bom-gox",
+      "carrier": "SG",
+      "from": "BOM",
+      "to": "GOX",
+      "flightNumbers": [
+        "277"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:GOA MOPA:r5|p05:MUMBAI:r37. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg278-gox-bom",
+      "carrier": "SG",
+      "from": "GOX",
+      "to": "BOM",
+      "flightNumbers": [
+        "278"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:GOA MOPA:r6|p05:MUMBAI:r1|p05:MUMBAI:r2. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg2793-maa-hyd",
+      "carrier": "SG",
+      "from": "MAA",
+      "to": "HYD",
+      "flightNumbers": [
+        "2793"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:CHENNAI:r12|p04:HYDERABAD:r12. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg2794-hyd-maa",
+      "carrier": "SG",
+      "from": "HYD",
+      "to": "MAA",
+      "flightNumbers": [
+        "2794"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:CHENNAI:r17|p04:HYDERABAD:r13. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg2905-bom-ixy",
+      "carrier": "SG",
+      "from": "BOM",
+      "to": "IXY",
+      "flightNumbers": [
+        "2905"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p04:KANDLA:r1|p05:MUMBAI:r16. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg2905-bom-pbd",
+      "carrier": "SG",
+      "from": "BOM",
+      "to": "PBD",
+      "flightNumbers": [
+        "2905"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p05:MUMBAI:r14|p05:MUMBAI:r15|p06:PORBANDAR:r1. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg2906-ixy-bom",
+      "carrier": "SG",
+      "from": "IXY",
+      "to": "BOM",
+      "flightNumbers": [
+        "2906"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p04:KANDLA:r2|p05:MUMBAI:r25. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg2906-pbd-bom",
+      "carrier": "SG",
+      "from": "PBD",
+      "to": "BOM",
+      "flightNumbers": [
+        "2906"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p05:MUMBAI:r23|p05:MUMBAI:r24|p06:PORBANDAR:r2. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg441-amd-ccu",
+      "carrier": "SG",
+      "from": "AMD",
+      "to": "CCU",
+      "flightNumbers": [
+        "441"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:AHMEDABAD:r16|p05:KOLKATA:r26. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg442-ccu-amd",
+      "carrier": "SG",
+      "from": "CCU",
+      "to": "AMD",
+      "flightNumbers": [
+        "442"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:AHMEDABAD:r1|p05:KOLKATA:r27. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg447-hyd-ccu",
+      "carrier": "SG",
+      "from": "HYD",
+      "to": "CCU",
+      "flightNumbers": [
+        "447"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p04:HYDERABAD:r10|p04:KOLKATA:r20. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg448-ccu-hyd",
+      "carrier": "SG",
+      "from": "CCU",
+      "to": "HYD",
+      "flightNumbers": [
+        "448"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p04:HYDERABAD:r14|p04:KOLKATA:r22. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg458-ccu-maa",
+      "carrier": "SG",
+      "from": "CCU",
+      "to": "MAA",
+      "flightNumbers": [
+        "458"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:CHENNAI:r13|p04:KOLKATA:r18. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg458-gau-ccu",
+      "carrier": "SG",
+      "from": "GAU",
+      "to": "CCU",
+      "flightNumbers": [
+        "458"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:GUWAHATI:r3|p03:GUWAHATI:r7. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg458-maa-amd",
+      "carrier": "SG",
+      "from": "MAA",
+      "to": "AMD",
+      "flightNumbers": [
+        "458"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:AHMEDABAD:r18|p02:CHENNAI:r14. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg462-blr-amd",
+      "carrier": "SG",
+      "from": "BLR",
+      "to": "AMD",
+      "flightNumbers": [
+        "462"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:BANGALORE:r2. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg471-del-gop",
+      "carrier": "SG",
+      "from": "DEL",
+      "to": "GOP",
+      "flightNumbers": [
+        "471"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:DELHI:r31|p03:GORAKHPUR:r1. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg472-gop-del",
+      "carrier": "SG",
+      "from": "GOP",
+      "to": "DEL",
+      "flightNumbers": [
+        "472"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:DELHI:r38|p03:GORAKHPUR:r2. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg473-del-pat",
+      "carrier": "SG",
+      "from": "DEL",
+      "to": "PAT",
+      "flightNumbers": [
+        "473"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:DELHI:r40|p06:PATNA:r7. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg476-del-bom",
+      "carrier": "SG",
+      "from": "DEL",
+      "to": "BOM",
+      "flightNumbers": [
+        "476"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:DELHI:r35|p05:MUMBAI:r32. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg478-pat-del",
+      "carrier": "SG",
+      "from": "PAT",
+      "to": "DEL",
+      "flightNumbers": [
+        "478"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:DELHI:r52|p06:PATNA:r8. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg487-ccu-bom",
+      "carrier": "SG",
+      "from": "CCU",
+      "to": "BOM",
+      "flightNumbers": [
+        "487"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p04:KOLKATA:r17|p05:MUMBAI:r34. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg487-gau-imf",
+      "carrier": "SG",
+      "from": "GAU",
+      "to": "IMF",
+      "flightNumbers": [
+        "487"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:GUWAHATI:r5. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg487-imf-ccu",
+      "carrier": "SG",
+      "from": "IMF",
+      "to": "CCU",
+      "flightNumbers": [
+        "487"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p04:KOLKATA:r15. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg488-bom-ccu",
+      "carrier": "SG",
+      "from": "BOM",
+      "to": "CCU",
+      "flightNumbers": [
+        "488"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p04:KOLKATA:r6|p05:MUMBAI:r4|p05:MUMBAI:r5. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg488-ccu-imf",
+      "carrier": "SG",
+      "from": "CCU",
+      "to": "IMF",
+      "flightNumbers": [
+        "488"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p04:IMPHAL:r1|p04:KOLKATA:r8. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg488-imf-gau",
+      "carrier": "SG",
+      "from": "IMF",
+      "to": "GAU",
+      "flightNumbers": [
+        "488"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:GUWAHATI:r4|p04:IMPHAL:r2. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg491-amd-ccu",
+      "carrier": "SG",
+      "from": "AMD",
+      "to": "CCU",
+      "flightNumbers": [
+        "491"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:AHMEDABAD:r2|p04:KOLKATA:r4. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg491-ccu-ixb",
+      "carrier": "SG",
+      "from": "CCU",
+      "to": "IXB",
+      "flightNumbers": [
+        "491"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:BAGDOGRA:r4|p04:KOLKATA:r5. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg494-ccu-amd",
+      "carrier": "SG",
+      "from": "CCU",
+      "to": "AMD",
+      "flightNumbers": [
+        "494"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:AHMEDABAD:r11|p04:KOLKATA:r25. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg494-ixb-ccu",
+      "carrier": "SG",
+      "from": "IXB",
+      "to": "CCU",
+      "flightNumbers": [
+        "494"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:BAGDOGRA:r5|p04:KOLKATA:r23. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg495-del-dbr",
+      "carrier": "SG",
+      "from": "DEL",
+      "to": "DBR",
+      "flightNumbers": [
+        "495"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:DARBHANGA:r3|p03:DELHI:r28. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg496-dbr-del",
+      "carrier": "SG",
+      "from": "DBR",
+      "to": "DEL",
+      "flightNumbers": [
+        "496"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:DARBHANGA:r4|p03:DELHI:r37. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg505-bom-vns",
+      "carrier": "SG",
+      "from": "BOM",
+      "to": "VNS",
+      "flightNumbers": [
+        "505"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p05:MUMBAI:r9|p06:VARANASI:r1. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg506-vns-bom",
+      "carrier": "SG",
+      "from": "VNS",
+      "to": "BOM",
+      "flightNumbers": [
+        "506"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p05:MUMBAI:r20|p06:VARANASI:r2. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg529-blr-del",
+      "carrier": "SG",
+      "from": "BLR",
+      "to": "DEL",
+      "flightNumbers": [
+        "529"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:BANGALORE:r3|p02:DELHI:r10. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg553-bom-gop",
+      "carrier": "SG",
+      "from": "BOM",
+      "to": "GOP",
+      "flightNumbers": [
+        "553"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:GORAKHPUR:r3|p05:MUMBAI:r26|p05:MUMBAI:r27. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg555-bom-blr",
+      "carrier": "SG",
+      "from": "BOM",
+      "to": "BLR",
+      "flightNumbers": [
+        "555"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:BANGALORE:r1|p05:MUMBAI:r40. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg555-gop-bom",
+      "carrier": "SG",
+      "from": "GOP",
+      "to": "BOM",
+      "flightNumbers": [
+        "555"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:GORAKHPUR:r4|p05:MUMBAI:r38. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg591-amd-ccu",
+      "carrier": "SG",
+      "from": "AMD",
+      "to": "CCU",
+      "flightNumbers": [
+        "591"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:AHMEDABAD:r10. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg594-ccu-amd",
+      "carrier": "SG",
+      "from": "CCU",
+      "to": "AMD",
+      "flightNumbers": [
+        "594"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:AHMEDABAD:r15|p04:KOLKATA:r16. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg611-amd-maa",
+      "carrier": "SG",
+      "from": "AMD",
+      "to": "MAA",
+      "flightNumbers": [
+        "611"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:AHMEDABAD:r4|p02:CHENNAI:r6. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg611-ccu-gau",
+      "carrier": "SG",
+      "from": "CCU",
+      "to": "GAU",
+      "flightNumbers": [
+        "611"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:GUWAHATI:r2|p03:GUWAHATI:r6. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg611-maa-ccu",
+      "carrier": "SG",
+      "from": "MAA",
+      "to": "CCU",
+      "flightNumbers": [
+        "611"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:CHENNAI:r7|p04:KOLKATA:r3. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg640-ccu-ixb",
+      "carrier": "SG",
+      "from": "CCU",
+      "to": "IXB",
+      "flightNumbers": [
+        "640"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:BAGDOGRA:r6|p04:KOLKATA:r9. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg640-maa-ccu",
+      "carrier": "SG",
+      "from": "MAA",
+      "to": "CCU",
+      "flightNumbers": [
+        "640"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:CHENNAI:r3|p04:KOLKATA:r7. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg642-ccu-maa",
+      "carrier": "SG",
+      "from": "CCU",
+      "to": "MAA",
+      "flightNumbers": [
+        "642"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:CHENNAI:r10|p04:KOLKATA:r14. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg642-ixb-ccu",
+      "carrier": "SG",
+      "from": "IXB",
+      "to": "CCU",
+      "flightNumbers": [
+        "642"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:BAGDOGRA:r7|p04:KOLKATA:r13. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg658-pat-hyd",
+      "carrier": "SG",
+      "from": "PAT",
+      "to": "HYD",
+      "flightNumbers": [
+        "658"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p04:HYDERABAD:r8|p06:PATNA:r5. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg660-hyd-pat",
+      "carrier": "SG",
+      "from": "HYD",
+      "to": "PAT",
+      "flightNumbers": [
+        "660"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:HYDERABAD:r4|p06:PATNA:r3. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg660-maa-hyd",
+      "carrier": "SG",
+      "from": "MAA",
+      "to": "HYD",
+      "flightNumbers": [
+        "660"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:CHENNAI:r4|p03:HYDERABAD:r2. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg661-hyd-maa",
+      "carrier": "SG",
+      "from": "HYD",
+      "to": "MAA",
+      "flightNumbers": [
+        "661"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:CHENNAI:r18|p04:HYDERABAD:r15. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg669-bom-blr",
+      "carrier": "SG",
+      "from": "BOM",
+      "to": "BLR",
+      "flightNumbers": [
+        "669"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:BANGALORE:r13|p05:MUMBAI:r35. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg672-blr-pat",
+      "carrier": "SG",
+      "from": "BLR",
+      "to": "PAT",
+      "flightNumbers": [
+        "672"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:BANGALORE:r6|p06:PATNA:r4. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg672-maa-blr",
+      "carrier": "SG",
+      "from": "MAA",
+      "to": "BLR",
+      "flightNumbers": [
+        "672"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:BANGALORE:r5|p02:CHENNAI:r5. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg674-blr-maa",
+      "carrier": "SG",
+      "from": "BLR",
+      "to": "MAA",
+      "flightNumbers": [
+        "674"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:BANGALORE:r12|p02:CHENNAI:r9. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg674-pat-blr",
+      "carrier": "SG",
+      "from": "PAT",
+      "to": "BLR",
+      "flightNumbers": [
+        "674"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:BANGALORE:r11|p06:PATNA:r6. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg675-maa-cok",
+      "carrier": "SG",
+      "from": "MAA",
+      "to": "COK",
+      "flightNumbers": [
+        "675"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:CHENNAI:r16|p04:KOCHI:r3. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg676-cok-maa",
+      "carrier": "SG",
+      "from": "COK",
+      "to": "MAA",
+      "flightNumbers": [
+        "676"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:CHENNAI:r15|p04:KOCHI:r2. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg736-amd-ccu",
+      "carrier": "SG",
+      "from": "AMD",
+      "to": "CCU",
+      "flightNumbers": [
+        "736"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:AHMEDABAD:r17. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg757-gau-del",
+      "carrier": "SG",
+      "from": "GAU",
+      "to": "DEL",
+      "flightNumbers": [
+        "757"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:DELHI:r49|p03:GUWAHATI:r9. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg758-del-gau",
+      "carrier": "SG",
+      "from": "DEL",
+      "to": "GAU",
+      "flightNumbers": [
+        "758"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:DELHI:r34|p03:GUWAHATI:r8. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg759-del-ccu",
+      "carrier": "SG",
+      "from": "DEL",
+      "to": "CCU",
+      "flightNumbers": [
+        "759"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:DELHI:r51|p04:KOLKATA:r1. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg761-gau-ixb",
+      "carrier": "SG",
+      "from": "GAU",
+      "to": "IXB",
+      "flightNumbers": [
+        "761"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:BAGDOGRA:r1|p03:GUWAHATI:r1. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg763-amd-blr",
+      "carrier": "SG",
+      "from": "AMD",
+      "to": "BLR",
+      "flightNumbers": [
+        "763"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:AHMEDABAD:r3. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg764-blr-amd",
+      "carrier": "SG",
+      "from": "BLR",
+      "to": "AMD",
+      "flightNumbers": [
+        "764"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:AHMEDABAD:r9. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg767-ccu-blr",
+      "carrier": "SG",
+      "from": "CCU",
+      "to": "BLR",
+      "flightNumbers": [
+        "767"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:BANGALORE:r9|p04:KOLKATA:r12. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg768-blr-ccu",
+      "carrier": "SG",
+      "from": "BLR",
+      "to": "CCU",
+      "flightNumbers": [
+        "768"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:BANGALORE:r10|p04:KOLKATA:r19. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg901-del-hyd",
+      "carrier": "SG",
+      "from": "DEL",
+      "to": "HYD",
+      "flightNumbers": [
+        "901"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:DELHI:r43|p04:HYDERABAD:r16. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg902-hyd-del",
+      "carrier": "SG",
+      "from": "HYD",
+      "to": "DEL",
+      "flightNumbers": [
+        "902"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:DELHI:r2|p04:HYDERABAD:r17. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg903-del-ixb",
+      "carrier": "SG",
+      "from": "DEL",
+      "to": "IXB",
+      "flightNumbers": [
+        "903"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p01:BAGDOGRA:r2|p02:DELHI:r5. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg937-pnq-del",
+      "carrier": "SG",
+      "from": "PNQ",
+      "to": "DEL",
+      "flightNumbers": [
+        "937"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p02:DELHI:r12|p06:PUNE:r2. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg939-del-pnq",
+      "carrier": "SG",
+      "from": "DEL",
+      "to": "PNQ",
+      "flightNumbers": [
+        "939"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:DELHI:r36|p06:PUNE:r8. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg940-bom-jai",
+      "carrier": "SG",
+      "from": "BOM",
+      "to": "JAI",
+      "flightNumbers": [
+        "940"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p04:JAIPUR:r1|p05:MUMBAI:r31. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg941-jai-bom",
+      "carrier": "SG",
+      "from": "JAI",
+      "to": "BOM",
+      "flightNumbers": [
+        "941"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p04:JAIPUR:r2|p05:MUMBAI:r39. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg980-del-sxr",
+      "carrier": "SG",
+      "from": "DEL",
+      "to": "SXR",
+      "flightNumbers": [
+        "980"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:DELHI:r24. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    },
+    {
+      "id": "dgca-spicejet-ss26-sg981-sxr-del",
+      "carrier": "SG",
+      "from": "SXR",
+      "to": "DEL",
+      "flightNumbers": [
+        "981"
+      ],
+      "sourceId": "dgca-spicejet-ss-2026",
+      "note": "DGCA approved-schedule identity only; not evidence of actual operation. Weekday, time zone and dated availability are unverified. Source rows: p03:DELHI:r32. Exact claim validity/variants are in the companion identity_ledger.jsonl (SHA-256 0ca771b458c7fbbdb4bb3c0230a755fa25fd59cb2a39da5688218efa107a18b9)."
+    }
+  ],
+  "integrationLimit": "This patch adds designator + direction references only. Existing schema has no effective dates, weekday mapping, or time zone. Do not treat a reference as dated availability or actual operation; preserve companion identity_ledger.jsonl."
+}

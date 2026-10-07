@@ -7,6 +7,8 @@ import {
 const row = {
   referenceRaw: 'p001/line001/station=Delhi/row=1/sha256=aaaaaaaaaaaa',
   page: 1,
+  physicalRow: null,
+  stationSectionOrdinal: null,
   stationSectionRaw: 'Delhi',
   printedRowRaw: '1',
   sourceSide: 'departure' as const,
@@ -35,7 +37,7 @@ const variant = {
   conflictIds: [],
   conflictKinds: [],
   conflictFields: [],
-  metadataConflict: false,
+  hasVariantConflict: false,
   timeConflict: false,
   notes: ['No schedule occurrence or operation is inferred'],
 };
@@ -98,10 +100,11 @@ const catalogFixture = () => DgcaScheduleEvidenceCatalogSchema.parse({
       originIata: 'BOM',
       destinationIata: 'DEL',
       identityStatus: 'accepted-identity-only',
+      airportCatalogStatus: 'all-endpoints-present',
       otherDirectionalRoutes: [],
       sourceCounterpartStatus: 'one-sided',
-      metadataConflict: false,
-      conflictPeerIds: [],
+      hasVariantConflict: false,
+      conflictReferences: [],
       variants: [variant],
     }],
   }],
@@ -135,7 +138,7 @@ describe('DGCA schedule evidence schema', () => {
 
   it('rejects a conflict flag that has no preserved conflict evidence', () => {
     const invalid = catalogFixture();
-    invalid.sources[0]!.references[0]!.variants[0]!.metadataConflict = true;
+    invalid.sources[0]!.references[0]!.variants[0]!.hasVariantConflict = true;
     expect(() => DgcaScheduleEvidenceCatalogSchema.parse(invalid)).toThrow();
   });
 });

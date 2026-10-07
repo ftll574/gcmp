@@ -1,0 +1,449 @@
+{
+  "artifact": "Independent read-only review snapshot",
+  "format_version": 1,
+  "audit_date": "2026-10-07",
+  "source": {
+    "organization": "Directorate General of Civil Aviation (DGCA)",
+    "document_title": "Approved Summer Schedule Domestic",
+    "operator_heading": "Air India Ltd.",
+    "operator_code_raw": "AIC",
+    "carrier_iata": "AI",
+    "carrier_mapping_basis": "Explicit AI: AIC mapping, reversed to resolve source operator AIC to carrier IATA AI; flight-number prefix is not used.",
+    "directory_url": "https://www.dgca.gov.in/digigov-portal/?baseLocale=hi?page=4201/4200/servicename",
+    "pdf_url": "https://public-prd-dgca.s3.ap-south-1.amazonaws.com/InventoryList/airOperation/certification/scheduled/domestic/AirIndiaLtd_SS_2026.pdf",
+    "filename": "AirIndiaLtd_SS_2026.pdf",
+    "pdf_sha256": "107983dc72d381e6897a5a333556946adcc98daef82e954d52cec1fc402c3086",
+    "pdf_bytes": 1021800,
+    "pdf_pages": 28,
+    "printed_published_date": "18/03/2026",
+    "http_status": 200,
+    "content_type": "application/pdf",
+    "content_length_bytes": 1021800,
+    "last_modified": "Sun, 22 Mar 2026 10:22:02 GMT",
+    "s3_version_id": "aDdxQaGCxabS0T0CabX3yjALBeUfGJq5",
+    "etag": "\"6844c1f8252639997df395bc2a787fa1\"",
+    "etag_is_not_content_hash": true,
+    "pdf_producer": "iText 7.1.4 (Directorate General of Civil Aviation; licensed version)"
+  },
+  "pinned_baseline": {
+    "version_as_supplied": "f472092",
+    "path": "/Users/zhenyu/Documents/Codex/2026-10-07/task-17/gcmp/public/data/route-network/runtime-current.json",
+    "sha256": "aa90283d52015b1b418c3840252cb34152f9ed577a3e0766291935b92b151537",
+    "route_rows": 32216,
+    "confirmed_associations": 2767,
+    "candidate_associations": 132383,
+    "ai_route_rows": 457,
+    "ai_confirmed_associations": 678,
+    "ai_candidate_associations": 1071,
+    "ai_entity_key_or_name_fields_present": 0,
+    "comparison_key": "Carrier IATA + directed origin/destination + full flight designator; remove whitespace only; retain alpha suffix.",
+    "confirmed_candidate_overlap": 0
+  },
+  "key_definitions": {
+    "source_schedule_variant": "Carrier + directed airport pair + full raw designator + raw frequency + effective date window.",
+    "distinct_gcpm_identity": "Carrier IATA + directed origin/destination + full flight designator. Different from schedule variants.",
+    "movement": "One arrival or departure leg from one populated airport movement row; no through/nonstop service inferred.",
+    "source_lineage": "PDF SHA-256 + PDF page + within-page physical row order + page-local station-section ordinal/raw label + printed serial, then movement side.",
+    "full_designator_example": "AI 532A -> AI532A; the A suffix remains part of the designator."
+  },
+  "reproduction_and_counts": {
+    "source_rows": 1537,
+    "movement_records": 1537,
+    "schedule_identity_variants": 1115,
+    "distinct_flight_designators_source_wide": 576,
+    "distinct_directed_pairs_source_wide": 140,
+    "station_labels": 42,
+    "station_labels_resolved": 42,
+    "source_rows_by_temporal_status": {
+      "current": 1255,
+      "expired": 259,
+      "future": 23
+    },
+    "identity_variants_by_temporal_status": {
+      "current": 842,
+      "expired": 250,
+      "future": 23
+    },
+    "current_future_schedule_variants": 865,
+    "current_future_distinct_carrier_route_designator_identities": 573,
+    "current_future_distinct_directed_routes": 138,
+    "baseline_routes_present": 138,
+    "baseline_routes_absent": 0,
+    "baseline_designator_match_counts": {
+      "candidate_exact_designator": 2,
+      "confirmed_exact_designator": 567,
+      "existing_route_unlisted_designator": 4
+    },
+    "baseline_schedule_variant_match_counts": {
+      "candidate_exact_designator": 2,
+      "confirmed_exact_designator": 857,
+      "existing_route_unlisted_designator": 6
+    },
+    "source_current_future_accepted_identity_variants": 865,
+    "source_current_future_structural_holds": 0,
+    "ledger_row_dispositions": {
+      "accepted": 858,
+      "expired": 250,
+      "held_field_only": 7
+    },
+    "active_route_flight_identities_including_field_only_holds": 865,
+    "aircraft_field_hold_count": 7,
+    "one_sided_schedule_identity_count": 693,
+    "source_row_reparse_exact": true,
+    "movement_reparse_exact": true,
+    "identity_reparse_exact_except_baseline_match_annotation": true,
+    "repeated_printed_serial_groups_within_page": 149,
+    "rows_in_repeated_serial_groups": 361,
+    "duplicate_serial_groups_confined_to_distinct_station_sections": true,
+    "unique_full_movement_lineage_keys": 1537,
+    "source_rows_preserving_alpha_suffix": 1
+  },
+  "nonconfirmed_active_reference_keys": [
+    {
+      "match_class": "candidate_exact_designator",
+      "carrier_iata": "AI",
+      "origin_iata": "DEL",
+      "destination_iata": "GOX",
+      "full_flight_designator": "AI1734",
+      "baseline_route_status": "published",
+      "baseline_carrier_identity": "provider-listed",
+      "baseline_designator_array": "flightNumberCandidates",
+      "source_schedule_variants": [
+        {
+          "identity_id": "ai-s26-6cdfa77c5bdb2c",
+          "raw_designator": "AI 1734",
+          "raw_frequency": "1234567",
+          "effective_from": "2026-03-29",
+          "effective_until": "2026-10-24",
+          "temporal_status": "current",
+          "source_row_refs": "p12-r319-n0654;p14-r1-n0777",
+          "aircraft_types_raw": "A320",
+          "field_hold_reasons": "",
+          "field_limits": {
+            "frequency": "Raw code retained; weekday interpretation is AAI corroboration, not a DGCA legend.",
+            "clock_basis": "unknown; retain HH:MM without timezone conversion or dated occurrence generation",
+            "service_classification": "passenger/cargo not stated by source",
+            "actual_operation": "not established by approved schedule"
+          }
+        }
+      ]
+    },
+    {
+      "match_class": "candidate_exact_designator",
+      "carrier_iata": "AI",
+      "origin_iata": "GOX",
+      "destination_iata": "DEL",
+      "full_flight_designator": "AI1854",
+      "baseline_route_status": "published",
+      "baseline_carrier_identity": "provider-listed",
+      "baseline_designator_array": "flightNumberCandidates",
+      "source_schedule_variants": [
+        {
+          "identity_id": "ai-s26-a448c51aff7a69",
+          "raw_designator": "AI 1854",
+          "raw_frequency": "1234567",
+          "effective_from": "2026-03-29",
+          "effective_until": "2026-10-24",
+          "temporal_status": "current",
+          "source_row_refs": "p07-r7-n0342;p14-r2-n0778",
+          "aircraft_types_raw": "A320",
+          "field_hold_reasons": "",
+          "field_limits": {
+            "frequency": "Raw code retained; weekday interpretation is AAI corroboration, not a DGCA legend.",
+            "clock_basis": "unknown; retain HH:MM without timezone conversion or dated occurrence generation",
+            "service_classification": "passenger/cargo not stated by source",
+            "actual_operation": "not established by approved schedule"
+          }
+        }
+      ]
+    },
+    {
+      "match_class": "existing_route_unlisted_designator",
+      "carrier_iata": "AI",
+      "origin_iata": "AMD",
+      "destination_iata": "DEL",
+      "full_flight_designator": "AI532A",
+      "baseline_route_status": "published",
+      "baseline_carrier_identity": "operating",
+      "baseline_designator_array": "neither flightNumbers nor flightNumberCandidates",
+      "source_schedule_variants": [
+        {
+          "identity_id": "ai-s26-310dff3f8d3660",
+          "raw_designator": "AI 532A",
+          "raw_frequency": "6",
+          "effective_from": "2026-10-24",
+          "effective_until": "2026-10-24",
+          "temporal_status": "future",
+          "source_row_refs": "p14-r417-n0752",
+          "aircraft_types_raw": "A321",
+          "field_hold_reasons": "",
+          "field_limits": {
+            "frequency": "Raw code retained; weekday interpretation is AAI corroboration, not a DGCA legend.",
+            "clock_basis": "unknown; retain HH:MM without timezone conversion or dated occurrence generation",
+            "service_classification": "passenger/cargo not stated by source",
+            "actual_operation": "not established by approved schedule"
+          }
+        }
+      ]
+    },
+    {
+      "match_class": "existing_route_unlisted_designator",
+      "carrier_iata": "AI",
+      "origin_iata": "DEL",
+      "destination_iata": "GAU",
+      "full_flight_designator": "AI4203",
+      "baseline_route_status": "published",
+      "baseline_carrier_identity": "operating",
+      "baseline_designator_array": "neither flightNumbers nor flightNumberCandidates",
+      "source_schedule_variants": [
+        {
+          "identity_id": "ai-s26-24356f695cc025",
+          "raw_designator": "AI 4203",
+          "raw_frequency": "124567",
+          "effective_from": "2026-03-29",
+          "effective_until": "2026-10-24",
+          "temporal_status": "current",
+          "source_row_refs": "p15-r3-n0781",
+          "aircraft_types_raw": "A320",
+          "field_hold_reasons": "",
+          "field_limits": {
+            "frequency": "Raw code retained; weekday interpretation is AAI corroboration, not a DGCA legend.",
+            "clock_basis": "unknown; retain HH:MM without timezone conversion or dated occurrence generation",
+            "service_classification": "passenger/cargo not stated by source",
+            "actual_operation": "not established by approved schedule"
+          }
+        },
+        {
+          "identity_id": "ai-s26-cb892cfbab52d6",
+          "raw_designator": "AI 4203",
+          "raw_frequency": "3",
+          "effective_from": "2026-04-01",
+          "effective_until": "2026-10-21",
+          "temporal_status": "current",
+          "source_row_refs": "p15-r5-n0783",
+          "aircraft_types_raw": "A320",
+          "field_hold_reasons": "",
+          "field_limits": {
+            "frequency": "Raw code retained; weekday interpretation is AAI corroboration, not a DGCA legend.",
+            "clock_basis": "unknown; retain HH:MM without timezone conversion or dated occurrence generation",
+            "service_classification": "passenger/cargo not stated by source",
+            "actual_operation": "not established by approved schedule"
+          }
+        }
+      ]
+    },
+    {
+      "match_class": "existing_route_unlisted_designator",
+      "carrier_iata": "AI",
+      "origin_iata": "GAU",
+      "destination_iata": "DEL",
+      "full_flight_designator": "AI4204",
+      "baseline_route_status": "published",
+      "baseline_carrier_identity": "operating",
+      "baseline_designator_array": "neither flightNumbers nor flightNumberCandidates",
+      "source_schedule_variants": [
+        {
+          "identity_id": "ai-s26-fa6a80a0d58129",
+          "raw_designator": "AI 4204",
+          "raw_frequency": "124567",
+          "effective_from": "2026-03-29",
+          "effective_until": "2026-10-24",
+          "temporal_status": "current",
+          "source_row_refs": "p15-r4-n0782",
+          "aircraft_types_raw": "A320",
+          "field_hold_reasons": "",
+          "field_limits": {
+            "frequency": "Raw code retained; weekday interpretation is AAI corroboration, not a DGCA legend.",
+            "clock_basis": "unknown; retain HH:MM without timezone conversion or dated occurrence generation",
+            "service_classification": "passenger/cargo not stated by source",
+            "actual_operation": "not established by approved schedule"
+          }
+        },
+        {
+          "identity_id": "ai-s26-60c74f65177e0e",
+          "raw_designator": "AI 4204",
+          "raw_frequency": "3",
+          "effective_from": "2026-04-01",
+          "effective_until": "2026-10-21",
+          "temporal_status": "current",
+          "source_row_refs": "p15-r6-n0784",
+          "aircraft_types_raw": "A320",
+          "field_hold_reasons": "",
+          "field_limits": {
+            "frequency": "Raw code retained; weekday interpretation is AAI corroboration, not a DGCA legend.",
+            "clock_basis": "unknown; retain HH:MM without timezone conversion or dated occurrence generation",
+            "service_classification": "passenger/cargo not stated by source",
+            "actual_operation": "not established by approved schedule"
+          }
+        }
+      ]
+    },
+    {
+      "match_class": "existing_route_unlisted_designator",
+      "carrier_iata": "AI",
+      "origin_iata": "SXR",
+      "destination_iata": "DEL",
+      "full_flight_designator": "AI828",
+      "baseline_route_status": "published",
+      "baseline_carrier_identity": "operating",
+      "baseline_designator_array": "neither flightNumbers nor flightNumberCandidates",
+      "source_schedule_variants": [
+        {
+          "identity_id": "ai-s26-c0f26e10e2c305",
+          "raw_designator": "AI 828",
+          "raw_frequency": "6",
+          "effective_from": "2026-10-24",
+          "effective_until": "2026-10-24",
+          "temporal_status": "future",
+          "source_row_refs": "p10-r165-n0500",
+          "aircraft_types_raw": "A320",
+          "field_hold_reasons": "",
+          "field_limits": {
+            "frequency": "Raw code retained; weekday interpretation is AAI corroboration, not a DGCA legend.",
+            "clock_basis": "unknown; retain HH:MM without timezone conversion or dated occurrence generation",
+            "service_classification": "passenger/cargo not stated by source",
+            "actual_operation": "not established by approved schedule"
+          }
+        }
+      ]
+    }
+  ],
+  "field_level_holds": {
+    "aircraft_type_only": [
+      {
+        "identity_id": "ai-s26-0fcf49d7975165",
+        "carrier_iata": "AI",
+        "origin_iata": "DEL",
+        "destination_iata": "PNQ",
+        "flight_designator_raw": "AI 2469",
+        "temporal_status": "current",
+        "field_hold": "aircraft_type_disagreement",
+        "aircraft_types_raw": "A320;A321",
+        "source_row_refs": "p07-r34-n0369;p26-r5-n1415"
+      },
+      {
+        "identity_id": "ai-s26-06bb2f46e8f726",
+        "carrier_iata": "AI",
+        "origin_iata": "PNQ",
+        "destination_iata": "DEL",
+        "flight_designator_raw": "AI 2470",
+        "temporal_status": "current",
+        "field_hold": "aircraft_type_disagreement",
+        "aircraft_types_raw": "A320;A321",
+        "source_row_refs": "p09-r135-n0470;p26-r7-n1417"
+      },
+      {
+        "identity_id": "ai-s26-03c285808c9e00",
+        "carrier_iata": "AI",
+        "origin_iata": "BOM",
+        "destination_iata": "DEL",
+        "flight_designator_raw": "AI 2910",
+        "temporal_status": "current",
+        "field_hold": "aircraft_type_disagreement",
+        "aircraft_types_raw": "A320;A321",
+        "source_row_refs": "p13-r347-n0682;p23-r214-n1276"
+      },
+      {
+        "identity_id": "ai-s26-c6112618eeb287",
+        "carrier_iata": "AI",
+        "origin_iata": "BOM",
+        "destination_iata": "DEL",
+        "flight_designator_raw": "AI 2930",
+        "temporal_status": "current",
+        "field_hold": "aircraft_type_disagreement",
+        "aircraft_types_raw": "A320;A321",
+        "source_row_refs": "p09-r128-n0463;p20-r46-n1108"
+      },
+      {
+        "identity_id": "ai-s26-301d1505f1d4cf",
+        "carrier_iata": "AI",
+        "origin_iata": "DEL",
+        "destination_iata": "BOM",
+        "flight_designator_raw": "AI 2981",
+        "temporal_status": "current",
+        "field_hold": "aircraft_type_disagreement",
+        "aircraft_types_raw": "A320;A321",
+        "source_row_refs": "p13-r370-n0705;p25-r311-n1373"
+      },
+      {
+        "identity_id": "ai-s26-16a632239b4422",
+        "carrier_iata": "AI",
+        "origin_iata": "DEL",
+        "destination_iata": "HSR",
+        "flight_designator_raw": "AI 885",
+        "temporal_status": "current",
+        "field_hold": "aircraft_type_disagreement",
+        "aircraft_types_raw": "A320;A321",
+        "source_row_refs": "p08-r76-n0411;p26-r3-n1443"
+      },
+      {
+        "identity_id": "ai-s26-32fb7a06c74d17",
+        "carrier_iata": "AI",
+        "origin_iata": "HSR",
+        "destination_iata": "DEL",
+        "flight_designator_raw": "AI 886",
+        "temporal_status": "current",
+        "field_hold": "aircraft_type_disagreement",
+        "aircraft_types_raw": "A320;A321",
+        "source_row_refs": "p10-r178-n0513;p26-r4-n1444"
+      }
+    ],
+    "all_identities": "Clock timezone/basis unknown: keep raw HH:MM; do not convert to UTC/IST or derive dated occurrences. The DGCA PDF does not define frequency digits: keep raw digits; 1=Monday through 7=Sunday is separately corroborated by AAI. Passenger/cargo class is not stated. An approved schedule is not proof of actual operation.",
+    "one_sided_coverage": "693 identities have one side only; a missing counterpart is not a contradiction."
+  },
+  "rights_review": {
+    "policy_url": "https://www.dgca.gov.in/digigov-portal/jsp/dgca/footerLink/WebsitePolicy.jsp",
+    "policy_result": "DGCA policy permits free reproduction when accurate and not misleading, with prominent attribution; identified third-party content is excluded absent permission.",
+    "packet_visual_review": "Packet rights-review.md reports all 28 pages visually inspected and no identified third-party material. Independent visual spot-check: pages 1, 14, and 15; no third-party marks observed.",
+    "producer_note": "iText producer metadata is software metadata, not itself a third-party content mark.",
+    "license_claim": "No public-domain or Creative Commons claim."
+  },
+  "minimal_adapter_recommendation": {
+    "owner": "Existing DGCA integration owner 01a115a9-1adf-71ab-92f2-662dcb94e088; reuse the shared schema being built for SpiceJet/IndiGo.",
+    "source_record": "Attach DGCA schedule support to existing directed route/designator records; label as approved schedule evidence, not operation evidence.",
+    "source_fields": [
+      "carrier_iata",
+      "operator_code_raw",
+      "origin_iata",
+      "destination_iata",
+      "flight_designator_raw",
+      "flight_designator_normalized",
+      "raw_frequency",
+      "weekday_interpretation_status",
+      "effective_from",
+      "effective_until",
+      "raw_clock",
+      "clock_basis_unknown",
+      "aircraft_type_raw_or_conflict",
+      "source_pdf_sha256",
+      "pdf_page",
+      "physical_row_on_page",
+      "station_section_raw",
+      "printed_row_no",
+      "movement_side",
+      "source_status"
+    ],
+    "disposition": [
+      "Keep 567 already-confirmed identities confirmed and append DGCA source support; do not add duplicate identities.",
+      "Attach source support to 2 exact baseline candidate keys; their baseline carrierIdentity is provider-listed. Keep actual operation unverified.",
+      "Add source-backed references for 4 unlisted designators on existing routes; do not create route topologies.",
+      "Keep 250 expired identities in the expired ledger and outside current/future comparison.",
+      "Keep 7 aircraft conflicts held at aircraft field only while accepting route/flight identities."
+    ],
+    "no_new_adapter_or_runtime_changes_made": true
+  },
+  "input_hashes": {
+    "archive_sha256": "74b0ac880a3700b21508a8f10c7b29bbfa19f820f1a0a3d3e5ac448482c3fe92",
+    "source_pdf_sha256": "107983dc72d381e6897a5a333556946adcc98daef82e954d52cec1fc402c3086",
+    "packet_manifest_sha256": "13772fd8b205164feab0260210c71ae3edb18fdc8f3129fcc104ec905a60e08e",
+    "packet_baseline_comparison_json_sha256": "e58db4377054fe5a89d4531554ac35f73737ab9da524fb483174d403c6a34c75",
+    "packet_baseline_identity_comparison_csv_sha256": "73dbc639b4f25735964095292d185f9c0921dc71be2f0148cb2f829ca62f9bfa",
+    "packet_baseline_schedule_variant_comparison_csv_sha256": "fba9583759a3e69d51ee653534ae3e597d7934da6ebfa933ca4dcb0fff0a29b9",
+    "packet_source_rows_csv_sha256": "46520af0e46c12e1f433636904dd8d7d0b46956f47c8fedc585210dda937cb28",
+    "packet_movements_csv_sha256": "ec1c46cb891093bb15e1f257153031fbdb8f43dae93c63a0c19c1c0032619a55",
+    "packet_route_flight_identities_csv_sha256": "80f4b200c14c7132edce2940129c1da34330526bd4c84ce6224f07c569e775c9",
+    "pinned_runtime_current_sha256": "aa90283d52015b1b418c3840252cb34152f9ed577a3e0766291935b92b151537",
+    "carrier_code_mapping_file_sha256": "0c70201d034cb09918793b9caf3d9769b312e141980b98d1fa8a7e0473fa6bfa"
+  },
+  "immutability_note": "Review outputs are separate from the read-only task-17 baseline and source packet. No GCMP runtime, code, source PDF, or packet files were edited."
+}
