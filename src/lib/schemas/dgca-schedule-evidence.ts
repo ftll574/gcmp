@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { isCalendarDate } from '../calendar-date.ts';
+import type { DgcaDraftIdentityReference } from '../dgca-schedule-draft-types.ts';
 
 const CalendarDate = z.string().refine(isCalendarDate, 'Expected a real calendar date');
 const Sha256 = z.string().regex(/^[0-9a-f]{64}$/);
@@ -101,6 +102,8 @@ export const DgcaScheduleDraftSourceSchema = z.object({
   title: z.string().min(1),
   url: z.string().url(),
   pdfSha256: Sha256,
+  pdfBytes: z.number().int().positive(),
+  pages: z.number().int().positive(),
   publishedDateRaw: z.string().min(1),
   checkedAt: z.string().datetime().nullable(),
   reviewBy: z.string().datetime().nullable(),
@@ -217,10 +220,10 @@ export const DgcaScheduleEvidenceCatalogSchema = z.object({
 
 export type DgcaScheduleEvidenceCatalog = z.infer<typeof DgcaScheduleEvidenceCatalogSchema>;
 export type DgcaScheduleIdentityReference = z.infer<typeof DgcaScheduleIdentityReferenceSchema>;
-export type DgcaScheduleDraftReference = z.infer<typeof DgcaScheduleDraftReferenceSchema>;
+export type { DgcaScheduleDraftReference } from '../dgca-schedule-draft-types.ts';
 
 /** Checks only the published identity's inclusive source window, never flight availability. */
-export function matchesDgcaIdentityWindow(reference: DgcaScheduleIdentityReference, date: string): boolean {
+export function matchesDgcaIdentityWindow(reference: Pick<DgcaDraftIdentityReference, 'variants'>, date: string): boolean {
   return isCalendarDate(date) && reference.variants.some(variant => date >= variant.effectiveFrom && date <= variant.effectiveUntil);
 }
 
@@ -229,7 +232,7 @@ export type DgcaDraftDateStatus = 'outside-window' | 'weekday-supported' | 'week
 /** Uses only separately corroborated weekday annotations. Raw frequency text
  * is never decoded here, and a supported weekday still does not establish
  * service or operation on the date. */
-export function dgcaDraftDateStatus(reference: DgcaScheduleIdentityReference, date: string): DgcaDraftDateStatus {
+export function dgcaDraftDateStatus(reference: Pick<DgcaDraftIdentityReference, 'variants'>, date: string): DgcaDraftDateStatus {
   if (!isCalendarDate(date)) return 'outside-window';
   const variants = reference.variants.filter(variant => date >= variant.effectiveFrom && date <= variant.effectiveUntil);
   if (variants.length === 0) return 'outside-window';

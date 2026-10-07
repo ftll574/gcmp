@@ -53,6 +53,7 @@ function dgcaDraftReference() {
   return DgcaScheduleDraftReferenceSchema.parse({
     source: {
       id: source.id, title: source.title, url: source.url, pdfSha256: source.pdfSha256,
+      pdfBytes: source.pdfBytes, pages: source.pages,
       publishedDateRaw: source.publishedDateRaw, checkedAt: source.checkedAt, reviewBy: source.reviewBy,
       reviewedSnapshotDate: source.reviewedSnapshotDate, attribution: source.attribution,
       reusePolicyUrl: source.reusePolicyUrl, reusePolicyStatement: source.reusePolicyStatement,

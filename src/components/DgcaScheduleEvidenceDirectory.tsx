@@ -66,7 +66,7 @@ export function DgcaScheduleEvidenceDirectory({ zh, onPlanReference }: Props): R
 
   const copy = zh ? {
     title: 'DGCA 核准班表身份證據',
-    intro: '唯讀的 DGCA 已核准班表身份證據。來源列示的班號與方向、原始頻率、時刻和各自有效期間均予保留。這些資料不證明所選日期有航班或實際運航，也不會新增可選航班、星期班次、UTC 班次或接駁時間。來源未列出或未納入此目錄，不代表沒有航班。',
+    intro: 'DGCA 已核准班表身份證據可加入草稿，作為日期限定且附完整來源說明的地理航段參考。來源列示的班號與方向、原始頻率、時刻和有效期間均予保留；這不證明所選日期有航班或實際運航。僅在另源佐證星期與日期相符時排除不符日期；時區未知，不推定起降時間、接駁或聯盟資格。來源未列出或未納入此目錄，不代表沒有航班。',
     loading: '載入 DGCA 班表證據…', failed: 'DGCA 班表證據目前無法讀取。', retry: '重試',
     search: '搜尋班號或機場代碼', sourceFilter: '來源', allSources: '全部來源',
     sourceDate: '來源身份有效期間參考日（非航班可用性）', count: '筆來源身份參考',
@@ -94,7 +94,7 @@ export function DgcaScheduleEvidenceDirectory({ zh, onPlanReference }: Props): R
     asOf: '快照截至', pages: '頁', bytes: '位元組', unloadedSummary: 'SpiceJet、IndiGo、Air India、Air India Express',
   } : {
     title: 'DGCA approved-schedule identity evidence',
-    intro: 'Read-only identity evidence from DGCA-approved schedules. The published designators, directions, raw frequencies, clocks, and each source validity window are retained. These records do not establish a flight on the selected date or actual operation, and they add no selectable service, weekday schedule, UTC occurrence, or connection timing. A reference omitted or absent here does not prove that no flight exists.',
+    intro: 'Add a date-bounded geographic route reference from DGCA-approved schedule identity evidence to a draft with its source qualifications attached. The published designator, direction, raw frequency, clocks, and each validity window are retained; this does not establish a flight on the selected date or actual operation. A date is excluded only when a separately corroborated weekday annotation rules it out. Timezone remains unknown, so no exact timing, connection, or alliance eligibility is inferred. A reference omitted or absent here does not prove that no flight exists.',
     loading: 'Loading DGCA schedule evidence…', failed: 'DGCA schedule evidence is temporarily unavailable.', retry: 'Retry',
     search: 'Search designator or airport code', sourceFilter: 'Source', allSources: 'All sources',
     sourceDate: 'Source identity-window date (not flight availability)', count: 'source identity references',
@@ -168,6 +168,7 @@ export function DgcaScheduleEvidenceDirectory({ zh, onPlanReference }: Props): R
                     const draftReference = DgcaScheduleDraftReferenceSchema.parse({
                       source: {
                         id: source.id, title: source.title, url: source.url, pdfSha256: source.pdfSha256,
+                        pdfBytes: source.pdfBytes, pages: source.pages,
                         publishedDateRaw: source.publishedDateRaw, checkedAt: source.checkedAt, reviewBy: source.reviewBy,
                         reviewedSnapshotDate: source.reviewedSnapshotDate, attribution: source.attribution,
                         reusePolicyUrl: source.reusePolicyUrl, reusePolicyStatement: source.reusePolicyStatement,
@@ -190,7 +191,7 @@ export function DgcaScheduleEvidenceDirectory({ zh, onPlanReference }: Props): R
                       </span>)}</p>
                       <p>{copy.rowRelation}: {variant.sourceCounterpartStatus === 'paired' ? copy.paired : copy.oneSided}{variant.sourceMovementSides.length > 0 ? ` · ${variant.sourceMovementSides.join(', ')}` : ''}</p>
                       {variant.stationLabelsRaw.length > 0 && <p>{zh ? '來源站名' : 'Raw station labels'}: {variant.stationLabelsRaw.join(' · ')} · {variant.stationCodeResolution}</p>}
-                      {variant.frequencyWeekdaysCorroborated.length > 0 && <p>{zh ? 'AAI 另源對照（非 DGCA 定義，不用於推算日期）' : 'Separate AAI weekday annotation (not defined by DGCA and not used to generate dates)'}: {variant.frequencyWeekdaysCorroborated.join(', ')}</p>}
+                      {variant.frequencyWeekdaysCorroborated.length > 0 && <p>{zh ? 'AAI 另源星期對照（非 DGCA 定義；只用來排除已佐證不符的日期，仍不證明該日有班次）' : 'Separate AAI weekday annotation (not defined by DGCA; used only to exclude a corroborated weekday mismatch, not to prove service on the date)'}: {variant.frequencyWeekdaysCorroborated.join(', ')}</p>}
                       {(variant.conflictIds.length > 0 || variant.conflictFields.length > 0) && <p>{copy.conflicts}: {variant.conflictKinds.join(', ')} · {variant.conflictFields.join(', ')} · {variant.conflictIds.join(', ')}</p>}
                       {variant.conflictEvidence.length > 0 && <ul data-dgca-overlap-flags>{variant.conflictEvidence.map(evidence => <li key={evidence.id}>
                         <code>{evidence.id}</code> · {evidence.peerVariantId} · {evidence.overlapFrom} → {evidence.overlapUntil} · {evidence.differingRawFields.join(', ')} · {evidence.interpretation}

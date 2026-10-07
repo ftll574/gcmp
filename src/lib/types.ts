@@ -3,7 +3,7 @@
  * (lib/calc/**) does not depend on UI types.
  */
 
-import type { DgcaScheduleDraftReference } from './schemas/dgca-schedule-evidence.ts';
+import type { DgcaScheduleDraftReference } from './dgca-schedule-draft-types.ts';
 
 export type Iata = string; // 3-letter airport code, uppercase
 export type AirlineIata = string; // 2-3 letter airline code, uppercase

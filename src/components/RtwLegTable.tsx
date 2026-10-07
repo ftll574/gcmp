@@ -12,7 +12,7 @@ import { LegDateCalendar } from './LegDateCalendar.tsx';
 import type { FlightSelection } from '../lib/schemas/dated-schedules.ts';
 import type { OfficialScheduleCatalog } from '../lib/schemas/published-schedules.ts';
 import { FlightDatesPanel } from './FlightDatesPanel.tsx';
-import { dgcaDraftDateStatus } from '../lib/schemas/dgca-schedule-evidence.ts';
+import { dgcaDraftDateStatus, dgcaSourceReviewState } from '../lib/schemas/dgca-schedule-evidence.ts';
 import {
   humanizeDays,
   operatingDaysForDate,
@@ -128,6 +128,18 @@ export function RtwLegTable({
                         {flight.dgcaScheduleReference && <details className="rtw-dgca-reference" data-dgca-draft-reference>
                           <summary>{flight.dgcaScheduleReference.reference.designatorKey} · {locale === 'zh-TW' ? 'DGCA 來源身份參考' : 'DGCA source identity reference'}</summary>
                           <p>{locale === 'zh-TW' ? '僅為班表身份參考，不代表所選日期有航班或實際運航；DGCA 未提供時區，不推定起降時間或接駁可行性。' : 'Identity reference only; it does not establish a flight on this date or actual operation. DGCA timezone is unspecified, so arrival/departure timing and connection feasibility are not inferred.'}</p>
+                          {(() => {
+                            const { source } = flight.dgcaScheduleReference;
+                            const reviewState = dgcaSourceReviewState(source, Date.now());
+                            const reviewLabel = reviewState === 'current-review'
+                              ? (locale === 'zh-TW' ? '來源覆核期限有效' : 'Source review deadline is current')
+                              : reviewState === 'review-window-expired'
+                                ? (locale === 'zh-TW' ? '來源覆核期限已過' : 'Source review deadline has passed')
+                                : reviewState === 'checked-in-future'
+                                  ? (locale === 'zh-TW' ? '來源核驗時間尚未到達' : 'Source check is dated in the future')
+                                  : (locale === 'zh-TW' ? '僅保留來源快照日期，未提供覆核期限' : 'Snapshot date retained; no review deadline supplied');
+                            return <p data-dgca-source-review={reviewState}>{reviewLabel} · {locale === 'zh-TW' ? '快照截至' : 'snapshot as of'} {source.reviewedSnapshotDate} · {locale === 'zh-TW' ? '核驗' : 'checked'} {source.checkedAt ?? (locale === 'zh-TW' ? '未提供' : 'not provided')} · {locale === 'zh-TW' ? '覆核期限' : 'review by'} {source.reviewBy ?? (locale === 'zh-TW' ? '未提供' : 'not provided')}</p>;
+                          })()}
                           <p>{flight.dgcaScheduleReference.source.operator.carrierIdentityStatus === 'independently-mapped'
                             ? flight.dgcaScheduleReference.source.operator.qualification
                             : `${flight.dgcaScheduleReference.source.operator.qualification} ${locale === 'zh-TW' ? '營運者與聯盟身份仍未知。' : 'Operating-airline and alliance identity remain unknown.'}`}</p>
@@ -147,11 +159,13 @@ export function RtwLegTable({
                           {flight.dgcaScheduleReference.reference.variants.map(variant => <div key={variant.id}>
                             <p>{variant.effectiveFromRaw} → {variant.effectiveUntilRaw} · {variant.id}</p>
                             <p>{locale === 'zh-TW' ? '頻率原文' : 'Raw frequency'}: <code>{variant.frequencyRaw || '(blank)'}</code> · {locale === 'zh-TW' ? '時刻原文' : 'Raw clocks'}: <code>{[...variant.departureClockValuesRaw, '→', ...variant.arrivalClockValuesRaw].join(' ') || '(blank)'}</code> · {locale === 'zh-TW' ? '時區未知' : 'timezone unknown'}</p>
-                            {variant.frequencyWeekdaysCorroborated.length > 0 && <p>{locale === 'zh-TW' ? 'AAI 另源星期註記（非 DGCA 定義）' : 'Separate AAI weekday annotation (not defined by DGCA)'}: {variant.frequencyWeekdaysCorroborated.join(', ')}</p>}
+                            {variant.frequencyWeekdaysCorroborated.length > 0 && <p>{locale === 'zh-TW' ? 'AAI 另源星期對照（非 DGCA 定義；只用來排除已佐證不符的日期，仍不證明該日有班次）' : 'Separate AAI weekday annotation (not defined by DGCA; used only to exclude a corroborated weekday mismatch, not to prove service on the date)'}: {variant.frequencyWeekdaysCorroborated.join(', ')}</p>}
                             <p>{locale === 'zh-TW' ? '來源頁／列與雜湊' : 'Source page/row and hashes'}: {variant.sourceRows.map(row => `${row.referenceRaw} · p.${row.page}${row.physicalRow ? ` · row ${row.physicalRow}` : ''}${row.sourceRowSha256 ? ` · ${row.sourceRowSha256}` : ''}${row.sourceRowTextSha256 ? ` · ${row.sourceRowTextSha256}` : ''}`).join(' | ')}</p>
                             {(variant.conflictIds.length > 0 || variant.conflictFields.length > 0) && <p>{locale === 'zh-TW' ? '來源衝突' : 'Source conflicts'}: {variant.conflictKinds.join(', ')} · {variant.conflictFields.join(', ')} · {variant.conflictIds.join(', ')}</p>}
+                            {variant.conflictEvidence.map(evidence => <p key={evidence.id} data-dgca-conflict-evidence={evidence.id}>{evidence.id} · {evidence.peerVariantId} · {evidence.overlapFrom} → {evidence.overlapUntil} · {evidence.differingRawFields.join(', ')} · {evidence.interpretation}</p>)}
+                            {variant.notes.map((note, noteIndex) => <p key={`${variant.id}:note:${noteIndex}`}>{note}</p>)}
                           </div>)}
-                          <p><a href={flight.dgcaScheduleReference.source.url} target="_blank" rel="noreferrer">{flight.dgcaScheduleReference.source.title} · {locale === 'zh-TW' ? '原始 DGCA PDF' : 'Original DGCA PDF'}</a> · SHA-256 <code>{flight.dgcaScheduleReference.source.pdfSha256}</code> · <a href={flight.dgcaScheduleReference.source.reusePolicyUrl} target="_blank" rel="noreferrer">{locale === 'zh-TW' ? '資料使用政策' : 'Reuse policy'}</a></p>
+                          <p><a href={flight.dgcaScheduleReference.source.url} target="_blank" rel="noreferrer">{flight.dgcaScheduleReference.source.title} · {locale === 'zh-TW' ? '原始 DGCA PDF' : 'Original DGCA PDF'}</a> · SHA-256 <code>{flight.dgcaScheduleReference.source.pdfSha256}</code> · {flight.dgcaScheduleReference.source.pages} {locale === 'zh-TW' ? '頁' : 'pages'} · {flight.dgcaScheduleReference.source.pdfBytes.toLocaleString()} {locale === 'zh-TW' ? '位元組' : 'bytes'} · <a href={flight.dgcaScheduleReference.source.reusePolicyUrl} target="_blank" rel="noreferrer">{locale === 'zh-TW' ? '資料使用政策' : 'Reuse policy'}</a></p>
                         </details>}
                       </>
                     ) : null}

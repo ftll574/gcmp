@@ -149,8 +149,8 @@ describe('DGCA schedule evidence schema', () => {
     expect(dgcaDraftDateStatus(reference, '2026-10-07')).toBe('weekday-unknown');
 
     evidence.frequencyWeekdaysCorroborated = ['Monday'];
-    expect(dgcaDraftDateStatus(reference, '2026-11-02')).toBe('weekday-supported');
-    expect(dgcaDraftDateStatus(reference, '2026-11-03')).toBe('weekday-not-supported');
+    expect(dgcaDraftDateStatus(reference, '2026-10-19')).toBe('weekday-supported');
+    expect(dgcaDraftDateStatus(reference, '2026-10-20')).toBe('weekday-not-supported');
     expect(dgcaDraftDateStatus(reference, '2026-10-25')).toBe('outside-window');
 
     const conflicting = catalogFixture().sources[0]!.references[0]!;

@@ -714,6 +714,7 @@ export function MapView({
                       key={`inactive-${arc.key}-${offsetX}`}
                       d={arc.d}
                       className={arc.surface ? 'map-arc-surface inactive' : 'map-arc map-arc-inactive'}
+                      {...(!arc.surface ? { 'data-map-route': `${arc.from}-${arc.to}` } : {})}
                       {...(arc.surface ? { 'data-map-surface': `${arc.from}-${arc.to}` } : {})}
                       style={arc.surface ? undefined : { stroke: arc.color }}
                       fill="none"
@@ -737,6 +738,7 @@ export function MapView({
                       <path
                         d={arc.d}
                         className="map-arc map-arc-active"
+                        data-map-route={`${arc.from}-${arc.to}`}
                         style={{ stroke: arc.color }}
                         fill="none"
                       />
